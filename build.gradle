@@ -8,6 +8,9 @@ plugins {
 group = 'dev.aisandbox'
 version = '0.0.1-SNAPSHOT'
 
+def protobufVersion = '4.28.2'
+def protocVersion = protobufVersion
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
@@ -22,10 +25,7 @@ configurations {
 
 protobuf {
 	// Configure the protoc executable
-	protoc {
-		// Download from repositories
-		artifact = 'com.google.protobuf:protoc:3.0.0'
-	}
+	protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
 	generateProtoTasks {
 		// all() returns the collection of all protoc tasks
 		all().configureEach { task ->
@@ -42,7 +42,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	compileOnly 'org.projectlombok:lombok'
-	implementation 'com.google.protobuf:protobuf-java:4.28.2'
+	implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
