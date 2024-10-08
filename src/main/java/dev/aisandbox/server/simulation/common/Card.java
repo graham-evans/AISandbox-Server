@@ -1,13 +1,10 @@
 package dev.aisandbox.server.simulation.common;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class Card {
-
-    private final CardValue cardValue;
-    private final CardSuite cardSuite;
+public record Card(CardValue cardValue, CardSuite cardSuite) {
 
     public String getLongDescription() {
         return cardValue.getLongValue() + " of " + cardSuite.name().toLowerCase();
@@ -18,33 +15,26 @@ public class Card {
     }
 
     @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public enum CardValue {
-        ACE("A", "Ace"),
-        TWO("2", "2"),
-        THREE("3", "3"),
-        FOUR("4", "4"),
-        FIVE("5", "5"),
-        SIX("6", "6"),
-        SEVEN("7", "7"),
-        EIGHT("8", "8"),
-        NINE("9", "9"),
-        TEN("10", "10"),
-        JACK("J", "Jack"),
-        QUEEN("Q", "Queen"),
-        KING("K", "King");
+        ACE("A", "Ace",1,14),
+        TWO("2", "2",2,2),
+        THREE("3", "3",3,3),
+        FOUR("4", "4",4,4),
+        FIVE("5", "5",5,5),
+        SIX("6", "6",6,6),
+        SEVEN("7", "7",7,7),
+        EIGHT("8", "8",8,8),
+        NINE("9", "9",9,9),
+        TEN("10", "10",10,10),
+        JACK("J", "Jack",11,11),
+        QUEEN("Q", "Queen",12,12),
+        KING("K", "King",13,13);
 
         private final String shortValue;
         private final String longValue;
-
-        private CardValue(String shortValue, String longValue) {
-            this.shortValue = shortValue;
-            this.longValue = longValue;
-        }
-
-        public int getValue() {
-            return ordinal() + 1;
-        }
-
+        private final int valueAceLow;
+        private final int valueAceHigh;
     }
 
     @Getter
