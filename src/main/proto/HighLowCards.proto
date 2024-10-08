@@ -1,8 +1,34 @@
 syntax = "proto3";
 
+package highlowcards;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.highlowcards.proto";
 
-message Person {
+message ServerHandshake {
   string name = 1;
+}
+
+message ClientHandshake {
+  string name = 1;
+}
+
+message ServerState {
+  int32 cardCount = 1; // the total number of cards on the board (face up + face down)
+  repeated string deltCard = 2;
+  int32 score = 3;
+  Signal signal = 4;
+}
+
+message ClientAction {
+  HighLowChoice action = 1;
+}
+
+enum HighLowChoice {
+  HIGH = 0;
+  LOW = 1;
+}
+
+enum Signal {
+  RESET = 0;
+  PLAY = 1;
 }
