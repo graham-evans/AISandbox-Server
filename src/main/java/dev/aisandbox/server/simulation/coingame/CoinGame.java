@@ -1,27 +1,33 @@
 package dev.aisandbox.server.simulation.coingame;
 
+import dev.aisandbox.server.engine.OutputRenderer;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationInfo;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.awt.*;
 import java.util.List;
 
-@Component
-public class CoinGame implements SimulationInfo {
+@Slf4j
+@RequiredArgsConstructor
+public class CoinGame implements Simulation {
+
+    private final List<Player> players;
 
     @Override
-    public String getName() {
-        return "Coin Game Simulation";
+    public void step(OutputRenderer output) {
+        log.info("Simulation step");
+
     }
 
     @Override
-    public int getPlayerCount() {
-        return 2;
+    public void close() {
+
     }
 
     @Override
-    public Simulation createSimulation(List<Player> players) {
-        return new CoinGameSimulation(players);
+    public void visualise(Graphics2D graphics2D) {
+
     }
 }
