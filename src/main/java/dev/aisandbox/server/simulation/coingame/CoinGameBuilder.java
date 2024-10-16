@@ -3,16 +3,22 @@ package dev.aisandbox.server.simulation.coingame;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Setter
+@Getter
 @Component
 public class CoinGameBuilder implements SimulationBuilder {
 
+    private int startingCoins = 14;
+
     @Override
     public String getName() {
-        return "Coin Game Simulation";
+        return "CoinGame";
     }
 
     @Override
@@ -26,7 +32,7 @@ public class CoinGameBuilder implements SimulationBuilder {
     }
 
     @Override
-    public String[] getPlayerNames() {
+    public String[] getPlayerNames(int playerCount) {
         return new String[] {"Player 1", "Player 2"};
     }
 
