@@ -24,6 +24,8 @@ public class SandboxServerLauncher implements CommandLineRunner {
 
     private final List<SimulationBuilder> simulationBuilders;
 
+    private boolean halted = false;
+
     @Override
     public void run(String... args) throws Exception {
         // parse the command line
@@ -86,7 +88,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
             System.out.println("Writing output to "+out.getName());
             System.out.println("Starting simulation (ctrl-c to exit)...");
             // start simulation
-            for (int i = 0; i < 10; i++) {
+            while(!halted) {
                 sim.step(out);
             }
             // finish simulation
