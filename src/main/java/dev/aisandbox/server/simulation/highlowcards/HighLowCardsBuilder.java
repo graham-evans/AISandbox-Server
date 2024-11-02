@@ -27,11 +27,11 @@ public class HighLowCardsBuilder implements SimulationBuilder {
 
     @Override
     public String[] getPlayerNames(int playerCount) {
-        return new String[] {"Player 1"};
+        return new String[]{"Player 1"};
     }
 
     @Override
     public Simulation build(List<Player> players) {
-        return new HighLowCards(players.getFirst(),9);
+        return new HighLowCards(players.getFirst(), 9);
     }
 }
