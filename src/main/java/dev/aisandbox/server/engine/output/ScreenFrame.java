@@ -23,6 +23,7 @@ public class ScreenFrame extends JFrame {
 
         this.setTitle("AISandbox-Server");
         canvas = new ImageCanvas();
+        canvas.setDoubleBuffered(true);
         this.add(canvas);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 600);
@@ -36,7 +37,7 @@ public class ScreenFrame extends JFrame {
         canvas.repaint();
     }
 
-    private class ImageCanvas extends Canvas {
+    private class ImageCanvas extends JPanel {
         @Override
         public void paint(Graphics g) {
             double horizontalScale = (double) this.getWidth() / image.getWidth();
