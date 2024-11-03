@@ -85,6 +85,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
                 case SCREEN -> new ScreenOutputRenderer(sim);
                 default -> new NullOutputRenderer();
             };
+            out.setup();
             System.out.println("Writing output to "+out.getName());
             System.out.println("Starting simulation (ctrl-c to exit)...");
             // start simulation
