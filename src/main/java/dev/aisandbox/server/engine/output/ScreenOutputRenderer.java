@@ -4,7 +4,6 @@ import dev.aisandbox.server.engine.Simulation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -13,11 +12,16 @@ import java.awt.image.BufferedImage;
 public class ScreenOutputRenderer implements OutputRenderer {
     private final Simulation simulation;
 
-    ScreenFrame screenFrame=null;
+    ScreenFrame screenFrame = null;
 
     @Override
     public String getName() {
         return "screen";
+    }
+
+    @Override
+    public void setup() {
+        screenFrame = new ScreenFrame();
     }
 
     @Override
@@ -26,10 +30,6 @@ public class ScreenOutputRenderer implements OutputRenderer {
         BufferedImage image = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();
         simulation.visualise(g2d);
-        // setup screen
-        if (screenFrame == null) {
-            screenFrame = new ScreenFrame();
-        }
         // push image
         screenFrame.updateImage(image);
     }
@@ -37,8 +37,8 @@ public class ScreenOutputRenderer implements OutputRenderer {
     @Override
     public void close() {
         // close window
+        screenFrame.dispose();
     }
-
 
 
 }
