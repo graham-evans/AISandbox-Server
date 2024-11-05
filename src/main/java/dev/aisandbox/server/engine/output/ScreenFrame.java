@@ -15,10 +15,10 @@ public class ScreenFrame extends JFrame {
 
     public ScreenFrame() throws HeadlessException {
         // setup default image
-        image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = image.createGraphics();
         g.setColor(Color.BLUE);
-        g.fillRect(0, 0, 800, 600);
+        g.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
 
 
         this.setTitle("AISandbox-Server");
@@ -40,17 +40,17 @@ public class ScreenFrame extends JFrame {
     private class ImageCanvas extends JPanel {
         @Override
         public void paint(Graphics g) {
-            double horizontalScale = (double) this.getWidth() / image.getWidth();
-            double verticalScale = (double) this.getHeight() / image.getHeight();
+            double horizontalScale = (double) this.getWidth() / OutputConstants.HD_WIDTH;
+            double verticalScale = (double) this.getHeight() / OutputConstants.HD_HEIGHT;
 
             double scale = Math.min(horizontalScale, verticalScale);
 
-            int startX = (int) ((this.getWidth() - image.getWidth() * scale) / 2.0);
-            int startY = (int) ((this.getHeight() - image.getHeight() * scale) / 2.0);
+            int startX = (int) ((this.getWidth() - OutputConstants.HD_WIDTH * scale) / 2.0);
+            int startY = (int) ((this.getHeight() - OutputConstants.HD_HEIGHT * scale) / 2.0);
 
             log.debug("drawing image {}x{} scaled to {}x{} at {},{} on canvas dimensions {}x{} ima", image.getWidth(), image.getHeight(), image.getWidth() * scale, image.getHeight() * scale, startX, startY, getWidth(), getHeight());
 
-            g.drawImage(image, startX, startY, (int) (image.getWidth() * scale), (int) (image.getHeight() * scale), null);
+            g.drawImage(image, startX, startY, (int) (OutputConstants.HD_WIDTH * scale), (int) (OutputConstants.HD_HEIGHT * scale), null);
         }
 
     }
