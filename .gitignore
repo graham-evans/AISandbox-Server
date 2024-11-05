@@ -29,3 +29,4 @@ replay_pid*
 .gradle
 /.gradle/
 /build/
+aisandbox.log*
