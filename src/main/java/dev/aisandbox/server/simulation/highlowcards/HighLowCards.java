@@ -1,5 +1,6 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
+import dev.aisandbox.server.engine.chart.RollingScoreChart;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
@@ -29,6 +30,7 @@ public class HighLowCards implements Simulation {
     private final List<Card> faceUpCards = new ArrayList<>();
     private final List<Card> faceDownCards = new ArrayList<>();
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
+    private final RollingScoreChart rollingScoreChart = new RollingScoreChart(200,300,250,true);
 
 
     public HighLowCards(Player player, int cardCount) {
@@ -81,12 +83,14 @@ public class HighLowCards implements Simulation {
             output.display();
             // reset if we're finished.
             if (faceDownCards.isEmpty()) {
+                rollingScoreChart.addScore(faceUpCards.size());
                 player.send(getPlayState(Signal.RESET, faceUpCards.size()));
                 reset();
             }
         } else {
             // incorrect guess - game over
-            player.send(getPlayState(Signal.RESET, 0));
+            rollingScoreChart.addScore(faceUpCards.size()-1);
+            player.send(getPlayState(Signal.RESET, faceUpCards.size()-1));
             output.display();
             // reset
             reset();
@@ -110,6 +114,7 @@ public class HighLowCards implements Simulation {
             BufferedImage cardImage = getCardImage("/images/cards/back.png");
             graphics2D.drawImage(cardImage, (dx+faceUpCards.size()+2) * 50 + 100, 100, null);
         }
+        graphics2D.drawImage(rollingScoreChart.getImage(), 100, 500, null);
     }
 
     private BufferedImage getCardImage(String path) {
