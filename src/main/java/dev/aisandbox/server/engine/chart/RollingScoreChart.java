@@ -3,14 +3,13 @@ package dev.aisandbox.server.engine.chart;
 import lombok.RequiredArgsConstructor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.DefaultXYDataset;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +44,6 @@ public class RollingScoreChart {
     }
 
     private JFreeChart createBarChart() {
-        return ChartFactory.createScatterPlot("Results","Rounds","score",getDataset());
-    }
-
-    private XYDataset getDataset() {
         XYSeries series = new XYSeries("Results");
         int index = startIndex;
         for (Double score : scores) {
@@ -57,7 +52,9 @@ public class RollingScoreChart {
         }
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
-        return dataset;
+        JFreeChart chart =ChartFactory.createScatterPlot("Results", "Rounds", "score", dataset, PlotOrientation.VERTICAL, false, false, false);
+        // customise the chart TODO
+        return chart;
     }
 
 }
