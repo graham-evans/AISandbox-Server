@@ -30,9 +30,8 @@ public class HighLowCards implements Simulation {
     private final List<Card> faceUpCards = new ArrayList<>();
     private final List<Card> faceDownCards = new ArrayList<>();
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
-    private final RollingScoreChart rollingScoreChart = new RollingScoreChart(200, GRAPH_WIDTH, 400, true);
-    private final RollingScoreChart rollingScoreChart2 = new RollingScoreChart(200, GRAPH_WIDTH, 400, true);
-
+    private final RollingScoreChart rollingScoreChart = RollingScoreChart.builder().dataWindow(200).width(GRAPH_WIDTH).height(400).cache(true).build();
+    private final RollingScoreChart rollingScoreChart2 = RollingScoreChart.builder().dataWindow(200).width(GRAPH_WIDTH).height(400).cache(true).build();
 
     public HighLowCards(Player player, int cardCount) {
         this.player = player;

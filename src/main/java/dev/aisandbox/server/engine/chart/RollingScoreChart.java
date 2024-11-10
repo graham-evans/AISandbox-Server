@@ -1,60 +1,70 @@
 package dev.aisandbox.server.engine.chart;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.image.BufferedImage;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
+@Builder
 public class RollingScoreChart {
-    private final int window;
-    private final int width;
-    private final int height;
-    private final boolean cache;
+    @Getter
+    @Builder.Default
+    private int dataWindow = 100;
+    @Builder.Default
+    private int width = 640;
+    @Builder.Default
+    private int height = 480;
+    @Builder.Default
+    private boolean cache = false;
 
-    private BufferedImage image = null;
-    private List<Double> scores = new ArrayList<>();
-    private int startIndex = 1;
+    // calculated fields moved to private class to avoid this issue with @Builder - https://github.com/projectlombok/lombok/issues/2307
+    private final State state = new State();
 
     public void addScore(double score) {
         // update score list
-        scores.add(score);
-        while (scores.size() > window) {
-            scores.remove(0);
-            startIndex++;
+        state.scores.add(score);
+        while (state.scores.size() > dataWindow) {
+            state.scores.remove(0);
+            state.startIndex++;
         }
         // update image
-        image = null;
+        state.image = null;
     }
 
     public BufferedImage getImage() {
-        if (!cache || (image == null)) {
+        if (!cache || (state.image == null)) {
             JFreeChart chart = createBarChart();
-            image = chart.createBufferedImage(width, height);
+            state.image = chart.createBufferedImage(width, height);
         }
-        return image;
+        return state.image;
     }
 
     private JFreeChart createBarChart() {
         XYSeries series = new XYSeries("Results");
-        int index = startIndex;
-        for (Double score : scores) {
+        int index = state.startIndex;
+        for (Double score : state.scores) {
             series.add(index, score);
             index++;
         }
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
-        JFreeChart chart =ChartFactory.createScatterPlot("Results", "Rounds", "score", dataset, PlotOrientation.VERTICAL, false, false, false);
+        JFreeChart chart = ChartFactory.createScatterPlot("Results", "Rounds", "score", dataset, PlotOrientation.VERTICAL, false, false, false);
         // customise the chart TODO
         return chart;
+    }
+
+
+    private static class State {
+        protected BufferedImage image = null;
+        protected List<Double> scores = new ArrayList<>();
+        protected int startIndex = 1;
     }
 
 }
