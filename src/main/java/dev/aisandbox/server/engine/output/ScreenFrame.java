@@ -2,6 +2,7 @@ package dev.aisandbox.server.engine.output;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,12 +16,15 @@ public class ScreenFrame extends JFrame {
 
     public ScreenFrame() throws HeadlessException {
         // setup default image
-        image = new BufferedImage(OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = image.createGraphics();
-        g.setColor(Color.BLUE);
-        g.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
-
-
+        try {
+            image = ImageIO.read(ScreenFrame.class.getResourceAsStream("/images/backgrounds/testcard.png"));
+        } catch (Exception e) {
+            log.error("Error loading testcard image", e);
+            image = new BufferedImage(OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = image.createGraphics();
+            g.setColor(Color.BLUE);
+            g.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
+        }
         this.setTitle("AISandbox-Server");
         canvas = new ImageCanvas();
         canvas.setDoubleBuffered(true);
