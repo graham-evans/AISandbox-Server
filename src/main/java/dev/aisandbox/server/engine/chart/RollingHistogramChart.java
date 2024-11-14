@@ -1,5 +1,6 @@
 package dev.aisandbox.server.engine.chart;
 
+import dev.aisandbox.server.engine.Theme;
 import lombok.Builder;
 import lombok.Getter;
 import org.jfree.chart.ChartFactory;
@@ -25,6 +26,8 @@ public class RollingHistogramChart {
     private int height = 480;
     @Builder.Default
     private boolean cache = false;
+    @Builder.Default
+    private Theme theme = Theme.DEFAULT;
 
     public void addScore(double score) {
         // update score list
