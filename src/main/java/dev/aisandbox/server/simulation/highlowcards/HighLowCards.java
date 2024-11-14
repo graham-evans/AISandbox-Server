@@ -2,6 +2,7 @@ package dev.aisandbox.server.simulation.highlowcards;
 
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.chart.RollingHistogramChart;
 import dev.aisandbox.server.engine.chart.RollingScoreChart;
 import dev.aisandbox.server.engine.output.OutputConstants;
@@ -31,12 +32,24 @@ public class HighLowCards implements Simulation {
     private final List<Card> faceUpCards = new ArrayList<>();
     private final List<Card> faceDownCards = new ArrayList<>();
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
-    private final RollingScoreChart rollingScoreChart = RollingScoreChart.builder().dataWindow(200).width(GRAPH_WIDTH).height(400).cache(true).build();
-    private final RollingHistogramChart rollingHistogramChart = RollingHistogramChart.builder().dataWindow(200).width(GRAPH_WIDTH).height(400).cache(true).build();
+    private final RollingScoreChart rollingScoreChart;
+    private final RollingHistogramChart rollingHistogramChart;
 
     public HighLowCards(Player player, int cardCount) {
         this.player = player;
         this.cardCount = cardCount;
+        rollingScoreChart = RollingScoreChart.builder()
+                .dataWindow(200)
+                .width(GRAPH_WIDTH)
+                .height(400)
+                .cache(true)
+                .build();
+        rollingHistogramChart = RollingHistogramChart.builder()
+                .dataWindow(200)
+                .width(GRAPH_WIDTH)
+                .height(400)
+                .cache(true)
+                .build();
         reset();
     }
 
