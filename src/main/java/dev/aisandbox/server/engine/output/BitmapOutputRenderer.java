@@ -17,20 +17,38 @@ public class BitmapOutputRenderer implements OutputRenderer {
 
     private long imageCounter = 0;
 
+    private File outputDirectory = new File("./");
+
+    private int skipframes = -1;
+
     @Override
     public String getName() {
         return "PNG file";
     }
 
     @Override
+    public void setOutputDirectory(File outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+
+    @Override
+    public void setSkipFrames(int framesToSkip) {
+        if (framesToSkip > 0) {
+            this.skipframes = framesToSkip;
+        }
+    }
+
+    @Override
     public void display() {
-        try {
-            BufferedImage image = new BufferedImage(OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2d = image.createGraphics();
-            simulation.visualise(g2d);
-            ImageIO.write(image, "png", new File(imageCounter + ".png"));
-        } catch (IOException e) {
-            log.error("Error writing image to file", e);
+        if (skipframes == 0 || imageCounter % skipframes == 0) {
+            try {
+                BufferedImage image = new BufferedImage(OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT, BufferedImage.TYPE_INT_RGB);
+                Graphics2D g2d = image.createGraphics();
+                simulation.visualise(g2d);
+                ImageIO.write(image, "png", new File(outputDirectory, imageCounter + ".png"));
+            } catch (IOException e) {
+                log.error("Error writing image to file", e);
+            }
         }
         imageCounter++;
     }
