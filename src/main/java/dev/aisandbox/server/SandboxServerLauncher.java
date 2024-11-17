@@ -76,7 +76,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
             // create simulation
             SimulationBuilder simulationBuilder = new HighLowCardsBuilder();
             // create players
-            List<Player> players = List.of(new Player("Player", 9000, ClientAction.class));
+            List<Player> players = List.of(new NetworkPlayer("Player", 9000, ClientAction.class));
             // create simulation
             Simulation sim = simulationBuilder.build(players);
             // create output

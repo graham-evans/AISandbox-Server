@@ -1,8 +1,8 @@
 package dev.aisandbox.server.simulation.coingame;
 
-import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.output.OutputRenderer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
