@@ -4,6 +4,20 @@ package coingame;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.coingame.proto";
 
-message ServerHandshake {
-  string gameName = 1;
+message PlayState {
+  int32 rowCount = 1;
+  repeated int32 coinCount = 2;
+  int32 maxPick = 3;
+  Signal signal = 4;
+}
+
+enum Signal {
+  WIN = 0;
+  PLAY = 1;
+  LOSE = 2;
+}
+
+message PlayerAction {
+  int32 selectedRow = 1;
+  int32 removeCount = 2;
 }
