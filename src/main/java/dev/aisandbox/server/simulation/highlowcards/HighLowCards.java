@@ -92,7 +92,7 @@ public class HighLowCards implements Simulation {
         textChart.addText("Showing " + faceUpCards.getLast().getShortDrescription());
         output.display();
         // send the current state and request an action
-        ClientAction action = (ClientAction) player.receive(getPlayState(Signal.PLAY, faceDownCards.size()));
+        ClientAction action = player.recieve(getPlayState(Signal.PLAY,faceDownCards.size()),ClientAction.class);
         log.info("Client action: {}", action.getAction().name());
         // turn over the next card
         faceUpCards.add(faceDownCards.removeFirst());

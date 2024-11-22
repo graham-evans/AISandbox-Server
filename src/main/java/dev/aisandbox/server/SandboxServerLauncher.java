@@ -8,7 +8,6 @@ import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
 import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
-import dev.aisandbox.server.simulation.highlowcards.proto.ClientAction;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.cli.HelpFormatter;
 import org.springframework.boot.CommandLineRunner;
@@ -76,7 +75,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
             // create simulation
             SimulationBuilder simulationBuilder = new HighLowCardsBuilder();
             // create players
-            List<Player> players = List.of(new NetworkPlayer("Player", 9000, ClientAction.class));
+            List<Player> players = List.of(new NetworkPlayer("Player", 9000));
             // create simulation
             Simulation sim = simulationBuilder.build(players);
             // create output

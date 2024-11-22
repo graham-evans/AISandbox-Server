@@ -1,6 +1,7 @@
 package dev.aisandbox.server.engine;
 
 import com.google.protobuf.GeneratedMessage;
+import dev.aisandbox.server.simulation.highlowcards.proto.ClientAction;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Optional;
 import java.util.concurrent.SynchronousQueue;
 
 @Slf4j
@@ -23,17 +25,15 @@ public class PlayerThread extends Thread {
     InputStream inputStream = null;
     SynchronousQueue<GeneratedMessage> inputQueue = new SynchronousQueue<>();
     SynchronousQueue<NetworkPlayerMessage> outputQueue = new SynchronousQueue<>();
-    private final Class responseClass;
 
-    public PlayerThread(String playerName, int defaultPort,Class responseClass) {
+    public PlayerThread(String playerName, int defaultPort) {
         this.playerName = playerName;
         this.defaultPort = defaultPort;
-        this.responseClass = responseClass;
     }
 
     public synchronized void sendMessage(GeneratedMessage message) {
         try {
-            outputQueue.put(new NetworkPlayerMessage(message, false));
+            outputQueue.put(new NetworkPlayerMessage(message, Optional.empty()));
         } catch (InterruptedException e) {
             log.error("Send interrupted", e);
         }
@@ -42,7 +42,7 @@ public class PlayerThread extends Thread {
     public synchronized GeneratedMessage sendMessageGetResponse(GeneratedMessage message) {
         GeneratedMessage response = null;
         try {
-            outputQueue.put(new NetworkPlayerMessage(message, true));
+            outputQueue.put(new NetworkPlayerMessage(message, Optional.of(ClientAction.class)));
             response = inputQueue.take();
         } catch (InterruptedException e) {
             log.error("send/recieve interrupted", e);
@@ -59,16 +59,27 @@ public class PlayerThread extends Thread {
             output = socket.getOutputStream();
             inputStream = socket.getInputStream();
             while (true) {
-                NetworkPlayerMessage message = outputQueue.take();
-                message.message().writeDelimitedTo(output);
-                if (message.expectResponse()) {
 
-                    Method readDelimited = responseClass.getMethod("parseDelimitedFrom", InputStream.class);
+                NetworkPlayerMessage outgoingMessage = outputQueue.take();
+
+                outgoingMessage.message().writeDelimitedTo(output);
+
+                if (outgoingMessage.expectedResponse().isPresent()) {
+
+                    Method readDelimited = outgoingMessage.expectedResponse().get().getMethod("parseDelimitedFrom", InputStream.class);
 
                     GeneratedMessage response = (GeneratedMessage) readDelimited.invoke(null, inputStream);
 
                     inputQueue.put(response);
+
+                    log.info("Sent {} object, looking for {} recieved {}",
+                            outgoingMessage.message().getClass().getName(),
+                            outgoingMessage.expectedResponse().get().getName(),
+                            response.getClass().getName()
+                            );
+
                 }
+
             }
         } catch (IOException e) {
             log.error("IO Exception from {}", playerName, e);
