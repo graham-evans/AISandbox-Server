@@ -1,6 +1,9 @@
 package dev.aisandbox.server;
 
-import dev.aisandbox.server.engine.*;
+import dev.aisandbox.server.engine.NetworkPlayer;
+import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -9,6 +12,7 @@ import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.HelpFormatter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -19,6 +23,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class SandboxServerLauncher implements CommandLineRunner {
 
     private final List<SimulationBuilder> simulationBuilders;
@@ -53,24 +58,21 @@ public class SandboxServerLauncher implements CommandLineRunner {
     }
 
     private void helpSimulation(String simulationName) {
-        System.out.println("Simulation name: " + simulationName);
-        System.out.println();
+        log.info("Simulation name: {}", simulationName);
         Optional<SimulationBuilder> optionalSimulationBuilder = findBuilder(simulationName);
         if (optionalSimulationBuilder.isPresent()) {
             SimulationBuilder simulationBuilder = optionalSimulationBuilder.get();
-            System.out.println("Minimum players: "+simulationBuilder.getMinPlayerCount());
-            System.out.println("Maximum players: "+simulationBuilder.getMaxPlayerCount());
-            System.out.println();
-            System.out.println("Options (use -o key:value to set)");
-
+            log.info("Minimum players: {}", simulationBuilder.getMinPlayerCount());
+            log.info("Maximum players: {}", simulationBuilder.getMaxPlayerCount());
+            log.info("Options (use -o key:value to set)");
         } else {
-            System.out.println("Error - No simulation of that name exists");
+            log.error("Error - No simulation of that name exists");
         }
     }
 
     private void runSimulation(RuntimeOptions options) {
         if (options.simulation() == null) {
-            System.out.println("Simulation name has not been set, use the '-s name' to choose the simulation or '--help' for more information.");
+            log.info("Simulation name has not been set, use the '-s name' to choose the simulation or '--help' for more information.");
         } else {
             // create simulation
             SimulationBuilder simulationBuilder = new HighLowCardsBuilder();
@@ -85,10 +87,10 @@ public class SandboxServerLauncher implements CommandLineRunner {
                 default -> new NullOutputRenderer();
             };
             out.setup();
-            System.out.println("Writing output to "+out.getName());
-            System.out.println("Starting simulation (ctrl-c to exit)...");
+            log.info("Writing output to {}", out.getName());
+            log.info("Starting simulation (ctrl-c to exit)...");
             // start simulation
-            while(!halted) {
+            while (!halted) {
                 sim.step(out);
             }
             // finish simulation
@@ -102,31 +104,23 @@ public class SandboxServerLauncher implements CommandLineRunner {
         if (oBuilder.isPresent()) {
             // show the options for the simulation
             SimulationBuilder sim = oBuilder.get();
-            System.out.println(sim.getName());
-            System.out.println("Minimum # clients "+sim.getMinPlayerCount());
-            System.out.println("Maximum # clients "+sim.getMaxPlayerCount());
-            System.out.println("Options:");
-            for (Method method:sim.getClass().getDeclaredMethods()) {
+            log.info(sim.getName());
+            log.info("Minimum # clients {}", sim.getMinPlayerCount());
+            log.info("Maximum # clients {}", sim.getMaxPlayerCount());
+            log.info("Options:");
+            for (Method method : sim.getClass().getDeclaredMethods()) {
                 if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
-                    System.out.print(" ");
-                    System.out.print(method.getName().substring(3));
-                    System.out.print(":");
-                    System.out.println(method.getParameters()[0].getType().getName());
+                    log.info(" {}:{}", method.getName().substring(3), method.getParameters()[0].getType().getName());
                 }
             }
         } else {
             // list the available simulations
-            System.out.println("Available simulations:");
+            log.info("Available simulations:");
             for (SimulationBuilder simulationBuilder : simulationBuilders) {
-                System.out.print(simulationBuilder.getName());
-                System.out.print(" (");
-                System.out.print(simulationBuilder.getMinPlayerCount());
                 if (simulationBuilder.getMinPlayerCount() == simulationBuilder.getMaxPlayerCount()) {
-                    System.out.println(simulationBuilder.getMinPlayerCount() == 1 ? " client)" : " clients)");
+                    log.info("{} ({} clients)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount());
                 } else {
-                    System.out.print(" to ");
-                    System.out.print(simulationBuilder.getMaxPlayerCount());
-                    System.out.println(" clients)");
+                    log.info("{} ({} to {} clients)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount(), simulationBuilder.getMaxPlayerCount());
                 }
             }
         }
