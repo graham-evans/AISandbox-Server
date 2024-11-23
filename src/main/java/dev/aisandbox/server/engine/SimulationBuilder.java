@@ -12,5 +12,5 @@ public interface SimulationBuilder {
 
     String[] getPlayerNames(int playerCount);
 
-    Simulation build(List<Player> players);
+    Simulation build(List<Player> players, Theme theme);
 }
