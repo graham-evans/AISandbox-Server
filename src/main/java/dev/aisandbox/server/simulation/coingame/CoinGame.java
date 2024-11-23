@@ -2,6 +2,7 @@ package dev.aisandbox.server.simulation.coingame;
 
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,8 @@ import java.util.List;
 public class CoinGame implements Simulation {
 
     private final List<Player> players;
+    private final CoinScenario scenario;
+    private final Theme theme;
 
     @Override
     public void step(OutputRenderer output) {
