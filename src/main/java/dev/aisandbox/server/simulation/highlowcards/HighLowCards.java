@@ -60,7 +60,7 @@ public class HighLowCards implements Simulation {
                 .height(GRAPH_HEIGHT)
                 .cache(true)
                 .build();
-        textWidget = new TextWidget(TEXT_WIDTH, TEXT_HEIGHT, 14, "Arel", theme);
+        textWidget = new TextWidget(TEXT_WIDTH, TEXT_HEIGHT, 14, "Ariel", theme);
         summaryChart = new TextWidget(TEXT_WIDTH, GRAPH_HEIGHT * 2 + MARGIN, 20, "Ariel", theme);
         reset();
     }
