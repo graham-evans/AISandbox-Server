@@ -1,9 +1,6 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
-import dev.aisandbox.server.engine.NetworkPlayer;
-import dev.aisandbox.server.engine.Player;
-import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,7 +29,7 @@ public class HighLowCardsBuilder implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Player> players) {
-        return new HighLowCards(players.getFirst(), 9);
+    public Simulation build(List<Player> players, Theme theme) {
+        return new HighLowCards(players.getFirst(), 9, theme);
     }
 }
