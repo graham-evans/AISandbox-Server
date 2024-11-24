@@ -1,8 +1,8 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -10,49 +10,47 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.StringJoiner;
 
-@Builder
-public class RollingScoreChart {
-    @Getter
-    @Builder.Default
-    private int dataWindow = 100;
-    @Builder.Default
-    private int width = 640;
-    @Builder.Default
-    private int height = 480;
-    @Builder.Default
-    private boolean cache = false;
-    @Builder.Default
-    private Theme theme = Theme.DEFAULT;
+public class RollingScoreChart implements ResetableWidget {
+    private final int width;
+    private final int height;
+    private final Theme theme;
+    private final ScoreStatistics statistics;
+    private BufferedImage image = null;
 
-    // calculated fields moved to private class to avoid this issue with @Builder - https://github.com/projectlombok/lombok/issues/2307
-    private final State state = new State();
-
-    public void addScore(double score) {
-        // update score list
-        state.scores.add(score);
-        while (state.scores.size() > dataWindow) {
-            state.scores.remove(0);
-            state.startIndex++;
+    private RollingScoreChart(int width, int height, Theme theme, ScoreStatistics statistics) {
+        this.width = width;
+        this.height = height;
+        this.theme = theme;
+        this.statistics = statistics;
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        if (statistics != null) {
+            statistics.getWidgets().add(this);
         }
-        // update image
-        state.image = null;
+    }
+
+    public static RollingScoreChartBuilder builder() {
+        return new RollingScoreChartBuilder();
+    }
+
+    @Override
+    public void reset() {
+        image = null;
     }
 
     public BufferedImage getImage() {
-        if (!cache || (state.image == null)) {
+        if (image == null) {
             JFreeChart chart = createBarChart();
-            state.image = chart.createBufferedImage(width, height);
+            image = chart.createBufferedImage(width, height);
         }
-        return state.image;
+        return image;
     }
 
     private JFreeChart createBarChart() {
         XYSeries series = new XYSeries("Results");
-        int index = state.startIndex;
-        for (Double score : state.scores) {
+        int index = statistics.getStartIndex();
+        for (Double score : statistics.getScores()) {
             series.add(index, score);
             index++;
         }
@@ -64,11 +62,27 @@ public class RollingScoreChart {
         return chart;
     }
 
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    public static class RollingScoreChartBuilder {
+        private int width = 200;
+        private int height = 200;
+        private Theme theme = Theme.DEFAULT;
+        private ScoreStatistics statistics = null;
 
-    private static class State {
-        protected BufferedImage image = null;
-        protected List<Double> scores = new ArrayList<>();
-        protected int startIndex = 1;
+        public RollingScoreChart build() {
+            return new RollingScoreChart(width, height, theme, statistics);
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", RollingScoreChartBuilder.class.getSimpleName() + "[", "]")
+                    .add("width=" + width)
+                    .add("height=" + height)
+                    .add("theme=" + theme)
+                    .add("statistics=" + statistics)
+                    .toString();
+        }
     }
 
 }

@@ -1,8 +1,8 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -11,45 +11,41 @@ import org.jfree.data.statistics.HistogramType;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.StringJoiner;
 
-@Builder
-public class RollingHistogramChart {
-    // calculated fields moved to private class to avoid this issue with @Builder - https://github.com/projectlombok/lombok/issues/2307
-    private final State state = new State();
-    @Getter
-    @Builder.Default
-    private int dataWindow = 100;
-    @Builder.Default
-    private int width = 640;
-    @Builder.Default
-    private int height = 480;
-    @Builder.Default
-    private boolean cache = false;
-    @Builder.Default
-    private Theme theme = Theme.DEFAULT;
+public class RollingHistogramChart implements ResetableWidget {
+    private final int width;
+    private final int height;
+    private final Theme theme;
+    private final ScoreStatistics statistics;
+    private BufferedImage image = null;
 
-    public void addScore(double score) {
-        // update score list
-        state.scores.add(score);
-        while (state.scores.size() > dataWindow) {
-            state.scores.remove(0);
+    private RollingHistogramChart(int width, int height, Theme theme, ScoreStatistics statistics) {
+        this.width = width;
+        this.height = height;
+        this.theme = theme;
+        this.statistics = statistics;
+        image = createBlank();
+        if (statistics != null) {
+            statistics.getWidgets().add(this);
         }
-        // update image
-        state.image = null;
+    }
+
+    public static RollingHistogramChartBuilder builder() {
+        return new RollingHistogramChartBuilder();
+    }
+
+    @Override
+    public void reset() {
+        image = null;
     }
 
     public BufferedImage getImage() {
-        if (!cache || (state.image == null)) {
-            if (state.scores.isEmpty()) {
-                state.image = createBlank();
-            }else {
-                JFreeChart chart = createHistogram();
-                state.image = chart.createBufferedImage(width, height);
-            }
+        if (image == null) {
+            JFreeChart chart = createHistogram();
+            image = chart.createBufferedImage(width, height);
         }
-        return state.image;
+        return image;
     }
 
     private BufferedImage createBlank() {
@@ -65,15 +61,33 @@ public class RollingHistogramChart {
         HistogramDataset dataset = new HistogramDataset();
         dataset.setType(HistogramType.RELATIVE_FREQUENCY);
 
-        dataset.addSeries("Score", state.scores.stream().mapToDouble(value -> value).toArray(), state.scores.size());
+        dataset.addSeries("Score", statistics.getScores().stream().mapToDouble(value -> value).toArray(), statistics.getScores().size());
         JFreeChart chart = ChartFactory.createHistogram("Score Frequency", "Score", "Frequency", dataset, PlotOrientation.VERTICAL, false, false, false);
 
         // customise the chart TODO
         return chart;
     }
 
-    private static class State {
-        protected BufferedImage image = null;
-        protected List<Double> scores = new ArrayList<>();
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    public static class RollingHistogramChartBuilder {
+        private int width = 200;
+        private int height = 200;
+        private Theme theme = Theme.DEFAULT;
+        private ScoreStatistics statistics = null;
+
+        public RollingHistogramChart build() {
+            return new RollingHistogramChart(width, height, theme, statistics);
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", RollingHistogramChartBuilder.class.getSimpleName() + "[", "]")
+                    .add("width=" + width)
+                    .add("height=" + height)
+                    .add("theme=" + theme)
+                    .add("statistics=" + statistics)
+                    .toString();
+        }
     }
 }
