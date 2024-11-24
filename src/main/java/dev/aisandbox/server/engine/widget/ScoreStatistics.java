@@ -77,5 +77,9 @@ public class ScoreStatistics {
         return RollingScoreChart.builder().statistics(this);
     }
 
+    public RollingHistogramChart.RollingHistogramChartBuilder createHistogramBuilder() {
+        return RollingHistogramChart.builder().statistics(this);
+    }
+
 
 }

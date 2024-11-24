@@ -30,7 +30,7 @@ public class RollingScoreChart implements ResetableWidget {
         }
     }
 
-    public static RollingScoreChartBuilder builder() {
+    protected static RollingScoreChartBuilder builder() {
         return new RollingScoreChartBuilder();
     }
 
