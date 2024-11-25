@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
+
 @Slf4j
 public class HighLowCards implements Simulation {
 
@@ -79,7 +82,7 @@ public class HighLowCards implements Simulation {
             logo = ImageIO.read(HighLowCards.class.getResourceAsStream("/images/AILogo.png"));
         } catch (Exception e) {
             log.error("Error loading logo", e);
-            logo = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+            logo = new BufferedImage(LOGO_WIDTH, LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         }
         reset();
     }
@@ -170,7 +173,7 @@ public class HighLowCards implements Simulation {
         graphics2D.drawImage(rollingHistogramChart.getImage(), MARGIN, OutputConstants.HD_HEIGHT - MARGIN - GRAPH_HEIGHT, null);
         graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
         graphics2D.drawImage(summaryWidget.getImage(), MARGIN * 2 + 720 + 200, OutputConstants.HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
-        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - 90 - MARGIN, OutputConstants.HD_HEIGHT - 107 - MARGIN, null);
+        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
     }
 
     private BufferedImage getCardImage(String path) {
