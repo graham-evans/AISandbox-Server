@@ -3,12 +3,12 @@
 
 alt Action Request
 
-    Client <-Server: PlayState signal=PLAY
-    Client --> Server: Response
+    Client <-Server: HighLowCardsState signal=PLAY
+    Client --> Server: HighLowCardAction
 
 else Reset Notification
 
-    Client <- Server: PlayState signal=RESET
+    Client <- Server: HighLowCardsState signal=RESET
 end
 
 @enduml

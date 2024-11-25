@@ -6,14 +6,14 @@ RESET => The game has finished, no response required.
 PLAY => The game continues, respond with ClientAction.
 }
 
-map PlayState{
+map HighLowCardsState{
  (int32) cardCount => The total number of cards on the board (face up + face down)
  (repeated) (String) deltCard => The face up cards, examples 'QH', '10C', 'AD'
  (int32) score => The current score
  (enum) signal *-> Signal
 }
 
-map ClientAction {
+map HighLowCardAction {
 HIGH => The next card is 'higher'
 LOW => The next card is 'lower'
 }
