@@ -13,6 +13,8 @@ public enum CoinScenario {
     DOUBLE_21_3(new int[]{21}, 3),
     NIM(new int[]{1,3,5,7},7);
 
+    @Getter
     private final int[] rows;
+    @Getter
     private final int max;
 }

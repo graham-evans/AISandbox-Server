@@ -11,12 +11,24 @@ import java.awt.*;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
 public class CoinGame implements Simulation {
 
     private final List<Player> players;
     private final CoinScenario scenario;
     private final Theme theme;
+    private int[] coins;
+
+    public CoinGame(final List<Player> players, final CoinScenario scenario, final Theme theme) {
+        this.players = players;
+        this.scenario = scenario;
+        this.theme = theme;
+        coins = new int[scenario.getRows().length];
+    }
+
+    private void reset() {
+        // reset the number of coins in each pile
+        System.arraycopy(scenario.getRows(), 0, coins, 0, scenario.getRows().length);
+    }
 
     @Override
     public void step(OutputRenderer output) {

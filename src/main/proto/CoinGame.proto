@@ -4,7 +4,7 @@ package coingame;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.coingame.proto";
 
-message PlayState {
+message CoinGameState {
   int32 rowCount = 1;
   repeated int32 coinCount = 2;
   int32 maxPick = 3;
@@ -17,7 +17,7 @@ enum Signal {
   LOSE = 2;
 }
 
-message PlayerAction {
+message CoinGameAction {
   int32 selectedRow = 1;
   int32 removeCount = 2;
 }
