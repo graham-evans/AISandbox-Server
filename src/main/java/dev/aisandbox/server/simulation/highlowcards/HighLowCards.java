@@ -11,6 +11,8 @@ import dev.aisandbox.server.engine.widget.ScoreStatistics;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.simulation.common.Card;
 import dev.aisandbox.server.simulation.common.Deck;
+import dev.aisandbox.server.simulation.highlowcards.proto.HighLowCardAction;
+import dev.aisandbox.server.simulation.highlowcards.proto.HighLowCardsState;
 import dev.aisandbox.server.simulation.highlowcards.proto.HighLowChoice;
 import dev.aisandbox.server.simulation.highlowcards.proto.Signal;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,7 @@ public class HighLowCards implements Simulation {
     private final TextWidget textWidget;
     private final TextWidget summaryWidget;
     private final Theme theme;
+    private BufferedImage logo;
 
     public HighLowCards(Player player, int cardCount, Theme theme) {
         this.player = player;
@@ -67,11 +70,17 @@ public class HighLowCards implements Simulation {
                 .build();
         summaryWidget = scoreStatistics.createSummaryWidgetBuilder()
                 .width(TEXT_WIDTH)
-                .height(GRAPH_HEIGHT * 2 + MARGIN)
+                .height(GRAPH_HEIGHT * 2 - 107)
                 .fontHeight(32)
                 .fontName("Ariel")
                 .theme(theme)
                 .build();
+        try {
+            logo = ImageIO.read(HighLowCards.class.getResourceAsStream("/images/AILogo.png"));
+        } catch (Exception e) {
+            log.error("Error loading logo", e);
+            logo = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+        }
         reset();
     }
 
@@ -91,8 +100,8 @@ public class HighLowCards implements Simulation {
         faceUpCards.add(faceDownCards.removeFirst());
     }
 
-    private HighLowState getPlayState(Signal signal, int score) {
-        return State.newBuilder()
+    private HighLowCardsState getPlayState(Signal signal, int score) {
+        return HighLowCardsState.newBuilder()
                 .setCardCount(cardCount)
                 .addAllDeltCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
                 .setScore(score)
@@ -109,7 +118,7 @@ public class HighLowCards implements Simulation {
         textWidget.addText("Showing " + faceUpCards.stream().map(Card::getShortDrescription).collect(Collectors.joining(",")));
         output.display();
         // send the current state and request an action
-        ClientAction action = player.recieve(getPlayState(Signal.PLAY, faceDownCards.size()), ClientAction.class);
+        HighLowCardAction action = player.recieve(getPlayState(Signal.PLAY, faceDownCards.size()), HighLowCardAction.class);
         log.debug("Client action: {}", action.getAction().name());
         // turn over the next card
         faceUpCards.add(faceDownCards.removeFirst());
@@ -123,8 +132,6 @@ public class HighLowCards implements Simulation {
             output.display();
             // reset if we're finished.
             if (faceDownCards.isEmpty()) {
-//                rollingScoreChart.addScore(faceUpCards.size());
-//                rollingHistogramChart.addScore(faceUpCards.size());
                 scoreStatistics.addScore(faceUpCards.size());
                 player.send(getPlayState(Signal.RESET, faceUpCards.size()));
                 reset();
@@ -132,8 +139,6 @@ public class HighLowCards implements Simulation {
         } else {
             // incorrect guess - game over
             textWidget.addText("[" + player.getPlayerName() + "] " + action.getAction().name() + " - wrong");
-//            rollingScoreChart.addScore(faceUpCards.size() - 1);
-//            rollingHistogramChart.addScore(faceUpCards.size() - 1);
             scoreStatistics.addScore(faceUpCards.size() - 1);
             player.send(getPlayState(Signal.RESET, faceUpCards.size() - 1));
             output.display();
@@ -165,6 +170,7 @@ public class HighLowCards implements Simulation {
         graphics2D.drawImage(rollingHistogramChart.getImage(), MARGIN, OutputConstants.HD_HEIGHT - MARGIN - GRAPH_HEIGHT, null);
         graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
         graphics2D.drawImage(summaryWidget.getImage(), MARGIN * 2 + 720 + 200, OutputConstants.HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
+        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - 90 - MARGIN, OutputConstants.HD_HEIGHT - 107 - MARGIN, null);
     }
 
     private BufferedImage getCardImage(String path) {
