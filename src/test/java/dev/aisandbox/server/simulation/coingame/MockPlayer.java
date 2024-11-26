@@ -27,7 +27,7 @@ public class MockPlayer implements Player {
             return null;
         } else {
             // TODO create valid moves
-            return (T) CoinGameAction.newBuilder().setSelectedRow(0).setRemoveCount(1).build();
+            return (T) CoinGameAction.newBuilder().setSelectedRow(1).setRemoveCount(1).build();
         }
     }
 
