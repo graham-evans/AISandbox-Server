@@ -106,7 +106,7 @@ public class HighLowCards implements Simulation {
     private HighLowCardsState getPlayState(Signal signal, int score) {
         return HighLowCardsState.newBuilder()
                 .setCardCount(cardCount)
-                .addAllDeltCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
+                .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
                 .setScore(score)
                 .setSignal(signal)
                 .build();
