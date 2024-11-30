@@ -17,10 +17,10 @@ public class RollingHistogramChart implements ResetableWidget {
     private final int width;
     private final int height;
     private final Theme theme;
-    private final ScoreStatistics statistics;
+    private final RollingValueStatistics statistics;
     private BufferedImage image = null;
 
-    private RollingHistogramChart(int width, int height, Theme theme, ScoreStatistics statistics) {
+    private RollingHistogramChart(int width, int height, Theme theme, RollingValueStatistics statistics) {
         this.width = width;
         this.height = height;
         this.theme = theme;
@@ -74,7 +74,7 @@ public class RollingHistogramChart implements ResetableWidget {
         private int width = 200;
         private int height = 200;
         private Theme theme = Theme.DEFAULT;
-        private ScoreStatistics statistics = null;
+        private RollingValueStatistics statistics = null;
 
         public RollingHistogramChart build() {
             return new RollingHistogramChart(width, height, theme, statistics);

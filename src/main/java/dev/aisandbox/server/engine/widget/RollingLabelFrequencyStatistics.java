@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @RequiredArgsConstructor
-public class WinnerStatistics {
+public class RollingLabelFrequencyStatistics implements StatisticReporter{
     private final int dataWindow;
     private final List<String> winnerList = new ArrayList<>();
     @Getter(AccessLevel.PROTECTED)
@@ -31,5 +31,13 @@ public class WinnerStatistics {
                 statisticsWidget.addText(entry.getKey()+": "+(100.0*entry.getValue()/winnerList.size())+"%");
             }
         }
+    }
+
+    public TextWidget.TextWidgetBuilder createSummaryWidgetBuilder() {
+        return TextWidget.builder().statistics(this);   }
+
+    @Override
+    public void setSummaryWidget(TextWidget reportingWidget) {
+        statisticsWidget=reportingWidget;
     }
 }
