@@ -65,15 +65,21 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-    compileOnly 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
+
     implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
     implementation 'commons-cli:commons-cli:1.9.0'
     implementation 'org.jfree:jfreechart:1.5.5'
     implementation 'org.apache.commons:commons-statistics-descriptive:1.1'
     implementation 'org.apache.commons:commons-math3:3.6.1'
+    // JCodec for writing MP4 files
+    implementation 'org.jcodec:jcodec:0.2.3'
+    implementation 'org.jcodec:jcodec-javase:0.2.3'
+    // lombok for removing boiler plate code
+    compileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    // test libs
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
