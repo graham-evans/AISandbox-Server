@@ -2,6 +2,8 @@ package dev.aisandbox.server.simulation.bandit;
 
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.simulation.bandit.model.Bandit;
 import dev.aisandbox.server.simulation.bandit.model.BanditNormalEnumeration;
@@ -13,16 +15,19 @@ import dev.aisandbox.server.simulation.bandit.proto.BanditState;
 import dev.aisandbox.server.simulation.bandit.proto.Signal;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCards;
 import lombok.extern.slf4j.Slf4j;
+import org.knowm.xchart.CategoryChart;
+import org.knowm.xchart.CategoryChartBuilder;
+import org.knowm.xchart.CategorySeries;
+import org.knowm.xchart.style.Styler;
+import org.knowm.xchart.style.theme.XChartTheme;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
 
 @Slf4j
 public class BanditRuntime implements Simulation {
@@ -35,6 +40,7 @@ public class BanditRuntime implements Simulation {
     private final BanditNormalEnumeration normal;
     private final BanditStdEnumeration std;
     private final BanditUpdateEnumeration updateRule;
+    private final Theme theme;
 
     private int sessionStep = 0;
 
@@ -44,9 +50,11 @@ public class BanditRuntime implements Simulation {
 //    private OptimalActionGraph optimalActionGraph;
     //   private BanditGraph banditGraph;
 
+    private final int MARGIN = 100;
+
     private List<Bandit> bandits = new ArrayList<>();
 
-    public BanditRuntime(Player player, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule) {
+    public BanditRuntime(Player player, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule,Theme theme) {
         // store parameters
         this.player = player;
         this.rand = rand;
@@ -55,12 +63,13 @@ public class BanditRuntime implements Simulation {
         this.normal = normal;
         this.std = std;
         this.updateRule = updateRule;
+        this.theme = theme;
         // load logo
         try {
             logo = ImageIO.read(HighLowCards.class.getResourceAsStream("/images/AILogo.png"));
         } catch (Exception e) {
             log.error("Error loading logo", e);
-            logo = new BufferedImage(LOGO_WIDTH, LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+            logo = new BufferedImage(OutputConstants.LOGO_WIDTH, OutputConstants.LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         }
         // initialise bandits
         initialise();
@@ -100,13 +109,38 @@ public class BanditRuntime implements Simulation {
 
     @Override
     public void visualise(Graphics2D graphics2D) {
+        graphics2D.setColor(theme.getBackground());
+        graphics2D.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
         // draw logo
-        graphics2D.drawImage(logo, 100, 50, null);
+        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
         // draw ave reward
      //   graphics2D.drawImage(averageRewardGraph.getImage(), 100, 200, null);
      //   graphics2D.drawImage(optimalActionGraph.getGraph(900, 400), 100, 650, null);
         // draw bandits
-     //   graphics2D.drawImage(banditGraph.getImage(), 1000, 200, null);
+        // Create Chart @ Margin,Margin
+        graphics2D.setTransform(AffineTransform.getTranslateInstance(MARGIN,MARGIN));
+        CategoryChart chart =
+                new CategoryChartBuilder()
+                        .width(600)
+                        .height(400)
+                        .title("Bandits")
+                        .xAxisTitle("Bandit")
+                        .yAxisTitle("Expected Result")
+                        .theme(theme.getChartTheme())
+                        .build();
+        List<String> xAxisLabels = new ArrayList<>();
+        List<Double> yAxisValues = new ArrayList<>();
+        List<Double> errorValues = new ArrayList<>();
+        for (int i = 0; i < bandits.size(); i++) {
+            xAxisLabels.add(Integer.toString(i));
+            yAxisValues.add(bandits.get(i).getMean());
+            errorValues.add(bandits.get(i).getStd());
+        }
+        chart.addSeries("Bandits", xAxisLabels, yAxisValues, errorValues);
+        chart.getStyler().setDefaultSeriesRenderStyle(CategorySeries.CategorySeriesRenderStyle.Scatter);
+        chart.getStyler().setLegendVisible(false);
+        chart.paint(graphics2D,600,400);
+
     }
 
     public void initialise() {
