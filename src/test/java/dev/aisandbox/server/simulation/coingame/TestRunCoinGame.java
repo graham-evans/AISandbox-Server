@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 public class TestRunCoinGame {
 
     @Test
-    public void testRunHighLowCards() {
+    public void testRunCoinGame() {
         assertDoesNotThrow(() -> {
             // create simulation
             SimulationBuilder simulationBuilder = new CoinGameBuilder();
