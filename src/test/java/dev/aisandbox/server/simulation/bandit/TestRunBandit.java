@@ -6,6 +6,7 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
 import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.coingame.MockPlayer;
 import org.junit.jupiter.api.Test;
@@ -22,11 +23,12 @@ public class TestRunBandit {
     public void testRunBanditGame() {
         assertDoesNotThrow(() -> {
             // create simulation
-            SimulationBuilder simulationBuilder = new BanditScenario();
+            BanditScenario banditBuilder = new BanditScenario();
+            banditBuilder.setBanditUpdate(BanditUpdateEnumeration.EQUALISE);
             // create players
-            List<Player> players = Arrays.stream(simulationBuilder.getPlayerNames(1)).map(s -> (Player) new MockBanditPlayer(s)).toList();
+            List<Player> players = Arrays.stream(banditBuilder.getPlayerNames(1)).map(s -> (Player) new MockBanditPlayer(s)).toList();
             // create simulation
-            Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
+            Simulation sim = banditBuilder.build(players, Theme.DEFAULT);
             // create output directory
             File outputDirectory = new File("build/test/bandit");
             outputDirectory.mkdirs();
