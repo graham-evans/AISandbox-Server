@@ -25,7 +25,7 @@ public class MockBanditPlayer implements Player {
             log.error("Asking for {} but I can only respond with BanditAction", responseType.getName());
             return null;
         } else {
-            return (T) BanditAction.newBuilder().setArm(1).build();
+            return (T) BanditAction.newBuilder().setArm(0).build();
         }
     }
 
