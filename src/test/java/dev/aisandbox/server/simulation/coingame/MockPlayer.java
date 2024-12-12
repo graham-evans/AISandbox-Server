@@ -3,7 +3,6 @@ package dev.aisandbox.server.simulation.coingame;
 import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
-import dev.aisandbox.server.simulation.highlowcards.proto.HighLowCardAction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,7 @@ public class MockPlayer implements Player {
             return null;
         } else {
             // TODO create valid moves
-            return (T) CoinGameAction.newBuilder().setSelectedRow(1).setRemoveCount(1).build();
+            return (T) CoinGameAction.newBuilder().setSelectedRow(0).setRemoveCount(1).build();
         }
     }
 
