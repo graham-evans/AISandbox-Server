@@ -14,7 +14,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,12 +101,13 @@ public class SandboxServerLauncher implements CommandLineRunner {
             // show the options for the simulation
             SimulationBuilder sim = oBuilder.get();
             log.info(sim.getName());
-            log.info("Minimum # clients {}", sim.getMinPlayerCount());
-            log.info("Maximum # clients {}", sim.getMaxPlayerCount());
-            log.info("Options:");
-            for (Method method : sim.getClass().getDeclaredMethods()) {
-                if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
-                    log.info(" {}:{}", method.getName().substring(3), method.getParameters()[0].getType().getName());
+            log.info(" - Minimum # clients {}", sim.getMinPlayerCount());
+            log.info(" - Maximum # clients {}", sim.getMaxPlayerCount());
+            List<SimulationParameter> parameterList = SimulationParameterUtils.getParameters(sim);
+            if (!parameterList.isEmpty()) {
+                log.info(" Options:");
+                for (SimulationParameter parameter : parameterList) {
+                    log.info(" - {}", parameter.toString());
                 }
             }
         } else {
