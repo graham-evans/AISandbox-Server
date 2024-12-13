@@ -21,13 +21,13 @@ At the start of each round, each bandit is assigned a different random variable 
 
 The following options are available when setting up the scenario:
 
-| Key                                                                                                     | Value                                            |
-|---------------------------------------------------------------------------------------------------------|--------------------------------------------------|
-| # Bandits	                                                                                              | The number of bandits available, numbered 0…n-1. |
-| # Pulls                                                                                                 | 	The number of arm-pulls in each round.          |
-| Bandit Mean                                                                                             | How the mean of each bandit is chosen |
-| Bandit Standard Deviation | How the standard deviation of each bandit is chosen |                           
-| Update Rule | How the mean of each bandit is updated after each step |                                      
+| Key                       | Value                                                  |
+|---------------------------|--------------------------------------------------------|
+| # Bandits                 | The number of bandits available, numbered 0…n-1.       |
+| # Pulls                   | 	The number of arm-pulls in each round.                |
+| Bandit Mean               | How the mean of each bandit is chosen                  |
+| Bandit Standard Deviation | How the standard deviation of each bandit is chosen    |                           
+| Update Rule               | How the mean of each bandit is updated after each step |                                      
 
 # Protocol
 
