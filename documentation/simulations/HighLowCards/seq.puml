@@ -1,14 +1,8 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-alt Action Request
-
-    Client <-Server: HighLowCardsState signal=PLAY
-    Client --> Server: HighLowCardAction
-
-else Reset Notification
-
-    Client <- Server: HighLowCardsState signal=RESET
-end
+Server -> Client : HighLowCardState
+Client -> Server : HighLowCardAction
+Server -> Client : HighLowCardsReward
 
 @enduml
