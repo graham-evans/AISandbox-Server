@@ -1,9 +1,10 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
-import dev.aisandbox.server.engine.chart.RollingScoreChart;
-import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.chart.RollingScoreChart;
+import dev.aisandbox.server.engine.output.OutputConstants;
+import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.simulation.common.Card;
 import dev.aisandbox.server.simulation.common.Deck;
 import dev.aisandbox.server.simulation.highlowcards.proto.ClientAction;
@@ -22,15 +23,15 @@ import java.util.*;
 @Slf4j
 public class HighLowCards implements Simulation {
 
+    private static final int GRAPH_WIDTH = (OutputConstants.HD_WIDTH - 300) / 2;
     private final Player player;
     private final int cardCount;
-
     private final Random rand = new Random();
-
     private final List<Card> faceUpCards = new ArrayList<>();
     private final List<Card> faceDownCards = new ArrayList<>();
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
-    private final RollingScoreChart rollingScoreChart = new RollingScoreChart(200,300,250,true);
+    private final RollingScoreChart rollingScoreChart = new RollingScoreChart(200, GRAPH_WIDTH, 400, true);
+    private final RollingScoreChart rollingScoreChart2 = new RollingScoreChart(200, GRAPH_WIDTH, 400, true);
 
 
     public HighLowCards(Player player, int cardCount) {
@@ -84,13 +85,15 @@ public class HighLowCards implements Simulation {
             // reset if we're finished.
             if (faceDownCards.isEmpty()) {
                 rollingScoreChart.addScore(faceUpCards.size());
+                rollingScoreChart2.addScore(faceUpCards.size());
                 player.send(getPlayState(Signal.RESET, faceUpCards.size()));
                 reset();
             }
         } else {
             // incorrect guess - game over
-            rollingScoreChart.addScore(faceUpCards.size()-1);
-            player.send(getPlayState(Signal.RESET, faceUpCards.size()-1));
+            rollingScoreChart.addScore(faceUpCards.size() - 1);
+            rollingScoreChart2.addScore(faceUpCards.size() - 1);
+            player.send(getPlayState(Signal.RESET, faceUpCards.size() - 1));
             output.display();
             // reset
             reset();
@@ -105,16 +108,19 @@ public class HighLowCards implements Simulation {
 
     @Override
     public void visualise(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
         for (int dx = 0; dx < faceUpCards.size(); dx++) {
             Card card = faceUpCards.get(dx);
             BufferedImage cardImage = getCardImage(card.getImageName());
             graphics2D.drawImage(cardImage, dx * 50 + 100, 100, null);
         }
-        for (int dx = 0;dx<faceDownCards.size(); dx++) {
+        for (int dx = 0; dx < faceDownCards.size(); dx++) {
             BufferedImage cardImage = getCardImage("/images/cards/back.png");
-            graphics2D.drawImage(cardImage, (dx+faceUpCards.size()+2) * 50 + 100, 100, null);
+            graphics2D.drawImage(cardImage, (dx + faceUpCards.size() + 2) * 50 + 100, 100, null);
         }
         graphics2D.drawImage(rollingScoreChart.getImage(), 100, 500, null);
+        graphics2D.drawImage(rollingScoreChart2.getImage(),200+GRAPH_WIDTH,500, null);
     }
 
     private BufferedImage getCardImage(String path) {
