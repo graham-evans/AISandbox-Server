@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
-import dev.aisandbox.server.engine.OutputRenderer;
+import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.simulation.common.Card;
@@ -11,10 +11,12 @@ import dev.aisandbox.server.simulation.highlowcards.proto.ServerState;
 import dev.aisandbox.server.simulation.highlowcards.proto.Signal;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Slf4j
 public class HighLowCards implements Simulation {
@@ -26,6 +28,7 @@ public class HighLowCards implements Simulation {
 
     private final List<Card> faceUpCards = new ArrayList<>();
     private final List<Card> faceDownCards = new ArrayList<>();
+    private final Map<String, BufferedImage> cardImages = new HashMap<>();
 
 
     public HighLowCards(Player player, int cardCount) {
@@ -93,6 +96,18 @@ public class HighLowCards implements Simulation {
 
     @Override
     public void visualise(Graphics2D graphics2D) {
-
+        for (int dx = 0; dx < faceUpCards.size(); dx++) {
+            Card card = faceUpCards.get(dx);
+            BufferedImage cardImage = cardImages.computeIfAbsent(card.getImageName(), s -> {
+                try {
+                    log.info("Loading image {}", card.getImageName());
+                    return ImageIO.read(HighLowCards.class.getResourceAsStream(card.getImageName()));
+                } catch (IOException e) {
+                    log.error("Error loading card image {}", card.getImageName(), e);
+                    return null;
+                }
+            });
+            graphics2D.drawImage(cardImage, dx * 50 + 100, 100, null);
+        }
     }
 }
