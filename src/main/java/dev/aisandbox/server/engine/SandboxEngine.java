@@ -8,6 +8,6 @@ import java.util.List;
 public class SandboxEngine {
 
     private final SimulationBuilder simulation;
-    private final List<Player> players;
+    private final List<NetworkPlayer> players;
 
 }

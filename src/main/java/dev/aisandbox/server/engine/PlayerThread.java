@@ -1,7 +1,6 @@
 package dev.aisandbox.server.engine;
 
 import com.google.protobuf.GeneratedMessage;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class PlayerThread extends Thread {
     OutputStream output = null;
     InputStream inputStream = null;
     SynchronousQueue<GeneratedMessage> inputQueue = new SynchronousQueue<>();
-    SynchronousQueue<PlayerMessage> outputQueue = new SynchronousQueue<>();
+    SynchronousQueue<NetworkPlayerMessage> outputQueue = new SynchronousQueue<>();
     private final Class responseClass;
 
     public PlayerThread(String playerName, int defaultPort,Class responseClass) {
@@ -34,7 +33,7 @@ public class PlayerThread extends Thread {
 
     public synchronized void sendMessage(GeneratedMessage message) {
         try {
-            outputQueue.put(new PlayerMessage(message, false));
+            outputQueue.put(new NetworkPlayerMessage(message, false));
         } catch (InterruptedException e) {
             log.error("Send interrupted", e);
         }
@@ -43,7 +42,7 @@ public class PlayerThread extends Thread {
     public synchronized GeneratedMessage sendMessageGetResponse(GeneratedMessage message) {
         GeneratedMessage response = null;
         try {
-            outputQueue.put(new PlayerMessage(message, true));
+            outputQueue.put(new NetworkPlayerMessage(message, true));
             response = inputQueue.take();
         } catch (InterruptedException e) {
             log.error("send/recieve interrupted", e);
@@ -60,7 +59,7 @@ public class PlayerThread extends Thread {
             output = socket.getOutputStream();
             inputStream = socket.getInputStream();
             while (true) {
-                PlayerMessage message = outputQueue.take();
+                NetworkPlayerMessage message = outputQueue.take();
                 message.message().writeDelimitedTo(output);
                 if (message.expectResponse()) {
 

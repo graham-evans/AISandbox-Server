@@ -1,5 +1,6 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
+import dev.aisandbox.server.engine.NetworkPlayer;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
