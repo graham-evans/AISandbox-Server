@@ -2,6 +2,7 @@ package dev.aisandbox.server.simulation.highlowcards;
 
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.chart.RollingHistogramChart;
 import dev.aisandbox.server.engine.chart.RollingScoreChart;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -31,7 +32,7 @@ public class HighLowCards implements Simulation {
     private final List<Card> faceDownCards = new ArrayList<>();
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
     private final RollingScoreChart rollingScoreChart = RollingScoreChart.builder().dataWindow(200).width(GRAPH_WIDTH).height(400).cache(true).build();
-    private final RollingScoreChart rollingScoreChart2 = RollingScoreChart.builder().dataWindow(200).width(GRAPH_WIDTH).height(400).cache(true).build();
+    private final RollingHistogramChart rollingHistogramChart = RollingHistogramChart.builder().dataWindow(200).width(GRAPH_WIDTH).height(400).cache(true).build();
 
     public HighLowCards(Player player, int cardCount) {
         this.player = player;
@@ -84,14 +85,14 @@ public class HighLowCards implements Simulation {
             // reset if we're finished.
             if (faceDownCards.isEmpty()) {
                 rollingScoreChart.addScore(faceUpCards.size());
-                rollingScoreChart2.addScore(faceUpCards.size());
+                rollingHistogramChart.addScore(faceUpCards.size());
                 player.send(getPlayState(Signal.RESET, faceUpCards.size()));
                 reset();
             }
         } else {
             // incorrect guess - game over
             rollingScoreChart.addScore(faceUpCards.size() - 1);
-            rollingScoreChart2.addScore(faceUpCards.size() - 1);
+            rollingHistogramChart.addScore(faceUpCards.size() - 1);
             player.send(getPlayState(Signal.RESET, faceUpCards.size() - 1));
             output.display();
             // reset
@@ -119,7 +120,7 @@ public class HighLowCards implements Simulation {
             graphics2D.drawImage(cardImage, (dx + faceUpCards.size() + 2) * 50 + 100, 100, null);
         }
         graphics2D.drawImage(rollingScoreChart.getImage(), 100, 500, null);
-        graphics2D.drawImage(rollingScoreChart2.getImage(),200+GRAPH_WIDTH,500, null);
+        graphics2D.drawImage(rollingHistogramChart.getImage(), 200 + GRAPH_WIDTH, 500, null);
     }
 
     private BufferedImage getCardImage(String path) {
