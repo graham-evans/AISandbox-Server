@@ -56,7 +56,7 @@ public class HighLowCards implements Simulation {
                 .height(GRAPH_HEIGHT)
                 .theme(theme)
                 .build();
-        rollingHistogramChart = RollingHistogramChart.builder()
+        rollingHistogramChart =scoreStatistics.createHistogramBuilder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
                 .build();

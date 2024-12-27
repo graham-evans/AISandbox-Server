@@ -31,7 +31,7 @@ public class RollingHistogramChart implements ResetableWidget {
         }
     }
 
-    public static RollingHistogramChartBuilder builder() {
+    protected static RollingHistogramChartBuilder builder() {
         return new RollingHistogramChartBuilder();
     }
 
