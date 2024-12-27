@@ -11,9 +11,9 @@ public class NetworkPlayer implements Player {
     @Getter
     String playerName;
 
-    public NetworkPlayer(String playerName, int defaultPort, Class responseClass) {
+    public NetworkPlayer(String playerName, int defaultPort) {
         this.playerName = playerName;
-        playerThread = new PlayerThread(playerName, defaultPort,responseClass);
+        playerThread = new PlayerThread(playerName, defaultPort);
         playerThread.start();
     }
 
@@ -23,8 +23,8 @@ public class NetworkPlayer implements Player {
     }
 
     @Override
-    public GeneratedMessage receive(GeneratedMessage state) {
-        return playerThread.sendMessageGetResponse(state);
+    public <T extends GeneratedMessage> T recieve(GeneratedMessage state, Class<T> responseType) {
+        return (T) playerThread.sendMessageGetResponse(state);
     }
 
     @Override

@@ -4,9 +4,11 @@ import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.simulation.highlowcards.proto.ClientAction;
 import dev.aisandbox.server.simulation.highlowcards.proto.HighLowChoice;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Random;
 
+@Slf4j
 public class MockPlayer implements Player {
 
     private Random random = new Random();
@@ -22,12 +24,16 @@ public class MockPlayer implements Player {
     }
 
     @Override
-    public GeneratedMessage receive(GeneratedMessage state) {
-        // send a message to the player, recieve either 'higher' or 'lower'
-        if (random.nextBoolean()) {
-            return ClientAction.newBuilder().setAction(HighLowChoice.HIGH).build();
+    public <T extends GeneratedMessage> T recieve(GeneratedMessage state, Class<T> responseType) {
+        if (responseType != ClientAction.class) {
+            log.error("Asking for {} but I can only respond with ClientAction", responseType.getName());
+            return null;
         } else {
-            return ClientAction.newBuilder().setAction(HighLowChoice.LOW).build();
+            if (random.nextBoolean()) {
+                return (T) ClientAction.newBuilder().setAction(HighLowChoice.HIGH).build();
+            } else {
+                return (T) ClientAction.newBuilder().setAction(HighLowChoice.LOW).build();
+            }
         }
     }
 
