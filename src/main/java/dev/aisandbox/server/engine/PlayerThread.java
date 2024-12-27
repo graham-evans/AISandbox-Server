@@ -53,9 +53,9 @@ public class PlayerThread extends Thread {
     @Override
     public void run() {
         serverSocket = getServerSocket();
-        System.out.println("Connect " + playerName + " to port: " + serverSocket.getLocalPort());
+        log.info("Connect {} to port: {}", playerName, serverSocket.getLocalPort());
         try (Socket socket = serverSocket.accept()) {
-            System.out.println(playerName + " connected");
+            log.info("{} connected", playerName);
             output = socket.getOutputStream();
             inputStream = socket.getInputStream();
             while (true) {
@@ -65,19 +65,19 @@ public class PlayerThread extends Thread {
                 outgoingMessage.message().writeDelimitedTo(output);
 
                 if (outgoingMessage.expectedResponse().isPresent()) {
-
                     Method readDelimited = outgoingMessage.expectedResponse().get().getMethod("parseDelimitedFrom", InputStream.class);
-
                     GeneratedMessage response = (GeneratedMessage) readDelimited.invoke(null, inputStream);
-
-                    inputQueue.put(response);
-
-                    log.info("Sent {} object, looking for {} recieved {}",
-                            outgoingMessage.message().getClass().getName(),
-                            outgoingMessage.expectedResponse().get().getName(),
-                            response.getClass().getName()
-                            );
-
+                    if (response.getClass() == outgoingMessage.expectedResponse().get()) {
+                        inputQueue.put(response);
+                    } else {
+                        log.error("Player response error, sent {} object, looking for {} received {}",
+                                outgoingMessage.message().getClass().getName(),
+                                outgoingMessage.expectedResponse().get().getName(),
+                                response.getClass().getName()
+                        );
+                        // TODO - respond to receiving the wrong response.
+                        System.exit(-1);
+                    }
                 }
 
             }
@@ -111,8 +111,7 @@ public class PlayerThread extends Thread {
             }
         }
         if (socket == null) {
-            log.error("Unable to create server socket after {} tries", MAX_PORT_TRIES);
-            System.out.println("Error, can't create server socket for " + playerName + " after " + MAX_PORT_TRIES + " tries");
+            log.error("Unable to create server socket for {} after {} tries", playerName, MAX_PORT_TRIES);
             System.exit(1);
         }
         return socket;
