@@ -25,7 +25,7 @@ public class BitmapOutputRenderer implements OutputRenderer {
     @Override
     public void display() {
         try {
-            BufferedImage image = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_RGB);
+            BufferedImage image = new BufferedImage(OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = image.createGraphics();
             simulation.visualise(g2d);
             ImageIO.write(image, "png", new File(imageCounter + ".png"));
