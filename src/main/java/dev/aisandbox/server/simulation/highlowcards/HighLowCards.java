@@ -93,7 +93,7 @@ public class HighLowCards implements Simulation {
         output.display();
         // send the current state and request an action
         ClientAction action = player.recieve(getPlayState(Signal.PLAY,faceDownCards.size()),ClientAction.class);
-        log.info("Client action: {}", action.getAction().name());
+        log.debug("Client action: {}", action.getAction().name());
         // turn over the next card
         faceUpCards.add(faceDownCards.removeFirst());
         // did the player guess correctly
@@ -150,7 +150,7 @@ public class HighLowCards implements Simulation {
     private BufferedImage getCardImage(String path) {
         return cardImages.computeIfAbsent(path, s -> {
             try {
-                log.info("Loading image {}", path);
+                log.debug("Loading image {}", path);
                 return ImageIO.read(HighLowCards.class.getResourceAsStream(path));
             } catch (IOException e) {
                 log.error("Error loading card image {}", path, e);
