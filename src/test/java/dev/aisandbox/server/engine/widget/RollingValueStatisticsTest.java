@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ScoreStatisticsTest {
+class RollingValueStatisticsTest {
 
     @Test
     public void testAverage() {
-        ScoreStatistics stats = new ScoreStatistics(5);
+        RollingValueStatistics stats = new RollingValueStatistics(5);
         stats.addScore(1.0);
         stats.addScore(2.0);
         stats.addScore(3.0);
@@ -19,7 +19,7 @@ class ScoreStatisticsTest {
 
     @Test
     public void testAverageWindow() {
-        ScoreStatistics stats = new ScoreStatistics(3);
+        RollingValueStatistics stats = new RollingValueStatistics(3);
         stats.addScore(1.0);
         stats.addScore(2.0);
         stats.addScore(3.0);
@@ -30,7 +30,7 @@ class ScoreStatisticsTest {
     }
 
     public void statisticsSummaryWidgetTest() {
-        ScoreStatistics stats = new ScoreStatistics(10);
+        RollingValueStatistics stats = new RollingValueStatistics(10);
         TextWidget text = TextWidget.builder().statistics(stats).build();
         // insert text
         text.addText("Hello World");

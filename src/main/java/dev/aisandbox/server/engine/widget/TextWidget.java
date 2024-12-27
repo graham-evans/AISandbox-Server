@@ -25,7 +25,7 @@ public class TextWidget {
     // internal state
     private BufferedImage image = null;
 
-    private TextWidget(int width, int height, int fontHeight, String fontName, Theme theme, ScoreStatistics statistics) {
+    private TextWidget(int width, int height, int fontHeight, String fontName, Theme theme, StatisticReporter statistics) {
         this.width = width;
         this.height = height;
         this.lineHeight = fontHeight * 1.1;
@@ -86,7 +86,7 @@ public class TextWidget {
         private int fontHeight = 14;
         private String fontName = "Ariel";
         private Theme theme = Theme.DEFAULT;
-        private ScoreStatistics statistics = null;
+        private StatisticReporter statistics = null;
 
         public TextWidget build() {
             return new TextWidget(width, height, fontHeight, fontName, theme, statistics);

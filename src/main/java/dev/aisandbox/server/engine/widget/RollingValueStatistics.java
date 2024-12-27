@@ -12,7 +12,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ScoreStatistics {
+public class RollingValueStatistics implements StatisticReporter{
 
     private final int dataWindow;
     @Getter(AccessLevel.PROTECTED)
@@ -21,7 +21,6 @@ public class ScoreStatistics {
     private final List<ResetableWidget> widgets = new ArrayList<>();
     @Getter(AccessLevel.PROTECTED)
     private int startIndex = 1;
-    @Setter(AccessLevel.PROTECTED)
     private TextWidget summaryWidget = null;
 
     @Getter
@@ -69,12 +68,17 @@ public class ScoreStatistics {
         }
     }
 
+    @Override
+    public void setSummaryWidget(TextWidget reportingWidget) {
+        summaryWidget = reportingWidget;
+    }
+
     public TextWidget.TextWidgetBuilder createSummaryWidgetBuilder() {
         return TextWidget.builder().statistics(this);
     }
 
-    public RollingScoreChart.RollingScoreChartBuilder createScoreChartBuilder() {
-        return RollingScoreChart.builder().statistics(this);
+    public RollingValueChart.RollingScoreChartBuilder createScoreChartBuilder() {
+        return RollingValueChart.builder().statistics(this);
     }
 
     public RollingHistogramChart.RollingHistogramChartBuilder createHistogramBuilder() {

@@ -13,14 +13,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.StringJoiner;
 
-public class RollingScoreChart implements ResetableWidget {
+public class RollingValueChart implements ResetableWidget {
     private final int width;
     private final int height;
     private final Theme theme;
-    private final ScoreStatistics statistics;
+    private final RollingValueStatistics statistics;
     private BufferedImage image = null;
 
-    private RollingScoreChart(int width, int height, Theme theme, ScoreStatistics statistics) {
+    private RollingValueChart(int width, int height, Theme theme, RollingValueStatistics statistics) {
         this.width = width;
         this.height = height;
         this.theme = theme;
@@ -77,10 +77,10 @@ public class RollingScoreChart implements ResetableWidget {
         private int width = 200;
         private int height = 200;
         private Theme theme = Theme.DEFAULT;
-        private ScoreStatistics statistics = null;
+        private RollingValueStatistics statistics = null;
 
-        public RollingScoreChart build() {
-            return new RollingScoreChart(width, height, theme, statistics);
+        public RollingValueChart build() {
+            return new RollingValueChart(width, height, theme, statistics);
         }
 
         @Override
