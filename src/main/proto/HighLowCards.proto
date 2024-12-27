@@ -6,7 +6,7 @@ option java_package = "dev.aisandbox.server.simulation.highlowcards.proto";
 
 message HighLowCardsState {
   int32 cardCount = 1; // the total number of cards on the board (face up + face down)
-  repeated string deltCard = 2;
+  repeated string dealtCard = 2;
   int32 score = 3;
   Signal signal = 4;
 }
