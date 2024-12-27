@@ -28,9 +28,18 @@ The following options are available when setting up the scenario:
 | Bandit Mean                                                                                             | How the mean of each bandit is chosen |
 | Bandit Standard Deviation | How the standard deviation of each bandit is chosen |                           
 | Update Rule | How the mean of each bandit is updated after each step |                                      
-| Random Salt | A repeatable salt for the random number generator – use ‘0’ to create a new value each time | 
-| Skip intermediate frames                                                                                | 	If checked the screen (and output) will only be updated at the end of each round, rather than after every pull. This dramatically reduces the amount of time spend updating the UI. |
 
 # Protocol
 
-The protocol
+The protocol is detailed in [Bandit.proto](../../../src/main/proto/Bandit.proto). And follows a standard State -> Action -> Reward pattern.
+
+![sequence](seq.png)
+
+## Bandit State
+
+![Bandit State](state.png)
+
+The state is sent to the client first, with the
+
+
+
