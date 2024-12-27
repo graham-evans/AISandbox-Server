@@ -29,6 +29,17 @@ java {
     }
 }
 
+javadoc {
+    destinationDir = file("build/docs/javadoc")
+}
+
+tasks.register('copyDocs', Copy) {
+    group = "documentation"
+    description = "Copies documentation into the build tree."
+    from 'documentation'
+    into 'build/docs'
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
