@@ -5,6 +5,7 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.simulation.bandit.model.Bandit;
 import dev.aisandbox.server.simulation.bandit.model.BanditNormalEnumeration;
 import dev.aisandbox.server.simulation.bandit.model.BanditStdEnumeration;
@@ -18,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.CategorySeries;
-import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.style.theme.XChartTheme;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -41,20 +40,17 @@ public class BanditRuntime implements Simulation {
     private final BanditStdEnumeration std;
     private final BanditUpdateEnumeration updateRule;
     private final Theme theme;
-
     private int sessionStep = 0;
-
     private int iteration;
-    private BufferedImage logo;
-//    private AverageRewardGraph averageRewardGraph;
+    //    private AverageRewardGraph averageRewardGraph;
 //    private OptimalActionGraph optimalActionGraph;
     //   private BanditGraph banditGraph;
-
-    private final int MARGIN = 100;
-
+    private static final int MARGIN=100;
+    private BufferedImage logo;
     private List<Bandit> bandits = new ArrayList<>();
+    private TextWidget logWidget = TextWidget.builder().width(400).height(300).build();
 
-    public BanditRuntime(Player player, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule,Theme theme) {
+    public BanditRuntime(Player player, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
         // store parameters
         this.player = player;
         this.rand = rand;
@@ -85,19 +81,42 @@ public class BanditRuntime implements Simulation {
         log.debug("Received request to pull arm {}", arm);
         // todo - test for invalid request
         // get the score
-        double score = bandits.get(action.getArm() - 1).pull(rand);
+        double score = bandits.get(arm).pull(rand);
+        // log the action
+        logWidget.addText(player.getPlayerName() + " selects bandit " + arm + " gets reward " + score);
         // should we reset
         boolean reset = sessionStep == pullCount;
-        // tell the user the result
-        player.send(BanditResult.newBuilder().setArm(arm).setScore(score).setSignal(reset ? Signal.RESET : Signal.CONTINUE).build());
+        if (reset) {
+            logWidget.addText("pull count reached, starting a new game.");
+        }
         // update the screen
         output.display();
+        // tell the user the result
+        player.send(BanditResult.newBuilder().setArm(arm).setScore(score).setSignal(reset ? Signal.RESET : Signal.CONTINUE).build());
+        // update the bandits
+        switch (updateRule) {
+            case RANDOM:
+                updateRandom();
+                break;
+            case EQUALISE:
+                updateEqualise(arm);
+                break;
+            case FADE:
+                updateFade(arm);
+                break;
+            default: // FIXED
+                // no action
+        }
         // reset?
         if (reset) {
             initialise();
         }
     }
 
+    /**
+     * Generate a state (protobuf) object based on the current state.
+     * @return the state of the current game
+     */
     private BanditState getState() {
         BanditState.Builder builder = BanditState.newBuilder();
         builder.setBanditCount(bandits.size());
@@ -106,19 +125,20 @@ public class BanditRuntime implements Simulation {
         return builder.build();
     }
 
-
     @Override
     public void visualise(Graphics2D graphics2D) {
         graphics2D.setColor(theme.getBackground());
         graphics2D.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
         // draw logo
         graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
+        // draw log window
+        graphics2D.drawImage(logWidget.getImage(),800,MARGIN,null);
         // draw ave reward
-     //   graphics2D.drawImage(averageRewardGraph.getImage(), 100, 200, null);
-     //   graphics2D.drawImage(optimalActionGraph.getGraph(900, 400), 100, 650, null);
+        //   graphics2D.drawImage(averageRewardGraph.getImage(), 100, 200, null);
+        //   graphics2D.drawImage(optimalActionGraph.getGraph(900, 400), 100, 650, null);
         // draw bandits
         // Create Chart @ Margin,Margin
-        graphics2D.setTransform(AffineTransform.getTranslateInstance(MARGIN,MARGIN));
+        graphics2D.setTransform(AffineTransform.getTranslateInstance(MARGIN, MARGIN));
         CategoryChart chart =
                 new CategoryChartBuilder()
                         .width(600)
@@ -139,10 +159,13 @@ public class BanditRuntime implements Simulation {
         chart.addSeries("Bandits", xAxisLabels, yAxisValues, errorValues);
         chart.getStyler().setDefaultSeriesRenderStyle(CategorySeries.CategorySeriesRenderStyle.Scatter);
         chart.getStyler().setLegendVisible(false);
-        chart.paint(graphics2D,600,400);
+        chart.paint(graphics2D, 600, 400);
 
     }
 
+    /**
+     * initialise or reset the bandit state, creating new bandits as needed.
+     */
     public void initialise() {
         // clear the bandits
         bandits.clear();
@@ -150,96 +173,41 @@ public class BanditRuntime implements Simulation {
             bandits.add(new Bandit(normal.getNormalValue(rand), std.getValue()));
         }
         sessionStep = 0;
-//        currentSession = new BanditSession(rand, banditCount, normal, std);
-//        averageRewardGraph = new AverageRewardGraph(900, 400, pullCount);
-//        optimalActionGraph = new OptimalActionGraph(pullCount);
-//        banditGraph = new BanditGraph(800, 400);
-//        banditGraph.setBandits(currentSession.getBandits());
     }
 
-  /*  @Override
-    public RuntimeResponse advance() throws AgentException, SimulationException {
-        ProfileStep profileStep = new ProfileStep();
-        BanditRequest request = new BanditRequest();
-        request.setHistory(history);
-        request.setSessionID(currentSession.getSessionID());
-        request.setBanditCount(banditCount);
-        request.setPullCount(pullCount);
-        request.setPull(iteration);
-        log.info("Requesting next pull");
-        BanditResponse response = agent.postRequest(request, BanditResponse.class);
-        profileStep.addStep("Network");
-        // resolve the response
-        // TODO - check if arm exists (array out of bounds?)
-        history = new BanditRequestHistory();
-        history.setSessionID(currentSession.getSessionID());
-        history.setChosenBandit(response.getArm());
-        double reward = currentSession.activateBandit(response.getArm());
-        history.setReward(reward);
-        // was this the best move?
-        boolean best = currentSession.isBestMean(response.getArm());
-        // store result
-        averageRewardGraph.addReward(iteration, reward);
-        optimalActionGraph.addReward(iteration, best ? 100.0 : 0.0);
-        // update bandits
-        switch (updateRule) {
-            case RANDOM:
-                currentSession.updateRandom();
-                break;
-            case EQUALISE:
-                currentSession.updateEqualise(response.getArm());
-                break;
-            case FADE:
-                currentSession.updateFade(response.getArm());
-                break;
-            default: // FIXED
-                // no action
+    /**
+     * Update the bandits by moving each mean N(0,0.1)
+     */
+    public void updateRandom() {
+        for (Bandit b : bandits) {
+            b.setMean(b.getMean() + rand.nextGaussian() * 0.001);
         }
-        profileStep.addStep("Simulation");
-        // draw screen
-        BufferedImage image = null;
-        if (!skipGraphics || (iteration == 0)) {
-            image = OutputTools.getWhiteScreen();
-            Graphics2D graphics2D = image.createGraphics();
-            // draw logo
-            graphics2D.drawImage(logo, 100, 50, null);
-            // draw ave reward
-            graphics2D.drawImage(averageRewardGraph.getImage(), 100, 200, null);
-            graphics2D.drawImage(optimalActionGraph.getGraph(900, 400), 100, 650, null);
-            // draw bandits
-            graphics2D.drawImage(banditGraph.getImage(), 1000, 200, null);
-        }
-        profileStep.addStep("Graphics");
-        // check for end of run
-        iteration++;
-        if (iteration == pullCount) {
-            // reset run
-            iteration = 0;
-            currentSession = new BanditSession(rand, banditCount, normal, std);
-            banditGraph.setBandits(currentSession.getBandits());
-        }
-        profileStep.addStep("Simulation");
-        return new RuntimeResponse(profileStep, image);
     }
 
-    @Override
-    public void writeStatistics(File statisticsOutputFile) {
-        try {
-            PrintWriter out = new PrintWriter(new FileWriter(statisticsOutputFile));
-            out.println("Step,Ave Reward,% Optimal Action");
-            for (int i = 0; i < pullCount; i++) {
-                out.print(i);
-                out.print(",");
-                out.print(averageRewardGraph.getAveRewards()[i]);
-                out.print(",");
-                out.println(optimalActionGraph.getAveRewards()[i]);
+    /**
+     * Update the bandits by moving the chosen bandit by -0.001
+     *
+     * @param chosen the index of the chosen bandit
+     */
+    public void updateFade(int chosen) {
+        Bandit target = bandits.get(chosen);
+        target.setMean(target.getMean() - 0.001);
+    }
+
+    /**
+     * Update the bandits by moving the mean of the chosen bandit by -0.001 and all others by +0.001/k
+     *
+     * @param chosen the index of the chosen bandit
+     */
+    public void updateEqualise(int chosen) {
+        double reward = 0.001 / bandits.size();
+        for (int i = 0; i < bandits.size(); i++) {
+            Bandit b = bandits.get(i);
+            if (i == chosen) {
+                b.setMean(b.getMean() - 0.001);
+            } else {
+                b.setMean(b.getMean() + reward);
             }
-            out.close();
-        } catch (IOException e) {
-            log.warn("Error writing statistics", e);
         }
     }
-
-
-   */
 }
