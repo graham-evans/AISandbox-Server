@@ -12,6 +12,11 @@ public class MockPlayer implements Player {
     private Random random = new Random();
 
     @Override
+    public String getPlayerName() {
+        return "Mock Player";
+    }
+
+    @Override
     public void send(GeneratedMessage o) {
         // send message to player - ignore it
     }
