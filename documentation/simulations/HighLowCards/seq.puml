@@ -1,0 +1,14 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+alt Action Request
+
+    Client <-Server: PlayState signal=PLAY
+    Client --> Server: Response
+
+else Reset Notification
+
+    Client <- Server: PlayState signal=RESET
+end
+
+@enduml
