@@ -15,7 +15,7 @@ public record Card(CardValue cardValue, CardSuite cardSuite) {
     }
 
     public String getImageName() {
-        return (cardValue.imageBase + cardSuite.imageDelta) + ".png";
+        return ("/images/cards/"+(cardValue.imageBase + cardSuite.imageDelta) + ".png");
     }
 
     @Getter
