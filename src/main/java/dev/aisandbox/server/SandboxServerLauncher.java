@@ -3,7 +3,8 @@ package dev.aisandbox.server;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationInfo;
-import dev.aisandbox.server.simulation.coingame.CoinGame;
+import dev.aisandbox.server.simulation.highlowcards.HighLowCards;
+import dev.aisandbox.server.simulation.highlowcards.proto.Person;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Hello World!");
         // create simulation
-        SimulationInfo simulationInfo = new CoinGame();
+        SimulationInfo simulationInfo = new HighLowCards();
         // create players
         List<Player> players = new ArrayList<>();
         for (int i=0;i<simulationInfo.getPlayerCount();i++) {
@@ -29,5 +30,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
         for (int i=0;i<10;i++) {
             sim.step();
         }
+        // create proto
+        Person person = Person.newBuilder().setName("name").build();
     }
 }
