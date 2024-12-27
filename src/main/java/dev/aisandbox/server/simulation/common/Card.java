@@ -14,37 +14,41 @@ public record Card(CardValue cardValue, CardSuite cardSuite) {
         return cardValue.getShortValue() + cardSuite.getValue();
     }
 
+    public String getImageName() {
+        return (cardValue.imageBase + cardSuite.imageDelta) + ".png";
+    }
+
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public enum CardValue {
-        ACE("A", "Ace",1,14),
-        TWO("2", "2",2,2),
-        THREE("3", "3",3,3),
-        FOUR("4", "4",4,4),
-        FIVE("5", "5",5,5),
-        SIX("6", "6",6,6),
-        SEVEN("7", "7",7,7),
-        EIGHT("8", "8",8,8),
-        NINE("9", "9",9,9),
-        TEN("10", "10",10,10),
-        JACK("J", "Jack",11,11),
-        QUEEN("Q", "Queen",12,12),
-        KING("K", "King",13,13);
+        ACE("A", "Ace",1,14,1),
+        TWO("2", "2",2,2,49),
+        THREE("3", "3",3,3,45),
+        FOUR("4", "4",4,4,41),
+        FIVE("5", "5",5,5,37),
+        SIX("6", "6",6,6,33),
+        SEVEN("7", "7",7,7,29),
+        EIGHT("8", "8",8,8,25),
+        NINE("9", "9",9,9,21),
+        TEN("10", "10",10,10,17),
+        JACK("J", "Jack",11,11,13),
+        QUEEN("Q", "Queen",12,12,9),
+        KING("K", "King",13,13,5);
 
         private final String shortValue;
         private final String longValue;
         private final int valueAceLow;
         private final int valueAceHigh;
+        private final int imageBase;
     }
 
     @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public enum CardSuite {
-        HEARTS('H'), DIAMONDS('D'), CLUBS('C'), SPADES('S');
+        HEARTS('H',+2), DIAMONDS('D',+3), CLUBS('C',0), SPADES('S',+1);
 
         private final char value;
+        private final int imageDelta;
 
-        private CardSuite(char value) {
-            this.value = value;
-        }
     }
 }
