@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class SandboxServerLauncher implements CommandLineRunner {
 
-    private List<SimulationBuilder> simulationBuilders;
+    private final List<SimulationBuilder> simulationBuilders;
 
     @Override
     public void run(String... args) throws Exception {
