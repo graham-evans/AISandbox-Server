@@ -7,7 +7,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SandboxEngine {
 
-    private final SimulationInfo simulation;
+    private final SimulationBuilder simulation;
     private final List<Player> players;
 
 }
