@@ -5,14 +5,20 @@ option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.highlowcards.proto";
 
 message HighLowCardsState {
-  int32 cardCount = 1; // the total number of cards on the board (face up + face down)
-  repeated string dealtCard = 2;
-  int32 score = 3;
-  Signal signal = 4;
+  string sessionID = 1; // the ID for this simulation run
+  string episodeID = 2; // the ID for the episode
+  int32 cardCount = 3; // the total number of cards on the board (face up + face down)
+  repeated string dealtCard = 4; // the face up cards (the latest card is the last record)
+  int32 score = 5; // the current score
 }
 
-message HighLowCardAction {
-  HighLowChoice action = 1;
+message HighLowCardsAction {
+  HighLowChoice action = 1; // the agents prediction (higher or lower)
+}
+
+message HighLowCardsReward {
+  int32 score = 3; // the score after the prediction
+  Signal signal = 1; // will the episode continue or reset
 }
 
 enum HighLowChoice {
@@ -21,6 +27,6 @@ enum HighLowChoice {
 }
 
 enum Signal {
-  RESET = 0;
-  PLAY = 1;
+  CONTINUE = 0;
+  RESET = 1;
 }

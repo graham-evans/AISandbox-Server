@@ -1,7 +1,7 @@
 package dev.aisandbox.server.engine;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.simulation.highlowcards.proto.HighLowCardAction;
+import dev.aisandbox.server.simulation.highlowcards.proto.HighLowCardsAction;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class PlayerThread extends Thread {
     public synchronized GeneratedMessage sendMessageGetResponse(GeneratedMessage message) {
         GeneratedMessage response = null;
         try {
-            outputQueue.put(new NetworkPlayerMessage(message, Optional.of(HighLowCardAction.class)));
+            outputQueue.put(new NetworkPlayerMessage(message, Optional.of(HighLowCardsAction.class)));
             response = inputQueue.take();
         } catch (InterruptedException e) {
             log.error("send/recieve interrupted", e);

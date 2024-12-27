@@ -48,3 +48,6 @@ Clicking on ‘next’ will take you to the run screen
 Pressing start will initialise the simulation, the output of which is shown in the main viewscreen.
 
 The graphs at the bottom will summarise how your agent is running.
+
+# Step 3 Write or adapt an intelligent agent (client)
+
