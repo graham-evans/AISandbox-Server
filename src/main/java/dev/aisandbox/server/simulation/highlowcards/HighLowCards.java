@@ -5,7 +5,10 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.widget.*;
+import dev.aisandbox.server.engine.widget.RollingHistogramChart;
+import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
+import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
+import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.simulation.common.Card;
 import dev.aisandbox.server.simulation.common.Deck;
 import dev.aisandbox.server.simulation.highlowcards.proto.*;
@@ -19,10 +22,7 @@ import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
-import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
-import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
 @Slf4j
 public class HighLowCards implements Simulation {
@@ -35,7 +35,6 @@ public class HighLowCards implements Simulation {
     private static final int GRAPH_HEIGHT = (HD_HEIGHT - TEXT_HEIGHT - MARGIN * 4) / 2;
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
     private final Theme theme;
-    private BufferedImage logo;
     // simulation elements
     private final Player player;
     private final int cardCount;
@@ -43,28 +42,29 @@ public class HighLowCards implements Simulation {
     private final List<Card> faceUpCards = new ArrayList<>();
     private final List<Card> faceDownCards = new ArrayList<>();
     private final String sessionID = UUID.randomUUID().toString();
-    private String episodeID;
-    private int score = 0;
     // statistics and reporting elements
-    private final RollingValueStatistics rollingValueStatistics;
-    private final RollingValueChart rollingValueChart;
+    private final RollingValueChartWidget rollingValueChart;
     private final RollingHistogramChart rollingHistogramChart;
     private final TextWidget textWidget;
     private final RollingStatisticsWidget summaryWidget;
+    private BufferedImage logo;
+    private String episodeID;
+    private int score = 0;
 
     public HighLowCards(Player player, int cardCount, Theme theme) {
         this.player = player;
         this.cardCount = cardCount;
         this.theme = theme;
-        rollingValueStatistics = new RollingValueStatistics(200);
-        rollingValueChart = rollingValueStatistics.createScoreChartBuilder()
+        rollingValueChart = RollingValueChartWidget.builder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
+                .window(200)
                 .theme(theme)
                 .build();
-        rollingHistogramChart = rollingValueStatistics.createHistogramBuilder()
+        rollingHistogramChart = RollingHistogramChart.builder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
+                .window(200)
                 .build();
         textWidget = TextWidget.builder()
                 .width(TEXT_WIDTH)
@@ -146,7 +146,7 @@ public class HighLowCards implements Simulation {
         // is the episode finished?
         if (!correctGuess || faceDownCards.isEmpty()) {
             // episode ends
-            rollingValueStatistics.addScore(score);
+            rollingValueChart.addValue(score);
             summaryWidget.addScore(score);
             player.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
             reset();
