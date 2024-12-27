@@ -35,8 +35,4 @@ public class BitmapOutputRenderer implements OutputRenderer {
         imageCounter++;
     }
 
-    @Override
-    public void close() {
-        // do nothing
-    }
 }
