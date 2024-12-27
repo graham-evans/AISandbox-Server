@@ -5,7 +5,6 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.widget.RollingLabelFrequencyStatistics;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
@@ -30,10 +29,9 @@ public class CoinGame implements Simulation {
     private final CoinScenario scenario;
     private final Theme theme;
     private final TextWidget textWidget;
+    private final TextWidget textSnapshot = TextWidget.builder().width(200).height(200).build();
     private int[] coins;
     private int currentPlayer = 0;
-    private final RollingLabelFrequencyStatistics statistics = new RollingLabelFrequencyStatistics(100);
-    private final TextWidget textSnapshot = statistics.createSummaryWidgetBuilder().width(200).height(200).build();
     private BufferedImage[] rowImages;
     private BufferedImage[] coinImages;
     private BufferedImage logo;
@@ -112,7 +110,7 @@ public class CoinGame implements Simulation {
         Player losePlayer = players.get((winner + 1) % 2);
         winPlayer.send(generateCurrentState(Signal.WIN));
         losePlayer.send(generateCurrentState(Signal.LOSE));
-        statistics.addWinner(winPlayer.getPlayerName());
+        textSnapshot.addText("Player [" + winner + "] wins");
     }
 
     private int[] makeMove(int row, int amount) throws IllegalCoinAction {

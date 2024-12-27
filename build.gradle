@@ -67,8 +67,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     // protobuf
     implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
-    // jfreechart
-    implementation 'org.jfree:jfreechart:1.5.5'
     // xchart
     implementation 'org.knowm.xchart:xchart:3.8.8'
     // commons utilities

@@ -25,14 +25,11 @@ public class TextWidget {
     // internal state
     private BufferedImage image = null;
 
-    private TextWidget(int width, int height, int fontHeight, String fontName, Theme theme, StatisticReporter statistics) {
+    private TextWidget(int width, int height, int fontHeight, String fontName, Theme theme) {
         this.width = width;
         this.height = height;
         this.lineHeight = fontHeight * 1.1;
         this.theme = theme;
-        if (statistics != null) {
-            statistics.setSummaryWidget(this);
-        }
         // create font
         font = new Font(fontName, Font.PLAIN, fontHeight);
         maxLines = (int)(height / lineHeight);
@@ -86,10 +83,9 @@ public class TextWidget {
         private int fontHeight = 14;
         private String fontName = "Ariel";
         private Theme theme = Theme.DEFAULT;
-        private StatisticReporter statistics = null;
 
         public TextWidget build() {
-            return new TextWidget(width, height, fontHeight, fontName, theme, statistics);
+            return new TextWidget(width, height, fontHeight, fontName, theme);
         }
 
         @Override
@@ -100,7 +96,6 @@ public class TextWidget {
                     .add("fontHeight=" + fontHeight)
                     .add("fontName='" + fontName + "'")
                     .add("theme=" + theme)
-                    .add("statistics=" + statistics)
                     .toString();
         }
     }
