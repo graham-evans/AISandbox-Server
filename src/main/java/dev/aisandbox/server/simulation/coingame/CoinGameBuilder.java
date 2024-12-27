@@ -10,12 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Setter
-@Getter
 @Component
 public class CoinGameBuilder implements SimulationBuilder {
-
-    private int startingCoins = 14;
 
     @Override
     public String getName() {
