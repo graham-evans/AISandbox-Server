@@ -1,8 +1,7 @@
-package dev.aisandbox.server.engine.chart;
+package dev.aisandbox.server.engine.widget;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.math3.stat.Frequency;
 import org.apache.commons.statistics.descriptive.DoubleStatistics;
 import org.apache.commons.statistics.descriptive.Statistic;
 
