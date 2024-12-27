@@ -1,4 +1,4 @@
-package dev.aisandbox.server.engine.chart;
+package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
 import lombok.Builder;
