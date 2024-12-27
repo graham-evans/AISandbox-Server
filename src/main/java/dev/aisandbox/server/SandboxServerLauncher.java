@@ -1,6 +1,10 @@
 package dev.aisandbox.server;
 
 import dev.aisandbox.server.engine.*;
+import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
+import dev.aisandbox.server.engine.output.NullOutputRenderer;
+import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
 import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
@@ -11,10 +15,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -26,6 +28,10 @@ public class SandboxServerLauncher implements CommandLineRunner {
     public void run(String... args) throws Exception {
         // parse the command line
         RuntimeOptions runtimeOptions = RuntimeUtils.parseCommandLine(args);
+        // do we need to force 'head' mode?
+        if (runtimeOptions.output().equals(RuntimeOptions.OutputOptions.SCREEN)) {
+            System.setProperty("java.awt.headless", "false");
+        }
         // decide which of the main three actions to perform
         switch (runtimeOptions.command()) {
             case HELP -> help(runtimeOptions);
@@ -36,10 +42,10 @@ public class SandboxServerLauncher implements CommandLineRunner {
     }
 
     private void help(RuntimeOptions runtimeOptions) {
-        if (runtimeOptions.simulation() != null) {
+        if (runtimeOptions.simulation() != null) { // are we looking for help on a particular simulation?
             helpSimulation(runtimeOptions.simulation());
         } else {
-            // automatically generate the help statement
+            // show generic help
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar sandbox-server.jar", RuntimeUtils.getOptions());
         }
@@ -47,6 +53,18 @@ public class SandboxServerLauncher implements CommandLineRunner {
 
     private void helpSimulation(String simulationName) {
         System.out.println("Simulation name: " + simulationName);
+        System.out.println();
+        Optional<SimulationBuilder> optionalSimulationBuilder = findBuilder(simulationName);
+        if (optionalSimulationBuilder.isPresent()) {
+            SimulationBuilder simulationBuilder = optionalSimulationBuilder.get();
+            System.out.println("Minimum players: "+simulationBuilder.getMinPlayerCount());
+            System.out.println("Maximum players: "+simulationBuilder.getMaxPlayerCount());
+            System.out.println();
+            System.out.println("Options (use -o key:value to set)");
+
+        } else {
+            System.out.println("Error - No simulation of that name exists");
+        }
     }
 
     private void runSimulation(RuntimeOptions options) {
@@ -60,7 +78,12 @@ public class SandboxServerLauncher implements CommandLineRunner {
             // create simulation
             Simulation sim = simulationBuilder.build(players);
             // create output
-            OutputRenderer out = new NullOutputRenderer();
+            OutputRenderer out = switch (options.output()) {
+                case PNG -> new BitmapOutputRenderer(sim);
+                case SCREEN -> new ScreenOutputRenderer(sim);
+                default -> new NullOutputRenderer();
+            };
+            System.out.println("Writing output to "+out.getName());
             System.out.println("Starting simulation (ctrl-c to exit)...");
             // start simulation
             for (int i = 0; i < 10; i++) {
