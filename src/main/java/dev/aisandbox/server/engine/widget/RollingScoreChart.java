@@ -9,6 +9,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.StringJoiner;
 
@@ -24,7 +25,7 @@ public class RollingScoreChart implements ResetableWidget {
         this.height = height;
         this.theme = theme;
         this.statistics = statistics;
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        image = createBlank();
         if (statistics != null) {
             statistics.getWidgets().add(this);
         }
@@ -60,6 +61,14 @@ public class RollingScoreChart implements ResetableWidget {
         // customise the chart TODO
         chart.setBackgroundPaint(theme.getBackground());
         return chart;
+    }
+
+    private BufferedImage createBlank() {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        g.setColor(theme.getBackground());
+        g.fillRect(0, 0, width, height);
+        return image;
     }
 
     @Setter
