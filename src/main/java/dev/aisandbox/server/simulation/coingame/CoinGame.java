@@ -19,16 +19,16 @@ import java.util.List;
 @Slf4j
 public class CoinGame implements Simulation {
 
+    private static final int MARGIN = 100;
+    private static final int TEXT_HEIGHT = 280;
+    private static final int TEXT_WIDTH = OutputConstants.HD_WIDTH - 3 * MARGIN - 920;
     private final List<Player> players;
     private final CoinScenario scenario;
     private final Theme theme;
+    private final TextWidget textWidget;
     private int[] coins;
     private int currentPlayer = 0;
     private WinnerStatistics statistics = new WinnerStatistics(100);
-    private static final int MARGIN=100;
-    private final TextWidget textWidget;
-    private static final int TEXT_HEIGHT = 280;
-    private static final int TEXT_WIDTH = OutputConstants.HD_WIDTH - 3 * MARGIN - 920;
 
     public CoinGame(final List<Player> players, final CoinScenario scenario, final Theme theme) {
         this.players = players;
@@ -59,10 +59,10 @@ public class CoinGame implements Simulation {
         // try and make the move
         try {
             coins = makeMove(action.getSelectedRow(), action.getRemoveCount());
-            textWidget.addText(players.get(currentPlayer).getPlayerName()+" takes "+action.getRemoveCount()+" from row "+action.getSelectedRow());
+            textWidget.addText(players.get(currentPlayer).getPlayerName() + " takes " + action.getRemoveCount() + " from row " + action.getSelectedRow());
             if (isGameFinished()) {
                 // current player lost
-                textWidget.addText(players.get(currentPlayer).getPlayerName()+" lost");
+                textWidget.addText(players.get(currentPlayer).getPlayerName() + " lost");
                 informResult((currentPlayer + 1) % 2);
                 output.display();
                 reset();
@@ -71,7 +71,7 @@ public class CoinGame implements Simulation {
             }
         } catch (IllegalCoinAction e) {
             log.error(e.getMessage());
-            textWidget.addText(players.get(currentPlayer).getPlayerName()+" makes an illegal move.");
+            textWidget.addText(players.get(currentPlayer).getPlayerName() + " makes an illegal move.");
             // player has tried an illegal move - end the game
             informResult((currentPlayer + 1) % 2);
             output.display();
@@ -97,20 +97,20 @@ public class CoinGame implements Simulation {
             throw new IllegalCoinAction("Must remove between 1 and " + scenario.getMax() + " coins.");
         }
         // is the row out of the allowed indexing range
-        if (row < 0 || row >= coins.length) {
+        if (row < 1 || row > coins.length) {
             if (coins.length == 1) {
-                throw new IllegalCoinAction("Must select row 0.");
+                throw new IllegalCoinAction("Must select row 1.");
             } else {
-                throw new IllegalCoinAction("Must select row from 0 to " + (coins.length - 1) + ".");
+                throw new IllegalCoinAction("Must select row from 1 to " + coins.length + ".");
             }
         }
         // does the selected row have enough coins
-        if (coins[row] < amount) {
+        if (coins[row-1] < amount) {
             throw new IllegalCoinAction("Not enough coins in the selected row.");
         }
         // make the move
         int[] newCoins = Arrays.copyOf(coins, coins.length);
-        newCoins[row] -= amount;
+        newCoins[row-1] -= amount;
         return newCoins;
     }
 
@@ -136,11 +136,11 @@ public class CoinGame implements Simulation {
     @Override
     public void visualise(Graphics2D graphics2D) {
         graphics2D.setColor(theme.getBackground());
-        graphics2D.fillRect(0,0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
+        graphics2D.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
         graphics2D.setColor(theme.getText());
-        for (int i=0;i<coins.length;i++) {
-            graphics2D.drawString("Row "+(i+1),MARGIN,MARGIN+i*30);
-            graphics2D.drawString(Integer.toString(coins[i]),MARGIN+50,MARGIN+i*30);
+        for (int i = 0; i < coins.length; i++) {
+            graphics2D.drawString("Row " + (i + 1), MARGIN, MARGIN + i * 30);
+            graphics2D.drawString(Integer.toString(coins[i]), MARGIN + 50, MARGIN + i * 30);
         }
         graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
     }

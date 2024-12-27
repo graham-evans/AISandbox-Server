@@ -30,11 +30,11 @@ public class TestRunCoinGame {
             outputDirectory.mkdirs();
             // create output
             OutputRenderer out = new BitmapOutputRenderer(sim);
-//            out.setSkipFrames(100);
+            out.setSkipFrames(100);
             out.setOutputDirectory(outputDirectory);
             out.setup();
             // start simulation
-            for (int step = 0; step < 25; step++) {
+            for (int step = 0; step < 1000; step++) {
                 sim.step(out);
             }
             // finish simulation
