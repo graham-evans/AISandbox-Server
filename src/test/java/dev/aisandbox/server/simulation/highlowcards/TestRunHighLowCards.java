@@ -3,6 +3,7 @@ package dev.aisandbox.server.simulation.highlowcards;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class TestRunHighLowCards {
             // create players
             List<Player> players = List.of(new MockPlayer());
             // create simulation
-            Simulation sim = simulationBuilder.build(players);
+            Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
             // create output directory
             File outputDirectory = new File("build/test/highLowCards");
             outputDirectory.mkdirs();
