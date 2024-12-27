@@ -5,8 +5,14 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class RollingScoreChart {
@@ -16,9 +22,16 @@ public class RollingScoreChart {
     private final boolean cache;
 
     private BufferedImage image = null;
+    private List<Double> scores = new ArrayList<>();
+    private int startIndex = 1;
 
     public void addScore(double score) {
         // update score list
+        scores.add(score);
+        while (scores.size() > window) {
+            scores.remove(0);
+            startIndex++;
+        }
         // update image
         image = null;
     }
@@ -32,55 +45,19 @@ public class RollingScoreChart {
     }
 
     private JFreeChart createBarChart() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(10.0, "S1", "C1");
-        dataset.addValue(4.0, "S1", "C2");
-        dataset.addValue(15.0, "S1", "C3");
-        dataset.addValue(14.0, "S1", "C4");
-        dataset.addValue(-5.0, "S2", "C1");
-        dataset.addValue(-7.0, "S2", "C2");
-        dataset.addValue(14.0, "S2", "C3");
-        dataset.addValue(-3.0, "S2", "C4");
-        dataset.addValue(6.0, "S3", "C1");
-        dataset.addValue(17.0, "S3", "C2");
-        dataset.addValue(-12.0, "S3", "C3");
-        dataset.addValue(7.0, "S3", "C4");
-        dataset.addValue(7.0, "S4", "C1");
-        dataset.addValue(15.0, "S4", "C2");
-        dataset.addValue(11.0, "S4", "C3");
-        dataset.addValue(0.0, "S4", "C4");
-        dataset.addValue(-8.0, "S5", "C1");
-        dataset.addValue(-6.0, "S5", "C2");
-        dataset.addValue(10.0, "S5", "C3");
-        dataset.addValue(-9.0, "S5", "C4");
-        dataset.addValue(9.0, "S6", "C1");
-        dataset.addValue(8.0, "S6", "C2");
-        dataset.addValue(null, "S6", "C3");
-        dataset.addValue(6.0, "S6", "C4");
-        dataset.addValue(-10.0, "S7", "C1");
-        dataset.addValue(9.0, "S7", "C2");
-        dataset.addValue(7.0, "S7", "C3");
-        dataset.addValue(7.0, "S7", "C4");
-        dataset.addValue(11.0, "S8", "C1");
-        dataset.addValue(13.0, "S8", "C2");
-        dataset.addValue(9.0, "S8", "C3");
-        dataset.addValue(9.0, "S8", "C4");
-        dataset.addValue(-3.0, "S9", "C1");
-        dataset.addValue(7.0, "S9", "C2");
-        dataset.addValue(11.0, "S9", "C3");
-        dataset.addValue(-10.0, "S9", "C4");
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Bar Chart",
-                "Category",
-                "Value",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                false
-        );
-        return chart;
+        return ChartFactory.createScatterPlot("Results","Rounds","score",getDataset());
     }
 
+    private XYDataset getDataset() {
+        XYSeries series = new XYSeries("Results");
+        int index = startIndex;
+        for (Double score : scores) {
+            series.add(index, score);
+            index++;
+        }
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+        return dataset;
+    }
 
 }
