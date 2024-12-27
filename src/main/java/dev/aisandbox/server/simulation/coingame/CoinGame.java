@@ -3,7 +3,9 @@ package dev.aisandbox.server.simulation.coingame;
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.WinnerStatistics;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
@@ -23,12 +25,23 @@ public class CoinGame implements Simulation {
     private int[] coins;
     private int currentPlayer = 0;
     private WinnerStatistics statistics = new WinnerStatistics(100);
+    private static final int MARGIN=100;
+    private final TextWidget textWidget;
+    private static final int TEXT_HEIGHT = 280;
+    private static final int TEXT_WIDTH = OutputConstants.HD_WIDTH - 3 * MARGIN - 920;
 
     public CoinGame(final List<Player> players, final CoinScenario scenario, final Theme theme) {
         this.players = players;
         this.scenario = scenario;
         this.theme = theme;
         coins = new int[scenario.getRows().length];
+        textWidget = TextWidget.builder()
+                .width(TEXT_WIDTH)
+                .height(TEXT_HEIGHT)
+                .fontHeight(24)
+                .fontName("Ariel")
+                .theme(theme)
+                .build();
         reset();
     }
 
@@ -39,20 +52,30 @@ public class CoinGame implements Simulation {
 
     @Override
     public void step(OutputRenderer output) {
+        // todo add extra frame to begin
         log.debug("ask client {} to move", currentPlayer);
         CoinGameState currentState = generateCurrentState(Signal.PLAY);
         CoinGameAction action = players.get(currentPlayer).recieve(currentState, CoinGameAction.class);
         // try and make the move
         try {
             coins = makeMove(action.getSelectedRow(), action.getRemoveCount());
+            textWidget.addText(players.get(currentPlayer).getPlayerName()+" takes "+action.getRemoveCount()+" from row "+action.getSelectedRow());
             if (isGameFinished()) {
                 // current player lost
+                textWidget.addText(players.get(currentPlayer).getPlayerName()+" lost");
                 informResult((currentPlayer + 1) % 2);
+                output.display();
+                reset();
+            } else {
+                output.display();
             }
         } catch (IllegalCoinAction e) {
             log.error(e.getMessage());
+            textWidget.addText(players.get(currentPlayer).getPlayerName()+" makes an illegal move.");
             // player has tried an illegal move - end the game
             informResult((currentPlayer + 1) % 2);
+            output.display();
+            reset();
         }
         currentPlayer++;
         if (currentPlayer >= players.size()) {
@@ -93,7 +116,7 @@ public class CoinGame implements Simulation {
 
     private boolean isGameFinished() {
         for (int row = 0; row < scenario.getRows().length; row++) {
-            if (coins[row] == 0) {
+            if (coins[row] > 0) {
                 return false;
             }
         }
@@ -112,6 +135,13 @@ public class CoinGame implements Simulation {
 
     @Override
     public void visualise(Graphics2D graphics2D) {
-
+        graphics2D.setColor(theme.getBackground());
+        graphics2D.fillRect(0,0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
+        graphics2D.setColor(theme.getText());
+        for (int i=0;i<coins.length;i++) {
+            graphics2D.drawString("Row "+(i+1),MARGIN,MARGIN+i*30);
+            graphics2D.drawString(Integer.toString(coins[i]),MARGIN+50,MARGIN+i*30);
+        }
+        graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
     }
 }
