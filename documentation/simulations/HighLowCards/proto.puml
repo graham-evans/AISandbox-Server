@@ -17,4 +17,7 @@ map HighLowCardAction {
 HIGH => The next card is 'higher'
 LOW => The next card is 'lower'
 }
+
+map HighLowCardsReward {
+}
 @enduml
