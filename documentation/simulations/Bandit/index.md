@@ -39,7 +39,7 @@ The protocol is detailed in [Bandit.proto](../../../src/main/proto/Bandit.proto)
 
 ![Bandit State](state.png)
 
-The state is sent to the client first, with the
+
 
 
 
