@@ -1,4 +1,4 @@
-package dev.aisandbox.server.simulation.coingame;
+package dev.aisandbox.server.simulation.bandit;
 
 import dev.aisandbox.server.engine.Player;
 import dev.aisandbox.server.engine.Simulation;
@@ -6,6 +6,9 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
+import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
+import dev.aisandbox.server.simulation.coingame.MockPlayer;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -14,19 +17,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class TestRunCoinGame {
+public class TestRunBandit {
 
     @Test
-    public void testRunCoinGame() {
+    public void testRunBanditGame() {
         assertDoesNotThrow(() -> {
             // create simulation
-            SimulationBuilder simulationBuilder = new CoinGameBuilder();
+            BanditScenario banditBuilder = new BanditScenario();
+            banditBuilder.setBanditUpdate(BanditUpdateEnumeration.EQUALISE);
             // create players
-            List<Player> players = Arrays.stream(simulationBuilder.getPlayerNames(2)).map(s -> (Player) new MockPlayer(s)).toList();
+            List<Player> players = Arrays.stream(banditBuilder.getPlayerNames(1)).map(s -> (Player) new MockBanditPlayer(s)).toList();
             // create simulation
-            Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
+            Simulation sim = banditBuilder.build(players, Theme.DEFAULT);
             // create output directory
-            File outputDirectory = new File("build/test/coingame");
+            File outputDirectory = new File("build/test/bandit");
             outputDirectory.mkdirs();
             // create output
             OutputRenderer out = new BitmapOutputRenderer(sim);
@@ -42,4 +46,5 @@ public class TestRunCoinGame {
             players.forEach(Player::close);
         });
     }
+
 }

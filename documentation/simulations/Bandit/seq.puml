@@ -1,0 +1,10 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+Client <- Server : Bandit State
+
+Client --> Server : Bandit Action
+
+Client <- Server : Bandit Result
+
+@enduml

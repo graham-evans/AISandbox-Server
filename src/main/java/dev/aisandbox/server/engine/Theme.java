@@ -3,6 +3,8 @@ package dev.aisandbox.server.engine;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.knowm.xchart.style.Styler;
+import org.knowm.xchart.style.theme.XChartTheme;
 
 import java.awt.*;
 
@@ -14,13 +16,14 @@ public enum Theme {
             Color.decode("#eeeeee"),
             Color.BLACK,
             Color.lightGray,
-            Color.darkGray
+            Color.darkGray,
+            Styler.ChartTheme.XChart
     );
 
     private final Color background;
     private final Color text;
     private final Color widgetBackground;
     private final Color graphBackground;
-
+    private final Styler.ChartTheme chartTheme;
 
 }
