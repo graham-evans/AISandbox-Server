@@ -38,9 +38,14 @@ public class HighLowCards implements Simulation {
     }
 
     private void reset() {
+        // create a deck of cards
         Deck deck = new Deck();
+        // shuffle
+        deck.shuffle(rand);
+        // clear any old cards
         faceDownCards.clear();
         faceUpCards.clear();
+        // deal cards
         for (int i = 0; i < cardCount; i++) {
             faceDownCards.add(deck.getCard());
         }
@@ -98,16 +103,26 @@ public class HighLowCards implements Simulation {
     public void visualise(Graphics2D graphics2D) {
         for (int dx = 0; dx < faceUpCards.size(); dx++) {
             Card card = faceUpCards.get(dx);
-            BufferedImage cardImage = cardImages.computeIfAbsent(card.getImageName(), s -> {
-                try {
-                    log.info("Loading image {}", card.getImageName());
-                    return ImageIO.read(HighLowCards.class.getResourceAsStream(card.getImageName()));
-                } catch (IOException e) {
-                    log.error("Error loading card image {}", card.getImageName(), e);
-                    return null;
-                }
-            });
+            BufferedImage cardImage = getCardImage(card.getImageName());
             graphics2D.drawImage(cardImage, dx * 50 + 100, 100, null);
         }
+        for (int dx = 0;dx<faceDownCards.size(); dx++) {
+            BufferedImage cardImage = getCardImage("/images/cards/back.png");
+            graphics2D.drawImage(cardImage, (dx+faceUpCards.size()+2) * 50 + 100, 100, null);
+        }
     }
+
+    private BufferedImage getCardImage(String path) {
+        return cardImages.computeIfAbsent(path, s -> {
+            try {
+                log.info("Loading image {}", path);
+                return ImageIO.read(HighLowCards.class.getResourceAsStream(path));
+            } catch (IOException e) {
+                log.error("Error loading card image {}", path, e);
+                return null;
+            }
+        });
+    }
+
+
 }
