@@ -1,5 +1,6 @@
 package dev.aisandbox.server.engine.chart;
 
+import dev.aisandbox.server.engine.Theme;
 import lombok.Builder;
 import lombok.Getter;
 import org.jfree.chart.ChartFactory;
@@ -23,6 +24,8 @@ public class RollingScoreChart {
     private int height = 480;
     @Builder.Default
     private boolean cache = false;
+    @Builder.Default
+    private Theme theme = Theme.DEFAULT;
 
     // calculated fields moved to private class to avoid this issue with @Builder - https://github.com/projectlombok/lombok/issues/2307
     private final State state = new State();
@@ -57,6 +60,7 @@ public class RollingScoreChart {
         dataset.addSeries(series);
         JFreeChart chart = ChartFactory.createScatterPlot("Results", "Rounds", "score", dataset, PlotOrientation.VERTICAL, false, false, false);
         // customise the chart TODO
+        chart.setBackgroundPaint(theme.getBackground());
         return chart;
     }
 
