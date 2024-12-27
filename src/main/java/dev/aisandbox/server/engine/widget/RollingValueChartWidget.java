@@ -6,12 +6,13 @@ import lombok.experimental.Accessors;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RollingValueChart {
+public class RollingValueChartWidget {
     private final int width;
     private final int height;
     private final int window;
@@ -20,7 +21,7 @@ public class RollingValueChart {
     private int startIndex = 1;
     private BufferedImage image = null;
 
-    private RollingValueChart(int width, int height, int window, Theme theme) {
+    private RollingValueChartWidget(int width, int height, int window, Theme theme) {
         this.width = width;
         this.height = height;
         this.theme = theme;
@@ -35,7 +36,7 @@ public class RollingValueChart {
     public void addValue(double value) {
         values.add(value);
         while (values.size() > window) {
-            values.remove(0);
+            values.removeFirst();
             startIndex++;
         }
         image = null;
@@ -51,9 +52,13 @@ public class RollingValueChart {
 
     private BufferedImage renderImage() {
         double[] xData = new double[values.size()];
-        Arrays.setAll(xData, index -> index+startIndex);
+        Arrays.setAll(xData, index -> index + startIndex);
         double[] yData = values.stream().mapToDouble(value -> value).toArray();
         XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
+        BufferedImage image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
+        Graphics2D graphics = image.createGraphics();
+        chart.paint(graphics, width, height);
+        return image;
     }
 
 
@@ -65,11 +70,9 @@ public class RollingValueChart {
         private int window = 200;
         private Theme theme = Theme.DEFAULT;
 
-        public RollingValueChart build() {
-            return new RollingValueChart(width, height, window, theme);
+        public RollingValueChartWidget build() {
+            return new RollingValueChartWidget(width, height, window, theme);
         }
-
-
     }
 
 }
