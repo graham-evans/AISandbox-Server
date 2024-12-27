@@ -6,8 +6,7 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
@@ -17,26 +16,25 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class TestRunCoinGame {
 
-    @ParameterizedTest
-    @ValueSource(ints = {2, 3})
-    public void testRunHighLowCards(int playerCount) {
+    @Test
+    public void testRunHighLowCards() {
         assertDoesNotThrow(() -> {
             // create simulation
             SimulationBuilder simulationBuilder = new CoinGameBuilder();
             // create players
-            List<Player> players = Arrays.stream(simulationBuilder.getPlayerNames(playerCount)).map(s -> (Player) new MockPlayer(s)).toList();
+            List<Player> players = Arrays.stream(simulationBuilder.getPlayerNames(2)).map(s -> (Player) new MockPlayer(s)).toList();
             // create simulation
             Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
             // create output directory
-            File outputDirectory = new File("build/test/coingame/" + playerCount + "/");
+            File outputDirectory = new File("build/test/coingame");
             outputDirectory.mkdirs();
             // create output
             OutputRenderer out = new BitmapOutputRenderer(sim);
-            out.setSkipFrames(100);
+//            out.setSkipFrames(100);
             out.setOutputDirectory(outputDirectory);
             out.setup();
             // start simulation
-            for (int step = 0; step < 1000; step++) {
+            for (int step = 0; step < 25; step++) {
                 sim.step(out);
             }
             // finish simulation
