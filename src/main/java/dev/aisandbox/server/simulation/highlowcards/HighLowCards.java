@@ -5,7 +5,7 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.widget.RollingHistogramChart;
+import dev.aisandbox.server.engine.widget.RollingValueHistogramWidget;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -43,10 +43,10 @@ public class HighLowCards implements Simulation {
     private final List<Card> faceDownCards = new ArrayList<>();
     private final String sessionID = UUID.randomUUID().toString();
     // statistics and reporting elements
-    private final RollingValueChartWidget rollingValueChart;
-    private final RollingHistogramChart rollingHistogramChart;
+    private final RollingValueChartWidget scoreWidget;
+    private final RollingValueHistogramWidget scoreHistogramWidget;
     private final TextWidget textWidget;
-    private final RollingStatisticsWidget summaryWidget;
+    private final RollingStatisticsWidget statisticsWidget;
     private BufferedImage logo;
     private String episodeID;
     private int score = 0;
@@ -55,13 +55,14 @@ public class HighLowCards implements Simulation {
         this.player = player;
         this.cardCount = cardCount;
         this.theme = theme;
-        rollingValueChart = RollingValueChartWidget.builder()
+        scoreWidget = RollingValueChartWidget.builder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
                 .window(200)
                 .theme(theme)
+                .title("Final Score")
                 .build();
-        rollingHistogramChart = RollingHistogramChart.builder()
+        scoreHistogramWidget = RollingValueHistogramWidget.builder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
                 .window(200)
@@ -73,7 +74,7 @@ public class HighLowCards implements Simulation {
                 .fontName("Ariel")
                 .theme(theme)
                 .build();
-        summaryWidget = RollingStatisticsWidget.builder()
+        statisticsWidget = RollingStatisticsWidget.builder()
                 .width(TEXT_WIDTH)
                 .height(GRAPH_HEIGHT * 2 - 107)
                 .fontHeight(32)
@@ -146,8 +147,9 @@ public class HighLowCards implements Simulation {
         // is the episode finished?
         if (!correctGuess || faceDownCards.isEmpty()) {
             // episode ends
-            rollingValueChart.addValue(score);
-            summaryWidget.addScore(score);
+            scoreWidget.addValue(score);
+            statisticsWidget.addScore(score);
+            scoreHistogramWidget.addValue(score);
             player.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
             reset();
         } else {
@@ -169,10 +171,10 @@ public class HighLowCards implements Simulation {
             BufferedImage cardImage = getCardImage("/images/cards/back.png");
             graphics2D.drawImage(cardImage, (dx + faceUpCards.size() + 4) * 60 + MARGIN, MARGIN, null);
         }
-        graphics2D.drawImage(rollingValueChart.getImage(), MARGIN, HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
-        graphics2D.drawImage(rollingHistogramChart.getImage(), MARGIN, HD_HEIGHT - MARGIN - GRAPH_HEIGHT, null);
+        graphics2D.drawImage(scoreWidget.getImage(), MARGIN, HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
+        graphics2D.drawImage(scoreHistogramWidget.getImage(), MARGIN, HD_HEIGHT - MARGIN - GRAPH_HEIGHT, null);
         graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
-        graphics2D.drawImage(summaryWidget.getImage(), MARGIN * 2 + 720 + 200, HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
+        graphics2D.drawImage(statisticsWidget.getImage(), MARGIN * 2 + 720 + 200, HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
         graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
     }
 
