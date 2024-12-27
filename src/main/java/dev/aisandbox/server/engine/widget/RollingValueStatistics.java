@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+@Deprecated
 @RequiredArgsConstructor
 public class RollingValueStatistics implements StatisticReporter{
 

@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.StringJoiner;
 
+@Deprecated
 public class RollingHistogramChart implements ResetableWidget {
     private final int width;
     private final int height;

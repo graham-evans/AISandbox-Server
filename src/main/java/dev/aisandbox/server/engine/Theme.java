@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.style.theme.XChartTheme;
 
 import java.awt.*;
 

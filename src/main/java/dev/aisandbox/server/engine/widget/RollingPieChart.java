@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.util.StringJoiner;
 
+@Deprecated
 @RequiredArgsConstructor
 public class RollingPieChart implements ResetableWidget {
     private final int width;

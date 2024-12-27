@@ -3,6 +3,7 @@ package dev.aisandbox.server.engine.widget;
 /**
  * Denotes a class that can collect and calculate statistics.
  */
+@Deprecated
 public interface StatisticReporter {
     /**
      * Set a text widget that can be used to report a summary of the statistics.

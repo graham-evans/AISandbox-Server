@@ -5,10 +5,7 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.widget.RollingHistogramChart;
-import dev.aisandbox.server.engine.widget.RollingValueChart;
-import dev.aisandbox.server.engine.widget.RollingValueStatistics;
-import dev.aisandbox.server.engine.widget.TextWidget;
+import dev.aisandbox.server.engine.widget.*;
 import dev.aisandbox.server.simulation.common.Card;
 import dev.aisandbox.server.simulation.common.Deck;
 import dev.aisandbox.server.simulation.highlowcards.proto.*;
@@ -53,7 +50,7 @@ public class HighLowCards implements Simulation {
     private final RollingValueChart rollingValueChart;
     private final RollingHistogramChart rollingHistogramChart;
     private final TextWidget textWidget;
-    private final TextWidget summaryWidget;
+    private final RollingStatisticsWidget summaryWidget;
 
     public HighLowCards(Player player, int cardCount, Theme theme) {
         this.player = player;
@@ -76,7 +73,7 @@ public class HighLowCards implements Simulation {
                 .fontName("Ariel")
                 .theme(theme)
                 .build();
-        summaryWidget = rollingValueStatistics.createSummaryWidgetBuilder()
+        summaryWidget = RollingStatisticsWidget.builder()
                 .width(TEXT_WIDTH)
                 .height(GRAPH_HEIGHT * 2 - 107)
                 .fontHeight(32)
@@ -150,6 +147,7 @@ public class HighLowCards implements Simulation {
         if (!correctGuess || faceDownCards.isEmpty()) {
             // episode ends
             rollingValueStatistics.addScore(score);
+            summaryWidget.addScore(score);
             player.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
             reset();
         } else {
