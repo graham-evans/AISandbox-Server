@@ -6,8 +6,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingHistogramChart;
-import dev.aisandbox.server.engine.widget.RollingScoreChart;
-import dev.aisandbox.server.engine.widget.ScoreStatistics;
+import dev.aisandbox.server.engine.widget.RollingValueChart;
+import dev.aisandbox.server.engine.widget.RollingValueStatistics;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.simulation.common.Card;
 import dev.aisandbox.server.simulation.common.Deck;
@@ -42,8 +42,8 @@ public class HighLowCards implements Simulation {
     private final List<Card> faceUpCards = new ArrayList<>();
     private final List<Card> faceDownCards = new ArrayList<>();
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
-    private final ScoreStatistics scoreStatistics;
-    private final RollingScoreChart rollingScoreChart;
+    private final RollingValueStatistics rollingValueStatistics;
+    private final RollingValueChart rollingValueChart;
     private final RollingHistogramChart rollingHistogramChart;
     private final TextWidget textWidget;
     private final TextWidget summaryWidget;
@@ -54,13 +54,13 @@ public class HighLowCards implements Simulation {
         this.player = player;
         this.cardCount = cardCount;
         this.theme = theme;
-        scoreStatistics = new ScoreStatistics(200);
-        rollingScoreChart = scoreStatistics.createScoreChartBuilder()
+        rollingValueStatistics = new RollingValueStatistics(200);
+        rollingValueChart = rollingValueStatistics.createScoreChartBuilder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
                 .theme(theme)
                 .build();
-        rollingHistogramChart = scoreStatistics.createHistogramBuilder()
+        rollingHistogramChart = rollingValueStatistics.createHistogramBuilder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
                 .build();
@@ -71,7 +71,7 @@ public class HighLowCards implements Simulation {
                 .fontName("Ariel")
                 .theme(theme)
                 .build();
-        summaryWidget = scoreStatistics.createSummaryWidgetBuilder()
+        summaryWidget = rollingValueStatistics.createSummaryWidgetBuilder()
                 .width(TEXT_WIDTH)
                 .height(GRAPH_HEIGHT * 2 - 107)
                 .fontHeight(32)
@@ -135,14 +135,14 @@ public class HighLowCards implements Simulation {
             output.display();
             // reset if we're finished.
             if (faceDownCards.isEmpty()) {
-                scoreStatistics.addScore(faceUpCards.size());
+                rollingValueStatistics.addScore(faceUpCards.size());
                 player.send(getPlayState(Signal.RESET, faceUpCards.size()));
                 reset();
             }
         } else {
             // incorrect guess - game over
             textWidget.addText("[" + player.getPlayerName() + "] " + action.getAction().name() + " - wrong");
-            scoreStatistics.addScore(faceUpCards.size() - 1);
+            rollingValueStatistics.addScore(faceUpCards.size() - 1);
             player.send(getPlayState(Signal.RESET, faceUpCards.size() - 1));
             output.display();
             // reset
@@ -169,7 +169,7 @@ public class HighLowCards implements Simulation {
             BufferedImage cardImage = getCardImage("/images/cards/back.png");
             graphics2D.drawImage(cardImage, (dx + faceUpCards.size() + 4) * 60 + MARGIN, MARGIN, null);
         }
-        graphics2D.drawImage(rollingScoreChart.getImage(), MARGIN, OutputConstants.HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
+        graphics2D.drawImage(rollingValueChart.getImage(), MARGIN, OutputConstants.HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
         graphics2D.drawImage(rollingHistogramChart.getImage(), MARGIN, OutputConstants.HD_HEIGHT - MARGIN - GRAPH_HEIGHT, null);
         graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
         graphics2D.drawImage(summaryWidget.getImage(), MARGIN * 2 + 720 + 200, OutputConstants.HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
