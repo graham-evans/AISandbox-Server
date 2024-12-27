@@ -9,6 +9,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +42,22 @@ public class RollingHistogramChart {
 
     public BufferedImage getImage() {
         if (!cache || (state.image == null)) {
-            JFreeChart chart = createHistogram();
-            state.image = chart.createBufferedImage(width, height);
+            if (state.scores.isEmpty()) {
+                state.image = createBlank();
+            }else {
+                JFreeChart chart = createHistogram();
+                state.image = chart.createBufferedImage(width, height);
+            }
         }
         return state.image;
+    }
+
+    private BufferedImage createBlank() {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        g.setColor(theme.getBackground());
+        g.fillRect(0, 0, width, height);
+        return image;
     }
 
     private JFreeChart createHistogram() {
