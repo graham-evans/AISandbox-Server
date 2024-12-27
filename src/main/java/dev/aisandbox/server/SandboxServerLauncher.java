@@ -1,9 +1,6 @@
 package dev.aisandbox.server;
 
-import dev.aisandbox.server.engine.NetworkPlayer;
-import dev.aisandbox.server.engine.Player;
-import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.*;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -79,7 +76,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
             // create players
             List<Player> players = List.of(new NetworkPlayer("Player", 9000));
             // create simulation
-            Simulation sim = simulationBuilder.build(players);
+            Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
             // create output
             OutputRenderer out = switch (options.output()) {
                 case PNG -> new BitmapOutputRenderer(sim);
