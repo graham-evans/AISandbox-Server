@@ -10,7 +10,7 @@ public interface SimulationBuilder {
 
     int getMaxPlayerCount();
 
-    String[] getPlayerNames();
+    String[] getPlayerNames(int playerCount);
 
     Simulation build(List<Player> players);
 }
