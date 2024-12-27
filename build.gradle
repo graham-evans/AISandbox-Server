@@ -77,3 +77,10 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+pmd {
+    consoleOutput = true
+    toolVersion = "7.0.0"
+//    rulesMinimumPriority = 5
+//    ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
+}
