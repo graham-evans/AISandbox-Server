@@ -5,8 +5,9 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.widget.RollingPieChart;
 import dev.aisandbox.server.engine.widget.TextWidget;
-import dev.aisandbox.server.engine.widget.WinnerStatistics;
+import dev.aisandbox.server.engine.widget.RollingLabelFrequencyStatistics;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import dev.aisandbox.server.simulation.coingame.proto.Signal;
@@ -28,7 +29,8 @@ public class CoinGame implements Simulation {
     private final TextWidget textWidget;
     private int[] coins;
     private int currentPlayer = 0;
-    private WinnerStatistics statistics = new WinnerStatistics(100);
+    private final RollingLabelFrequencyStatistics statistics = new RollingLabelFrequencyStatistics(100);
+    private final TextWidget textSnapshot = statistics.createSummaryWidgetBuilder().width(200).height(200).build();
 
     public CoinGame(final List<Player> players, final CoinScenario scenario, final Theme theme) {
         this.players = players;
@@ -143,5 +145,6 @@ public class CoinGame implements Simulation {
             graphics2D.drawString(Integer.toString(coins[i]), MARGIN + 50, MARGIN + i * 30);
         }
         graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
+        graphics2D.drawImage(textSnapshot.getImage(), MARGIN * 2 + 720 + 200, 500, null);
     }
 }
