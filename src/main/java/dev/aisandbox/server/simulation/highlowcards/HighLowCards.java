@@ -11,7 +11,7 @@ import dev.aisandbox.server.simulation.common.Card;
 import dev.aisandbox.server.simulation.common.Deck;
 import dev.aisandbox.server.simulation.highlowcards.proto.ClientAction;
 import dev.aisandbox.server.simulation.highlowcards.proto.HighLowChoice;
-import dev.aisandbox.server.simulation.highlowcards.proto.ServerState;
+import dev.aisandbox.server.simulation.highlowcards.proto.PlayState;
 import dev.aisandbox.server.simulation.highlowcards.proto.Signal;
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,8 +74,8 @@ public class HighLowCards implements Simulation {
         faceUpCards.add(faceDownCards.removeFirst());
     }
 
-    private ServerState getPlayState(Signal signal, int score) {
-        return ServerState.newBuilder()
+    private PlayState getPlayState(Signal signal, int score) {
+        return PlayState.newBuilder()
                 .setCardCount(cardCount)
                 .addAllDeltCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
                 .setScore(score)
@@ -92,7 +92,7 @@ public class HighLowCards implements Simulation {
         textChart.addText("Showing " + faceUpCards.getLast().getShortDrescription());
         output.display();
         // send the current state and request an action
-        ClientAction action = player.recieve(getPlayState(Signal.PLAY,faceDownCards.size()),ClientAction.class);
+        ClientAction action = player.recieve(getPlayState(Signal.PLAY, faceDownCards.size()), ClientAction.class);
         log.debug("Client action: {}", action.getAction().name());
         // turn over the next card
         faceUpCards.add(faceDownCards.removeFirst());
