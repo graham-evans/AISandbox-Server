@@ -11,9 +11,7 @@ import dev.aisandbox.server.engine.widget.ScoreStatistics;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.simulation.common.Card;
 import dev.aisandbox.server.simulation.common.Deck;
-import dev.aisandbox.server.simulation.highlowcards.proto.ClientAction;
 import dev.aisandbox.server.simulation.highlowcards.proto.HighLowChoice;
-import dev.aisandbox.server.simulation.highlowcards.proto.PlayState;
 import dev.aisandbox.server.simulation.highlowcards.proto.Signal;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,7 +54,7 @@ public class HighLowCards implements Simulation {
                 .height(GRAPH_HEIGHT)
                 .theme(theme)
                 .build();
-        rollingHistogramChart =scoreStatistics.createHistogramBuilder()
+        rollingHistogramChart = scoreStatistics.createHistogramBuilder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
                 .build();
@@ -93,8 +91,8 @@ public class HighLowCards implements Simulation {
         faceUpCards.add(faceDownCards.removeFirst());
     }
 
-    private PlayState getPlayState(Signal signal, int score) {
-        return PlayState.newBuilder()
+    private HighLowState getPlayState(Signal signal, int score) {
+        return State.newBuilder()
                 .setCardCount(cardCount)
                 .addAllDeltCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
                 .setScore(score)

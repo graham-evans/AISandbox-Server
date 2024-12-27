@@ -4,14 +4,14 @@ package highlowcards;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.highlowcards.proto";
 
-message PlayState {
+message HighLowCardsState {
   int32 cardCount = 1; // the total number of cards on the board (face up + face down)
   repeated string deltCard = 2;
   int32 score = 3;
   Signal signal = 4;
 }
 
-message ClientAction {
+message HighLowCardAction {
   HighLowChoice action = 1;
 }
 
