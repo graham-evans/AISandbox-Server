@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+@Deprecated
 @RequiredArgsConstructor
 public class RollingLabelFrequencyStatistics implements StatisticReporter{
     private final int dataWindow;

@@ -3,95 +3,73 @@ package dev.aisandbox.server.engine.widget;
 import dev.aisandbox.server.engine.Theme;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+import org.knowm.xchart.QuickChart;
+import org.knowm.xchart.XYChart;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.StringJoiner;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class RollingValueChart implements ResetableWidget {
+public class RollingValueChart {
     private final int width;
     private final int height;
+    private final int window;
+    private final List<Double> values = new ArrayList<>();
     private final Theme theme;
-    private final RollingValueStatistics statistics;
+    private int startIndex = 1;
     private BufferedImage image = null;
 
-    private RollingValueChart(int width, int height, Theme theme, RollingValueStatistics statistics) {
+    private RollingValueChart(int width, int height, int window, Theme theme) {
         this.width = width;
         this.height = height;
         this.theme = theme;
-        this.statistics = statistics;
-        image = createBlank();
-        if (statistics != null) {
-            statistics.getWidgets().add(this);
-        }
+        this.window = window;
+        image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
     }
 
-    protected static RollingScoreChartBuilder builder() {
+    public static RollingScoreChartBuilder builder() {
         return new RollingScoreChartBuilder();
     }
 
-    @Override
-    public void reset() {
+    public void addValue(double value) {
+        values.add(value);
+        while (values.size() > window) {
+            values.remove(0);
+            startIndex++;
+        }
         image = null;
     }
 
+
     public BufferedImage getImage() {
         if (image == null) {
-            JFreeChart chart = createBarChart();
-            image = chart.createBufferedImage(width, height);
+            image = renderImage();
         }
         return image;
     }
 
-    private JFreeChart createBarChart() {
-        XYSeries series = new XYSeries("Results");
-        int index = statistics.getStartIndex();
-        for (Double score : statistics.getScores()) {
-            series.add(index, score);
-            index++;
-        }
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series);
-        JFreeChart chart = ChartFactory.createScatterPlot("Results", "Rounds", "score", dataset, PlotOrientation.VERTICAL, false, false, false);
-        // customise the chart TODO
-        chart.setBackgroundPaint(theme.getBackground());
-        return chart;
+    private BufferedImage renderImage() {
+        double[] xData = new double[values.size()];
+        Arrays.setAll(xData, index -> index+startIndex);
+        double[] yData = values.stream().mapToDouble(value -> value).toArray();
+        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
     }
 
-    private BufferedImage createBlank() {
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setColor(theme.getBackground());
-        g.fillRect(0, 0, width, height);
-        return image;
-    }
 
     @Setter
     @Accessors(chain = true, fluent = true)
     public static class RollingScoreChartBuilder {
         private int width = 200;
         private int height = 200;
+        private int window = 200;
         private Theme theme = Theme.DEFAULT;
-        private RollingValueStatistics statistics = null;
 
         public RollingValueChart build() {
-            return new RollingValueChart(width, height, theme, statistics);
+            return new RollingValueChart(width, height, window, theme);
         }
 
-        @Override
-        public String toString() {
-            return new StringJoiner(", ", RollingScoreChartBuilder.class.getSimpleName() + "[", "]")
-                    .add("width=" + width)
-                    .add("height=" + height)
-                    .add("theme=" + theme)
-                    .add("statistics=" + statistics)
-                    .toString();
-        }
+
     }
 
 }
