@@ -51,17 +51,14 @@ public class HighLowCards implements Simulation {
         this.cardCount = cardCount;
         this.theme = theme;
         scoreStatistics = new ScoreStatistics(200);
-        rollingScoreChart = RollingScoreChart.builder()
-                .dataWindow(200)
+        rollingScoreChart = scoreStatistics.createScoreChartBuilder()
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
-                .cache(true)
+                .theme(theme)
                 .build();
         rollingHistogramChart = RollingHistogramChart.builder()
-                .dataWindow(200)
                 .width(GRAPH_WIDTH)
                 .height(GRAPH_HEIGHT)
-                .cache(true)
                 .build();
         textWidget = TextWidget.builder()
                 .width(TEXT_WIDTH)

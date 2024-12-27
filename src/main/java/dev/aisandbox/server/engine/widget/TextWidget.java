@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class TextWidget {
-
+    @Getter(AccessLevel.PACKAGE)
     private final List<String> lines = new ArrayList<>();
     private final int width;
     private final int height;

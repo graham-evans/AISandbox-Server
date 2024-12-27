@@ -29,4 +29,15 @@ class ScoreStatisticsTest {
         assertEquals(4.0,stats.getCurrentMax(),"Current Max");
     }
 
+    public void statisticsSummaryWidgetTest() {
+        ScoreStatistics stats = new ScoreStatistics(10);
+        TextWidget text = TextWidget.builder().statistics(stats).build();
+        // insert text
+        text.addText("Hello World");
+        // add a score to the stats
+        stats.addScore(1.0);
+        // check the text has changed
+        assertNotEquals(1,text.getLines().size());
+    }
+
 }

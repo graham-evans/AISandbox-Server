@@ -17,7 +17,9 @@ public class ScoreStatistics {
     private final int dataWindow;
     @Getter(AccessLevel.PROTECTED)
     private final List<Double> scores = new ArrayList<>();
+    @Getter(AccessLevel.PROTECTED)
     private final List<ResetableWidget> widgets = new ArrayList<>();
+    @Getter(AccessLevel.PROTECTED)
     private int startIndex = 1;
     @Setter(AccessLevel.PROTECTED)
     private TextWidget summaryWidget = null;
@@ -59,11 +61,11 @@ public class ScoreStatistics {
         // write summary
         if (summaryWidget != null) {
             summaryWidget.reset();
-            summaryWidget.addText("Mean: " + String.format("%.4f",currentMean));
-            summaryWidget.addText("Min: " + String.format("%.4f",currentMin));
-            summaryWidget.addText("Max: " + String.format("%.4f",currentMax));
-            summaryWidget.addText("Var: " + String.format("%.4f",currentVar));
-            summaryWidget.addText("StdDev: " + String.format("%.4f",currentStdDev));
+            summaryWidget.addText("Mean: " + String.format("%.4f", currentMean));
+            summaryWidget.addText("Min: " + String.format("%.4f", currentMin));
+            summaryWidget.addText("Max: " + String.format("%.4f", currentMax));
+            summaryWidget.addText("Var: " + String.format("%.4f", currentVar));
+            summaryWidget.addText("StdDev: " + String.format("%.4f", currentStdDev));
         }
     }
 
@@ -71,6 +73,9 @@ public class ScoreStatistics {
         return TextWidget.builder().statistics(this);
     }
 
+    public RollingScoreChart.RollingScoreChartBuilder createScoreChartBuilder() {
+        return RollingScoreChart.builder().statistics(this);
+    }
 
 
 }
