@@ -1,0 +1,53 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id "com.google.protobuf" version "0.9.4"
+}
+
+group = 'dev.aisandbox'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+protobuf {
+	// Configure the protoc executable
+	protoc {
+		// Download from repositories
+		artifact = 'com.google.protobuf:protoc:3.0.0'
+	}
+	generateProtoTasks {
+		// all() returns the collection of all protoc tasks
+		all().configureEach { task ->
+			// Here you can configure the task
+		}
+	}
+
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	compileOnly 'org.projectlombok:lombok'
+	implementation 'com.google.protobuf:protobuf-java:4.28.2'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

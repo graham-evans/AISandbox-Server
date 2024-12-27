@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant "Main Thread" as main
+participant "Simulation Thread" as thread
+
+main -> main: Choose simulation info
+main -> "Simulation Info" as info : get available options
+main -> info : Create simulation
+activate info
+info -> "Simulation" as sim **:
+info --> main: returns simulation
+deactivate info
+
+main -> thread **: Create simulation thread
+
+main -> thread: Start simulation
+activate thread
+thread -> sim : playStep
+
+
+@enduml
