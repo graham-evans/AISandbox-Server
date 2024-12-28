@@ -15,7 +15,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -40,11 +39,11 @@ public class SandboxServerLauncher implements CommandLineRunner {
             case RUN -> runSimulation(runtimeOptions);
             case LIST -> listOptions(runtimeOptions);
         }
-
     }
 
     private void help(RuntimeOptions runtimeOptions) {
-        if (runtimeOptions.simulation() != null) { // are we looking for help on a particular simulation?
+        if (runtimeOptions.simulation() != null) {
+            // we are looking for help on a particular simulation?
             helpSimulation(runtimeOptions.simulation());
         } else {
             // show generic help
@@ -55,14 +54,16 @@ public class SandboxServerLauncher implements CommandLineRunner {
 
     private void helpSimulation(String simulationName) {
         log.info("Simulation name: {}", simulationName);
-        Optional<SimulationBuilder> optionalSimulationBuilder = findBuilder(simulationName);
-        if (optionalSimulationBuilder.isPresent()) {
-            SimulationBuilder simulationBuilder = optionalSimulationBuilder.get();
-            log.info("Minimum players: {}", simulationBuilder.getMinPlayerCount());
-            log.info("Maximum players: {}", simulationBuilder.getMaxPlayerCount());
-            log.info("Options (use -o key:value to set)");
-        } else {
-            log.error("Error - No simulation of that name exists");
+        SimulationBuilder simulationBuilder = findBuilder(simulationName);
+        log.info("Minimum players: {}", simulationBuilder.getMinPlayerCount());
+        log.info("Maximum players: {}", simulationBuilder.getMaxPlayerCount());
+        log.info("Options (use -o key:value to set)");
+        List<SimulationParameter> parameterList = SimulationParameterUtils.getParameters(simulationBuilder);
+        if (!parameterList.isEmpty()) {
+            log.info(" Options:");
+            for (SimulationParameter parameter : parameterList) {
+                log.info(" - {}", parameter.toString());
+            }
         }
     }
 
@@ -96,21 +97,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
     }
 
     private void listOptions(RuntimeOptions options) {
-        Optional<SimulationBuilder> oBuilder = findBuilder(options.simulation());
-        if (oBuilder.isPresent()) {
-            // show the options for the simulation
-            SimulationBuilder sim = oBuilder.get();
-            log.info(sim.getName());
-            log.info(" - Minimum # agents {}", sim.getMinPlayerCount());
-            log.info(" - Maximum # agents {}", sim.getMaxPlayerCount());
-            List<SimulationParameter> parameterList = SimulationParameterUtils.getParameters(sim);
-            if (!parameterList.isEmpty()) {
-                log.info(" Options:");
-                for (SimulationParameter parameter : parameterList) {
-                    log.info(" - {}", parameter.toString());
-                }
-            }
-        } else {
+        if (options.simulation() == null) {
             // list the available simulations
             log.info("Available simulations:");
             for (SimulationBuilder simulationBuilder : simulationBuilders) {
@@ -120,17 +107,21 @@ public class SandboxServerLauncher implements CommandLineRunner {
                     log.info("{} ({} to {} agents)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount(), simulationBuilder.getMaxPlayerCount());
                 }
             }
+        } else {
+            // show the help for the simulation
+            helpSimulation(options.simulation());
         }
     }
 
-    private Optional<SimulationBuilder> findBuilder(String name) {
-        Optional<SimulationBuilder> result = Optional.empty();
+    private SimulationBuilder findBuilder(String name) {
         for (SimulationBuilder simulationBuilder : simulationBuilders) {
             if (simulationBuilder.getName().equalsIgnoreCase(name)) {
-                result = Optional.of(simulationBuilder);
+                return simulationBuilder;
             }
         }
-        return result;
+        log.error("No simulation of that name exists, use the --list option to list all simulations");
+        System.exit(0);
+        return null;
     }
 
 
