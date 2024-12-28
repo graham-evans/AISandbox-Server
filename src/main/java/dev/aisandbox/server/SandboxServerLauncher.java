@@ -101,8 +101,8 @@ public class SandboxServerLauncher implements CommandLineRunner {
             // show the options for the simulation
             SimulationBuilder sim = oBuilder.get();
             log.info(sim.getName());
-            log.info(" - Minimum # clients {}", sim.getMinPlayerCount());
-            log.info(" - Maximum # clients {}", sim.getMaxPlayerCount());
+            log.info(" - Minimum # agents {}", sim.getMinPlayerCount());
+            log.info(" - Maximum # agents {}", sim.getMaxPlayerCount());
             List<SimulationParameter> parameterList = SimulationParameterUtils.getParameters(sim);
             if (!parameterList.isEmpty()) {
                 log.info(" Options:");
@@ -115,9 +115,9 @@ public class SandboxServerLauncher implements CommandLineRunner {
             log.info("Available simulations:");
             for (SimulationBuilder simulationBuilder : simulationBuilders) {
                 if (simulationBuilder.getMinPlayerCount() == simulationBuilder.getMaxPlayerCount()) {
-                    log.info("{} ({} clients)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount());
+                    log.info("{} ({} agents)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount());
                 } else {
-                    log.info("{} ({} to {} clients)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount(), simulationBuilder.getMaxPlayerCount());
+                    log.info("{} ({} to {} agents)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount(), simulationBuilder.getMaxPlayerCount());
                 }
             }
         }

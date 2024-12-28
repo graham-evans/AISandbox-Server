@@ -3,6 +3,8 @@ package dev.aisandbox.server.options;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.cli.*;
 
+import java.util.Arrays;
+
 @UtilityClass
 public class RuntimeUtils {
 
@@ -17,8 +19,8 @@ public class RuntimeUtils {
         // add output
         options.addOption("o", "output", true, "Output format [NONE(Default),SCREEN,PNG]");
         options.addOption("d", "dir", true, "Output directory");
-        // Players
-        options.addOption("c", "clients", true, "Number of clients (within the range for a simulation)");
+        // Agent Count
+        options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
         // simulation options
         options.addOption("p", "parameter", true, "Simulation specific parameter in the format key:value, use the list options to show all available parameters");
         return options;
@@ -59,6 +61,14 @@ public class RuntimeUtils {
             workBuilder.outputDirectory(".");
             if (cmd.hasOption('d')) {
                 workBuilder.outputDirectory(cmd.getOptionValue('d'));
+            }
+            // choose the number of  agents
+            if (cmd.hasOption('a')) {
+                workBuilder.agents(Integer.parseInt(cmd.getOptionValue('c')));
+            }
+            // read parameters
+            if (cmd.hasOption('p')) {
+                Arrays.stream(cmd.getOptionValues('p')).forEach(workBuilder::parameter);
             }
             options = workBuilder.build();
         } catch (ParseException e) {
