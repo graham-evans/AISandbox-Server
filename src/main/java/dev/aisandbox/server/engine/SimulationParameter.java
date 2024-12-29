@@ -23,7 +23,7 @@ public record SimulationParameter(String parameterName, ParameterType type, Stri
     }
 
     public enum ParameterType {
-        INTEGER, BOOLEAN, ENUM, STRING
+        INTEGER, BOOLEAN, ENUM, STRING,DOUBLE
     }
 
 }

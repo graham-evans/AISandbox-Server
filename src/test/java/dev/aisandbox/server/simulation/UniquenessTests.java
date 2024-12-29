@@ -34,7 +34,7 @@ public class UniquenessTests {
     public void uniqueNameTest() {
         Set<String> names = new HashSet<>();
         builderList.forEach(builder -> {
-            names.add(builder.getName());
+            names.add(builder.getName().toLowerCase());
         });
         assertEquals(builderList.size(), names.size());
     }

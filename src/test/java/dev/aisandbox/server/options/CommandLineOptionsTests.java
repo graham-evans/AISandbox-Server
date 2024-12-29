@@ -30,7 +30,7 @@ public class CommandLineOptionsTests {
 
     @Test
     public void testSetParameters() {
-        RuntimeOptions options = RuntimeUtils.parseCommandLine("-s HighLowCards -p echo:true -c=3".split(" "));
+        RuntimeOptions options = RuntimeUtils.parseCommandLine("-s HighLowCards -p echo:true -a=3".split(" "));
         assertEquals(RuntimeOptions.RuntimeCommand.RUN,options.command(),"Run command not correct");
         assertEquals("HighLowCards",options.simulation(),"Simulation name not correct");
         assertEquals(3,options.agents(),"Number of agents not correct");

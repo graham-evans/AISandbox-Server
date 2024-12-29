@@ -64,7 +64,7 @@ public class RuntimeUtils {
             }
             // choose the number of  agents
             if (cmd.hasOption('a')) {
-                workBuilder.agents(Integer.parseInt(cmd.getOptionValue('c')));
+                workBuilder.agents(Integer.parseInt(cmd.getOptionValue('a')));
             }
             // read parameters
             if (cmd.hasOption('p')) {

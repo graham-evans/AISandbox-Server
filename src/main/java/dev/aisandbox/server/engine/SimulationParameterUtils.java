@@ -22,11 +22,43 @@ public class SimulationParameterUtils {
             if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
                 String name = method.getName().substring(3);
                 Class<?> rawType = method.getParameterTypes()[0];
+                log.info("Found parameter named {}, with raw type {}", name, rawType);
+                // work out parameter type
+                SimulationParameter.ParameterType parameterType;
+                if (rawType.isEnum()) {
+                    parameterType = SimulationParameter.ParameterType.ENUM;
+                } else {
+                    parameterType = switch (rawType.getName()) {
+                        case "double" -> SimulationParameter.ParameterType.DOUBLE;
+                        case "int" -> SimulationParameter.ParameterType.INTEGER;
+                        case "boolean" -> SimulationParameter.ParameterType.BOOLEAN;
+                        default -> SimulationParameter.ParameterType.STRING;
+                    };
+                }
+                log.info("Converted parameter type to {}", parameterType);
+                // work out default value
+                String defaultValue;
+                try {
+                    Method getter = builder.getClass().getMethod(
+                            (parameterType == SimulationParameter.ParameterType.BOOLEAN ? "is" : "get")
+                                    + name);
+                    Object value = getter.invoke(builder);
+                    defaultValue = value == null ? "none" : getter.invoke(builder).toString();
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    log.error("Error getting default value for {}", name);
+                    defaultValue = "unknown";
+                }
+                log.info("Found default value {}", defaultValue);
+                // get parameter options
+                Optional<String> options = Optional.empty();
+                if (rawType.isEnum()) {
+                    options = Optional.of(Arrays.stream(rawType.getEnumConstants()).map(o -> o.toString()).collect(Collectors.joining(",")));
+                }
                 parameters.add(
                         new SimulationParameter(name,
-                                getParameterType(rawType),
-                                getDefaultValue(builder, name),
-                                getParameterOptions(rawType)
+                                parameterType,
+                                defaultValue,
+                                options
                         ));
             }
         }
@@ -34,42 +66,31 @@ public class SimulationParameterUtils {
         return parameters;
     }
 
-    private SimulationParameter.ParameterType getParameterType(Class<?> clazz) {
-        log.debug("Converting parameter type from {}", clazz.getName());
-        if (clazz.isEnum()) {
-            return SimulationParameter.ParameterType.ENUM;
+    public static void setParameter(SimulationBuilder builder, SimulationParameter parameter, String value) {
+        switch (parameter.type()) {
+            case BOOLEAN -> setParameter(builder,"set"+parameter.parameterName(), Boolean.parseBoolean(value));
+            case ENUM -> setEnumParameter(builder, "set"+parameter.parameterName(), value);
+            default -> log.info("Dont know how to set parameter of type {}",parameter.type());
         }
-        // TODO, detect other types
-        return switch (clazz.getName()) {
-            default -> SimulationParameter.ParameterType.STRING;
-        };
+
     }
 
-    private Optional<String> getParameterOptions(Class<?> clazz) {
-        if (clazz.isEnum()) {
-            return Optional.of(Arrays.stream(clazz.getEnumConstants()).map(o -> o.toString()).collect(Collectors.joining(",")));
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    public static String getDefaultValue(SimulationBuilder builder, String parameterName) {
+    private static void setEnumParameter(SimulationBuilder builder, String method, String value) {
         try {
-            Method getter = builder.getClass().getMethod("get" + parameterName);
-            return getter.invoke(builder).toString();
-        } catch (NoSuchMethodException e) {
-            log.error("Error getting default value for {}", parameterName);
-        } catch (InvocationTargetException e) {
-            log.error("Invocation target error getting default value for {}", parameterName);
-        } catch (IllegalAccessException e) {
-            log.error("IllegalAccess error getting default value for {}", parameterName);
+            Method targetMethod = builder.getClass().getMethod(method, boolean.class);
+            targetMethod.invoke(builder, value);
+        } catch (Exception e) {
+            log.error("Error invoking setter for {}", method);
         }
-        return "unknown";
     }
 
-    public static void setParameter(SimulationBuilder builder, String name, int value) {
-
+    private static void setParameter(SimulationBuilder builder, String method,boolean value) {
+        try {
+            Method targetMethod = builder.getClass().getMethod(method, boolean.class);
+            targetMethod.invoke(builder, value);
+        } catch (Exception e) {
+            log.error("Error invoking setter for {}", method);
+        }
     }
-
 
 }
