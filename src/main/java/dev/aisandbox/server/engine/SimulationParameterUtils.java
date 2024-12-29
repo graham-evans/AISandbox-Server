@@ -20,7 +20,7 @@ public class SimulationParameterUtils {
             if (method.getName().startsWith("set") && method.getParameterCount() == 1) {
                 String name = method.getName().substring(3);
                 Class<?> rawType = method.getParameterTypes()[0];
-                log.info("Found parameter named {}, with raw type {}", name, rawType);
+                log.debug("Found parameter named {}, with raw type {}", name, rawType);
                 // work out default value
                 String defaultValue;
                 try {
@@ -33,7 +33,7 @@ public class SimulationParameterUtils {
                     log.error("Error getting default value for {}", name);
                     defaultValue = "unknown";
                 }
-                log.info("Found default value {}", defaultValue);
+                log.debug("Found default value {}", defaultValue);
                 parameters.add(
                         new SimulationParameter(name,
                                 rawType,
@@ -64,7 +64,7 @@ public class SimulationParameterUtils {
             Method targetMethod = builder.getClass().getMethod("set"+parameter.parameterName(), parameter.type());
             targetMethod.invoke(builder, createEnumInstance(value, parameter.type()));
         } catch (Exception e) {
-            log.error("Error invoking setter for {}", parameter.parameterName(),e);
+            log.warn("Can't assign '{}' to this field", parameter.parameterName());
         }
     }
 

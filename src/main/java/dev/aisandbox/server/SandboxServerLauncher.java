@@ -15,6 +15,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -72,27 +73,51 @@ public class SandboxServerLauncher implements CommandLineRunner {
             log.info("Simulation name has not been set, use the '-s name' to choose the simulation or '--help' for more information.");
         } else {
             // create simulation
-            SimulationBuilder simulationBuilder = new HighLowCardsBuilder();
-            // create players
-            List<Player> players = List.of(new NetworkPlayer("Player", 9000));
-            // create simulation
-            Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
-            // create output
-            OutputRenderer out = switch (options.output()) {
-                case PNG -> new BitmapOutputRenderer(sim);
-                case SCREEN -> new ScreenOutputRenderer(sim);
-                default -> new NullOutputRenderer();
-            };
-            out.setup();
-            log.info("Writing output to {}", out.getName());
-            log.info("Starting simulation (ctrl-c to exit)...");
-            // start simulation
-            while (!halted) {
-                sim.step(out);
+            Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(simulationBuilder -> simulationBuilder.getName().equalsIgnoreCase(options.simulation())).findFirst();
+            if (oBuilder.isEmpty()) {
+                log.warn("Can't find simulation with that name, use --list to show all simulations");
+            } else{
+                SimulationBuilder simulationBuilder = oBuilder.get();
+                // apply parameters (if any)
+                List<SimulationParameter> simulationParameterList = SimulationParameterUtils.getParameters(simulationBuilder);
+                for (String parameter : options.parameters()) {
+                    String[] keyValue = parameter.split("[=:]");
+                    if (keyValue.length != 2) {
+                        log.warn("Invalid parameter: '{}', use format key:value ", parameter);
+                    } else {
+                        String key = keyValue[0];
+                        String value = keyValue[1];
+                        Optional<SimulationParameter> oParam = simulationParameterList.stream().filter(parameter1 -> parameter1.parameterName().equalsIgnoreCase(key)).findFirst();
+                        if (oParam.isPresent()) {
+                            log.debug("Adding key '{}' with value '{}'", key, value);
+                            SimulationParameterUtils.setParameter(simulationBuilder, oParam.get(), value);
+                        } else {
+                            log.warn("Can't find parameter called '{}', use --list to show all parameters", key);
+                        }
+                    }
+                }
+                // TODO : set the number of clients
+                // create players
+                List<Player> players = List.of(new NetworkPlayer("Player", 9000));
+                // create simulation
+                Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
+                // create output
+                OutputRenderer out = switch (options.output()) {
+                    case PNG -> new BitmapOutputRenderer(sim);
+                    case SCREEN -> new ScreenOutputRenderer(sim);
+                    default -> new NullOutputRenderer();
+                };
+                out.setup();
+                log.info("Writing output to {}", out.getName());
+                log.info("Starting simulation (ctrl-c to exit)...");
+                // start simulation
+                while (!halted) {
+                    sim.step(out);
+                }
+                // finish simulation
+                sim.close();
+                players.forEach(Player::close);
             }
-            // finish simulation
-            sim.close();
-            players.forEach(Player::close);
         }
     }
 
