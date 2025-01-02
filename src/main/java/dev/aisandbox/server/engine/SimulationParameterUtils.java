@@ -1,12 +1,21 @@
 package dev.aisandbox.server.engine;
 
+import javafx.collections.FXCollections;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -80,6 +89,27 @@ public class SimulationParameterUtils {
         } catch (Exception e) {
             log.error("Error invoking setter for {}", method);
         }
+    }
+
+    public static Node createParameterEditor(SimulationParameter parameter) {
+        BorderPane node = new BorderPane();
+        // add label
+        Label label = new Label(parameter.parameterName());
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setAlignment(Pos.CENTER_LEFT);
+        node.setCenter(label);
+        // add editor
+        Node editor;
+        if (parameter.type().isEnum()) {
+            ComboBox<String> comboBox = new ComboBox<>();
+            comboBox.setItems(FXCollections.observableList(Arrays.stream(parameter.type().getEnumConstants()).map(Object::toString).toList()));
+            comboBox.getSelectionModel().select(parameter.defaultValue());
+            editor = comboBox;
+        } else {
+            editor = new Label("Unknown type");
+        }
+        node.setRight(editor);
+        return node;
     }
 
 }
