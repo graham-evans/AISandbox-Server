@@ -1,4 +1,4 @@
-package dev.aisandbox.server;
+package dev.aisandbox.launcher;
 
 import dev.aisandbox.server.engine.*;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
@@ -7,21 +7,19 @@ import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
 import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
-import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.HelpFormatter;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
-@Component
 @Slf4j
-public class SandboxServerLauncher implements CommandLineRunner {
-
+@RequiredArgsConstructor
+@SpringBootApplication(scanBasePackages = "dev.aisandbox.server")
+public class SandboxServerCLIApplication implements CommandLineRunner {
     private final List<SimulationBuilder> simulationBuilders;
 
     private boolean halted = false;
@@ -76,7 +74,7 @@ public class SandboxServerLauncher implements CommandLineRunner {
             Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(simulationBuilder -> simulationBuilder.getName().equalsIgnoreCase(options.simulation())).findFirst();
             if (oBuilder.isEmpty()) {
                 log.warn("Can't find simulation with that name, use --list to show all simulations");
-            } else{
+            } else {
                 SimulationBuilder simulationBuilder = oBuilder.get();
                 // apply parameters (if any)
                 List<SimulationParameter> simulationParameterList = SimulationParameterUtils.getParameters(simulationBuilder);
