@@ -5,6 +5,7 @@ import java.util.List;
 public interface SimulationBuilder {
 
     String getName();
+    String getDescription();
 
     int getMinPlayerCount();
 

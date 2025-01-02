@@ -58,6 +58,11 @@ public class BanditScenario implements SimulationBuilder {
     }
 
     @Override
+    public String getDescription() {
+        return "The classic 'Multi-Armed Bandit scenario where an agent needs to learn which 'bandit' returns the best results.";
+    }
+
+    @Override
     public int getMinPlayerCount() {
         return 1;
     }

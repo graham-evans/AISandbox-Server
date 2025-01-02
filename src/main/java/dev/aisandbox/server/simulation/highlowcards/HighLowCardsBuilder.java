@@ -14,6 +14,11 @@ public class HighLowCardsBuilder implements SimulationBuilder {
     }
 
     @Override
+    public String getDescription() {
+        return "Simulation to guess if the next card is 'higher' or 'lower' than the card before. Note: You don't get anything for a pair, not in this game!";
+    }
+
+    @Override
     public int getMinPlayerCount() {
         return 1;
     }
