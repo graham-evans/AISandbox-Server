@@ -11,6 +11,7 @@ group = 'dev.aisandbox'
 
 def protobufVersion = '4.28.2'
 def protocVersion = protobufVersion
+def javaFXVersion = '21.0.5'
 
 gitVersioning.apply {
     refs {
@@ -82,6 +83,19 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    // javafx (all platforms)
+    implementation "org.openjfx:javafx-controls:${javaFXVersion}:win"
+    implementation "org.openjfx:javafx-fxml:${javaFXVersion}:win"
+    implementation "org.openjfx:javafx-base:${javaFXVersion}:win"
+    implementation "org.openjfx:javafx-graphics:${javaFXVersion}:win"
+    implementation "org.openjfx:javafx-controls:${javaFXVersion}:linux"
+    implementation "org.openjfx:javafx-fxml:${javaFXVersion}:linux"
+    implementation "org.openjfx:javafx-base:${javaFXVersion}:linux"
+    implementation "org.openjfx:javafx-graphics:${javaFXVersion}:linux"
+    implementation "org.openjfx:javafx-controls:${javaFXVersion}:mac"
+    implementation "org.openjfx:javafx-fxml:${javaFXVersion}:mac"
+    implementation "org.openjfx:javafx-base:${javaFXVersion}:mac"
+    implementation "org.openjfx:javafx-graphics:${javaFXVersion}:mac"
     // test libs
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
