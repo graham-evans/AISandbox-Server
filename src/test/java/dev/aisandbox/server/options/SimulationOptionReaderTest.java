@@ -1,5 +1,6 @@
 package dev.aisandbox.server.options;
 
+import dev.aisandbox.launcher.SandboxServerCLIApplication;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
@@ -11,7 +12,7 @@ import static dev.aisandbox.server.simulation.coingame.CoinScenario.DOUBLE_21_3;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+@SpringBootTest(classes = SandboxServerCLIApplication.class)
 public class SimulationOptionReaderTest {
 
     @Autowired
