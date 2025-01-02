@@ -1,6 +1,7 @@
 package dev.aisandbox.server.simulation;
 
 
+import dev.aisandbox.launcher.SandboxServerCLIApplication;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(classes = SandboxServerCLIApplication.class)
 public class UniquenessTests {
 
     @Autowired
