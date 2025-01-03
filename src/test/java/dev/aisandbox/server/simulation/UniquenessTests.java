@@ -35,7 +35,7 @@ public class UniquenessTests {
     public void uniqueNameTest() {
         Set<String> names = new HashSet<>();
         builderList.forEach(builder -> {
-            names.add(builder.getName().toLowerCase());
+            names.add(builder.getSimulationName().toLowerCase());
         });
         assertEquals(builderList.size(), names.size());
     }
@@ -46,7 +46,7 @@ public class UniquenessTests {
     @Test
     public void whitespaceTest() {
         for (SimulationBuilder builder : builderList) {
-            assertFalse(builder.getName().contains(" "), builder.getName() + " contains whitespace");
+            assertFalse(builder.getSimulationName().contains(" "), builder.getSimulationName() + " contains whitespace");
         }
     }
 }

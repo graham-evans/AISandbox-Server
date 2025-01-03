@@ -4,14 +4,14 @@ import java.util.List;
 
 public interface SimulationBuilder {
 
-    String getName();
+    String getSimulationName();
     String getDescription();
 
-    int getMinPlayerCount();
+    int getMinAgentCount();
 
-    int getMaxPlayerCount();
+    int getMaxAgentCount();
 
-    String[] getPlayerNames(int playerCount);
+    String[] getAgentNames(int playerCount);
 
     Simulation build(List<Player> players, Theme theme);
 }

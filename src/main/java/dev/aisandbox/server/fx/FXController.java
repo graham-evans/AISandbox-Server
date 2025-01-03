@@ -56,9 +56,9 @@ public class FXController {
                         // update agent count options
                         agentCounter.setValueFactory(
                                 new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                                        newValue.getMinPlayerCount(),
-                                        newValue.getMaxPlayerCount(),
-                                        getValueInRange(agentCounter.getValue(), newValue.getMinPlayerCount(), newValue.getMaxPlayerCount())));
+                                        newValue.getMinAgentCount(),
+                                        newValue.getMaxAgentCount(),
+                                        getValueInRange(agentCounter.getValue(), newValue.getMinAgentCount(), newValue.getMaxAgentCount())));
                         agentCounter.setDisable(false);
                         // populate the parameters with editor boxes
                         parameterBox.getChildren().clear();

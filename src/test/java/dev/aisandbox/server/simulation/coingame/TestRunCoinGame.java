@@ -22,7 +22,7 @@ public class TestRunCoinGame {
             // create simulation
             SimulationBuilder simulationBuilder = new CoinGameBuilder();
             // create players
-            List<Player> players = Arrays.stream(simulationBuilder.getPlayerNames(2)).map(s -> (Player) new MockPlayer(s)).toList();
+            List<Player> players = Arrays.stream(simulationBuilder.getAgentNames(2)).map(s -> (Player) new MockPlayer(s)).toList();
             // create simulation
             Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
             // create output directory

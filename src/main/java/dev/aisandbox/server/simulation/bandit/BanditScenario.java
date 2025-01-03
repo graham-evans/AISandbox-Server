@@ -53,7 +53,7 @@ public class BanditScenario implements SimulationBuilder {
     private BanditCountEnumeration banditCount = BanditCountEnumeration.FIVE;
 
     @Override
-    public String getName() {
+    public String getSimulationName() {
         return "Bandit";
     }
 
@@ -63,17 +63,17 @@ public class BanditScenario implements SimulationBuilder {
     }
 
     @Override
-    public int getMinPlayerCount() {
+    public int getMinAgentCount() {
         return 1;
     }
 
     @Override
-    public int getMaxPlayerCount() {
+    public int getMaxAgentCount() {
         return 1;
     }
 
     @Override
-    public String[] getPlayerNames(int playerCount) {
+    public String[] getAgentNames(int playerCount) {
         return new String[]{"Player 1"};
     }
 

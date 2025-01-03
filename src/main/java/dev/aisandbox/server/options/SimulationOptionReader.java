@@ -21,7 +21,7 @@ public class SimulationOptionReader {
         // find correct builder
         SimulationBuilder builder = null;
         for (SimulationBuilder simulationBuilder : builders) {
-            if (simulationBuilder.getName().equalsIgnoreCase(options.simulation())) {
+            if (simulationBuilder.getSimulationName().equalsIgnoreCase(options.simulation())) {
                 builder = simulationBuilder;
             }
         }

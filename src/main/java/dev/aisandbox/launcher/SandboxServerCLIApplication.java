@@ -52,8 +52,8 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
     private void helpSimulation(String simulationName) {
         log.info("Simulation name: {}", simulationName);
         SimulationBuilder simulationBuilder = findBuilder(simulationName);
-        log.info("Minimum players: {}", simulationBuilder.getMinPlayerCount());
-        log.info("Maximum players: {}", simulationBuilder.getMaxPlayerCount());
+        log.info("Minimum players: {}", simulationBuilder.getMinAgentCount());
+        log.info("Maximum players: {}", simulationBuilder.getMaxAgentCount());
         log.info("Options (use -o key:value to set)");
         List<SimulationParameter> parameterList = SimulationParameterUtils.getParameters(simulationBuilder);
         if (!parameterList.isEmpty()) {
@@ -69,7 +69,7 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
             log.info("Simulation name has not been set, use the '-s name' to choose the simulation or '--help' for more information.");
         } else {
             // create simulation
-            Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(simulationBuilder -> simulationBuilder.getName().equalsIgnoreCase(options.simulation())).findFirst();
+            Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(simulationBuilder -> simulationBuilder.getSimulationName().equalsIgnoreCase(options.simulation())).findFirst();
             if (oBuilder.isEmpty()) {
                 log.warn("Can't find simulation with that name, use --list to show all simulations");
             } else {
@@ -114,10 +114,10 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
             // list the available simulations
             log.info("Available simulations:");
             for (SimulationBuilder simulationBuilder : simulationBuilders) {
-                if (simulationBuilder.getMinPlayerCount() == simulationBuilder.getMaxPlayerCount()) {
-                    log.info("{} ({} agents)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount());
+                if (simulationBuilder.getMinAgentCount() == simulationBuilder.getMaxAgentCount()) {
+                    log.info("{} ({} agents)", simulationBuilder.getSimulationName(), simulationBuilder.getMinAgentCount());
                 } else {
-                    log.info("{} ({} to {} agents)", simulationBuilder.getName(), simulationBuilder.getMinPlayerCount(), simulationBuilder.getMaxPlayerCount());
+                    log.info("{} ({} to {} agents)", simulationBuilder.getSimulationName(), simulationBuilder.getMinAgentCount(), simulationBuilder.getMaxAgentCount());
                 }
             }
         } else {
@@ -128,7 +128,7 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
 
     private SimulationBuilder findBuilder(String name) {
         for (SimulationBuilder simulationBuilder : simulationBuilders) {
-            if (simulationBuilder.getName().equalsIgnoreCase(name)) {
+            if (simulationBuilder.getSimulationName().equalsIgnoreCase(name)) {
                 return simulationBuilder;
             }
         }

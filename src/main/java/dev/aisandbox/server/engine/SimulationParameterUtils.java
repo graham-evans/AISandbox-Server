@@ -6,11 +6,9 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -23,7 +21,7 @@ import java.util.List;
 public class SimulationParameterUtils {
 
     public static List<SimulationParameter> getParameters(SimulationBuilder builder) {
-        log.debug("Querying parameters for {}", builder.getName());
+        log.debug("Querying parameters for {}", builder.getSimulationName());
         List<SimulationParameter> parameters = new ArrayList<>();
         for (Method method : builder.getClass().getMethods()) {
             if (method.getName().startsWith("set") && method.getParameterCount() == 1) {

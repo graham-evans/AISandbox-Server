@@ -16,7 +16,7 @@ public class SimulationBuilderRenderer implements Callback<ListView<SimulationBu
                 if (empty || simulationBuilder == null) {
                     setText(null);
                 } else {
-                    setText(simulationBuilder.getName());
+                    setText(simulationBuilder.getSimulationName());
                 }
             }
         };

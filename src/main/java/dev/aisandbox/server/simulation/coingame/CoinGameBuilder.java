@@ -14,7 +14,7 @@ import java.util.List;
 public class CoinGameBuilder implements SimulationBuilder {
 
     @Override
-    public String getName() {
+    public String getSimulationName() {
         return "CoinGame";
     }
 
@@ -24,17 +24,17 @@ public class CoinGameBuilder implements SimulationBuilder {
     }
 
     @Override
-    public int getMinPlayerCount() {
+    public int getMinAgentCount() {
         return 2;
     }
 
     @Override
-    public int getMaxPlayerCount() {
+    public int getMaxAgentCount() {
         return 2;
     }
 
     @Override
-    public String[] getPlayerNames(int playerCount) {
+    public String[] getAgentNames(int playerCount) {
         return new String[]{"Player 1", "Player 2"};
     }
 
