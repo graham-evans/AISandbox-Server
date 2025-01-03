@@ -2,6 +2,7 @@ package dev.aisandbox.server.fx;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameterUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
@@ -71,6 +72,11 @@ public class FXController {
         );
         // select the first simulation in the list
         simulationList.getSelectionModel().select(0);
+    }
+
+    @FXML
+    void startSimulation(ActionEvent event) {
+        log.info("Starting simulation");
     }
 
     /**

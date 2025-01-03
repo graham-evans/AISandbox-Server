@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -50,6 +51,9 @@
                               </BorderPane>
                               <VBox fx:id="parameterBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="4.0" />
                            </children>
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
                         </VBox>
                      </content>
                   </ScrollPane>
@@ -70,7 +74,6 @@
                               </RadioButton>
                               <RadioButton mnemonicParsing="false" selected="true" text="Screen" toggleGroup="$render" />
                               <RadioButton mnemonicParsing="false" text="Write PNG images" toggleGroup="$render" />
-                              <RadioButton mnemonicParsing="false" text="Write video to file" toggleGroup="$render" />
                               <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <left>
                                     <Label text="Directory" BorderPane.alignment="CENTER" />
@@ -79,6 +82,16 @@
                                     <TextField BorderPane.alignment="CENTER" />
                                  </center>
                               </BorderPane>
+                              <RadioButton mnemonicParsing="false" text="Write video to file" toggleGroup="$render" />
+                              <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                                 <left>
+                                    <Label text="File" BorderPane.alignment="CENTER" />
+                                 </left>
+                                 <center>
+                                    <TextField maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
+                                 </center>
+                              </BorderPane>
+                              <Separator prefWidth="200.0" />
                               <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <right>
                                     <Spinner BorderPane.alignment="CENTER" />
@@ -88,9 +101,12 @@
                                  </center>
                               </BorderPane>
                            </children>
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
                         </VBox>
                      </content></ScrollPane>
-                  <Button mnemonicParsing="false" text="Start Simulation">
+                  <Button mnemonicParsing="false" onAction="#startSimulation" text="Start Simulation">
                      <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
