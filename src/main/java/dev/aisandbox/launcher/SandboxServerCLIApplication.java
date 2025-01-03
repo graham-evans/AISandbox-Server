@@ -22,8 +22,6 @@ import java.util.Optional;
 public class SandboxServerCLIApplication implements CommandLineRunner {
     private final List<SimulationBuilder> simulationBuilders;
 
-    private boolean halted = false;
-
     @Override
     public void run(String... args) throws Exception {
         // parse the command line
