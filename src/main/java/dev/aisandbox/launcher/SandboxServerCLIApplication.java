@@ -105,16 +105,8 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
                     case SCREEN -> new ScreenOutputRenderer(sim);
                     default -> new NullOutputRenderer();
                 };
-                out.setup();
-                log.info("Writing output to {}", out.getName());
-                log.info("Starting simulation (ctrl-c to exit)...");
-                // start simulation
-                while (!halted) {
-                    sim.step(out);
-                }
-                // finish simulation
-                sim.close();
-                players.forEach(Player::close);
+                SimulationRunner runner = new SimulationRunner(sim,out,players);
+                runner.start();
             }
         }
     }
