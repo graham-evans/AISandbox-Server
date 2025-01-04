@@ -72,8 +72,8 @@
                                     <ToggleGroup fx:id="render" />
                                  </toggleGroup>
                               </RadioButton>
-                              <RadioButton mnemonicParsing="false" selected="true" text="Screen" toggleGroup="$render" />
-                              <RadioButton mnemonicParsing="false" text="Write PNG images" toggleGroup="$render" />
+                              <RadioButton fx:id="outputScreenChoice" mnemonicParsing="false" selected="true" text="Screen" toggleGroup="$render" />
+                              <RadioButton fx:id="outputImageChoice" mnemonicParsing="false" text="Write PNG images" toggleGroup="$render" />
                               <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <left>
                                     <Label text="Directory" BorderPane.alignment="CENTER" />
@@ -82,7 +82,7 @@
                                     <TextField BorderPane.alignment="CENTER" />
                                  </center>
                               </BorderPane>
-                              <RadioButton mnemonicParsing="false" text="Write video to file" toggleGroup="$render" />
+                              <RadioButton fx:id="outputVideoChoice" mnemonicParsing="false" text="Write video to file" toggleGroup="$render" />
                               <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <left>
                                     <Label text="File" BorderPane.alignment="CENTER" />

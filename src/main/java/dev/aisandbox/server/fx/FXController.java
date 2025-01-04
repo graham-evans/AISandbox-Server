@@ -1,18 +1,17 @@
 package dev.aisandbox.server.fx;
 
-import dev.aisandbox.server.engine.SimulationBuilder;
-import dev.aisandbox.server.engine.SimulationParameterUtils;
+import dev.aisandbox.server.engine.*;
+import dev.aisandbox.server.engine.output.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +29,15 @@ public class FXController {
     private TextArea simDescription;
     @FXML
     private Spinner<Integer> agentCounter;
+
+    @FXML
+    private RadioButton outputImageChoice;
+
+    @FXML
+    private RadioButton outputScreenChoice;
+
+    @FXML
+    private RadioButton outputVideoChoice;
 
     @FXML
     private ListView<SimulationBuilder> simulationList;
@@ -76,7 +84,30 @@ public class FXController {
 
     @FXML
     void startSimulation(ActionEvent event) {
-        log.info("Starting simulation");
+        // get selected simulation
+        SimulationBuilder builder = simulationList.getSelectionModel().getSelectedItem();
+        if (builder != null) {
+            log.info("Starting simulation {} with {} agents", builder.getSimulationName(), agentCounter.getValue());
+            List<Player> players = Arrays.stream(
+                    builder.getAgentNames(agentCounter.getValue())).map(s -> (Player) new NetworkPlayer(s, 9000)).toList();
+            // create simulation
+            Simulation sim = builder.build(players, Theme.DEFAULT);
+            // create output
+            OutputRenderer out;
+            if (outputScreenChoice.isSelected()) {
+                out = new ScreenOutputRenderer(sim);
+            } else if (outputVideoChoice.isSelected()) {
+                out = new MP4Output(sim, new File("/test.mp4"));
+            } else if (outputImageChoice.isSelected()) {
+                out = new BitmapOutputRenderer(sim);
+            } else {
+                out = new NullOutputRenderer();
+            }
+            // start runner
+            SimulationRunner runner = new SimulationRunner(sim,out,players);
+            // TODO switch screens
+            runner.start();
+        }
     }
 
     /**
