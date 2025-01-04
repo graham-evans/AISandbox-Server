@@ -55,7 +55,7 @@ public class RuntimeUtils {
             }
             // write images
             if (cmd.hasOption('o') && "png".equalsIgnoreCase(cmd.getOptionValue('o'))) {
-                workBuilder.output(RuntimeOptions.OutputOptions.PNG);
+                workBuilder.output(RuntimeOptions.OutputOptions.IMAGE);
             }
             // choose the output directory
             workBuilder.outputDirectory(".");

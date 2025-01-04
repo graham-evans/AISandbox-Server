@@ -1,10 +1,7 @@
 package dev.aisandbox.launcher;
 
 import dev.aisandbox.server.engine.*;
-import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
-import dev.aisandbox.server.engine.output.NullOutputRenderer;
-import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
+import dev.aisandbox.server.engine.output.*;
 import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +10,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,12 +93,14 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
                 }
                 // TODO : set the number of clients
                 // create players
-                List<Player> players = List.of(new NetworkPlayer("Player", 9000));
+                List<Player> players = Arrays.stream(
+                        simulationBuilder.getAgentNames(simulationBuilder.getMinAgentCount())).map(s -> (Player) new NetworkPlayer(s, 9000)).toList();
                 // create simulation
                 Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
                 // create output
                 OutputRenderer out = switch (options.output()) {
-                    case PNG -> new BitmapOutputRenderer(sim);
+                    case IMAGE -> new BitmapOutputRenderer(sim);
+                    case VIDEO -> new MP4Output(sim,new File("./test.mp4"));
                     case SCREEN -> new ScreenOutputRenderer(sim);
                     default -> new NullOutputRenderer();
                 };
