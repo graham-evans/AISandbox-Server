@@ -4,13 +4,18 @@ import dev.aisandbox.server.engine.*;
 import dev.aisandbox.server.engine.output.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -105,6 +110,14 @@ public class FXController {
             }
             // start runner
             SimulationRunner runner = new SimulationRunner(sim,out,players);
+            // switch screens
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/fx/runtime.fxml"));
+                Window window = ((Button) event.getSource()).getScene().getWindow();
+                window.getScene().setRoot(root);
+            } catch (IOException e) {
+                log.error("Error loading fxml", e);
+            }
             // TODO switch screens
             runner.start();
         }
