@@ -13,13 +13,18 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class BitmapOutputRenderer implements OutputRenderer {
-    private final Simulation simulation;
+    private Simulation simulation;
 
     private long imageCounter = 0;
 
     private File outputDirectory = new File("./");
 
     private int skipframes = -1;
+
+    @Override
+    public void setup(Simulation simulation) {
+        this.simulation = simulation;
+    }
 
     @Override
     public String getName() {

@@ -21,7 +21,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class MP4Output implements OutputRenderer {
 
-    private final Simulation simulation;
+    private  Simulation simulation;
     private final File outputFile;
     private SeekableByteChannel out = null;
     private AWTSequenceEncoder encoder;
@@ -30,13 +30,15 @@ public class MP4Output implements OutputRenderer {
     private long imageCounter = 0;
 
 
+
     @Override
     public String getName() {
         return "MP4 encoder";
     }
 
     @Override
-    public void setup() {
+    public void setup(Simulation simulation) {
+        this.simulation = simulation;
         try {
             out = NIOUtils.writableFileChannel(outputFile.getAbsolutePath());
             encoder = new AWTSequenceEncoder(out, Rational.R(25, 1));

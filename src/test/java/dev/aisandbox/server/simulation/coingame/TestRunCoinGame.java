@@ -29,9 +29,9 @@ public class TestRunCoinGame {
             File outputDirectory = new File("build/test/coingame");
             outputDirectory.mkdirs();
             // create output
-            OutputRenderer out = new BitmapOutputRenderer(sim);
+            OutputRenderer out = new BitmapOutputRenderer();
             out.setOutputDirectory(outputDirectory);
-            out.setup();
+            out.setup(sim);
             // start simulation
             for (int step = 0; step < 40; step++) {
                 sim.step(out);

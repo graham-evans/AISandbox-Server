@@ -10,9 +10,8 @@ import java.awt.image.BufferedImage;
 @Slf4j
 @RequiredArgsConstructor
 public class ScreenOutputRenderer implements OutputRenderer {
-    private final Simulation simulation;
-
     ScreenFrame screenFrame = null;
+    private Simulation simulation;
 
     @Override
     public String getName() {
@@ -20,7 +19,8 @@ public class ScreenOutputRenderer implements OutputRenderer {
     }
 
     @Override
-    public void setup() {
+    public void setup(Simulation simulation) {
+        this.simulation = simulation;
         screenFrame = new ScreenFrame();
     }
 

@@ -28,10 +28,10 @@ public class TestRunHighLowCards {
             File outputDirectory = new File("build/test/highLowCards");
             outputDirectory.mkdirs();
             // create output
-            OutputRenderer out = new BitmapOutputRenderer(sim);
+            OutputRenderer out = new BitmapOutputRenderer();
             out.setSkipFrames(100);
             out.setOutputDirectory(outputDirectory);
-            out.setup();
+            out.setup(sim);
             // start simulation
             for (int step = 0; step < 1000; step++) {
                 sim.step(out);
