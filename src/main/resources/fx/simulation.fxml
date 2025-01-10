@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="430.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.aisandbox.server.fx.FXController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="430.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.aisandbox.server.fx.SetupController">
    <center>
       <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
          <children>

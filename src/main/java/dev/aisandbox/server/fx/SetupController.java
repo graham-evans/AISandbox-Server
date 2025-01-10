@@ -4,6 +4,7 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.output.*;
 import dev.aisandbox.server.options.ParameterEnumInfo;
 import dev.aisandbox.server.options.RuntimeUtils;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +28,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class FXController {
+public class SetupController {
 
     @Autowired
     List<SimulationBuilder> simulationBuilderList;
@@ -66,16 +67,12 @@ public class FXController {
         label.setAlignment(Pos.CENTER_LEFT);
         node.setCenter(label);
         // add editor
-        Node editor;
-//        Object target = BeanUtils.
-      /*  if (propertyDescriptor.getPropertyType().isEnum()) {
-            ComboBox<String> comboBox = new ComboBox<>();
-               comboBox.setItems(FXCollections.observableList(Arrays.stream(propertyDescriptor.getPropertyType().getEnumConstants()).map(Object::toString).toList()));
-            //   comboBox.getSelectionModel().select(parameter);
-            editor = comboBox;
-        } else { */
-        editor = new Label("Unknown type");
-//        }
+        ComboBox<String> editor = new ComboBox<>();
+        editor.setItems(FXCollections.observableList(propertyDescriptor.enumValues()));
+        editor.getSelectionModel().select(propertyDescriptor.parameterValue());
+        editor.valueProperty().addListener((observable, oldValue, newValue) -> {
+            RuntimeUtils.setEnumParameter(builder, propertyDescriptor.parameterName(), newValue);
+        });
         node.setRight(editor);
         return node;
     }
@@ -143,7 +140,7 @@ public class FXController {
             simulationPackageToLaunch = new SimulationPackage(builder, agentCounter.getValue(), 9000, out);
             // flip to runtime screen
             try {
-                FXMLLoader loader = new FXMLLoader(FXController.class.getResource("/fx/runtime.fxml"));
+                FXMLLoader loader = new FXMLLoader(SetupController.class.getResource("/fx/runtime.fxml"));
                 //      loader.setResources(ResourceBundle.getBundle("dev.aisandbox.client.fx.UI"));
                 loader.setControllerFactory(appContext::getBean);
                 Parent root = loader.load();
