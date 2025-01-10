@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,11 +39,11 @@ public class SandboxServerFXApplication extends Application {
         stage.setScene(new Scene(rootNode, 800, 600));
         stage.centerOnScreen();
         stage.setTitle("AI Sandbox");
-//        stage
-//                .getIcons()
-//                .add(
-//                        new Image(
-//                                AISandboxFX.class.getResourceAsStream("/dev/aisandbox/client/fx/logo-small.png")));
+        stage
+                .getIcons()
+                .add(
+                        new Image(
+                                SandboxServerFXApplication.class.getResourceAsStream("/images/AILogo.png")));
         stage.show();
     }
 
