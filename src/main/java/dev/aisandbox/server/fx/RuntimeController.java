@@ -3,7 +3,6 @@ package dev.aisandbox.server.fx;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.SimulationSetup;
 import javafx.event.ActionEvent;
@@ -31,7 +30,7 @@ public class RuntimeController {
     private TextArea logArea; // Value injected by FXMLLoader
 
     @Autowired
-    private FXController fxController;
+    private SetupController setupController;
 
     private SimulationRunner runner;
 
@@ -59,7 +58,7 @@ public class RuntimeController {
         logger.addAppender(fxLogbackAppender);
 
         // start the simulation
-        FXController.SimulationPackage pack = fxController.getSimulationPackageToLaunch();
+        SetupController.SimulationPackage pack = setupController.getSimulationPackageToLaunch();
         runner = SimulationSetup.setupSimulation(pack.builder(), pack.agentCount(), pack.defaultPort(), pack.output());
         runner.start();
         log.debug("Initialized RuntimeController");
