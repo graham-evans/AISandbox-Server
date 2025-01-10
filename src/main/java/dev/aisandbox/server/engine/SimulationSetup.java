@@ -12,12 +12,12 @@ public class SimulationSetup {
 
     public static SimulationRunner setupSimulation(SimulationBuilder builder,int agentCount,int defaultPort,OutputRenderer renderer) {
         AtomicInteger port = new AtomicInteger(defaultPort);
-        List<Player> agents = Arrays.stream(builder.getAgentNames(agentCount))
-                .map(s -> (Player) new NetworkPlayer(s, port.getAndIncrement())).toList();
+        List<Agent> agents = Arrays.stream(builder.getAgentNames(agentCount))
+                .map(s -> (Agent) new NetworkAgent(s, port.getAndIncrement())).toList();
         return setupSimulation(builder,agents,renderer);
     }
 
-    public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Player> agents, OutputRenderer renderer) {
+    public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents, OutputRenderer renderer) {
         // create simulation
         Simulation sim = builder.build(agents, Theme.DEFAULT);
         // start output

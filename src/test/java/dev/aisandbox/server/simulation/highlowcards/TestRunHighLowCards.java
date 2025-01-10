@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
@@ -21,9 +21,9 @@ public class TestRunHighLowCards {
             // create simulation
             SimulationBuilder simulationBuilder = new HighLowCardsBuilder();
             // create players
-            List<Player> players = List.of(new MockPlayer());
+            List<Agent> agents = List.of(new MockPlayer());
             // create simulation
-            Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
+            Simulation sim = simulationBuilder.build(agents, Theme.DEFAULT);
             // create output directory
             File outputDirectory = new File("build/test/highLowCards");
             outputDirectory.mkdirs();
@@ -38,7 +38,7 @@ public class TestRunHighLowCards {
             }
             // finish simulation
             sim.close();
-            players.forEach(Player::close);
+            agents.forEach(Agent::close);
         });
     }
 }

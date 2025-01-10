@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.bandit;
 
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
@@ -23,9 +23,9 @@ public class TestRunBandit {
             BanditScenario banditBuilder = new BanditScenario();
             banditBuilder.setBanditUpdate(BanditUpdateEnumeration.EQUALISE);
             // create players
-            List<Player> players = Arrays.stream(banditBuilder.getAgentNames(1)).map(s -> (Player) new MockBanditPlayer(s)).toList();
+            List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1)).map(s -> (Agent) new MockBanditPlayer(s)).toList();
             // create simulation
-            Simulation sim = banditBuilder.build(players, Theme.DEFAULT);
+            Simulation sim = banditBuilder.build(agents, Theme.DEFAULT);
             // create output directory
             File outputDirectory = new File("build/test/bandit");
             outputDirectory.mkdirs();
@@ -40,7 +40,7 @@ public class TestRunBandit {
             }
             // finish simulation
             sim.close();
-            players.forEach(Player::close);
+            agents.forEach(Agent::close);
         });
     }
 

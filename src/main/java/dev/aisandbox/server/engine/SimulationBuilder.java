@@ -51,9 +51,9 @@ public interface SimulationBuilder {
     /**
      * Build the {@link Simulation} object from the current settings.
      *
-     * @param players A list of player objects
+     * @param agents A list of player objects
      * @param theme The theme for any visualisations.
      * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner} or stepped through manually.
      */
-    Simulation build(List<Player> players, Theme theme);
+    Simulation build(List<Agent> agents, Theme theme);
 }

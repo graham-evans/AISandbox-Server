@@ -15,25 +15,25 @@ import java.util.Optional;
 import java.util.concurrent.SynchronousQueue;
 
 @Slf4j
-public class PlayerThread extends Thread {
+public class AgentThread extends Thread {
 
     private static final int MAX_PORT_TRIES = 10;
-    private final String playerName;
+    private final String agentName;
     private final int defaultPort;
     ServerSocket serverSocket = null;
     OutputStream output = null;
     InputStream inputStream = null;
     SynchronousQueue<GeneratedMessage> inputQueue = new SynchronousQueue<>();
-    SynchronousQueue<NetworkPlayerMessage> outputQueue = new SynchronousQueue<>();
+    SynchronousQueue<NetworkAgentMessage> outputQueue = new SynchronousQueue<>();
 
-    public PlayerThread(String playerName, int defaultPort) {
-        this.playerName = playerName;
+    public AgentThread(String agentName, int defaultPort) {
+        this.agentName = agentName;
         this.defaultPort = defaultPort;
     }
 
     public synchronized void sendMessage(GeneratedMessage message) {
         try {
-            outputQueue.put(new NetworkPlayerMessage(message, Optional.empty()));
+            outputQueue.put(new NetworkAgentMessage(message, Optional.empty()));
         } catch (InterruptedException e) {
             log.error("Send interrupted", e);
         }
@@ -42,7 +42,7 @@ public class PlayerThread extends Thread {
     public synchronized GeneratedMessage sendMessageGetResponse(GeneratedMessage message) {
         GeneratedMessage response = null;
         try {
-            outputQueue.put(new NetworkPlayerMessage(message, Optional.of(HighLowCardsAction.class)));
+            outputQueue.put(new NetworkAgentMessage(message, Optional.of(HighLowCardsAction.class)));
             response = inputQueue.take();
         } catch (InterruptedException e) {
             log.error("send/recieve interrupted", e);
@@ -53,14 +53,14 @@ public class PlayerThread extends Thread {
     @Override
     public void run() {
         serverSocket = getServerSocket();
-        log.info("Connect {} to port: {}", playerName, serverSocket.getLocalPort());
+        log.info("Connect {} to port: {}", agentName, serverSocket.getLocalPort());
         try (Socket socket = serverSocket.accept()) {
-            log.info("{} connected", playerName);
+            log.info("{} connected", agentName);
             output = socket.getOutputStream();
             inputStream = socket.getInputStream();
             while (true) {
 
-                NetworkPlayerMessage outgoingMessage = outputQueue.take();
+                NetworkAgentMessage outgoingMessage = outputQueue.take();
 
                 outgoingMessage.message().writeDelimitedTo(output);
 
@@ -70,7 +70,7 @@ public class PlayerThread extends Thread {
                     if (response.getClass() == outgoingMessage.expectedResponse().get()) {
                         inputQueue.put(response);
                     } else {
-                        log.error("Player response error, sent {} object, looking for {} received {}",
+                        log.error("Agent response error, sent {} object, looking for {} received {}",
                                 outgoingMessage.message().getClass().getName(),
                                 outgoingMessage.expectedResponse().get().getName(),
                                 response.getClass().getName()
@@ -82,9 +82,9 @@ public class PlayerThread extends Thread {
 
             }
         } catch (IOException e) {
-            log.error("IO Exception from {}", playerName, e);
+            log.error("IO Exception from {}", agentName, e);
         } catch (InterruptedException e) {
-            log.error("InterruptedException from {}", playerName, e);
+            log.error("InterruptedException from {}", agentName, e);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
@@ -92,7 +92,7 @@ public class PlayerThread extends Thread {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        log.info("Player {} thread finished", playerName);
+        log.info("Agent {} thread finished", agentName);
     }
 
     private ServerSocket getServerSocket() {
@@ -111,7 +111,7 @@ public class PlayerThread extends Thread {
             }
         }
         if (socket == null) {
-            log.error("Unable to create server socket for {} after {} tries", playerName, MAX_PORT_TRIES);
+            log.error("Unable to create server socket for {} after {} tries", agentName, MAX_PORT_TRIES);
             System.exit(1);
         }
         return socket;

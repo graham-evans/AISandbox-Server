@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
@@ -36,7 +36,7 @@ public class HighLowCards implements Simulation {
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
     private final Theme theme;
     // simulation elements
-    private final Player player;
+    private final Agent agent;
     private final int cardCount;
     private final Random rand = new Random();
     private final List<Card> faceUpCards = new ArrayList<>();
@@ -51,8 +51,8 @@ public class HighLowCards implements Simulation {
     private String episodeID;
     private int score = 0;
 
-    public HighLowCards(Player player, int cardCount, Theme theme) {
-        this.player = player;
+    public HighLowCards(Agent agent, int cardCount, Theme theme) {
+        this.agent = agent;
         this.cardCount = cardCount;
         this.theme = theme;
         scoreWidget = RollingValueChartWidget.builder()
@@ -119,7 +119,7 @@ public class HighLowCards implements Simulation {
         textWidget.addText("Showing " + faceUpCards.stream().map(Card::getShortDrescription).collect(Collectors.joining(",")));
         output.display();
         // send the current state and request an action
-        HighLowCardsAction action = player.recieve(
+        HighLowCardsAction action = agent.receive(
                 HighLowCardsState.newBuilder()
                         .setCardCount(cardCount)
                         .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
@@ -139,9 +139,9 @@ public class HighLowCards implements Simulation {
         // adjust score and show result
         if (correctGuess) {
             score++;
-            textWidget.addText("[" + player.getPlayerName() + "] " + action.getAction().name() + " - correct");
+            textWidget.addText("[" + agent.getAgentName() + "] " + action.getAction().name() + " - correct");
         } else {
-            textWidget.addText("[" + player.getPlayerName() + "] " + action.getAction().name() + " - wrong");
+            textWidget.addText("[" + agent.getAgentName() + "] " + action.getAction().name() + " - wrong");
         }
         output.display();
         // is the episode finished?
@@ -150,11 +150,11 @@ public class HighLowCards implements Simulation {
             scoreWidget.addValue(score);
             statisticsWidget.addScore(score);
             scoreHistogramWidget.addValue(score);
-            player.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
+            agent.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
             reset();
         } else {
             // play continues
-            player.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.CONTINUE).build());
+            agent.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.CONTINUE).build());
         }
     }
 

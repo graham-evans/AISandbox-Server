@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.coingame;
 
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
@@ -43,8 +43,8 @@ public class CoinGameBuilder implements SimulationBuilder {
     private CoinScenario scenario = CoinScenario.SINGLE_21_2;
 
     @Override
-    public Simulation build(List<Player> players, Theme theme) {
-        return new CoinGame(players,scenario, theme);
+    public Simulation build(List<Agent> agents, Theme theme) {
+        return new CoinGame(agents,scenario, theme);
     }
 
 

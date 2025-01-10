@@ -1,7 +1,7 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.simulation.highlowcards.proto.HighLowCardsAction;
 import dev.aisandbox.server.simulation.highlowcards.proto.HighLowChoice;
 import lombok.extern.slf4j.Slf4j;
@@ -9,12 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Random;
 
 @Slf4j
-public class MockPlayer implements Player {
+public class MockPlayer implements Agent {
 
     private final Random random = new Random();
 
     @Override
-    public String getPlayerName() {
+    public String getAgentName() {
         return "Mock Player";
     }
 
@@ -24,7 +24,7 @@ public class MockPlayer implements Player {
     }
 
     @Override
-    public <T extends GeneratedMessage> T recieve(GeneratedMessage state, Class<T> responseType) {
+    public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
         if (responseType != HighLowCardsAction.class) {
             log.error("Asking for {} but I can only respond with HighLowCardAction", responseType.getName());
             return null;

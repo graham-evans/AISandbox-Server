@@ -12,7 +12,7 @@ public class SimulationRunner extends Thread {
 
     private final Simulation simulation;
     private final OutputRenderer outputRenderer;
-    private final List<Player> players;
+    private final List<Agent> agents;
 
     private boolean running = true;
 
@@ -31,7 +31,7 @@ public class SimulationRunner extends Thread {
         }
         // finish simulation
         simulation.close();
-        players.forEach(Player::close);
+        agents.forEach(Agent::close);
     }
 
 }

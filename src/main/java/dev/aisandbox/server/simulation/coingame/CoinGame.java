@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.coingame;
 
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
@@ -25,7 +25,7 @@ public class CoinGame implements Simulation {
     private static final int MARGIN = 100;
     private static final int TEXT_HEIGHT = 280;
     private static final int TEXT_WIDTH = OutputConstants.HD_WIDTH - 3 * MARGIN - 920;
-    private final List<Player> players;
+    private final List<Agent> agents;
     private final CoinScenario scenario;
     private final Theme theme;
     private final TextWidget textWidget;
@@ -37,8 +37,8 @@ public class CoinGame implements Simulation {
     private BufferedImage logo;
 
 
-    public CoinGame(final List<Player> players, final CoinScenario scenario, final Theme theme) {
-        this.players = players;
+    public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
+        this.agents = agents;
         this.scenario = scenario;
         this.theme = theme;
         coins = new int[scenario.getRows().length];
@@ -77,14 +77,14 @@ public class CoinGame implements Simulation {
         // todo add extra frame to begin
         log.debug("ask client {} to move", currentPlayer);
         CoinGameState currentState = generateCurrentState(Signal.PLAY);
-        CoinGameAction action = players.get(currentPlayer).recieve(currentState, CoinGameAction.class);
+        CoinGameAction action = agents.get(currentPlayer).receive(currentState, CoinGameAction.class);
         // try and make the move
         try {
             coins = makeMove(action.getSelectedRow(), action.getRemoveCount());
-            textWidget.addText(players.get(currentPlayer).getPlayerName() + " takes " + action.getRemoveCount() + " from row " + action.getSelectedRow() + " leaving " + coins[action.getSelectedRow()] + ".");
+            textWidget.addText(agents.get(currentPlayer).getAgentName() + " takes " + action.getRemoveCount() + " from row " + action.getSelectedRow() + " leaving " + coins[action.getSelectedRow()] + ".");
             if (isGameFinished()) {
                 // current player lost
-                textWidget.addText(players.get(currentPlayer).getPlayerName() + " lost");
+                textWidget.addText(agents.get(currentPlayer).getAgentName() + " lost");
                 informResult((currentPlayer + 1) % 2);
                 output.display();
                 reset();
@@ -93,23 +93,23 @@ public class CoinGame implements Simulation {
             }
         } catch (IllegalCoinAction e) {
             log.error(e.getMessage());
-            textWidget.addText(players.get(currentPlayer).getPlayerName() + " makes an illegal move.");
+            textWidget.addText(agents.get(currentPlayer).getAgentName() + " makes an illegal move.");
             // player has tried an illegal move - end the game
             informResult((currentPlayer + 1) % 2);
             output.display();
             reset();
         }
         currentPlayer++;
-        if (currentPlayer >= players.size()) {
+        if (currentPlayer >= agents.size()) {
             currentPlayer = 0;
         }
     }
 
     private void informResult(int winner) {
-        Player winPlayer = players.get(winner);
-        Player losePlayer = players.get((winner + 1) % 2);
-        winPlayer.send(generateCurrentState(Signal.WIN));
-        losePlayer.send(generateCurrentState(Signal.LOSE));
+        Agent winAgent = agents.get(winner);
+        Agent loseAgent = agents.get((winner + 1) % 2);
+        winAgent.send(generateCurrentState(Signal.WIN));
+        loseAgent.send(generateCurrentState(Signal.LOSE));
         textSnapshot.addText("Player [" + winner + "] wins");
     }
 

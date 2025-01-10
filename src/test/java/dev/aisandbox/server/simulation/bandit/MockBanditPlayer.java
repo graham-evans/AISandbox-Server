@@ -1,7 +1,7 @@
 package dev.aisandbox.server.simulation.bandit;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.simulation.bandit.proto.BanditAction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class MockBanditPlayer implements Player {
+public class MockBanditPlayer implements Agent {
 
     @Getter
-    private final String playerName;
+    private final String agentName;
 
     @Override
     public void send(GeneratedMessage o) {
@@ -20,7 +20,7 @@ public class MockBanditPlayer implements Player {
     }
 
     @Override
-    public <T extends GeneratedMessage> T recieve(GeneratedMessage state, Class<T> responseType) {
+    public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
         if (responseType != BanditAction.class) {
             log.error("Asking for {} but I can only respond with BanditAction", responseType.getName());
             return null;

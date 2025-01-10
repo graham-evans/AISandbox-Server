@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.bandit;
 
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
@@ -78,8 +78,8 @@ public class BanditScenario implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Player> players, Theme theme) {
-        return new BanditRuntime(players.getFirst(), new Random(), banditCount.getNumber(), banditPulls.getNumber(), banditNormal, banditStd, banditUpdate,theme);
+    public Simulation build(List<Agent> agents, Theme theme) {
+        return new BanditRuntime(agents.getFirst(), new Random(), banditCount.getNumber(), banditPulls.getNumber(), banditNormal, banditStd, banditUpdate,theme);
     }
 
 }

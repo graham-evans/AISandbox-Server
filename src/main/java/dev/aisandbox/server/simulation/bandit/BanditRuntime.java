@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.bandit;
 
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
@@ -32,7 +32,7 @@ import java.util.Random;
 public class BanditRuntime implements Simulation {
 
     // initial parameters
-    private final Player player;
+    private final Agent agent;
     private final Random rand;
     private final int banditCount;
     private final int pullCount;
@@ -50,9 +50,9 @@ public class BanditRuntime implements Simulation {
     private List<Bandit> bandits = new ArrayList<>();
     private TextWidget logWidget = TextWidget.builder().width(400).height(300).build();
 
-    public BanditRuntime(Player player, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
+    public BanditRuntime(Agent agent, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
         // store parameters
-        this.player = player;
+        this.agent = agent;
         this.rand = rand;
         this.banditCount = banditCount;
         this.pullCount = pullCount;
@@ -76,14 +76,14 @@ public class BanditRuntime implements Simulation {
         sessionStep++;
         log.debug("Starting step {}", sessionStep);
         // ask user which bandit to pull
-        BanditAction action = player.recieve(getState(), BanditAction.class);
+        BanditAction action = agent.receive(getState(), BanditAction.class);
         int arm = action.getArm();
         log.debug("Received request to pull arm {}", arm);
         // todo - test for invalid request
         // get the score
         double score = bandits.get(arm).pull(rand);
         // log the action
-        logWidget.addText(player.getPlayerName() + " selects bandit " + arm + " gets reward " + score);
+        logWidget.addText(agent.getAgentName() + " selects bandit " + arm + " gets reward " + score);
         // should we reset
         boolean reset = sessionStep == pullCount;
         if (reset) {
@@ -92,7 +92,7 @@ public class BanditRuntime implements Simulation {
         // update the screen
         output.display();
         // tell the user the result
-        player.send(BanditResult.newBuilder().setArm(arm).setScore(score).setSignal(reset ? Signal.RESET : Signal.CONTINUE).build());
+        agent.send(BanditResult.newBuilder().setArm(arm).setScore(score).setSignal(reset ? Signal.RESET : Signal.CONTINUE).build());
         // update the bandits
         switch (updateRule) {
             case RANDOM:

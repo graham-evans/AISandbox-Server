@@ -1,6 +1,6 @@
 package dev.aisandbox.server.simulation.coingame;
 
-import dev.aisandbox.server.engine.Player;
+import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
@@ -22,9 +22,9 @@ public class TestRunCoinGame {
             // create simulation
             SimulationBuilder simulationBuilder = new CoinGameBuilder();
             // create players
-            List<Player> players = Arrays.stream(simulationBuilder.getAgentNames(2)).map(s -> (Player) new MockPlayer(s)).toList();
+            List<Agent> agents = Arrays.stream(simulationBuilder.getAgentNames(2)).map(s -> (Agent) new MockPlayer(s)).toList();
             // create simulation
-            Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
+            Simulation sim = simulationBuilder.build(agents, Theme.DEFAULT);
             // create output directory
             File outputDirectory = new File("build/test/coingame");
             outputDirectory.mkdirs();
@@ -38,7 +38,7 @@ public class TestRunCoinGame {
             }
             // finish simulation
             sim.close();
-            players.forEach(Player::close);
+            agents.forEach(Agent::close);
         });
     }
 }

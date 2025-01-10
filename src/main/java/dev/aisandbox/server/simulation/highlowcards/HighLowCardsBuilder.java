@@ -34,7 +34,7 @@ public class HighLowCardsBuilder implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Player> players, Theme theme) {
-        return new HighLowCards(players.getFirst(), 9, theme);
+    public Simulation build(List<Agent> agents, Theme theme) {
+        return new HighLowCards(agents.getFirst(), 9, theme);
     }
 }
