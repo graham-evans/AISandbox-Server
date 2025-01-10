@@ -12,8 +12,4 @@ public enum BanditUpdateEnumeration {
     this.name = envUrl;
   }
 
-  @Override
-  public String toString() {
-    return name;
-  }
 }
