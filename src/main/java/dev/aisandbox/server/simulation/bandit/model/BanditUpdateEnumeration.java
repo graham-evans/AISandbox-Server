@@ -6,7 +6,7 @@ public enum BanditUpdateEnumeration {
   FADE("Selection Fade"), // the selected bandit decreases 0.001
   EQUALISE("Equalise"); // the selected bandit decreases 0.001 others increase 0.001/k
 
-  private String name;
+  private final String name;
 
   BanditUpdateEnumeration(String envUrl) {
     this.name = envUrl;

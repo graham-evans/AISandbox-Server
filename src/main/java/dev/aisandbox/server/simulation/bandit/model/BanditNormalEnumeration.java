@@ -8,7 +8,7 @@ public enum BanditNormalEnumeration {
   UNIFORM_1_1("Uniform -1:1"),
   UNIFORM_0_5("Uniform 0:5");
 
-  private String name;
+  private final String name;
 
   BanditNormalEnumeration(String envUrl) {
     this.name = envUrl;
