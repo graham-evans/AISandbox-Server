@@ -31,6 +31,7 @@ public class CoinGame implements Simulation {
     private final TextWidget textWidget;
     private final TextWidget textSnapshot;
     private int[] coins;
+    private int maxPic = 2;
     private int currentPlayer = 0;
     private BufferedImage[] rowImages;
     private BufferedImage[] coinImages;
@@ -131,6 +132,10 @@ public class CoinGame implements Simulation {
         if (coins[row] < amount) {
             throw new IllegalCoinAction("Not enough coins in the selected row.");
         }
+        // is the agent taking too many coins
+        if (amount > maxPic) {
+            throw new IllegalCoinAction("Taking more than the maximum amount of coins.");
+        }
         // make the move
         int[] newCoins = Arrays.copyOf(coins, coins.length);
         newCoins[row] -= amount;
@@ -147,7 +152,12 @@ public class CoinGame implements Simulation {
     }
 
     private CoinGameState generateCurrentState(Signal signal) {
-        return CoinGameState.newBuilder().setSignal(signal).build();
+        return CoinGameState.newBuilder()
+                .addAllCoinCount(Arrays.stream(coins).boxed().toList())
+                .setRowCount(coins.length)
+                .setMaxPick(maxPic)
+                .setSignal(signal)
+                .build();
     }
 
     @Override
