@@ -1,22 +1,27 @@
 package dev.aisandbox.server.fx;
 
-import dev.aisandbox.server.engine.*;
+import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.output.*;
+import dev.aisandbox.server.options.ParameterEnumInfo;
+import dev.aisandbox.server.options.RuntimeUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.stage.Window;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,6 +31,9 @@ public class FXController {
 
     @Autowired
     List<SimulationBuilder> simulationBuilderList;
+
+    @Autowired
+    private ApplicationContext appContext;
 
     @FXML
     private VBox parameterBox;
@@ -46,6 +54,31 @@ public class FXController {
 
     @FXML
     private ListView<SimulationBuilder> simulationList;
+
+    @Getter
+    private SimulationPackage simulationPackageToLaunch = null;
+
+    public static Node createParameterEditor(SimulationBuilder builder, ParameterEnumInfo propertyDescriptor) {
+        BorderPane node = new BorderPane();
+        // add label
+        Label label = new Label(propertyDescriptor.parameterName());
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setAlignment(Pos.CENTER_LEFT);
+        node.setCenter(label);
+        // add editor
+        Node editor;
+//        Object target = BeanUtils.
+      /*  if (propertyDescriptor.getPropertyType().isEnum()) {
+            ComboBox<String> comboBox = new ComboBox<>();
+               comboBox.setItems(FXCollections.observableList(Arrays.stream(propertyDescriptor.getPropertyType().getEnumConstants()).map(Object::toString).toList()));
+            //   comboBox.getSelectionModel().select(parameter);
+            editor = comboBox;
+        } else { */
+        editor = new Label("Unknown type");
+//        }
+        node.setRight(editor);
+        return node;
+    }
 
     @FXML
     void initialize() {
@@ -75,7 +108,9 @@ public class FXController {
                         agentCounter.setDisable(false);
                         // populate the parameters with editor boxes
                         parameterBox.getChildren().clear();
-                        parameterBox.getChildren().addAll(SimulationParameterUtils.getParameters(newValue).stream().map(parameter -> SimulationParameterUtils.createParameterEditor(parameter)).toList());
+                        for (ParameterEnumInfo e : RuntimeUtils.listEnumParameters(newValue)) {
+                            parameterBox.getChildren().add(createParameterEditor(newValue, e));
+                        }
                     } else {
                         simDescription.setText("");
                         agentCounter.setDisable(true);
@@ -89,37 +124,34 @@ public class FXController {
 
     @FXML
     void startSimulation(ActionEvent event) {
-        // get selected simulation
+        // get selected simulation builder
         SimulationBuilder builder = simulationList.getSelectionModel().getSelectedItem();
+
         if (builder != null) {
-            log.info("Starting simulation {} with {} agents", builder.getSimulationName(), agentCounter.getValue());
-            List<Player> players = Arrays.stream(
-                    builder.getAgentNames(agentCounter.getValue())).map(s -> (Player) new NetworkPlayer(s, 9000)).toList();
-            // create simulation
-            Simulation sim = builder.build(players, Theme.DEFAULT);
             // create output
             OutputRenderer out;
             if (outputScreenChoice.isSelected()) {
-                out = new ScreenOutputRenderer(sim);
+                out = new ScreenOutputRenderer();
             } else if (outputVideoChoice.isSelected()) {
-                out = new MP4Output(sim, new File("/test.mp4"));
+                out = new MP4Output(new File("/test.mp4"));
             } else if (outputImageChoice.isSelected()) {
-                out = new BitmapOutputRenderer(sim);
+                out = new BitmapOutputRenderer();
             } else {
                 out = new NullOutputRenderer();
             }
-            // start runner
-            SimulationRunner runner = new SimulationRunner(sim,out,players);
-            // switch screens
+            // package the simulation ready to launch
+            simulationPackageToLaunch = new SimulationPackage(builder, agentCounter.getValue(), 9000, out);
+            // flip to runtime screen
             try {
-                Parent root = FXMLLoader.load(getClass().getResource("/fx/runtime.fxml"));
+                FXMLLoader loader = new FXMLLoader(FXController.class.getResource("/fx/runtime.fxml"));
+                //      loader.setResources(ResourceBundle.getBundle("dev.aisandbox.client.fx.UI"));
+                loader.setControllerFactory(appContext::getBean);
+                Parent root = loader.load();
                 Window window = ((Button) event.getSource()).getScene().getWindow();
                 window.getScene().setRoot(root);
             } catch (IOException e) {
-                log.error("Error loading fxml", e);
+                log.error("Error switching Javafx scenes", e);
             }
-            // TODO switch screens
-            runner.start();
         }
     }
 
@@ -135,5 +167,6 @@ public class FXController {
         return Math.min(max, Math.max(min, value));
     }
 
-
+    public record SimulationPackage(SimulationBuilder builder, int agentCount, int defaultPort, OutputRenderer output) {
+    }
 }
