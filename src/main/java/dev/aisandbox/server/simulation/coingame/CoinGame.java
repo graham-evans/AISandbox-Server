@@ -29,19 +29,21 @@ public class CoinGame implements Simulation {
     private final CoinScenario scenario;
     private final Theme theme;
     private final TextWidget textWidget;
-    private final TextWidget textSnapshot = TextWidget.builder().width(200).height(200).build();
+    private final TextWidget textSnapshot;
     private int[] coins;
     private int currentPlayer = 0;
     private BufferedImage[] rowImages;
     private BufferedImage[] coinImages;
     private BufferedImage logo;
 
-
     public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
         this.agents = agents;
         this.scenario = scenario;
         this.theme = theme;
+        // build the coin pile
         coins = new int[scenario.getRows().length];
+        // set up the widgets
+        textSnapshot = TextWidget.builder().width(200).height(200).theme(theme).build();
         textWidget = TextWidget.builder()
                 .width(TEXT_WIDTH)
                 .height(TEXT_HEIGHT)
@@ -74,7 +76,8 @@ public class CoinGame implements Simulation {
 
     @Override
     public void step(OutputRenderer output) {
-        // todo add extra frame to begin
+        // draw the current state
+        output.display();
         log.debug("ask client {} to move", currentPlayer);
         CoinGameState currentState = generateCurrentState(Signal.PLAY);
         CoinGameAction action = agents.get(currentPlayer).receive(currentState, CoinGameAction.class);
@@ -88,8 +91,6 @@ public class CoinGame implements Simulation {
                 informResult((currentPlayer + 1) % 2);
                 output.display();
                 reset();
-            } else {
-                output.display();
             }
         } catch (IllegalCoinAction e) {
             log.error(e.getMessage());

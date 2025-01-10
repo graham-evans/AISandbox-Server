@@ -6,14 +6,13 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.net.URL;
 
 @Slf4j
 public class ScreenFrame extends JFrame {
 
     private BufferedImage image;
 
-    private ImageCanvas canvas;
+    private final ImageCanvas canvas;
 
     public ScreenFrame() throws HeadlessException {
         // setup default image
@@ -35,8 +34,7 @@ public class ScreenFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         this.toFront();
-        URL imgURL = ScreenFrame.class.getResource("/images/AILogo.png");
-        this.setIconImage(new ImageIcon(imgURL).getImage());
+        this.setIconImage(new ImageIcon(ScreenFrame.class.getResource("/images/AILogo.png")).getImage());
     }
 
     public void updateImage(BufferedImage image) {

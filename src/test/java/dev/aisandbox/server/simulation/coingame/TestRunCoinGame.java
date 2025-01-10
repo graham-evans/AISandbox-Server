@@ -20,7 +20,8 @@ public class TestRunCoinGame {
     public void testRunCoinGame() {
         assertDoesNotThrow(() -> {
             // create simulation
-            SimulationBuilder simulationBuilder = new CoinGameBuilder();
+            CoinGameBuilder simulationBuilder = new CoinGameBuilder();
+            simulationBuilder.setScenario(CoinScenario.NIM);
             // create players
             List<Agent> agents = Arrays.stream(simulationBuilder.getAgentNames(2)).map(s -> (Agent) new MockPlayer(s)).toList();
             // create simulation
