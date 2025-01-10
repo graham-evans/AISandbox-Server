@@ -23,9 +23,8 @@ public class SimulationRunner extends Thread {
 
     @Override
     public void run() {
-        outputRenderer.setup();
         log.info("Writing output to {}", outputRenderer.getName());
-        log.info("Starting simulation (ctrl-c to exit)...");
+        log.info("Starting simulation...");
         // start simulation
         while (running) {
             simulation.step(outputRenderer);
