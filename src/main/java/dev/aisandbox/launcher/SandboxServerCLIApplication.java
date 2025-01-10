@@ -2,6 +2,7 @@ package dev.aisandbox.launcher;
 
 import dev.aisandbox.server.engine.*;
 import dev.aisandbox.server.engine.output.*;
+import dev.aisandbox.server.options.ParameterEnumInfo;
 import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @SpringBootApplication(scanBasePackages = "dev.aisandbox.server")
 public class SandboxServerCLIApplication implements CommandLineRunner {
+
     private final List<SimulationBuilder> simulationBuilders;
 
     @Override
@@ -51,15 +53,19 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
     private void helpSimulation(String simulationName) {
         log.info("Simulation name: {}", simulationName);
         SimulationBuilder simulationBuilder = findBuilder(simulationName);
-        log.info("Minimum players: {}", simulationBuilder.getMinAgentCount());
-        log.info("Maximum players: {}", simulationBuilder.getMaxAgentCount());
-        log.info("Options (use -o key:value to set)");
-        List<SimulationParameter> parameterList = SimulationParameterUtils.getParameters(simulationBuilder);
-        if (!parameterList.isEmpty()) {
-            log.info(" Options:");
-            for (SimulationParameter parameter : parameterList) {
-                log.info(" - {}", parameter.toString());
+        log.info(" Minimum players: {}", simulationBuilder.getMinAgentCount());
+        log.info(" Maximum players: {}", simulationBuilder.getMaxAgentCount());
+        try {
+            List<ParameterEnumInfo> parameters= RuntimeUtils.listEnumParameters(simulationBuilder);
+            // show parameters
+            if (!parameters.isEmpty()) {
+                log.info("Options (use -o key:value to set)");
+                for (ParameterEnumInfo parameter : parameters) {
+                    log.info(" {}", parameter);
+                }
             }
+        } catch (Exception e) {
+            log.error("Error during describe simulation", e);
         }
     }
 
@@ -74,7 +80,6 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
             } else {
                 SimulationBuilder simulationBuilder = oBuilder.get();
                 // apply parameters (if any)
-                List<SimulationParameter> simulationParameterList = SimulationParameterUtils.getParameters(simulationBuilder);
                 for (String parameter : options.parameters()) {
                     String[] keyValue = parameter.split("[=:]");
                     if (keyValue.length != 2) {
@@ -82,29 +87,25 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
                     } else {
                         String key = keyValue[0];
                         String value = keyValue[1];
-                        Optional<SimulationParameter> oParam = simulationParameterList.stream().filter(parameter1 -> parameter1.parameterName().equalsIgnoreCase(key)).findFirst();
-                        if (oParam.isPresent()) {
-                            log.debug("Adding key '{}' with value '{}'", key, value);
-                            SimulationParameterUtils.setParameter(simulationBuilder, oParam.get(), value);
-                        } else {
-                            log.warn("Can't find parameter called '{}', use --list to show all parameters", key);
+                        try {
+                            RuntimeUtils.setEnumParameter(simulationBuilder, key, value);
+                        } catch (Exception e) {
+                            log.warn("Can't set {} to {}", key, value);
                         }
                     }
                 }
-                // TODO : set the number of clients
-                // create players
-                List<Player> players = Arrays.stream(
-                        simulationBuilder.getAgentNames(simulationBuilder.getMinAgentCount())).map(s -> (Player) new NetworkPlayer(s, 9000)).toList();
-                // create simulation
-                Simulation sim = simulationBuilder.build(players, Theme.DEFAULT);
+                // TODO : set the number of agents
+                int agents = simulationBuilder.getMaxAgentCount();
                 // create output
                 OutputRenderer out = switch (options.output()) {
-                    case IMAGE -> new BitmapOutputRenderer(sim);
-                    case VIDEO -> new MP4Output(sim,new File("./test.mp4"));
-                    case SCREEN -> new ScreenOutputRenderer(sim);
+                    case IMAGE -> new BitmapOutputRenderer();
+                    case VIDEO -> new MP4Output( new File("./test.mp4"));
+                    case SCREEN -> new ScreenOutputRenderer();
                     default -> new NullOutputRenderer();
                 };
-                SimulationRunner runner = new SimulationRunner(sim,out,players);
+                // setup simulation & runner
+                SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder,agents,9000,out);
+                // start simulation
                 runner.start();
             }
         }

@@ -1,13 +1,30 @@
 package dev.aisandbox.server.options;
 
+import dev.aisandbox.server.engine.SimulationBuilder;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.ConvertUtilsBean;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.cli.*;
+import org.apache.commons.lang3.EnumUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @UtilityClass
 public class RuntimeUtils {
 
+    /***
+     * Get the options available for the CLI.
+     *
+     * @return the populated Options class from Apache Commons CLI
+     */
     public static Options getOptions() {
         final Options options = new Options();
         // add help option
@@ -26,6 +43,12 @@ public class RuntimeUtils {
         return options;
     }
 
+    /**
+     * Parse a set of strings from the command line and populate a RuntimeOptions POJO.
+     *
+     * @param args the strings from the command line
+     * @return the RuntimeOptions POJO
+     */
     public static RuntimeOptions parseCommandLine(String[] args) {
         RuntimeOptions options = null;
         try {
@@ -76,6 +99,61 @@ public class RuntimeUtils {
             System.exit(-1);
         }
         return options;
+    }
+
+    /***
+     * List all the enum parameters exposed by a SimulationBuilder.
+     *
+     * @param simulationBuilder the builder to return information about.
+     * @return A list of ParameterEnumInfo records.
+     */
+    public static List<ParameterEnumInfo> listEnumParameters(SimulationBuilder simulationBuilder) {
+        try {
+            Map<String, String> props = BeanUtils.describe(simulationBuilder);
+            List<ParameterEnumInfo> enums = new ArrayList<>();
+            for (Map.Entry<String, String> entry : props.entrySet()) {
+                Class<?> pType = PropertyUtils.getPropertyType(simulationBuilder, entry.getKey());
+                if (pType.isEnum()) {
+                    ParameterEnumInfo p = new ParameterEnumInfo(entry.getKey(), entry.getValue(), Arrays.stream(pType.getEnumConstants()).map(Object::toString).toList() );
+                    enums.add(p);
+                }
+            }
+            return enums;
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            log.error("Error getting parameter information from {}",simulationBuilder.getClass().getName());
+            return List.of();
+        }
+    }
+
+    /***
+     * Set an Enum parameter on a SimulationBuilder
+     * @param builder the SimulationBuilder being configured
+     * @param key the parameter to update
+     * @param value the text value to create a new enumeration object from
+     */
+    public static void setEnumParameter(SimulationBuilder builder, String key, String value) {
+        BeanUtilsBean beanUtilsBean = new BeanUtilsBean(new ConvertUtilsBean() {
+            @Override
+            public Object convert(String value, Class clazz) {
+                if (clazz.isEnum()) {
+                    @SuppressWarnings("unchecked")
+                    Object e = EnumUtils.getEnumIgnoreCase(clazz, value);
+                    if (e==null) {
+                        log.warn("Can't set enum constant {} to non existent value {}", key, value);
+                        return clazz.getEnumConstants()[0];
+                    } else {
+                        return e;
+                    }
+                } else {
+                    return super.convert(value, clazz);
+                }
+            }
+        });
+        try {
+            beanUtilsBean.setProperty(builder, key, value);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            log.warn("Error setting enum constant {} to {}", key, value);
+        }
     }
 
 }
