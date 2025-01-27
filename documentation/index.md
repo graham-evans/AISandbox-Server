@@ -12,21 +12,21 @@ We provide REST based interfaces that can be used by any modern programming lang
 <div class="row align-items-start">
 <div class="col">
 
-# Download
+## Download
 
 Download the sandbox and start coding straight away.
 
 </div>
 <div class="col">
 
-# Environments
+## Environments
 
 Look at the environments you can code against.
 
 </div>
 <div class="col">
 
-# Learn to code AI
+## Learn to code AI
 
 Learn the Q-Learning algorithm and start solving problems.
 
