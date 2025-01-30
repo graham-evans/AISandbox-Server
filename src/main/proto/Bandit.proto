@@ -5,13 +5,16 @@ option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.bandit.proto";
 
 message BanditState {
-  int32 banditCount = 1;
-  int32 pullCount = 2;
-  int32 pull = 3;
+  string sessionID = 1; // the ID for this simulation run
+  string episodeID = 2; // the ID for the episode
+  int32 banditCount = 3; // the number of bandits available
+  int32 pullCount = 4; // the total number of pulls this episode
+  int32 pull = 5; // the number of the next pull
 }
 
 message BanditAction {
   int32 arm = 1;
+  optional string debugNote = 2;
 }
 
 message BanditResult {
