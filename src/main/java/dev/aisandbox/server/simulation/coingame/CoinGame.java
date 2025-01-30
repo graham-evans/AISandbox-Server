@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 public class CoinGame implements Simulation {
@@ -36,6 +37,8 @@ public class CoinGame implements Simulation {
     private BufferedImage[] rowImages;
     private BufferedImage[] coinImages;
     private BufferedImage logo;
+    private String sessionID = UUID.randomUUID().toString();
+    private String episodeID;
 
     public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
         this.agents = agents;
@@ -73,6 +76,8 @@ public class CoinGame implements Simulation {
     private void reset() {
         // reset the number of coins in each pile
         System.arraycopy(scenario.getRows(), 0, coins, 0, scenario.getRows().length);
+        // change the episode ID
+        episodeID = UUID.randomUUID().toString();
     }
 
     @Override
@@ -157,6 +162,8 @@ public class CoinGame implements Simulation {
                 .setRowCount(coins.length)
                 .setMaxPick(maxPic)
                 .setSignal(signal)
+                .setSessionID(sessionID)
+                .setEpisodeID(episodeID)
                 .build();
     }
 
