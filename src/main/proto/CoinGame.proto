@@ -5,10 +5,12 @@ option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.coingame.proto";
 
 message CoinGameState {
-  int32 rowCount = 1;
-  repeated int32 coinCount = 2;
-  int32 maxPick = 3;
-  Signal signal = 4;
+  string sessionID = 1; // the ID for this simulation run
+  string episodeID = 2; // the ID for the episode
+  int32 rowCount = 3; // the number of rows
+  repeated int32 coinCount = 4; // the number of coins in each row
+  int32 maxPick = 5; // the number maximum number of coins that can be taken from a row.
+  Signal signal = 6;
 }
 
 enum Signal {
@@ -20,4 +22,5 @@ enum Signal {
 message CoinGameAction {
   int32 selectedRow = 1;
   int32 removeCount = 2;
+  optional string debugNote = 3;
 }
