@@ -16,20 +16,19 @@ For the sake of clarity, this licences govern how the application, source code a
 
 But if you do, we’d love to hear about it.
 
-## Libraries and others work
+### Libraries and others work
 
-It simply wouldn't be possible to maintain the application code without the work of other teams who licence their work and make it possible for others to build upon it. AISandbox server relies, includes and links to the following works.
+It simply wouldn't be possible to maintain the application code without the work of other teams who licence their work and make it possible for others to build upon it. AISandbox server relies on, includes and links to, the following works.
 
-| Work                                        | Licence                | Original Source       |
-|---------------------------------------------|------------------------|-----------------------|
-| Protocol Buffers (Protobuf)                 | BSD                    | https://protobuf.dev/ |
-| Spring Framework & spring Boot              | Apache version 2.0     | https://spring.io/    |
-| JFreeChart                                  | LGPL                   |                       |
-| XChart                                      | Apache version 2.0     |                       |
-| Apche Commons (CLI, Statistics, Math, Lang) | Apache version 2.0     |                       |
-| JCodec                                      | FreeBSD Licence        | http://jcodec.org/    |
-| Lombok *                                    | MIT Licence            |                       |
-| JUnit *                                     | Eclipse Public License | https://junit.org/    |
-| Gradle *                                    | Apache version 2.0     | https://gradle.org/   |
+| Work                                         | Licence                | Original Source                        |
+|----------------------------------------------|------------------------|----------------------------------------|
+| Protocol Buffers (Protobuf)                  | BSD                    | https://protobuf.dev/                  |
+| Spring Framework & spring Boot               | Apache version 2.0     | https://spring.io/                     |
+| XChart                                       | Apache version 2.0     | https://knowm.org/open-source/xchart/  |
+| Apache Commons (CLI, Statistics, Math, Lang) | Apache version 2.0     | https://commons.apache.org/            |
+| JCodec                                       | FreeBSD Licence        | http://jcodec.org/                     |
+| Lombok *                                     | MIT Licence            | https://projectlombok.org/             |
+| JUnit *                                      | Eclipse Public License | https://junit.org/                     |
+| Gradle *                                     | Apache version 2.0     | https://gradle.org/                    |
 
 Note: * These libraries are used to compile the application but are not included in any compiled artifacts.
