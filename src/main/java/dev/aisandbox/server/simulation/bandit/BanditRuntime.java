@@ -27,10 +27,15 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Slf4j
 public class BanditRuntime implements Simulation {
 
+    //    private AverageRewardGraph averageRewardGraph;
+//    private OptimalActionGraph optimalActionGraph;
+    //   private BanditGraph banditGraph;
+    private static final int MARGIN = 100;
     // initial parameters
     private final Agent agent;
     private final Random rand;
@@ -41,11 +46,8 @@ public class BanditRuntime implements Simulation {
     private final BanditUpdateEnumeration updateRule;
     private final Theme theme;
     private int sessionStep = 0;
-    private int iteration;
-    //    private AverageRewardGraph averageRewardGraph;
-//    private OptimalActionGraph optimalActionGraph;
-    //   private BanditGraph banditGraph;
-    private static final int MARGIN=100;
+    private String sessionID = UUID.randomUUID().toString();
+    private String episodeID;
     private BufferedImage logo;
     private List<Bandit> bandits = new ArrayList<>();
     private TextWidget logWidget = TextWidget.builder().width(400).height(300).build();
@@ -115,10 +117,13 @@ public class BanditRuntime implements Simulation {
 
     /**
      * Generate a state (protobuf) object based on the current state.
+     *
      * @return the state of the current game
      */
     private BanditState getState() {
         BanditState.Builder builder = BanditState.newBuilder();
+        builder.setSessionID(sessionID);
+        builder.setEpisodeID(episodeID);
         builder.setBanditCount(bandits.size());
         builder.setPull(sessionStep);
         builder.setPullCount(pullCount);
@@ -132,7 +137,7 @@ public class BanditRuntime implements Simulation {
         // draw logo
         graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
         // draw log window
-        graphics2D.drawImage(logWidget.getImage(),800,MARGIN,null);
+        graphics2D.drawImage(logWidget.getImage(), 800, MARGIN, null);
         // draw ave reward
         //   graphics2D.drawImage(averageRewardGraph.getImage(), 100, 200, null);
         //   graphics2D.drawImage(optimalActionGraph.getGraph(900, 400), 100, 650, null);
@@ -173,6 +178,7 @@ public class BanditRuntime implements Simulation {
             bandits.add(new Bandit(normal.getNormalValue(rand), std.getValue()));
         }
         sessionStep = 0;
+        episodeID = UUID.randomUUID().toString();
     }
 
     /**
