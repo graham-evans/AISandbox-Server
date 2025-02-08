@@ -1,13 +1,14 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.3.4'
-    id 'io.spring.dependency-management' version '1.1.6'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
     id "com.google.protobuf" version "0.9.4"
+    id("io.freefair.lombok") version "8.12.1"
     id 'me.qoomon.git-versioning' version '6.4.4'
     id 'pmd'
 }
 
 group = 'dev.aisandbox'
+mainClassName = 'dev.aisandbox.launcher.SandboxServerLauncher'
 
 def protobufVersion = '4.28.2'
 def protocVersion = protobufVersion
@@ -31,6 +32,11 @@ java {
     }
 }
 
+javafx {
+    version = javaFXVersion
+    modules = [ 'javafx.controls','javafx.fxml' ]
+}
+
 javadoc {
     destinationDir = file("build/docs/javadoc")
 }
@@ -40,6 +46,11 @@ tasks.register('copyDocs', Copy) {
     description = "Copies documentation into the build tree."
     from 'documentation'
     into 'build/docs'
+}
+
+tasks.withType(JavaCompile) {
+    options.deprecation = true
+    options.compilerArgs << '-Xlint:unchecked'
 }
 
 configurations {
@@ -65,7 +76,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
     // protobuf
     implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
     // xchart
@@ -78,34 +88,27 @@ dependencies {
     implementation ('commons-beanutils:commons-beanutils:1.9.4') {
         exclude group: 'commons-logging', module:'commons-logging'
     }
+    // jcodec
+    implementation 'org.jcodec:jcodec-javase:0.2.5'
+    implementation 'org.jcodec:jcodec:0.2.5'
+    // logging
+    implementation 'ch.qos.logback:logback-core:1.5.6'
+    testImplementation 'org.slf4j:slf4j-api:2.1.0-alpha1'
+    implementation 'ch.qos.logback:logback-classic:1.5.6'
     // JCodec for writing MP4 files
     implementation 'org.jcodec:jcodec:0.2.3'
     implementation 'org.jcodec:jcodec-javase:0.2.3'
-    // lombok for removing boiler plate code
-    compileOnly 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    // javafx (all platforms)
-    implementation "org.openjfx:javafx-controls:${javaFXVersion}:win"
-    implementation "org.openjfx:javafx-fxml:${javaFXVersion}:win"
-    implementation "org.openjfx:javafx-base:${javaFXVersion}:win"
-    implementation "org.openjfx:javafx-graphics:${javaFXVersion}:win"
-    implementation "org.openjfx:javafx-controls:${javaFXVersion}:linux"
-    implementation "org.openjfx:javafx-fxml:${javaFXVersion}:linux"
-    implementation "org.openjfx:javafx-base:${javaFXVersion}:linux"
-    implementation "org.openjfx:javafx-graphics:${javaFXVersion}:linux"
-    implementation "org.openjfx:javafx-controls:${javaFXVersion}:mac"
-    implementation "org.openjfx:javafx-fxml:${javaFXVersion}:mac"
-    implementation "org.openjfx:javafx-base:${javaFXVersion}:mac"
-    implementation "org.openjfx:javafx-graphics:${javaFXVersion}:mac"
     // test libs
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation(platform('org.junit:junit-bom:5.11.4'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 pmd {

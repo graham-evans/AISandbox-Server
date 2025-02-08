@@ -6,12 +6,15 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+
 public class CoinGameBuilder implements SimulationBuilder {
+
+    @Getter
+    @Setter
+    private CoinScenario scenario = CoinScenario.SINGLE_21_2;
 
     @Override
     public String getSimulationName() {
@@ -38,15 +41,10 @@ public class CoinGameBuilder implements SimulationBuilder {
         return new String[]{"Player 1", "Player 2"};
     }
 
-    @Getter
-    @Setter
-    private CoinScenario scenario = CoinScenario.SINGLE_21_2;
-
     @Override
     public Simulation build(List<Agent> agents, Theme theme) {
-        return new CoinGame(agents,scenario, theme);
+        return new CoinGame(agents, scenario, theme);
     }
-
 
 
 }

@@ -3,7 +3,6 @@ package dev.aisandbox.launcher;
 import javafx.application.Application;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.boot.SpringApplication;
 
 @Slf4j
 public class SandboxServerLauncher {
@@ -13,13 +12,13 @@ public class SandboxServerLauncher {
         if (args.length > 0) {
             // launch UI
             log.info("Launching AISandbox Server CLI");
-            SpringApplication.run(SandboxServerCLIApplication.class, args);
+            SandboxServerCLIApplication application = new SandboxServerCLIApplication();
+            application.run(args);
         } else {
             // launch CLI
             log.info("Launching AISandbox Server FX");
             Application.launch(SandboxServerFXApplication.class, args);
         }
     }
-
 
 }

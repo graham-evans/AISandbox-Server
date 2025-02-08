@@ -20,8 +20,11 @@ public class RollingValueHistogramWidget {
     private final int width;
     private final int height;
     private final int window;
-    private final int binCount=9;
+    private final int binCount;
     private final Theme theme;
+    private final String title;
+    private final String xAxisTitle;
+    private final String yAxisTitle;
     // internal fields
     private final List<Double> values = new ArrayList<>();
     private double minValue = Double.MAX_VALUE;
@@ -57,7 +60,7 @@ public class RollingValueHistogramWidget {
         BufferedImage image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
         if (!values.isEmpty()) {
             Histogram histogram = new Histogram(values,binCount,minValue,maxValue);
-            CategoryChart chart = new CategoryChartBuilder().width(width).height(height).title("Xchart Histogram").xAxisTitle("Score").yAxisTitle("Frequency").build();
+            CategoryChart chart = new CategoryChartBuilder().width(width).height(height).title(title).xAxisTitle(xAxisTitle).yAxisTitle(yAxisTitle).theme(theme.getChartTheme()).build();
             chart.getStyler().setAvailableSpaceFill(.96);
             chart.getStyler().setOverlapped(false);
             chart.addSeries("histogram ", histogram.getxAxisData(), histogram.getyAxisData());
@@ -75,10 +78,14 @@ public class RollingValueHistogramWidget {
         private int width = 200;
         private int height = 200;
         private int window = 200;
+        private int binCount = 10;
         private Theme theme = Theme.DEFAULT;
+        private String title = "Xchart Histogram";
+        private String xAxisTitle = "Score";
+        private String yAxisTitle = "Frequency";
 
         public RollingValueHistogramWidget build() {
-            return new RollingValueHistogramWidget(width, height, window, theme);
+            return new RollingValueHistogramWidget(width, height, window, binCount,theme,title,xAxisTitle,yAxisTitle);
         }
 
     }
