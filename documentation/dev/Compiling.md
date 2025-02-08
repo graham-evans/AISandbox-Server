@@ -12,15 +12,17 @@ AI Sandbox is written in Java, with the source code hosted on GitHub (using the 
 3. Extract the directory structure to your hard drive.
 4. Open a terminal / command prompt, change to the directory where you extracted the source, and type
 
-```./gradlew run``` for Linux / Mac
+```./gradlew run```
 
-or
+for Linux / Mac or
 
-```gradle run``` for Windows
+```gradle run```
+
+for Windows
 
 
 Tips
 
-- When compiling for the first time, Gradle will download a lot of libraries needed to compile and run the application. This may take a while, but subsequent compilations will be faster.
+- When compiling for the first time, Gradle will download the libraries needed to compile and run the application. This may take a while, but subsequent compilations will be faster.
 - The compilation will include platform specific graphics libraries (for JavaFX) so will not be cross-platform.
-- Making changes to the code is far easier with an IDE that supports Gradle projects. We recommend IntelliJ IDEA or Apache Netbeans.
+- Making changes to the code is far easier with an IDE that supports Gradle projects. We recommend [IntelliJ IDEA](https://www.jetbrains.com/idea) or [Apache Netbeans](https://netbeans.apache.org/).
