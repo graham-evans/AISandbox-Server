@@ -10,16 +10,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 
 @Slf4j
-@Component
 public class RuntimeController {
+
+    FXModel model = FXModel.INSTANCE.getInstance();
+
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -29,7 +29,6 @@ public class RuntimeController {
     @FXML // fx:id="logArea"
     private TextArea logArea; // Value injected by FXMLLoader
 
-    @Autowired
     private SetupController setupController;
 
     private SimulationRunner runner;
@@ -58,8 +57,8 @@ public class RuntimeController {
         logger.addAppender(fxLogbackAppender);
 
         // start the simulation
-        SetupController.SimulationPackage pack = setupController.getSimulationPackageToLaunch();
-        runner = SimulationSetup.setupSimulation(pack.builder(), pack.agentCount(), pack.defaultPort(), pack.output());
+
+        runner = SimulationSetup.setupSimulation(model.getSelectedSimulationBuilder().get(), model.getAgentCount().get(), model.getDefaultPort().get(), model.getOutputRenderer().get());
         runner.start();
         log.debug("Initialized RuntimeController");
     }

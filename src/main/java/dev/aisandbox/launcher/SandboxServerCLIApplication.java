@@ -1,30 +1,34 @@
 package dev.aisandbox.launcher;
 
-import dev.aisandbox.server.engine.*;
+import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.SimulationRunner;
+import dev.aisandbox.server.engine.SimulationSetup;
 import dev.aisandbox.server.engine.output.*;
 import dev.aisandbox.server.options.ParameterEnumInfo;
 import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
+import dev.aisandbox.server.simulation.SimulationEnumeration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.HelpFormatter;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@SpringBootApplication(scanBasePackages = "dev.aisandbox.server")
-public class SandboxServerCLIApplication implements CommandLineRunner {
+public class SandboxServerCLIApplication {
 
     private final List<SimulationBuilder> simulationBuilders;
 
-    @Override
-    public void run(String... args) throws Exception {
+    public SandboxServerCLIApplication() {
+        simulationBuilders = Arrays.stream(SimulationEnumeration.values()).map(SimulationEnumeration::getBuilder).toList();
+    }
+
+    public void run(String... args) {
         // parse the command line
         RuntimeOptions runtimeOptions = RuntimeUtils.parseCommandLine(args);
         // do we need to force 'head' mode?
@@ -56,7 +60,7 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
         log.info(" Minimum players: {}", simulationBuilder.getMinAgentCount());
         log.info(" Maximum players: {}", simulationBuilder.getMaxAgentCount());
         try {
-            List<ParameterEnumInfo> parameters= RuntimeUtils.listEnumParameters(simulationBuilder);
+            List<ParameterEnumInfo> parameters = RuntimeUtils.listEnumParameters(simulationBuilder);
             // show parameters
             if (!parameters.isEmpty()) {
                 log.info("Options (use -o key:value to set)");
@@ -99,12 +103,12 @@ public class SandboxServerCLIApplication implements CommandLineRunner {
                 // create output
                 OutputRenderer out = switch (options.output()) {
                     case IMAGE -> new BitmapOutputRenderer();
-                    case VIDEO -> new MP4Output( new File("./test.mp4"));
+                    case VIDEO -> new MP4Output(new File("./test.mp4"));
                     case SCREEN -> new ScreenOutputRenderer();
                     default -> new NullOutputRenderer();
                 };
                 // setup simulation & runner
-                SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder,agents,9000,out);
+                SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents, 9000, out);
                 // start simulation
                 runner.start();
             }

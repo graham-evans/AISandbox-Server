@@ -1,11 +1,12 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
-import dev.aisandbox.server.engine.*;
-import org.springframework.stereotype.Component;
+import dev.aisandbox.server.engine.Agent;
+import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.Theme;
 
 import java.util.List;
 
-@Component
 public class HighLowCardsBuilder implements SimulationBuilder {
 
     @Override

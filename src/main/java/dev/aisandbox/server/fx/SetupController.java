@@ -17,24 +17,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 @Slf4j
-@Component
+
 public class SetupController {
 
-    @Autowired
-    List<SimulationBuilder> simulationBuilderList;
-
-    @Autowired
-    private ApplicationContext appContext;
+    FXModel model = FXModel.INSTANCE.getInstance();
 
     @FXML
     private VBox parameterBox;
@@ -55,9 +46,6 @@ public class SetupController {
 
     @FXML
     private ListView<SimulationBuilder> simulationList;
-
-    @Getter
-    private SimulationPackage simulationPackageToLaunch = null;
 
     public static Node createParameterEditor(SimulationBuilder builder, ParameterEnumInfo propertyDescriptor) {
         BorderPane node = new BorderPane();
@@ -80,29 +68,45 @@ public class SetupController {
     @FXML
     void initialize() {
         // FX assertions
+        assert agentCounter != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation.fxml'.";
+        assert outputImageChoice != null : "fx:id=\"outputImageChoice\" was not injected: check your FXML file 'simulation.fxml'.";
+        assert outputScreenChoice != null : "fx:id=\"outputScreenChoice\" was not injected: check your FXML file 'simulation.fxml'.";
+        assert outputVideoChoice != null : "fx:id=\"outputVideoChoice\" was not injected: check your FXML file 'simulation.fxml'.";
         assert parameterBox != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation.fxml'.";
-
-        // spring assertions
-        assert simulationBuilderList != null : "simulationBuilderList was null";
-
-        // initialise the components
-        agentCounter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
+        assert simDescription != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation.fxml'.";
+        assert simulationList != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation.fxml'.";
+        // bind simulation list to model
+        simulationList.setItems(model.getSimulations());
+        simulationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        model.getSelectedSimulationBuilder().bind(simulationList.getSelectionModel().selectedItemProperty());
+        // disable agent counter until builder is selected
+//        model.getAgentCount().bind(agentCounter.valueProperty());
         agentCounter.setDisable(true);
-        Collections.sort(simulationBuilderList, new SimulationComparator());
-        simulationList.getItems().addAll(simulationBuilderList);
+        agentCounter.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(
+                        1,
+                        1,
+                        1));
+
+        // initialise the agent counter
+        /*   */
+        // set builder list renderer
         simulationList.setCellFactory(new SimulationBuilderRenderer());
+        // update when selecting a new builder
         simulationList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
                 {
                     if (newValue != null) {
                         // update description
                         simDescription.setText(newValue.getDescription());
                         // update agent count options
+                        model.getAgentCount().unbind();
                         agentCounter.setValueFactory(
                                 new SpinnerValueFactory.IntegerSpinnerValueFactory(
                                         newValue.getMinAgentCount(),
                                         newValue.getMaxAgentCount(),
                                         getValueInRange(agentCounter.getValue(), newValue.getMinAgentCount(), newValue.getMaxAgentCount())));
                         agentCounter.setDisable(false);
+                        model.getAgentCount().bind(agentCounter.valueProperty());
                         // populate the parameters with editor boxes
                         parameterBox.getChildren().clear();
                         for (ParameterEnumInfo e : RuntimeUtils.listEnumParameters(newValue)) {
@@ -110,6 +114,7 @@ public class SetupController {
                         }
                     } else {
                         simDescription.setText("");
+                        model.getAgentCount().unbind();
                         agentCounter.setDisable(true);
                         parameterBox.getChildren().clear();
                     }
@@ -121,28 +126,22 @@ public class SetupController {
 
     @FXML
     void startSimulation(ActionEvent event) {
-        // get selected simulation builder
-        SimulationBuilder builder = simulationList.getSelectionModel().getSelectedItem();
-
-        if (builder != null) {
-            // create output
-            OutputRenderer out;
+        if (model.getSelectedSimulationBuilder().get() != null) {
+            // store output in model
             if (outputScreenChoice.isSelected()) {
-                out = new ScreenOutputRenderer();
+                model.getOutputRenderer().set(new ScreenOutputRenderer());
             } else if (outputVideoChoice.isSelected()) {
-                out = new MP4Output(new File("/test.mp4"));
+                model.getOutputRenderer().set(new MP4Output(new File("/test.mp4")));
             } else if (outputImageChoice.isSelected()) {
-                out = new BitmapOutputRenderer();
+                model.getOutputRenderer().set(new BitmapOutputRenderer());
             } else {
-                out = new NullOutputRenderer();
+                model.getOutputRenderer().set(new NullOutputRenderer());
             }
-            // package the simulation ready to launch
-            simulationPackageToLaunch = new SimulationPackage(builder, agentCounter.getValue(), 9000, out);
             // flip to runtime screen
             try {
                 FXMLLoader loader = new FXMLLoader(SetupController.class.getResource("/fx/runtime.fxml"));
                 //      loader.setResources(ResourceBundle.getBundle("dev.aisandbox.client.fx.UI"));
-                loader.setControllerFactory(appContext::getBean);
+                //        loader.setControllerFactory(appContext::getBean);
                 Parent root = loader.load();
                 Window window = ((Button) event.getSource()).getScene().getWindow();
                 window.getScene().setRoot(root);
@@ -164,6 +163,4 @@ public class SetupController {
         return Math.min(max, Math.max(min, value));
     }
 
-    public record SimulationPackage(SimulationBuilder builder, int agentCount, int defaultPort, OutputRenderer output) {
-    }
 }

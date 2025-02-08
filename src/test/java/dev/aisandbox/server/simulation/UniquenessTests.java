@@ -1,23 +1,22 @@
 package dev.aisandbox.server.simulation;
 
 
-import dev.aisandbox.launcher.SandboxServerCLIApplication;
 import dev.aisandbox.server.engine.SimulationBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = SandboxServerCLIApplication.class)
 public class UniquenessTests {
 
-    @Autowired
-    List<SimulationBuilder> builderList;
+    private static final List<SimulationBuilder> builderList = new ArrayList<>();
+
+    @BeforeAll
+    static void setUpBeforeClass() {
+        Arrays.stream(SimulationEnumeration.values()).forEach(simulationEnum -> builderList.add(simulationEnum.getBuilder()));
+    }
 
     /**
      * Tests that there are the expected number of simulation builders available

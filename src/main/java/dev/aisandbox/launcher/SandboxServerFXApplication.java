@@ -7,22 +7,18 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.ResourceBundle;
 
 @Slf4j
-@SpringBootApplication(scanBasePackages = "dev.aisandbox.server")
 public class SandboxServerFXApplication extends Application {
-    private ConfigurableApplicationContext context;
+//    private ConfigurableApplicationContext context;
     private Parent rootNode;
 
     @Override
     public void init() throws Exception {
         log.info("Initialising application - FX");
-        SpringApplicationBuilder builder = new SpringApplicationBuilder(SandboxServerFXApplication.class);
+ /*       SpringApplicationBuilder builder = new SpringApplicationBuilder(SandboxServerFXApplication.class);
         builder.headless(false);
         context = builder.run(getParameters().getRaw().toArray(new String[0]));
         // load the root FXML screen, using spring to create the controller
@@ -30,13 +26,16 @@ public class SandboxServerFXApplication extends Application {
                 new FXMLLoader(getClass().getResource("/fx/simulation.fxml"));
    //     loader.setResources(ResourceBundle.getBundle("dev.aisandbox.client.fx.UI"));
         loader.setControllerFactory(context::getBean);
-        rootNode = loader.load();
+        rootNode = loader.load();*/
     }
 
     @Override
     public void start(Stage stage) throws Exception {
         log.info("Starting application - FX");
-        stage.setScene(new Scene(rootNode, 800, 600));
+
+        Parent root = FXMLLoader.load(getClass().getResource("/fx/simulation.fxml"));
+        Scene scene = new Scene(root,800,600);
+        stage.setScene(scene);
         stage.centerOnScreen();
         stage.setTitle("AI Sandbox");
         stage
@@ -56,7 +55,7 @@ public class SandboxServerFXApplication extends Application {
         } catch (Exception e) {
             log.debug("Error when closing runtime", e);
         }*/
-        context.close();
-        System.exit(0);
+  //      context.close();
+     //   System.exit(0);
     }
 }
