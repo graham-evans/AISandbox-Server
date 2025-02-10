@@ -15,7 +15,10 @@ public enum Theme {
             Color.decode("#eeeeee"),
             Color.BLACK,
             Color.lightGray,
-            Color.darkGray,
+            Color.WHITE,
+            Color.BLUE,
+            Color.ORANGE,
+            Color.DARK_GRAY,
             Styler.ChartTheme.XChart
     );
 
@@ -23,6 +26,10 @@ public enum Theme {
     private final Color text;
     private final Color widgetBackground;
     private final Color graphBackground;
+    private final Color primaryColor;
+    private final Color secondaryColor;
+    private final Color graphOutlineColor;
+
     private final Styler.ChartTheme chartTheme;
 
 }
