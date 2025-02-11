@@ -5,19 +5,26 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 @Slf4j
 public class BaseGraph {
     // positional constants
     private final static int PADDING = 16; // pixel spacing around the outside
-    private final static int MARGIN = 2; // pixel spacing between objects
+    private final static int MARGIN = 3; // pixel spacing between objects
     private final static int TITLE_FONT_SIZE = 18;
     private final static Font TITLE_FONT = new Font("Arial", Font.BOLD, TITLE_FONT_SIZE);
     private final static int AXIS_FONT_SIZE = 12;
     private final static Font AXIS_FONT = new Font("Arial", Font.PLAIN, AXIS_FONT_SIZE);
     private final static int TICK_FONT_SIZE = 10;
     private final static Font TICK_FONT = new Font("Arial", Font.PLAIN, TICK_FONT_SIZE);
+    private final static float dash1[] = {10.0f};
+    private final static BasicStroke dashed =
+            new BasicStroke(1.0f,
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER,
+                    10.0f, dash1, 0.0f);
     // graph inputs
     private final int width;
     private final int height;
@@ -25,8 +32,8 @@ public class BaseGraph {
     private final String xAxisTitle;
     private final String yAxisTitle;
     private final Theme theme;
-    private final NiceAxisScale xAxisScale;
-    private final NiceAxisScale yAxisScale;
+    private final AxisScale xAxisScale;
+    private final AxisScale yAxisScale;
     // image fields
     @Getter
     private final BufferedImage image;
@@ -37,7 +44,7 @@ public class BaseGraph {
     private final int boxHeight;
 
 
-    public BaseGraph(int width, int height, String title, String xAxisTitle, String yAxisTitle, Theme theme, NiceAxisScale xAxisScale, NiceAxisScale yAxisScale) {
+    public BaseGraph(int width, int height, String title, String xAxisTitle, String yAxisTitle, Theme theme, AxisScale xAxisScale, AxisScale yAxisScale) {
         this.width = width;
         this.height = height;
         this.title = title;
@@ -49,13 +56,44 @@ public class BaseGraph {
         this.image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
         this.graphics = image.createGraphics();
         // calculate graph space
-        xBoxStart = PADDING + AXIS_FONT_SIZE + MARGIN * 2;
+        xBoxStart = PADDING + AXIS_FONT_SIZE + TICK_FONT_SIZE + MARGIN * 4;
         boxWidth = width - xBoxStart - PADDING;
         yBoxStart = PADDING + TITLE_FONT_SIZE + MARGIN;
-        boxHeight = height - yBoxStart - PADDING - AXIS_FONT_SIZE - MARGIN * 5 - TICK_FONT_SIZE;
+        boxHeight = height - yBoxStart - PADDING - AXIS_FONT_SIZE - MARGIN * 3 - TICK_FONT_SIZE;
         // draw graph background
         graphics.setColor(theme.getGraphBackground());
         graphics.fillRect(xBoxStart, yBoxStart, boxWidth, boxHeight);
+        // draw x axis gridlines
+        graphics.setColor(theme.getGraphOutlineColor());
+        Stroke line = graphics.getStroke();
+        graphics.setStroke(dashed);
+        for (double x : xAxisScale.getTicks()) {
+            int dx = (int) (boxWidth * xAxisScale.getScaledValue(x));
+            graphics.drawLine(xBoxStart + dx, yBoxStart, xBoxStart + dx, yBoxStart + boxHeight);
+        }
+        // draw y axis gridlines
+        for (double y : yAxisScale.getTicks()) {
+            int dy = (int) (boxHeight * (1.0 - yAxisScale.getScaledValue(y)));
+            graphics.drawLine(xBoxStart, yBoxStart + dy, xBoxStart + boxWidth, yBoxStart + dy);
+        }
+        graphics.setStroke(line);
+    }
+
+    public void addLine(double startX, double startY, double endX, double endY, Color color) {
+        int x1 = (int) (xAxisScale.getScaledValue(startX) * boxWidth);
+        int y1 = (int) (yAxisScale.getScaledValue(startY) * boxHeight);
+        int x2 = (int) (xAxisScale.getScaledValue(endX) * boxWidth);
+        int y2 = (int) (yAxisScale.getScaledValue(endY) * boxHeight);
+        graphics.setColor(color);
+        graphics.drawLine(xBoxStart + x1, yBoxStart + boxHeight - y1, xBoxStart + x2, yBoxStart + boxHeight - y2);
+    }
+
+    public void addAxisAndTitle() {
+        // draw titles
+        drawCenteredTest(PADDING, PADDING, width - PADDING * 2, TITLE_FONT_SIZE, title, TITLE_FONT, Color.RED);
+        drawCenteredTest(PADDING, height - PADDING - AXIS_FONT_SIZE, width - PADDING * 2, AXIS_FONT_SIZE, xAxisTitle, AXIS_FONT, Color.CYAN);
+        drawVirticalCenteredTest(PADDING, height - PADDING, height - PADDING * 2, AXIS_FONT_SIZE, yAxisTitle, AXIS_FONT, Color.YELLOW);
+        // draw graph border
         graphics.setColor(theme.getGraphOutlineColor());
         graphics.drawRect(xBoxStart, yBoxStart, boxWidth, boxHeight);
         // draw x axis
@@ -63,25 +101,21 @@ public class BaseGraph {
         for (double x : xAxisScale.getTicks()) {
             int dx = (int) (boxWidth * xAxisScale.getScaledValue(x));
             graphics.drawLine(xBoxStart + dx, yBoxStart + boxHeight + MARGIN, xBoxStart + dx, yBoxStart + boxHeight + MARGIN * 2);
-            drawCenteredTest(xBoxStart + dx - 20, yBoxStart + boxHeight + MARGIN * 2, 40, TICK_FONT_SIZE, Double.toString(x), TICK_FONT, null);
+            drawCenteredTest(xBoxStart + dx - 20, yBoxStart + boxHeight + MARGIN * 2, 40, TICK_FONT_SIZE, Double.toString(x), TICK_FONT, Color.magenta);
         }
         // draw y axis
         graphics.drawLine(xBoxStart - MARGIN, yBoxStart, xBoxStart - MARGIN, yBoxStart + boxHeight);
         for (double y : yAxisScale.getTicks()) {
             int dy = (int) (boxHeight * (1.0 - yAxisScale.getScaledValue(y)));
-            graphics.drawLine(xBoxStart - MARGIN, yBoxStart + dy, xBoxStart - MARGIN * 2, yBoxStart + dy);
+            graphics.drawLine(xBoxStart - MARGIN * 2, yBoxStart + dy, xBoxStart - MARGIN, yBoxStart + dy);
+            drawVirticalCenteredTest(xBoxStart - MARGIN * 3 - TICK_FONT_SIZE, yBoxStart + dy + 20, 40, TICK_FONT_SIZE, Double.toString(y), TICK_FONT, Color.green);
         }
-    }
-
-    public void addAxisAndTitle() {
-        drawCenteredTest(PADDING, PADDING, width - PADDING * 2, TITLE_FONT_SIZE, title, TITLE_FONT, Color.RED);
-        drawCenteredTest(PADDING, height - PADDING - AXIS_FONT_SIZE, width - PADDING * 2, AXIS_FONT_SIZE, xAxisTitle, AXIS_FONT, Color.CYAN);
     }
 
     private void drawCenteredTest(int x, int y, int width, int height, String title, Font font, Color debugColour) {
         if (debugColour != null) {
             graphics.setColor(debugColour);
-            graphics.fillRect(x, y, width, height);
+            //           graphics.fillRect(x, y, width, height);
         }
         graphics.setFont(font);
         graphics.setColor(theme.getText());
@@ -92,4 +126,26 @@ public class BaseGraph {
         graphics.drawString(title, x + dx, y + height);
     }
 
+    private void drawVirticalCenteredTest(int x, int y, int width, int height, String title, Font font, Color debugColour) {
+
+        AffineTransform origTransform = graphics.getTransform();
+
+        graphics.rotate(Math.toRadians(-90));
+        graphics.translate(-y, x);
+
+        if (debugColour != null) {
+            graphics.setColor(debugColour);
+            //        graphics.fillRect(0, 0, width, height);
+        }
+
+        graphics.setFont(font);
+        graphics.setColor(theme.getText());
+
+        FontMetrics metrics = graphics.getFontMetrics(font);
+        int dx = (width - metrics.stringWidth(title)) / 2;
+
+        graphics.drawString(title, dx, height);
+
+        graphics.setTransform(origTransform);
+    }
 }

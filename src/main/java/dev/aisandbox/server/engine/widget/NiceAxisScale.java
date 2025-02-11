@@ -13,10 +13,9 @@ import java.util.List;
  * ISBN 978-0-08-050753-8
  */
 
-public class NiceAxisScale {
+public class NiceAxisScale implements AxisScale {
     private static final int CONST = 5;
 
-    private final int maxTicks = 5;
     private final double range;
     private final double tickSpacing;
     @Getter
@@ -25,8 +24,12 @@ public class NiceAxisScale {
     private final double maximum;
 
     public NiceAxisScale(double minimumValue, double maximumValue) {
+        this(minimumValue, maximumValue, 5);
+    }
+
+    public NiceAxisScale(double minimumValue, double maximumValue, int maxTicks) {
         // special case - min = max
-        if (minimumValue==maximumValue) {
+        if (minimumValue == maximumValue) {
             minimumValue -= 0.5;
             maximumValue += 0.5;
         }
@@ -73,11 +76,12 @@ public class NiceAxisScale {
         return niceFraction * Math.pow(10, exponent);
     }
 
-
+    @Override
     public double getScaledValue(double value) {
         return (value - minimum) / (maximum - minimum);
     }
 
+    @Override
     public List<Double> getTicks() {
         List<Double> ticks = new ArrayList<Double>();
         double currentTick = minimum;
