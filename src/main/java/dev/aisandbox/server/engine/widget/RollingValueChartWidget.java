@@ -4,13 +4,9 @@ import dev.aisandbox.server.engine.Theme;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.knowm.xchart.QuickChart;
-import org.knowm.xchart.XYChart;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,31 +37,26 @@ public class RollingValueChartWidget {
         image = null;
     }
 
-
     public BufferedImage getImage() {
         if (image == null) {
-            image = renderImage();
+            if (values.isEmpty()) {
+                image = GraphicsUtils.createBlankImage(width, height, theme.getBackground());
+            } else {
+                AxisScale xAxis = new NiceAxisScale(startIndex, startIndex + values.size() - 1, width / 40);
+                AxisScale yAxis = new NiceAxisScale(
+                        values.stream().mapToDouble(value -> value).min().orElse(0.0),
+                        values.stream().mapToDouble(value -> value).max().orElse(0.0),
+                        height / 40);
+                BaseGraph graph = new BaseGraph(width, height, title, xTitle, yTitle, theme, xAxis, yAxis);
+                for (int i = 1; i < values.size(); i++) {
+                    graph.addLine(startIndex + i - 1, values.get(i - 1), startIndex + i, values.get(i), theme.getPrimaryColor());
+                }
+                graph.addAxisAndTitle();
+                image = graph.getImage();
+            }
         }
         return image;
     }
-
-    private BufferedImage renderImage() {
-        BufferedImage image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
-        if (!values.isEmpty()) {
-            double[] xData = new double[values.size()];
-            Arrays.setAll(xData, index -> index + startIndex);
-            double[] yData = values.stream().mapToDouble(value -> value).toArray();
-            XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
-            chart.setTitle(title);
-            chart.getStyler().setLegendVisible(false);
-            chart.setXAxisTitle(xTitle);
-            chart.setYAxisTitle(yTitle);
-            Graphics2D graphics = image.createGraphics();
-            chart.paint(graphics, width, height);
-        }
-        return image;
-    }
-
 
     @Setter
     @Accessors(chain = true, fluent = true)
@@ -79,7 +70,7 @@ public class RollingValueChartWidget {
         private Theme theme = Theme.DEFAULT;
 
         public RollingValueChartWidget build() {
-            return new RollingValueChartWidget(width, height, window,title,xTitle,yTitle, theme);
+            return new RollingValueChartWidget(width, height, window, title, xTitle, yTitle, theme);
         }
     }
 
