@@ -23,10 +23,21 @@ public class NiceAxisScale implements AxisScale {
     @Getter
     private final double maximum;
 
+    /**
+     * Create a nice scale with a maximul of 5 ticks and loose labels
+     * @param minimumValue the minimum value to include
+     * @param maximumValue the maximum value to include
+     */
     public NiceAxisScale(double minimumValue, double maximumValue) {
         this(minimumValue, maximumValue, 5);
     }
 
+    /**
+     * Create a nice scale with a given number of maximum ticks
+     * @param minimumValue the minimum value to include
+     * @param maximumValue the maximum value to include
+     * @param maxTicks the maximum number of ticks to include
+     */
     public NiceAxisScale(double minimumValue, double maximumValue, int maxTicks) {
         // special case - min = max
         if (minimumValue == maximumValue) {
