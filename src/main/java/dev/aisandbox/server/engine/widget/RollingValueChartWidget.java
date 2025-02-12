@@ -42,7 +42,7 @@ public class RollingValueChartWidget {
             if (values.isEmpty()) {
                 image = GraphicsUtils.createBlankImage(width, height, theme.getBackground());
             } else {
-                AxisScale xAxis = new NiceAxisScale(startIndex, startIndex + values.size() - 1, width / 40);
+                AxisScale xAxis = new TightAxisScale(startIndex, startIndex + values.size() - 1, width / 40);
                 AxisScale yAxis = new NiceAxisScale(
                         values.stream().mapToDouble(value -> value).min().orElse(0.0),
                         values.stream().mapToDouble(value -> value).max().orElse(0.0),
