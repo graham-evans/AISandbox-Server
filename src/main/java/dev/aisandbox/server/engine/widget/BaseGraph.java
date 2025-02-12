@@ -55,6 +55,7 @@ public class BaseGraph {
         this.yAxisScale = yAxisScale;
         this.image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
         this.graphics = image.createGraphics();
+        GraphicsUtils.setupRenderingHints(graphics);
         // calculate graph space
         xBoxStart = PADDING + AXIS_FONT_SIZE + TICK_FONT_SIZE + MARGIN * 4;
         boxWidth = width - xBoxStart - PADDING;
