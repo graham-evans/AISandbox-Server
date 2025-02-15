@@ -7,6 +7,11 @@ plugins {
     id 'pmd'
 }
 
+ext {
+    isWin = System.properties['env'] == 'win'
+    isLinux = System.properties['env'] == 'linux'
+}
+
 group = 'dev.aisandbox'
 mainClassName = 'dev.aisandbox.launcher.SandboxServerLauncher'
 
@@ -18,11 +23,23 @@ gitVersioning.apply {
     refs {
         considerTagsOnBranches = true
         tag('v(?<version>.*)') {
-            version = '${ref.version}'
+            if (isWin) {
+                version = '${ref.version}-win'
+            } else if (isLinux) {
+                version = '${ref.version}-linux'
+            } else {
+                version = '${ref.version}'
+            }
         }
     }
     rev {
-        version = "SNAPSHOT"
+        if (isWin) {
+            version = 'SNAPSHOT-win'
+        } else if (isLinux) {
+            version = 'SNAPSHOT-linux'
+        } else {
+            version = "SNAPSHOT"
+        }
     }
 }
 
@@ -34,7 +51,13 @@ java {
 
 javafx {
     version = javaFXVersion
-    modules = [ 'javafx.controls','javafx.fxml' ]
+    modules = ['javafx.controls', 'javafx.fxml']
+    if (isWin) {
+        platform = 'win'
+    }
+    if (isLinux) {
+        platform = 'linux'
+    }
 }
 
 javadoc {
