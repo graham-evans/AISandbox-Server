@@ -3,60 +3,27 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id "com.google.protobuf" version "0.9.4"
     id("io.freefair.lombok") version "8.12.1"
-    id 'me.qoomon.git-versioning' version '6.4.4'
     id 'pmd'
 }
 
-ext {
-    isWin = System.properties['env'] == 'win'
-    isLinux = System.properties['env'] == 'linux'
-}
-
 group = 'dev.aisandbox'
-mainClassName = 'dev.aisandbox.launcher.SandboxServerLauncher'
 
 def protobufVersion = '4.28.2'
-def protocVersion = protobufVersion
-def javaFXVersion = '21.0.5'
 
-gitVersioning.apply {
-    refs {
-        considerTagsOnBranches = true
-        tag('v(?<version>.*)') {
-            if (isWin) {
-                version = '${ref.version}-win'
-            } else if (isLinux) {
-                version = '${ref.version}-linux'
-            } else {
-                version = '${ref.version}'
-            }
+application {
+    mainClass = 'dev.aisandbox.launcher.SandboxServerLauncher'
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
         }
-    }
-    rev {
-        if (isWin) {
-            version = 'SNAPSHOT-win'
-        } else if (isLinux) {
-            version = 'SNAPSHOT-linux'
-        } else {
-            version = "SNAPSHOT"
-        }
-    }
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 javafx {
-    version = javaFXVersion
+    version = '21.0.5'
     modules = ['javafx.controls', 'javafx.fxml']
-    if (isWin) {
-        platform = 'win'
-    }
-    if (isLinux) {
-        platform = 'linux'
+    if (System.properties.containsKey('env')) {
+        platform = System.properties['env']
     }
 }
 
@@ -71,7 +38,7 @@ tasks.register('copyDocs', Copy) {
     into 'build/docs'
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.deprecation = true
     options.compilerArgs << '-Xlint:unchecked'
 }
@@ -84,7 +51,7 @@ configurations {
 
 protobuf {
     // Configure the protoc executable
-    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    protoc { artifact = "com.google.protobuf:protoc:${protobufVersion}" }
     generateProtoTasks {
         // all() returns the collection of all protoc tasks
         all().configureEach { task ->
