@@ -1,4 +1,4 @@
-package dev.aisandbox.server.engine.widget;
+package dev.aisandbox.server.engine.widget.axis;
 
 import java.util.List;
 

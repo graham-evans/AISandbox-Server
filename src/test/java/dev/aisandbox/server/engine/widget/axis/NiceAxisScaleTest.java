@@ -1,9 +1,8 @@
-package dev.aisandbox.server.engine.widget;
+package dev.aisandbox.server.engine.widget.axis;
 
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,7 +11,7 @@ class NiceAxisScaleTest {
 
     @Test
     public void testNiceNumber() {
-        assertEquals(2.0,NiceAxisScale.nice(2.0002,true),0.00001);
+        assertEquals(2.0, NiceAxisScale.nice(2.0002,true),0.00001);
         assertEquals(2.0,NiceAxisScale.nice(1.9998,false),0.00001);
     }
 
@@ -26,7 +25,6 @@ class NiceAxisScaleTest {
         assertEquals(0.2,scale.getScaledValue(2.0),0.00001);
     }
 
-
     @Test
     public void testSmallAxis() {
         NiceAxisScale scale = new NiceAxisScale(4.5, 5.5);
@@ -36,7 +34,6 @@ class NiceAxisScaleTest {
         // check scale works
         assertEquals(0.5,scale.getScaledValue(5.000),0.00001);
     }
-
 
     @Test
     public void testZeroAxis() {
