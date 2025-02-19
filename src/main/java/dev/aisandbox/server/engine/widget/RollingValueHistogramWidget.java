@@ -1,13 +1,15 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.maths.BinContents;
+import dev.aisandbox.server.engine.maths.bins.BinningEngine;
+import dev.aisandbox.server.engine.maths.bins.EqualWidthBinner;
+import dev.aisandbox.server.engine.widget.axis.AxisScale;
+import dev.aisandbox.server.engine.widget.axis.NiceAxisScale;
+import dev.aisandbox.server.engine.widget.axis.TightAxisScale;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.commons.math3.stat.Frequency;
-import org.knowm.xchart.CategoryChart;
-import org.knowm.xchart.CategoryChartBuilder;
-import org.knowm.xchart.Histogram;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -20,16 +22,14 @@ public class RollingValueHistogramWidget {
     private final int width;
     private final int height;
     private final int window;
-    private final int binCount;
     private final Theme theme;
     private final String title;
     private final String xAxisTitle;
     private final String yAxisTitle;
+    private final BinningEngine binEngine;
     // internal fields
     private final List<Double> values = new ArrayList<>();
-    private double minValue = Double.MAX_VALUE;
-    private double maxValue = Double.MIN_VALUE;
-    private BufferedImage image=null;
+    private BufferedImage image = null;
 
     public static RollingHistogramChartBuilder builder() {
         return new RollingHistogramChartBuilder();
@@ -38,9 +38,6 @@ public class RollingValueHistogramWidget {
     public void addValue(double value) {
         // add new value
         values.add(value);
-        // update min/max
-        if (value < minValue) {minValue = value;}
-        if (value > maxValue) {maxValue = value;}
         // remove extra values
         while (values.size() > window) {
             values.removeFirst();
@@ -51,12 +48,33 @@ public class RollingValueHistogramWidget {
 
     public BufferedImage getImage() {
         if (image == null) {
-            image = renderImage();
+            if (values.isEmpty()) {
+                image = GraphicsUtils.createBlankImage(width, height, theme.getBackground());
+            } else {
+                // calculate the 'bins'
+                List<BinContents> bins = binEngine.binValues(values);
+                // TODO choose to use density
+                double maxValue = bins.stream().mapToDouble(value -> (double) value.quantity()).max().orElse(1.0);
+                // create the scales
+                AxisScale xAxis = new TightAxisScale(bins.getFirst().binStart(), bins.getLast().binEnd(), width / 40);
+                AxisScale yAxis = new NiceAxisScale(0.0, maxValue, 5);
+                // draw the graph
+                BaseGraph graph = new BaseGraph(width, height, title, xAxisTitle, yAxisTitle, theme, xAxis, yAxis);
+                for (BinContents bin : bins) {
+                    graph.addBox(bin.binStart(), 0.0, bin.binEnd(), bin.quantity(), Color.cyan, Color.BLUE);
+                }
+                graph.addAxisAndTitle();
+                image = graph.getImage();
+            }
         }
         return image;
     }
 
-    private BufferedImage renderImage() {
+
+
+
+
+ /*   private BufferedImage renderImage() {
         BufferedImage image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
         if (!values.isEmpty()) {
             Histogram histogram = new Histogram(values,binCount,minValue,maxValue);
@@ -70,23 +88,55 @@ public class RollingValueHistogramWidget {
         }
         return image;
     }
-
+*/
 
     @Setter
     @Accessors(chain = true, fluent = true)
     public static class RollingHistogramChartBuilder {
+        /**
+         * The width of the final image.
+         *
+         * @Setter Set the width in pixels.
+         * @Getter The width of the final image in pixels.
+         */
         private int width = 200;
+        /**
+         * The height of the final image.
+         *
+         * @Setter Set the height in pixels.
+         * @Setter The height in pixels.
+         */
         private int height = 200;
+        /**
+         * The number of values to hold in memory
+         */
         private int window = 200;
-        private int binCount = 10;
+        /**
+         * The theme to use whilst drawing.
+         */
         private Theme theme = Theme.DEFAULT;
-        private String title = "Xchart Histogram";
+        /**
+         * The Main title, shown at the top of the widget
+         */
+        private String title = "Histogram Title";
+        /**
+         * The horizontal title, shown at the bottom of the widget.
+         */
         private String xAxisTitle = "Score";
+        /**
+         * The vertical title, shown at the left of the widget.
+         */
         private String yAxisTitle = "Frequency";
+        /**
+         * The binning engine, this reflects how the blocks in the graph will be drawn.
+         */
+        private BinningEngine binEngine = new EqualWidthBinner();
 
         public RollingValueHistogramWidget build() {
-            return new RollingValueHistogramWidget(width, height, window, binCount,theme,title,xAxisTitle,yAxisTitle);
+            return new RollingValueHistogramWidget(width, height, window, theme, title, xAxisTitle, yAxisTitle, binEngine);
         }
 
     }
+
+
 }

@@ -1,6 +1,7 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.widget.axis.AxisScale;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,14 +81,41 @@ public class BaseGraph {
         graphics.setStroke(line);
     }
 
-    public void addLine(double startX, double startY, double endX, double endY, Color color) {
+    /**
+     * Draw a line on the graph in the selected colour.
+     * <p>
+     * X & Y coordinates are scaled to fit the diagram, then drawn.
+     *
+     * @param startX starting X point
+     * @param startY starting Y point
+     * @param endX   end X point
+     * @param endY   end Y point
+     * @param colour colour to use.
+     */
+    public void addLine(double startX, double startY, double endX, double endY, Color colour) {
         int x1 = (int) (xAxisScale.getScaledValue(startX) * boxWidth);
         int y1 = (int) (yAxisScale.getScaledValue(startY) * boxHeight);
         int x2 = (int) (xAxisScale.getScaledValue(endX) * boxWidth);
         int y2 = (int) (yAxisScale.getScaledValue(endY) * boxHeight);
-        graphics.setColor(color);
+        graphics.setColor(colour);
         graphics.drawLine(xBoxStart + x1, yBoxStart + boxHeight - y1, xBoxStart + x2, yBoxStart + boxHeight - y2);
     }
+
+    public void addBox(double startX, double startY, double endX, double endY, Color fillColour, Color outlineColour) {
+        int x1 = (int) (xAxisScale.getScaledValue(startX) * boxWidth);
+        int y1 = (int) (yAxisScale.getScaledValue(startY) * boxHeight);
+        int x2 = (int) (xAxisScale.getScaledValue(endX) * boxWidth);
+        int y2 = (int) (yAxisScale.getScaledValue(endY) * boxHeight);
+        int x = Math.min(x1, x2);
+        int width = Math.abs(x1 - x2);
+        int y = Math.max(y1, y2);
+        int height = Math.abs(y1 - y2);
+        graphics.setColor(fillColour);
+        graphics.fillRect(xBoxStart + x, yBoxStart + boxHeight - y, width, height);
+        graphics.setColor(outlineColour);
+        graphics.drawRect(xBoxStart + x, yBoxStart + boxHeight - y, width, height);
+    }
+
 
     public void addAxisAndTitle() {
         // draw titles

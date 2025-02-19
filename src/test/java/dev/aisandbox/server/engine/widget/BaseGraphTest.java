@@ -1,6 +1,7 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.widget.axis.NiceAxisScale;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

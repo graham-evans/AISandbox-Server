@@ -1,6 +1,9 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.widget.axis.AxisScale;
+import dev.aisandbox.server.engine.widget.axis.NiceAxisScale;
+import dev.aisandbox.server.engine.widget.axis.TightAxisScale;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
