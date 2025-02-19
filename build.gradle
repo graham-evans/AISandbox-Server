@@ -10,6 +10,10 @@ group = 'dev.aisandbox'
 
 def protobufVersion = '4.28.2'
 
+run {
+    enableAssertions = true
+}
+
 application {
     mainClass = 'dev.aisandbox.launcher.SandboxServerLauncher'
     java {
