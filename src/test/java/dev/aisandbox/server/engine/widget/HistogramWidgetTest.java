@@ -1,5 +1,6 @@
 package dev.aisandbox.server.engine.widget;
 
+import dev.aisandbox.server.engine.maths.bins.EqualWidthBinner;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ public class HistogramWidgetTest {
 
     @Test
     public void noDataTest() throws IOException {
-        RollingValueHistogramWidget widget = RollingValueHistogramWidget.builder().height(300).width(400).window(300).binCount(6).build();
+        RollingValueHistogramWidget widget = RollingValueHistogramWidget.builder().height(300).width(400).window(300).binEngine(new EqualWidthBinner()).build();
         // dont add any data
         BufferedImage image = widget.getImage();
         // write to test directory
@@ -33,7 +34,7 @@ public class HistogramWidgetTest {
 
     @Test
     public void oneDataTest() throws IOException {
-        RollingValueHistogramWidget widget = RollingValueHistogramWidget.builder().height(300).width(400).window(300).binCount(6).build();
+        RollingValueHistogramWidget widget = RollingValueHistogramWidget.builder().height(300).width(400).window(300).binEngine(new EqualWidthBinner()).build();
         // add single datapoint
         widget.addValue(10.5);
         // get image
@@ -47,7 +48,7 @@ public class HistogramWidgetTest {
 
     @Test
     public void tenDataTest() throws IOException {
-        RollingValueHistogramWidget widget = RollingValueHistogramWidget.builder().height(300).width(400).window(300).binCount(6).build();
+        RollingValueHistogramWidget widget = RollingValueHistogramWidget.builder().height(300).width(400).window(300).binEngine(new EqualWidthBinner()).build();
         // add ten datapoint
         for (int i = 0; i < 10; i++) {
             widget.addValue(i);
