@@ -1,20 +1,13 @@
 package dev.aisandbox.server.options;
 
-import dev.aisandbox.server.engine.SimulationBuilder;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.beanutils.ConvertUtilsBean;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @UtilityClass
@@ -101,59 +94,62 @@ public class RuntimeUtils {
         return options;
     }
 
-    /***
-     * List all the enum parameters exposed by a SimulationBuilder.
+    /**
+     * Use reflection to get the type (class) of a POJO's field using the normal get method.
      *
-     * @param simulationBuilder the builder to return information about.
-     * @return A list of ParameterEnumInfo records.
+     * @param bean      The POJO to read
+     * @param parameter The name of the field
+     * @return the Class of the field type.
      */
-    public static List<ParameterEnumInfo> listEnumParameters(SimulationBuilder simulationBuilder) {
+    public Class<?> getParameterClass(Object bean, String parameter) {
         try {
-            Map<String, String> props = BeanUtils.describe(simulationBuilder);
-            List<ParameterEnumInfo> enums = new ArrayList<>();
-            for (Map.Entry<String, String> entry : props.entrySet()) {
-                Class<?> pType = PropertyUtils.getPropertyType(simulationBuilder, entry.getKey());
-                if (pType.isEnum()) {
-                    ParameterEnumInfo p = new ParameterEnumInfo(entry.getKey(), entry.getValue(), Arrays.stream(pType.getEnumConstants()).map(Object::toString).toList() );
-                    enums.add(p);
-                }
-            }
-            return enums;
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            log.error("Error getting parameter information from {}",simulationBuilder.getClass().getName());
-            return List.of();
+            String methodName = "get" + Character.toUpperCase(parameter.charAt(0)) + parameter.substring(1);
+            Method getMethod = bean.getClass().getMethod(methodName);
+            Object result = getMethod.invoke(bean);
+            return result.getClass();
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            log.warn("Error getting method information for parameter '{}' on class {}", parameter, bean.getClass().getName(), e);
+            return null;
         }
     }
 
-    /***
-     * Set an Enum parameter on a SimulationBuilder
-     * @param builder the SimulationBuilder being configured
-     * @param key the parameter to update
-     * @param value the text value to create a new enumeration object from
-     */
-    public static void setEnumParameter(SimulationBuilder builder, String key, String value) {
-        BeanUtilsBean beanUtilsBean = new BeanUtilsBean(new ConvertUtilsBean() {
-            @Override
-            public Object convert(String value, Class clazz) {
-                if (clazz.isEnum()) {
-                    @SuppressWarnings("unchecked")
-                    Object e = EnumUtils.getEnumIgnoreCase(clazz, value);
-                    if (e==null) {
-                        log.warn("Can't set enum constant {} to non existent value {}", key, value);
-                        return clazz.getEnumConstants()[0];
-                    } else {
-                        return e;
-                    }
-                } else {
-                    return super.convert(value, clazz);
-                }
-            }
-        });
+    public Object getParameterValue(Object bean, String parameter) throws IllegalArgumentException {
         try {
-            beanUtilsBean.setProperty(builder, key, value);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            log.warn("Error setting enum constant {} to {}", key, value);
+            String methodName = "get" + Character.toUpperCase(parameter.charAt(0)) + parameter.substring(1);
+            Method getMethod = bean.getClass().getMethod(methodName);
+            return getMethod.invoke(bean);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            log.warn("Error getting method information for parameter '{}' on class {}", parameter, bean.getClass().getName(), e);
+            throw new IllegalArgumentException("No get method found for parameter '" + parameter + "'");
         }
     }
+
+    /**
+     * Use reflection to set a bean's field. Do not throw an exception if this is not possible.
+     *
+     * @param bean      The POJO to update
+     * @param parameter the name of the field
+     * @param value     the new value
+     */
+    public void setParameterValue(Object bean, String parameter, String value) {
+        try {
+            Class<?> parameterClass = getParameterClass(bean, parameter);
+            String methodName = "set" + Character.toUpperCase(parameter.charAt(0)) + parameter.substring(1);
+            Method setMethod = bean.getClass().getMethod(methodName, parameterClass);
+            if (parameterClass.isEnum()) {
+                // set enum value if it's value
+                if (EnumUtils.isValidEnumIgnoreCase((Class<Enum>) parameterClass, value)) {
+                    setMethod.invoke(bean, EnumUtils.getEnumIgnoreCase((Class<Enum>) parameterClass, value));
+                } else {
+                    log.warn("Can't set enum '{}' to '{}' as it isn't a valid option", parameterClass.getName(), value);
+                }
+            } else {
+                log.error("Dont know how to set parameter '{}' to '{}' in bean '{}'", parameter, value, bean.getClass().getName());
+            }
+        } catch (Exception e) {
+            log.warn("Error setting property {} to '{}'", parameter, value);
+        }
+    }
+
 
 }

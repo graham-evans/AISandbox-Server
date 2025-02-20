@@ -3,8 +3,10 @@ package dev.aisandbox.launcher;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.SimulationSetup;
-import dev.aisandbox.server.engine.output.*;
-import dev.aisandbox.server.options.ParameterEnumInfo;
+import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
+import dev.aisandbox.server.engine.output.NullOutputRenderer;
+import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
 import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
@@ -12,11 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.HelpFormatter;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -60,12 +58,19 @@ public class SandboxServerCLIApplication {
         log.info(" Minimum players: {}", simulationBuilder.getMinAgentCount());
         log.info(" Maximum players: {}", simulationBuilder.getMaxAgentCount());
         try {
-            List<ParameterEnumInfo> parameters = RuntimeUtils.listEnumParameters(simulationBuilder);
-            // show parameters
+            Map<String, String> parameters = simulationBuilder.getParameters();
             if (!parameters.isEmpty()) {
+                List<String> parameterNames = new ArrayList<>(parameters.keySet());
+                Collections.sort(parameterNames);
                 log.info("Options (use -o key:value to set)");
-                for (ParameterEnumInfo parameter : parameters) {
-                    log.info(" {}", parameter);
+                for (String pname : parameterNames) {
+                    // test if this is an enum
+                    Class<?> paramType = RuntimeUtils.getParameterClass(simulationBuilder, pname);
+                    if (paramType.isEnum()) {
+                        log.info(" {} ({}) - {} [{}]", pname, RuntimeUtils.getParameterValue(simulationBuilder, pname).toString(), parameters.get(pname), paramType.getEnumConstants());
+                    } else {
+                        log.info(" {} ({}) - {}", pname, RuntimeUtils.getParameterValue(simulationBuilder, pname).toString(), parameters.get(pname));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -92,7 +97,7 @@ public class SandboxServerCLIApplication {
                         String key = keyValue[0];
                         String value = keyValue[1];
                         try {
-                            RuntimeUtils.setEnumParameter(simulationBuilder, key, value);
+                            RuntimeUtils.setParameterValue(simulationBuilder, key, value);
                         } catch (Exception e) {
                             log.warn("Can't set {} to {}", key, value);
                         }
@@ -103,7 +108,6 @@ public class SandboxServerCLIApplication {
                 // create output
                 OutputRenderer out = switch (options.output()) {
                     case IMAGE -> new BitmapOutputRenderer();
-                    case VIDEO -> new MP4Output(new File("./test.mp4"));
                     case SCREEN -> new ScreenOutputRenderer();
                     default -> new NullOutputRenderer();
                 };

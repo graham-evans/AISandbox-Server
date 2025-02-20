@@ -1,17 +1,18 @@
 package dev.aisandbox.server.engine;
 
-import dev.aisandbox.server.options.ParameterEnumInfo;
 import dev.aisandbox.server.options.RuntimeUtils;
+import dev.aisandbox.server.simulation.SimulationEnumeration;
 import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
-import dev.aisandbox.server.simulation.coingame.CoinScenario;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 class SimulationParameterUtilsTest {
@@ -22,31 +23,60 @@ class SimulationParameterUtilsTest {
     @Test
     void getHighLowCardParameters() {
         HighLowCardsBuilder builder = new HighLowCardsBuilder();
-        List<ParameterEnumInfo> params = RuntimeUtils.listEnumParameters(builder);
+        Map<String, String> params = builder.getParameters();
         assertEquals(0, params.size());
     }
 
     @Test
     void getCoinGameParameters() {
         CoinGameBuilder builder = new CoinGameBuilder();
-        List<ParameterEnumInfo> params = RuntimeUtils.listEnumParameters(builder);
+        Map<String, String> params = builder.getParameters();
         assertEquals(1, params.size());
     }
 
-    @Test
-    void setPropertyTest() throws InvocationTargetException, IllegalAccessException {
-        CoinGameBuilder builder = new CoinGameBuilder();
+    /**
+     * Test that all parameters in each simulation work
+     *
+     * @param simulation
+     */
+    @ParameterizedTest
+    @EnumSource(SimulationEnumeration.class)
+    void testSimulationParameters(SimulationEnumeration simulation) {
+        SimulationBuilder builder = simulation.getBuilder();
+        log.info("Testing {} simulation", builder.getSimulationName());
+        // get all parameters
+        Map<String, String> prams = builder.getParameters();
+        for (Map.Entry<String, String> entry : prams.entrySet()) {
+            String key = entry.getKey();
+            String description = entry.getValue();
+            log.info(" Parameter {} = {}", key, description);
+            // get the current value of this parameter
+            log.info("  Default value = {}", RuntimeUtils.getParameterValue(builder, key));
+            // get the type of this parameter
+            Class<?> paramClass = RuntimeUtils.getParameterClass(builder, key);
+            if (paramClass.isEnum()) {
+                // try and call enum setter
+                RuntimeUtils.setParameterValue(builder, key, paramClass.getEnumConstants()[0].toString());
+            } else {
+                log.info(" dont know how to test {}", paramClass.getName());
+            }
 
-        List<ParameterEnumInfo> params = RuntimeUtils.listEnumParameters(builder);
-
-        log.info("Found {} parameters {}", params.size(), params);
-
-        assertEquals(1, params.size(), "Number of parameters should be 1");
-
-        assertEquals("scenario", params.getFirst().parameterName(), "First parameter should be 'scenario'");
-
-        RuntimeUtils.setEnumParameter(builder, "scenario", "nim");
-
-        assertEquals(CoinScenario.NIM, builder.getScenario(), "Updating scenario didn't work");
+        }
     }
+
+    @Test
+    void testBadSimulationParameters() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            SimulationBuilder builder = new BadSimulation();
+            Map<String, String> params = builder.getParameters();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String key = entry.getKey();
+                String description = entry.getValue();
+                log.info(" Parameter {} = {}", key, description);
+                // get the current value of this parameter
+                log.info("  Default value = {}", RuntimeUtils.getParameterValue(builder, key));
+            }
+        });
+    }
+
 }

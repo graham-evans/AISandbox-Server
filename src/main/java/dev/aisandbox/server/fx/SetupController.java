@@ -1,8 +1,9 @@
 package dev.aisandbox.server.fx;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
-import dev.aisandbox.server.engine.output.*;
-import dev.aisandbox.server.options.ParameterEnumInfo;
+import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
+import dev.aisandbox.server.engine.output.NullOutputRenderer;
+import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
 import dev.aisandbox.server.options.RuntimeUtils;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -15,11 +16,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 
@@ -47,21 +50,27 @@ public class SetupController {
     @FXML
     private ListView<SimulationBuilder> simulationList;
 
-    public static Node createParameterEditor(SimulationBuilder builder, ParameterEnumInfo propertyDescriptor) {
+    public static Node createParameterEditor(SimulationBuilder builder, String parameterName, String parameterDescription) {
         BorderPane node = new BorderPane();
         // add label
-        Label label = new Label(propertyDescriptor.parameterName());
+        Label label = new Label(parameterName);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setAlignment(Pos.CENTER_LEFT);
         node.setCenter(label);
-        // add editor
-        ComboBox<String> editor = new ComboBox<>();
-        editor.setItems(FXCollections.observableList(propertyDescriptor.enumValues()));
-        editor.getSelectionModel().select(propertyDescriptor.parameterValue());
-        editor.valueProperty().addListener((observable, oldValue, newValue) -> {
-            RuntimeUtils.setEnumParameter(builder, propertyDescriptor.parameterName(), newValue);
-        });
-        node.setRight(editor);
+        // TODO - this assumes that all params are enums
+        Class<?> targetClass = RuntimeUtils.getParameterClass(builder, parameterName);
+        if (targetClass.isEnum()) {
+            // create list of values
+            List<String> enumNames = Arrays.stream(targetClass.getEnumConstants()).map(Object::toString).toList();
+            // add editor
+            ComboBox<String> editor = new ComboBox<>();
+            editor.setItems(FXCollections.observableList(enumNames));
+            editor.getSelectionModel().select(RuntimeUtils.getParameterValue(builder, parameterName).toString());
+            editor.valueProperty().addListener((observable, oldValue, newValue) -> {
+                RuntimeUtils.setParameterValue(builder, parameterName, newValue);
+            });
+            node.setRight(editor);
+        }
         return node;
     }
 
@@ -108,9 +117,11 @@ public class SetupController {
                         agentCounter.setDisable(false);
                         model.getAgentCount().bind(agentCounter.valueProperty());
                         // populate the parameters with editor boxes
+                        List<String> parameterNames = new ArrayList<>(newValue.getParameters().keySet());
+                        Collections.sort(parameterNames);
                         parameterBox.getChildren().clear();
-                        for (ParameterEnumInfo e : RuntimeUtils.listEnumParameters(newValue)) {
-                            parameterBox.getChildren().add(createParameterEditor(newValue, e));
+                        for (String parameterName : parameterNames) {
+                            parameterBox.getChildren().add(createParameterEditor(newValue, parameterName, newValue.getParameters().get(parameterName)));
                         }
                     } else {
                         simDescription.setText("");
@@ -130,8 +141,6 @@ public class SetupController {
             // store output in model
             if (outputScreenChoice.isSelected()) {
                 model.getOutputRenderer().set(new ScreenOutputRenderer());
-            } else if (outputVideoChoice.isSelected()) {
-                model.getOutputRenderer().set(new MP4Output(new File("/test.mp4")));
             } else if (outputImageChoice.isSelected()) {
                 model.getOutputRenderer().set(new BitmapOutputRenderer());
             } else {
