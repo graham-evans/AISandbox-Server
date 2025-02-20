@@ -3,7 +3,6 @@ package dev.aisandbox.server.engine;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.knowm.xchart.style.Styler;
 
 import java.awt.*;
 
@@ -18,8 +17,7 @@ public enum Theme {
             Color.WHITE,
             Color.BLUE,
             Color.ORANGE,
-            Color.DARK_GRAY,
-            Styler.ChartTheme.XChart
+            Color.DARK_GRAY
     );
 
     private final Color background;
@@ -29,7 +27,5 @@ public enum Theme {
     private final Color primaryColor;
     private final Color secondaryColor;
     private final Color graphOutlineColor;
-
-    private final Styler.ChartTheme chartTheme;
 
 }
