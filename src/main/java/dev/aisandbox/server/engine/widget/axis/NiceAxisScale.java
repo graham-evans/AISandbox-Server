@@ -93,6 +93,11 @@ public class NiceAxisScale implements AxisScale {
     }
 
     @Override
+    public String getValueString(double value) {
+        return String.format("%.1f", value);
+    }
+
+    @Override
     public List<Double> getTicks() {
         List<Double> ticks = new ArrayList<Double>();
         double currentTick = minimum;
