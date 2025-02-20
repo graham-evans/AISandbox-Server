@@ -16,9 +16,7 @@ import dev.aisandbox.server.simulation.bandit.proto.BanditState;
 import dev.aisandbox.server.simulation.bandit.proto.Signal;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCards;
 import lombok.extern.slf4j.Slf4j;
-import org.knowm.xchart.CategoryChart;
-import org.knowm.xchart.CategoryChartBuilder;
-import org.knowm.xchart.CategorySeries;
+
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -144,7 +142,7 @@ public class BanditRuntime implements Simulation {
         // draw bandits
         // Create Chart @ Margin,Margin
         graphics2D.setTransform(AffineTransform.getTranslateInstance(MARGIN, MARGIN));
-        CategoryChart chart =
+ /*       CategoryChart chart =
                 new CategoryChartBuilder()
                         .width(600)
                         .height(400)
@@ -152,7 +150,7 @@ public class BanditRuntime implements Simulation {
                         .xAxisTitle("Bandit")
                         .yAxisTitle("Expected Result")
                         .theme(theme.getChartTheme())
-                        .build();
+                        .build();*/
         List<String> xAxisLabels = new ArrayList<>();
         List<Double> yAxisValues = new ArrayList<>();
         List<Double> errorValues = new ArrayList<>();
@@ -161,10 +159,10 @@ public class BanditRuntime implements Simulation {
             yAxisValues.add(bandits.get(i).getMean());
             errorValues.add(bandits.get(i).getStd());
         }
-        chart.addSeries("Bandits", xAxisLabels, yAxisValues, errorValues);
-        chart.getStyler().setDefaultSeriesRenderStyle(CategorySeries.CategorySeriesRenderStyle.Scatter);
-        chart.getStyler().setLegendVisible(false);
-        chart.paint(graphics2D, 600, 400);
+//        chart.addSeries("Bandits", xAxisLabels, yAxisValues, errorValues);
+//        chart.getStyler().setDefaultSeriesRenderStyle(CategorySeries.CategorySeriesRenderStyle.Scatter);
+//        chart.getStyler().setLegendVisible(false);
+//        chart.paint(graphics2D, 600, 400);
 
     }
 
