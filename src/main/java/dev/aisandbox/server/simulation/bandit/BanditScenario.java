@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Slf4j
@@ -58,6 +59,16 @@ public class BanditScenario implements SimulationBuilder {
     @Override
     public String getDescription() {
         return "The classic 'Multi-Armed Bandit scenario where an agent needs to learn which 'bandit' returns the best results.";
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        return Map.of("banditCount", "The number of bandits",
+                "banditUpdate","How bandits change between pulls",
+                "banditStd","How the standard deviation for each bandit is chosen",
+                "banditNormal","How the normal (average) for each bandit is chosen",
+                "banditPulls","The number of bandit 'pulls' in each episode"
+        );
     }
 
     @Override

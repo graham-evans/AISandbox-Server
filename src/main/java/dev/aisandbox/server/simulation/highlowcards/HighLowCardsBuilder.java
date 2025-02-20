@@ -6,6 +6,7 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
 
 import java.util.List;
+import java.util.Map;
 
 public class HighLowCardsBuilder implements SimulationBuilder {
 
@@ -27,6 +28,11 @@ public class HighLowCardsBuilder implements SimulationBuilder {
     @Override
     public int getMaxAgentCount() {
         return 1;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        return Map.of();
     }
 
     @Override

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class CoinGameBuilder implements SimulationBuilder {
@@ -34,6 +35,11 @@ public class CoinGameBuilder implements SimulationBuilder {
     @Override
     public int getMaxAgentCount() {
         return 2;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        return Map.of("scenario","The scenario to run");
     }
 
     @Override

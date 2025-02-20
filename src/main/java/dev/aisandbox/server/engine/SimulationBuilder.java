@@ -1,6 +1,7 @@
 package dev.aisandbox.server.engine;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Builder class for setting up simulations.
@@ -23,6 +24,13 @@ public interface SimulationBuilder {
      * @return Descriptive text
      */
     String getDescription();
+
+    /**
+     * A list of parameters that can be set. These must map onto appropriate get and set methods.
+     * @return map of parameters [name,description].
+     */
+    Map<String,String> getParameters();
+
 
     /**
      * The minimum number of agents that must be made available.
