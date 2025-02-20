@@ -72,19 +72,10 @@ repositories {
 dependencies {
     // protobuf
     implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
-    // xchart
-    implementation 'org.knowm.xchart:xchart:3.8.8'
     // commons utilities
     implementation 'commons-cli:commons-cli:1.9.0'
     implementation 'org.apache.commons:commons-statistics-descriptive:1.1'
-    implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
-    implementation ('commons-beanutils:commons-beanutils:1.9.4') {
-        exclude group: 'commons-logging', module:'commons-logging'
-    }
-    // jcodec
-    implementation 'org.jcodec:jcodec-javase:0.2.5'
-    implementation 'org.jcodec:jcodec:0.2.5'
     // logging
     implementation 'ch.qos.logback:logback-core:1.5.6'
     testImplementation 'org.slf4j:slf4j-api:2.1.0-alpha1'
