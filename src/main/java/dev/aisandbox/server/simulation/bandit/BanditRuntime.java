@@ -14,13 +14,10 @@ import dev.aisandbox.server.simulation.bandit.proto.BanditAction;
 import dev.aisandbox.server.simulation.bandit.proto.BanditResult;
 import dev.aisandbox.server.simulation.bandit.proto.BanditState;
 import dev.aisandbox.server.simulation.bandit.proto.Signal;
-import dev.aisandbox.server.simulation.highlowcards.HighLowCards;
 import lombok.extern.slf4j.Slf4j;
-
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +40,13 @@ public class BanditRuntime implements Simulation {
     private final BanditStdEnumeration std;
     private final BanditUpdateEnumeration updateRule;
     private final Theme theme;
+    private final String sessionID = UUID.randomUUID().toString();
+    private final List<Bandit> bandits = new ArrayList<>();
+    private final TextWidget logWidget;
+    private final BanditWidget banditWidget;
     private int sessionStep = 0;
-    private String sessionID = UUID.randomUUID().toString();
-    private String episodeID;
+    private String episodeID = UUID.randomUUID().toString();
     private BufferedImage logo;
-    private List<Bandit> bandits = new ArrayList<>();
-    private TextWidget logWidget = TextWidget.builder().width(400).height(300).build();
 
     public BanditRuntime(Agent agent, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
         // store parameters
@@ -62,13 +60,16 @@ public class BanditRuntime implements Simulation {
         this.theme = theme;
         // load logo
         try {
-            logo = ImageIO.read(HighLowCards.class.getResourceAsStream("/images/AILogo.png"));
+            logo = ImageIO.read(BanditRuntime.class.getResourceAsStream("/images/AILogo.png"));
         } catch (Exception e) {
             log.error("Error loading logo", e);
             logo = new BufferedImage(OutputConstants.LOGO_WIDTH, OutputConstants.LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         }
         // initialise bandits
         initialise();
+        // initialise widgets
+        logWidget = TextWidget.builder().width(400).height(300).theme(theme).build();
+        banditWidget = BanditWidget.builder().width(400).height(300).theme(theme).build();
     }
 
     @Override
@@ -89,6 +90,8 @@ public class BanditRuntime implements Simulation {
         if (reset) {
             logWidget.addText("pull count reached, starting a new game.");
         }
+        // update the widgets
+        banditWidget.setBandits(bandits);
         // update the screen
         output.display();
         // tell the user the result
@@ -136,34 +139,8 @@ public class BanditRuntime implements Simulation {
         graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
         // draw log window
         graphics2D.drawImage(logWidget.getImage(), 800, MARGIN, null);
-        // draw ave reward
-        //   graphics2D.drawImage(averageRewardGraph.getImage(), 100, 200, null);
-        //   graphics2D.drawImage(optimalActionGraph.getGraph(900, 400), 100, 650, null);
         // draw bandits
-        // Create Chart @ Margin,Margin
-        graphics2D.setTransform(AffineTransform.getTranslateInstance(MARGIN, MARGIN));
- /*       CategoryChart chart =
-                new CategoryChartBuilder()
-                        .width(600)
-                        .height(400)
-                        .title("Bandits")
-                        .xAxisTitle("Bandit")
-                        .yAxisTitle("Expected Result")
-                        .theme(theme.getChartTheme())
-                        .build();*/
-        List<String> xAxisLabels = new ArrayList<>();
-        List<Double> yAxisValues = new ArrayList<>();
-        List<Double> errorValues = new ArrayList<>();
-        for (int i = 0; i < bandits.size(); i++) {
-            xAxisLabels.add(Integer.toString(i));
-            yAxisValues.add(bandits.get(i).getMean());
-            errorValues.add(bandits.get(i).getStd());
-        }
-//        chart.addSeries("Bandits", xAxisLabels, yAxisValues, errorValues);
-//        chart.getStyler().setDefaultSeriesRenderStyle(CategorySeries.CategorySeriesRenderStyle.Scatter);
-//        chart.getStyler().setLegendVisible(false);
-//        chart.paint(graphics2D, 600, 400);
-
+        graphics2D.drawImage(banditWidget.getImage(), MARGIN, MARGIN, null);
     }
 
     /**
