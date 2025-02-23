@@ -5,6 +5,7 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.simulation.bandit.model.Bandit;
 import dev.aisandbox.server.simulation.bandit.model.BanditNormalEnumeration;
@@ -19,10 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @Slf4j
 public class BanditRuntime implements Simulation {
@@ -44,7 +44,11 @@ public class BanditRuntime implements Simulation {
     private final List<Bandit> bandits = new ArrayList<>();
     private final TextWidget logWidget;
     private final BanditWidget banditWidget;
+    private final RollingValueChartWidget episodeScoreWidget;
+    private final RollingValueChartWidget episodeSuccessWidget;
     private int sessionStep = 0;
+    private double episodeScore = 0;
+    private double episodeBestMoveCount = 0;
     private String episodeID = UUID.randomUUID().toString();
     private BufferedImage logo;
 
@@ -70,32 +74,48 @@ public class BanditRuntime implements Simulation {
         // initialise widgets
         logWidget = TextWidget.builder().width(400).height(300).theme(theme).build();
         banditWidget = BanditWidget.builder().width(400).height(300).theme(theme).build();
+        episodeScoreWidget = RollingValueChartWidget.builder().width(400).height(300).window(200).theme(theme).build();
+        episodeSuccessWidget = RollingValueChartWidget.builder().width(400).height(300).window(200).theme(theme).build();
     }
 
     @Override
     public void step(OutputRenderer output) {
         sessionStep++;
         log.debug("Starting step {}", sessionStep);
+        // work out the 'best' bandit to pull
+        int bestPull = IntStream.range(0, bandits.size()).boxed().max(Comparator.comparingDouble(i -> bandits.get(i).getStd())).orElse(-1);
         // ask user which bandit to pull
         BanditAction action = agent.receive(getState(), BanditAction.class);
         int arm = action.getArm();
         log.debug("Received request to pull arm {}", arm);
+        // was this the best move
+        if (arm == bestPull) {
+            episodeBestMoveCount += 1.0;
+        }
         // todo - test for invalid request
         // get the score
         double score = bandits.get(arm).pull(rand);
+        episodeScore += score;
         // log the action
-        logWidget.addText(agent.getAgentName() + " selects bandit " + arm + " gets reward " + score);
+        logWidget.addText(agent.getAgentName() + " selects bandit " + arm + " gets reward " + String.format("%.4f", score));
         // should we reset
         boolean reset = sessionStep == pullCount;
-        if (reset) {
-            logWidget.addText("pull count reached, starting a new game.");
-        }
         // update the widgets
-        banditWidget.setBandits(bandits);
+        banditWidget.setBandits(bandits, arm);
+        // if last pull, update the episode widgets
+        if (reset) {
+            episodeScoreWidget.addValue(episodeScore);
+            episodeSuccessWidget.addValue(episodeBestMoveCount / pullCount);
+        }
         // update the screen
         output.display();
         // tell the user the result
         agent.send(BanditResult.newBuilder().setArm(arm).setScore(score).setSignal(reset ? Signal.RESET : Signal.CONTINUE).build());
+        // move to next episode if needed.
+        if (reset) {
+            logWidget.addText("pull count reached, starting a new game.");
+
+        }
         // update the bandits
         switch (updateRule) {
             case RANDOM:
@@ -131,18 +151,6 @@ public class BanditRuntime implements Simulation {
         return builder.build();
     }
 
-    @Override
-    public void visualise(Graphics2D graphics2D) {
-        graphics2D.setColor(theme.getBackground());
-        graphics2D.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
-        // draw logo
-        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
-        // draw log window
-        graphics2D.drawImage(logWidget.getImage(), 800, MARGIN, null);
-        // draw bandits
-        graphics2D.drawImage(banditWidget.getImage(), MARGIN, MARGIN, null);
-    }
-
     /**
      * initialise or reset the bandit state, creating new bandits as needed.
      */
@@ -154,6 +162,8 @@ public class BanditRuntime implements Simulation {
         }
         sessionStep = 0;
         episodeID = UUID.randomUUID().toString();
+        episodeScore = 0;
+        episodeBestMoveCount = 0;
     }
 
     /**
@@ -190,5 +200,21 @@ public class BanditRuntime implements Simulation {
                 b.setMean(b.getMean() + reward);
             }
         }
+    }
+
+    @Override
+    public void visualise(Graphics2D graphics2D) {
+        graphics2D.setColor(theme.getBackground());
+        graphics2D.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
+        // draw logo
+        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
+        // draw log window
+        graphics2D.drawImage(logWidget.getImage(), 800, MARGIN, null);
+        // draw bandits
+        graphics2D.drawImage(banditWidget.getImage(), MARGIN, MARGIN, null);
+        // draw episode scores
+        graphics2D.drawImage(episodeScoreWidget.getImage(), MARGIN, MARGIN * 2 + 300, null);
+        // draw episode success
+        graphics2D.drawImage(episodeSuccessWidget.getImage(), MARGIN * 2 + 500, MARGIN * 2 + 300, null);
     }
 }
