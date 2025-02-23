@@ -45,9 +45,6 @@ public class SetupController {
     private RadioButton outputScreenChoice;
 
     @FXML
-    private RadioButton outputVideoChoice;
-
-    @FXML
     private ListView<SimulationBuilder> simulationList;
 
     public static Node createParameterEditor(SimulationBuilder builder, String parameterName, String parameterDescription) {
@@ -80,7 +77,6 @@ public class SetupController {
         assert agentCounter != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation.fxml'.";
         assert outputImageChoice != null : "fx:id=\"outputImageChoice\" was not injected: check your FXML file 'simulation.fxml'.";
         assert outputScreenChoice != null : "fx:id=\"outputScreenChoice\" was not injected: check your FXML file 'simulation.fxml'.";
-        assert outputVideoChoice != null : "fx:id=\"outputVideoChoice\" was not injected: check your FXML file 'simulation.fxml'.";
         assert parameterBox != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation.fxml'.";
         assert simDescription != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation.fxml'.";
         assert simulationList != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation.fxml'.";

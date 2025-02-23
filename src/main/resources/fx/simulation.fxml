@@ -82,15 +82,7 @@
                                     <TextField BorderPane.alignment="CENTER" />
                                  </center>
                               </BorderPane>
-                              <RadioButton fx:id="outputVideoChoice" mnemonicParsing="false" text="Write video to file" toggleGroup="$render" />
-                              <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-                                 <left>
-                                    <Label text="File" BorderPane.alignment="CENTER" />
-                                 </left>
-                                 <center>
-                                    <TextField maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
-                                 </center>
-                              </BorderPane>
+                              <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                               <Separator prefWidth="200.0" />
                               <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <right>
