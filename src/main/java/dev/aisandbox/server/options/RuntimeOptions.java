@@ -21,6 +21,6 @@ public record RuntimeOptions(
     }
 
     public enum OutputOptions {
-        NONE, IMAGE, VIDEO, SCREEN
+        NONE, IMAGE, SCREEN
     }
 }
