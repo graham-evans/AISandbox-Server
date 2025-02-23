@@ -26,14 +26,16 @@ public class BanditWidget {
     private final Theme theme;
 
     private List<Bandit> bandits = new ArrayList<>();
+    private int activeBandit = -1;
     private BufferedImage image = null;
 
     public static BanditWidgetBuilder builder() {
         return new BanditWidgetBuilder();
     }
 
-    public void setBandits(List<Bandit> bandits) {
+    public void setBandits(List<Bandit> bandits, int activeBandit) {
         this.bandits = bandits;
+        this.activeBandit = activeBandit;
         // reset image
         image = null;
     }
@@ -55,15 +57,19 @@ public class BanditWidget {
                         minMax.getRight(),
                         height / 40);
                 AxisScale xAxis = new TightAxisScale(
-                        -0.5,
-                        bandits.size() - 0.5,
-                        width / 40
+                        -0.4,
+                        bandits.size() - 0.4,
+                        bandits.size()
                 );
                 BaseGraph graph = new BaseGraph(width, height, "Multi-Arm Bandits", "Bandits", "Output", theme, xAxis, yAxis);
                 for (int i=0; i<bandits.size(); i++) {
+                    Color banditColor = theme.getPrimaryColor();
+                    if (activeBandit == i) {
+                        banditColor = theme.getSecondaryColor();
+                    }
                     Bandit bandit = bandits.get(i);
-                    graph.addBox(i-0.4,bandit.getMean()-bandit.getStd(),i+0.4,bandit.getMean()+bandit.getStd(), Color.lightGray,theme.getPrimaryColor());
-                    graph.addLine(i-0.4,bandit.getMean(),i+0.4,bandit.getMean(),theme.getPrimaryColor());
+                    graph.addBox(i-0.2,bandit.getMean()-bandit.getStd(),i+0.2,bandit.getMean()+bandit.getStd(), Color.lightGray,banditColor);
+                    graph.addLine(i-0.2,bandit.getMean(),i+0.2,bandit.getMean(),theme.getPrimaryColor());
                 }
                 graph.addAxisAndTitle();
                 image = graph.getImage();
