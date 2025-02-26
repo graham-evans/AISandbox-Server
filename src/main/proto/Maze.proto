@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package maze;
+option java_multiple_files = true;
+option java_package = "dev.aisandbox.server.simulation.maze.proto";
+
+message MazeState {
+  string sessionID = 1; // the ID for this simulation run
+  string episodeID = 2; // the ID for the episode
+  int32 startX = 3; // the x position of the agent
+  int32 startY = 4; // the y position of the agent
+  int32 movesLeft = 5; // the number of moves before the end of the episode
+}
+
+message MazeAction {
+  Direction direction = 1;
+  optional string debugNote = 2;
+}
+
+message MazeResult {
+  int32 startX = 1;
+  int32 startY = 2;
+  Direction direction = 3;
+  int32 endX = 4;
+  int32 endY = 5;
+  double stepScore = 6;
+  double accumulatedScore = 7;
+}
+
+enum Direction {
+  NORTH = 0;
+  SOUTH = 1;
+  EAST = 2;
+  WEST = 3;
+}
+
