@@ -1,11 +1,20 @@
 package dev.aisandbox.server.simulation.maze;
-
+/**
+ * Enum class representing the directions in a 2D space.
+ */
 public enum Direction {
     NORTH,
     SOUTH,
     EAST,
     WEST;
 
+    /**
+     * Converts a {@link dev.aisandbox.server.simulation.maze.proto.Direction} enum from the proto buffer
+     * to this {@link Direction} enum.
+     *
+     * @param direction the proto buffer direction
+     * @return the corresponding {@link Direction}
+     */
     public static Direction fromProto(dev.aisandbox.server.simulation.maze.proto.Direction direction) {
         return switch (direction) {
             case NORTH, UNRECOGNIZED -> NORTH;
