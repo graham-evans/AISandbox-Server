@@ -1,4 +1,4 @@
 package dev.aisandbox.server.simulation.mine;
 
-public class CellLocation {
+public record CellLocation(int x, int y) {
 }

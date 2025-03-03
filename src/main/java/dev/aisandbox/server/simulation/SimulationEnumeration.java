@@ -5,6 +5,7 @@ import dev.aisandbox.server.simulation.bandit.BanditScenario;
 import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
 import dev.aisandbox.server.simulation.maze.MazeBuilder;
+import dev.aisandbox.server.simulation.mine.MineHunterScenario;
 import lombok.Getter;
 
 /**
@@ -29,7 +30,11 @@ public enum SimulationEnumeration {
     /**
      * The Maze simulation, where a player must navigate through a grid to reach the goal.
      */
-    MAZE(new MazeBuilder());
+    MAZE(new MazeBuilder()),
+    /**
+     * Minehunter - find mines in a grid and place flags.
+     */
+    MINE(new MineHunterScenario());
     /**
      * The {@link SimulationBuilder} instance associated with this simulation type.
      */

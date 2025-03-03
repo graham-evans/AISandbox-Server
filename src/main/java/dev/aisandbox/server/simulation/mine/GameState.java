@@ -1,4 +1,8 @@
 package dev.aisandbox.server.simulation.mine;
 
-public class GameState {
+public enum GameState {
+    INIT,
+    PLAYING,
+    WON,
+    LOST;
 }

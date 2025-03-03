@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package mine;
+option java_multiple_files = true;
+option java_package = "dev.aisandbox.server.simulation.mine.proto";
+
+message MineState {
+  string sessionID = 1; // the ID for this simulation run
+  string episodeID = 2; // the ID for the episode
+  int32 width = 3;
+  int32 height = 4;
+  int32 flagsLeft = 5;
+  repeated string row = 6;
+}
+
+message MineAction {
+  int32 x = 1;
+  int32 y = 2;
+  FlagAction action = 3;
+}
+
+message MineResult {
+  int32 x = 1;
+  int32 y = 2;
+  FlagAction action = 3;
+  MazeSignal signal = 4;
+}
+
+enum FlagAction {
+  PLACE_FLAG = 0;
+  DIG = 1;
+}
+
+enum MazeSignal {
+  CONTINUE = 0;
+  WIN = 1;
+  LOSE = 2;
+}
+

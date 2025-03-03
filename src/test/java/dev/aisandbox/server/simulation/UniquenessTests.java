@@ -24,7 +24,7 @@ public class UniquenessTests {
     @Test
     public void includedTest() {
         assertNotNull(builderList);
-        assertEquals(3, builderList.size());
+        assertEquals(5, builderList.size());
     }
 
     /**
