@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package twisty;
+option java_multiple_files = true;
+option java_package = "dev.aisandbox.server.simulation.twisty.proto";
+
+message TwistyState {
+  string sessionID = 1; // the ID for this simulation run
+  string episodeID = 2; // the ID for the episode
+  string state = 3;
+  int32 moves = 4;
+  repeated string validMoves = 5;
+}
+
+message TwistyAction {
+  string move = 1;
+}
+
+message TwistyResult {
+  string state = 1;
+  TwistySignal signal = 2;
+}
+
+enum TwistySignal {
+  CONTINUE = 0;
+  WIN = 1;
+  LOSE = 2;
+}
+
