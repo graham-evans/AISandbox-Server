@@ -80,9 +80,6 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.5.6'
     testImplementation 'org.slf4j:slf4j-api:2.1.0-alpha1'
     implementation 'ch.qos.logback:logback-classic:1.5.6'
-    // JCodec for writing MP4 files
-    implementation 'org.jcodec:jcodec:0.2.3'
-    implementation 'org.jcodec:jcodec-javase:0.2.3'
     // test libs
     testImplementation(platform('org.junit:junit-bom:5.11.4'))
     testImplementation('org.junit.jupiter:junit-jupiter')
