@@ -1,14 +1,10 @@
 package dev.aisandbox.server.simulation.mine;
 
-import dev.aisandbox.server.engine.Agent;
-import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationBuilder;
-import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 public class MineHunterScenario implements SimulationBuilder {
 
@@ -27,8 +23,8 @@ public class MineHunterScenario implements SimulationBuilder {
     }
 
     @Override
-    public Map<String, String> getParameters() {
-        return Map.of("mineSize", "The size of the minefield");
+    public List<SimulationParameter> getParameters() {
+        return List.of(new SimulationParameter("mineSize", "The size of the minefield", MineSize.class));
     }
 
     @Override
@@ -48,7 +44,7 @@ public class MineHunterScenario implements SimulationBuilder {
 
     @Override
     public Simulation build(List<Agent> agents, Theme theme) {
-        return new MineHunterRuntime(agents.getFirst(), mineSize,theme);
+        return new MineHunterRuntime(agents.getFirst(), mineSize, theme);
     }
 
 }

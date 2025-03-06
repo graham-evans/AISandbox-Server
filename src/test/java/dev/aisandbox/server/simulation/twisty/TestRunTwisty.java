@@ -1,10 +1,13 @@
-package dev.aisandbox.server.simulation.mine;
+package dev.aisandbox.server.simulation.twisty;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.simulation.mine.MineHunterScenario;
+import dev.aisandbox.server.simulation.mine.MineSize;
+import dev.aisandbox.server.simulation.mine.MockMineAgent;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -15,9 +18,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class TestRunMine {
-    private final static File outputDirectory = new File("build/test/mine");
-
+public class TestRunTwisty {
+    private final static File outputDirectory = new File("build/test/twisty");
 
     @BeforeAll
     public static void setupDir() {
@@ -25,18 +27,19 @@ public class TestRunMine {
     }
 
     @ParameterizedTest
-    @EnumSource(MineSize.class)
-    public void testRunMineSize(MineSize mineSize) {
+    @EnumSource(PuzzleType.class)
+    public void testRunTwisty(PuzzleType puzzleType) {
         assertDoesNotThrow(() -> {
             // create simulation
-            MineHunterScenario builder = new MineHunterScenario();
-            builder.setMineSize(mineSize);
+            TwistyScenario builder = new TwistyScenario();
+            builder.setPuzzleType(puzzleType);
+            builder.setStartSolved(false);
             // create players
-            List<Agent> agents = Arrays.stream(builder.getAgentNames(1)).map(s -> (Agent) new MockMineAgent(s)).toList();
+            List<Agent> agents = Arrays.stream(builder.getAgentNames(1)).map(s -> (Agent) new MockTwistyAgent(s)).toList();
             // create simulation
             Simulation sim = builder.build(agents, Theme.DEFAULT);
             // create output
-            File targetDir = new File(outputDirectory, mineSize.name());
+            File targetDir = new File(outputDirectory, puzzleType.name());
             targetDir.mkdirs();
             OutputRenderer out = new BitmapOutputRenderer();
             out.setSkipFrames(100);

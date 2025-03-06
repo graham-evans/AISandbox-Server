@@ -1,6 +1,7 @@
 package dev.aisandbox.server.fx;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
@@ -47,26 +48,27 @@ public class SetupController {
     @FXML
     private ListView<SimulationBuilder> simulationList;
 
-    public static Node createParameterEditor(SimulationBuilder builder, String parameterName, String parameterDescription) {
+    public static Node createParameterEditor(SimulationBuilder builder, SimulationParameter parameter) {
         BorderPane node = new BorderPane();
         // add label
-        Label label = new Label(parameterName);
+        Label label = new Label(parameter.name());
         label.setMaxWidth(Double.MAX_VALUE);
         label.setAlignment(Pos.CENTER_LEFT);
         node.setCenter(label);
         // TODO - this assumes that all params are enums
-        Class<?> targetClass = RuntimeUtils.getParameterClass(builder, parameterName);
-        if (targetClass.isEnum()) {
+        if (parameter.parameterType().isEnum()) {
             // create list of values
-            List<String> enumNames = Arrays.stream(targetClass.getEnumConstants()).map(Object::toString).toList();
+            List<String> enumNames = Arrays.stream(parameter.parameterType().getEnumConstants()).map(Object::toString).toList();
             // add editor
             ComboBox<String> editor = new ComboBox<>();
             editor.setItems(FXCollections.observableList(enumNames));
-            editor.getSelectionModel().select(RuntimeUtils.getParameterValue(builder, parameterName).toString());
+            editor.getSelectionModel().select(RuntimeUtils.getParameterValue(builder, parameter));
             editor.valueProperty().addListener((observable, oldValue, newValue) -> {
-                RuntimeUtils.setParameterValue(builder, parameterName, newValue);
+                RuntimeUtils.setParameterValue(builder, parameter, newValue);
             });
             node.setRight(editor);
+        } else {
+            log.error("Dont know how to build an editor for {}",parameter.parameterType().getName());
         }
         return node;
     }
@@ -113,11 +115,9 @@ public class SetupController {
                         agentCounter.setDisable(false);
                         model.getAgentCount().bind(agentCounter.valueProperty());
                         // populate the parameters with editor boxes
-                        List<String> parameterNames = new ArrayList<>(newValue.getParameters().keySet());
-                        Collections.sort(parameterNames);
                         parameterBox.getChildren().clear();
-                        for (String parameterName : parameterNames) {
-                            parameterBox.getChildren().add(createParameterEditor(newValue, parameterName, newValue.getParameters().get(parameterName)));
+                        for (SimulationParameter parameter : newValue.getParameters()) {
+                            parameterBox.getChildren().add(createParameterEditor(newValue, parameter));
                         }
                     } else {
                         simDescription.setText("");

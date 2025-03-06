@@ -1,14 +1,10 @@
 package dev.aisandbox.server.simulation.coingame;
 
-import dev.aisandbox.server.engine.Agent;
-import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationBuilder;
-import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 
 public class CoinGameBuilder implements SimulationBuilder {
@@ -38,8 +34,8 @@ public class CoinGameBuilder implements SimulationBuilder {
     }
 
     @Override
-    public Map<String, String> getParameters() {
-        return Map.of("scenario","The scenario to run");
+    public List<SimulationParameter> getParameters() {
+        return List.of(new SimulationParameter("scenario", "The scenario to run", CoinScenario.class));
     }
 
     @Override

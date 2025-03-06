@@ -27,9 +27,9 @@ public interface SimulationBuilder {
 
     /**
      * A list of parameters that can be set. These must map onto appropriate get and set methods.
-     * @return map of parameters [name,description].
+     * @return list of parameters [name,description,type].
      */
-    Map<String,String> getParameters();
+    List<SimulationParameter> getParameters();
 
 
     /**

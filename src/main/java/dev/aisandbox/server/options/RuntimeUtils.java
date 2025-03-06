@@ -1,5 +1,7 @@
 package dev.aisandbox.server.options;
 
+import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.SimulationParameter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
@@ -7,7 +9,10 @@ import org.apache.commons.lang3.EnumUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @UtilityClass
@@ -94,62 +99,102 @@ public class RuntimeUtils {
         return options;
     }
 
-    /**
-     * Use reflection to get the type (class) of a POJO's field using the normal get method.
-     *
-     * @param bean      The POJO to read
-     * @param parameter The name of the field
-     * @return the Class of the field type.
-     */
-    public Class<?> getParameterClass(Object bean, String parameter) {
+    @Deprecated
+    public Optional<String> getParameterEnumOptions(Object bean, String parameter) {
         try {
             String methodName = "get" + Character.toUpperCase(parameter.charAt(0)) + parameter.substring(1);
             Method getMethod = bean.getClass().getMethod(methodName);
-            Object result = getMethod.invoke(bean);
-            return result.getClass();
+            Object returnValue = getMethod.invoke(bean);
+            if (returnValue.getClass().isEnum()) {
+                StringBuilder stringBuilder = new StringBuilder();
+                return Optional.of(Arrays.stream(returnValue.getClass().getEnumConstants()).map(Object::toString).collect(Collectors.joining(",")));
+            } else {
+                return Optional.empty();
+            }
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public String getParameterValue(Object bean, SimulationParameter parameter) {
+        if (parameter.parameterType() == Boolean.class) {
+            return getBooleanParameterValue(bean, parameter);
+        } else {
+            return getObjectParameterValue(bean, parameter);
+        }
+    }
+
+    private static String getBooleanParameterValue(Object bean, SimulationParameter parameter) {
+        assert parameter.parameterType() == Boolean.class;
+        try {
+            String methodName = "is" + Character.toUpperCase(parameter.name().charAt(0)) + parameter.name().substring(1);
+            Method getMethod = bean.getClass().getMethod(methodName);
+            boolean result = (Boolean) getMethod.invoke(bean);
+            return String.valueOf(result);
+        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            // this isn't a boolean parameter - return null;
+            return null;
+        }
+    }
+
+    private static String getObjectParameterValue(Object bean, SimulationParameter parameter) {
+        try {
+            String methodName = "get" + Character.toUpperCase(parameter.name().charAt(0)) + parameter.name().substring(1);
+            Method getMethod = bean.getClass().getMethod(methodName);
+            return getMethod.invoke(bean).toString();
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             log.warn("Error getting method information for parameter '{}' on class {}", parameter, bean.getClass().getName(), e);
             return null;
         }
     }
 
-    public Object getParameterValue(Object bean, String parameter) throws IllegalArgumentException {
-        try {
-            String methodName = "get" + Character.toUpperCase(parameter.charAt(0)) + parameter.substring(1);
-            Method getMethod = bean.getClass().getMethod(methodName);
-            return getMethod.invoke(bean);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            log.warn("Error getting method information for parameter '{}' on class {}", parameter, bean.getClass().getName(), e);
-            throw new IllegalArgumentException("No get method found for parameter '" + parameter + "'");
+    public void setParameterValue(SimulationBuilder simulationBuilder, String name, String value) {
+        Optional<SimulationParameter> oParam = simulationBuilder.getParameters().stream().filter(param -> param.name().equalsIgnoreCase(name)).findFirst();
+        if (oParam.isPresent()) {
+            SimulationParameter param = oParam.get();
+            setParameterValue(simulationBuilder, param, value);
         }
     }
 
     /**
      * Use reflection to set a bean's field. Do not throw an exception if this is not possible.
      *
-     * @param bean      The POJO to update
+     * @param simulationBuilder      The POJO to update
      * @param parameter the name of the field
      * @param value     the new value
      */
-    public void setParameterValue(Object bean, String parameter, String value) {
+    public void setParameterValue(SimulationBuilder simulationBuilder, SimulationParameter parameter, String value) {
         try {
-            Class<?> parameterClass = getParameterClass(bean, parameter);
-            String methodName = "set" + Character.toUpperCase(parameter.charAt(0)) + parameter.substring(1);
-            Method setMethod = bean.getClass().getMethod(methodName, parameterClass);
-            if (parameterClass.isEnum()) {
-                // set enum value if it's value
-                if (EnumUtils.isValidEnumIgnoreCase((Class<Enum>) parameterClass, value)) {
-                    setMethod.invoke(bean, EnumUtils.getEnumIgnoreCase((Class<Enum>) parameterClass, value));
-                } else {
-                    log.warn("Can't set enum '{}' to '{}' as it isn't a valid option", parameterClass.getName(), value);
-                }
+            // get the first setter method which is public and has one parameter of the right type
+            String methodName = "set" + Character.toUpperCase(parameter.name().charAt(0)) + parameter.name().substring(1);
+            Optional<Method> oMethod = Arrays.stream(simulationBuilder.getClass().getMethods())
+                    .filter((m) -> m.getName().equals(methodName))
+                    .filter(method -> Modifier.isPublic(method.getModifiers()))
+                    .filter(method -> method.getParameterCount() == 1)
+                    .filter(method -> method.getParameterTypes()[0] == parameter.parameterType())
+                    .findFirst();
+            if (oMethod.isEmpty()) {
+                log.error("Method {} not found", methodName);
             } else {
-                log.error("Dont know how to set parameter '{}' to '{}' in bean '{}'", parameter, value, bean.getClass().getName());
+                Method m = oMethod.get();
+                if (parameter.parameterType().isEnum()) {
+                    // this is an enum
+                    if (EnumUtils.isValidEnumIgnoreCase((Class<Enum>) parameter.parameterType(), value)) {
+                        m.invoke(simulationBuilder, EnumUtils.getEnumIgnoreCase((Class<Enum>) parameter.parameterType(), value));
+                    } else {
+                        log.warn("Can't set enum '{}' to '{}' as it isn't a valid option", parameter.parameterType().getName(), value);
+                    }
+                } else if (parameter.parameterType() == Boolean.class) {
+                    m.invoke(simulationBuilder, Boolean.parseBoolean(value));
+                } else if (parameter.parameterType() == Integer.class) {
+                    m.invoke(simulationBuilder, Integer.parseInt(value));
+                } else {
+                    log.error("Dont know how to set parameter of type {} to '{}'", parameter.name(), value);
+                }
             }
         } catch (Exception e) {
             log.warn("Error setting property {} to '{}'", parameter, value);
         }
     }
-
 
 }

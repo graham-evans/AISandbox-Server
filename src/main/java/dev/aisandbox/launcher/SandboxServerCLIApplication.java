@@ -1,6 +1,7 @@
 package dev.aisandbox.launcher;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.SimulationSetup;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
@@ -58,18 +59,15 @@ public class SandboxServerCLIApplication {
         log.info(" Minimum players: {}", simulationBuilder.getMinAgentCount());
         log.info(" Maximum players: {}", simulationBuilder.getMaxAgentCount());
         try {
-            Map<String, String> parameters = simulationBuilder.getParameters();
+            List<SimulationParameter> parameters = simulationBuilder.getParameters();
             if (!parameters.isEmpty()) {
-                List<String> parameterNames = new ArrayList<>(parameters.keySet());
-                Collections.sort(parameterNames);
                 log.info("Options (use -o key:value to set)");
-                for (String pname : parameterNames) {
+                for (SimulationParameter parameter : parameters) {
                     // test if this is an enum
-                    Class<?> paramType = RuntimeUtils.getParameterClass(simulationBuilder, pname);
-                    if (paramType.isEnum()) {
-                        log.info(" {} ({}) - {} [{}]", pname, RuntimeUtils.getParameterValue(simulationBuilder, pname).toString(), parameters.get(pname), paramType.getEnumConstants());
+                    if (parameter.parameterType().isEnum()) {
+                        log.info(" {} ({}) - {} {}", parameter.name(), RuntimeUtils.getParameterValue(simulationBuilder, parameter), parameter.description(), parameter.parameterType().getEnumConstants());
                     } else {
-                        log.info(" {} ({}) - {}", pname, RuntimeUtils.getParameterValue(simulationBuilder, pname).toString(), parameters.get(pname));
+                        log.info(" {} ({}) - {}", parameter.name(), RuntimeUtils.getParameterValue(simulationBuilder, parameter), parameter.description());
                     }
                 }
             }
@@ -96,9 +94,11 @@ public class SandboxServerCLIApplication {
                     } else {
                         String key = keyValue[0];
                         String value = keyValue[1];
-                        try {
-                            RuntimeUtils.setParameterValue(simulationBuilder, key, value);
-                        } catch (Exception e) {
+                        // map this to a simulation parameter
+                        Optional<SimulationParameter> oParam = simulationBuilder.getParameters().stream().filter(param -> param.name().equalsIgnoreCase(key)).findFirst();
+                        if (oParam.isPresent()) {
+                            RuntimeUtils.setParameterValue(simulationBuilder, oParam.get(), value);
+                        } else {
                             log.warn("Can't set {} to {}", key, value);
                         }
                     }

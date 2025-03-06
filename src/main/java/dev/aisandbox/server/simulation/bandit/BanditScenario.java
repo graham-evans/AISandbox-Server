@@ -1,16 +1,12 @@
 package dev.aisandbox.server.simulation.bandit;
 
-import dev.aisandbox.server.engine.Agent;
-import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationBuilder;
-import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.*;
 import dev.aisandbox.server.simulation.bandit.model.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 @Slf4j
@@ -62,12 +58,12 @@ public class BanditScenario implements SimulationBuilder {
     }
 
     @Override
-    public Map<String, String> getParameters() {
-        return Map.of("banditCount", "The number of bandits",
-                "banditUpdate","How bandits change between pulls",
-                "banditStd","How the standard deviation for each bandit is chosen",
-                "banditNormal","How the normal (average) for each bandit is chosen",
-                "banditPulls","The number of bandit 'pulls' in each episode"
+    public List<SimulationParameter> getParameters() {
+        return List.of(new SimulationParameter("banditCount", "The number of bandits", BanditCountEnumeration.class),
+                new SimulationParameter("banditUpdate", "How bandits change between pulls", BanditUpdateEnumeration.class),
+                new SimulationParameter("banditStd", "How the standard deviation for each bandit is chosen", BanditStdEnumeration.class),
+                new SimulationParameter("banditNormal", "How the normal (average) for each bandit is chosen", BanditNormalEnumeration.class),
+                new SimulationParameter("banditPulls", "The number of bandit 'pulls' in each episode", BanditPullEnumeration.class)
         );
     }
 
@@ -88,7 +84,7 @@ public class BanditScenario implements SimulationBuilder {
 
     @Override
     public Simulation build(List<Agent> agents, Theme theme) {
-        return new BanditRuntime(agents.getFirst(), new Random(), banditCount.getNumber(), banditPulls.getNumber(), banditNormal, banditStd, banditUpdate,theme);
+        return new BanditRuntime(agents.getFirst(), new Random(), banditCount.getNumber(), banditPulls.getNumber(), banditNormal, banditStd, banditUpdate, theme);
     }
 
 }

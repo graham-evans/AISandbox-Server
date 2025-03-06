@@ -1,14 +1,10 @@
 package dev.aisandbox.server.simulation.maze;
 
-import dev.aisandbox.server.engine.Agent;
-import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationBuilder;
-import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * A builder for creating a simulation of a maze.
@@ -56,8 +52,10 @@ public class MazeBuilder implements SimulationBuilder {
      * Returns a map of parameters, including mazeSize and mazeType.
      */
     @Override
-    public Map<String, String> getParameters() {
-        return Map.of("mazeSize", "The size of the maze", "mazeType", "The style of the maze");
+    public List<SimulationParameter> getParameters() {
+        return List.of(
+                new SimulationParameter("mazeSize", "The size of the maze", MazeSize.class),
+                new SimulationParameter("mazeType", "The style of the maze", MazeType.class));
     }
 
     /**

@@ -31,7 +31,7 @@ public class TestRunMaze {
 
     @ParameterizedTest
     @MethodSource("allMazeProvider")
-    public void testRunBanditSize(MazeType mazeType,MazeSize mazeSize) {
+    public void testRunMaze(MazeType mazeType,MazeSize mazeSize) {
         assertDoesNotThrow(() -> {
             // create simulation
             MazeBuilder builder = new MazeBuilder();

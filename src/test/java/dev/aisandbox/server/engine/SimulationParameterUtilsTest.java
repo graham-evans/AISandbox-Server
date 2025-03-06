@@ -9,10 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Map;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class SimulationParameterUtilsTest {
@@ -23,14 +22,14 @@ class SimulationParameterUtilsTest {
     @Test
     void getHighLowCardParameters() {
         HighLowCardsBuilder builder = new HighLowCardsBuilder();
-        Map<String, String> params = builder.getParameters();
+        List<SimulationParameter> params = builder.getParameters();
         assertEquals(0, params.size());
     }
 
     @Test
     void getCoinGameParameters() {
         CoinGameBuilder builder = new CoinGameBuilder();
-        Map<String, String> params = builder.getParameters();
+        List<SimulationParameter> params = builder.getParameters();
         assertEquals(1, params.size());
     }
 
@@ -45,38 +44,24 @@ class SimulationParameterUtilsTest {
         SimulationBuilder builder = simulation.getBuilder();
         log.info("Testing {} simulation", builder.getSimulationName());
         // get all parameters
-        Map<String, String> prams = builder.getParameters();
-        for (Map.Entry<String, String> entry : prams.entrySet()) {
-            String key = entry.getKey();
-            String description = entry.getValue();
-            log.info(" Parameter {} = {}", key, description);
-            // get the current value of this parameter
-            log.info("  Default value = {}", RuntimeUtils.getParameterValue(builder, key));
-            // get the type of this parameter
-            Class<?> paramClass = RuntimeUtils.getParameterClass(builder, key);
-            if (paramClass.isEnum()) {
-                // try and call enum setter
-                RuntimeUtils.setParameterValue(builder, key, paramClass.getEnumConstants()[0].toString());
-            } else {
-                log.info(" dont know how to test {}", paramClass.getName());
-            }
-
+        List<SimulationParameter> params = builder.getParameters();
+        for (SimulationParameter entry : params) {
+            log.info("Testing parameter {} of simulation {}", entry.name(), simulation.name());
+            assertNotNull(entry.name(), "Parameter name is null");
+            assertFalse(entry.name().isBlank(), "Name should not be blank");
+            assertNotNull(entry.description(), "Description is null");
+            assertFalse(entry.description().isBlank(), "Description should not be blank");
+            assertNotNull(RuntimeUtils.getParameterValue(builder, entry), "default value is null");
         }
     }
 
     @Test
     void testBadSimulationParameters() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            SimulationBuilder builder = new BadSimulation();
-            Map<String, String> params = builder.getParameters();
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                String key = entry.getKey();
-                String description = entry.getValue();
-                log.info(" Parameter {} = {}", key, description);
-                // get the current value of this parameter
-                log.info("  Default value = {}", RuntimeUtils.getParameterValue(builder, key));
-            }
-        });
+        SimulationBuilder builder = new BadSimulation();
+        List<SimulationParameter> params = builder.getParameters();
+        for (SimulationParameter entry : params) {
+            assertNull(RuntimeUtils.getParameterValue(builder, entry));
+        }
     }
 
 }

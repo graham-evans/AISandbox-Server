@@ -1,7 +1,6 @@
 package dev.aisandbox.server.engine;
 
 import java.util.List;
-import java.util.Map;
 
 public class BadSimulation implements SimulationBuilder {
 
@@ -16,8 +15,8 @@ public class BadSimulation implements SimulationBuilder {
     }
 
     @Override
-    public Map<String, String> getParameters() {
-        return Map.of("height","Non existent parameter");
+    public List<SimulationParameter> getParameters() {
+        return List.of(new SimulationParameter("height", "Non existent parameter", Integer.class));
     }
 
     @Override

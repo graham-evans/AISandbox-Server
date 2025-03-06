@@ -1,12 +1,8 @@
 package dev.aisandbox.server.simulation.highlowcards;
 
-import dev.aisandbox.server.engine.Agent;
-import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationBuilder;
-import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.*;
 
 import java.util.List;
-import java.util.Map;
 
 public class HighLowCardsBuilder implements SimulationBuilder {
 
@@ -31,8 +27,8 @@ public class HighLowCardsBuilder implements SimulationBuilder {
     }
 
     @Override
-    public Map<String, String> getParameters() {
-        return Map.of();
+    public List<SimulationParameter> getParameters() {
+        return List.of();
     }
 
     @Override

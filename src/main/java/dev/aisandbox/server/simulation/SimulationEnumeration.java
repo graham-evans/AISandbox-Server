@@ -6,6 +6,7 @@ import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
 import dev.aisandbox.server.simulation.maze.MazeBuilder;
 import dev.aisandbox.server.simulation.mine.MineHunterScenario;
+import dev.aisandbox.server.simulation.twisty.TwistyScenario;
 import lombok.Getter;
 
 /**
@@ -34,7 +35,11 @@ public enum SimulationEnumeration {
     /**
      * Minehunter - find mines in a grid and place flags.
      */
-    MINE(new MineHunterScenario());
+    MINE(new MineHunterScenario()),
+    /**
+     * Twisty puzzles, like cubes and pyramids
+     */
+    TWISTY(new TwistyScenario());
     /**
      * The {@link SimulationBuilder} instance associated with this simulation type.
      */
