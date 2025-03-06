@@ -1,0 +1,204 @@
+package dev.aisandbox.server.simulation.twisty;
+
+
+import dev.aisandbox.server.engine.Agent;
+import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.output.OutputConstants;
+import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.simulation.bandit.BanditRuntime;
+import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;
+import dev.aisandbox.server.simulation.twisty.proto.TwistyAction;
+import dev.aisandbox.server.simulation.twisty.proto.TwistyResult;
+import dev.aisandbox.server.simulation.twisty.proto.TwistySignal;
+import dev.aisandbox.server.simulation.twisty.proto.TwistyState;
+import dev.aisandbox.server.simulation.twisty.model.Move;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
+@Slf4j
+public class TwistyRuntime implements Simulation {
+
+    private static final int SCRAMBLE_MOVES = 200;
+    private static final int HISTORY_WIDTH = 9;
+    private static final int HISTORY_HEIGHT = 5;
+    private static final int MOVE_HISTORY_MAX = HISTORY_WIDTH * HISTORY_HEIGHT;
+    // agents
+    private final Agent agent;
+    private final TwistyPuzzle puzzle;
+    private final boolean startSolved;
+    private final Theme theme;
+    // puzzle elements
+    private final Random random = new Random();
+    // is this the first frame - if so add the starting image
+    private final String sessionID = UUID.randomUUID().toString();
+    private final int MAX_MOVES = 1000;
+    String savedState;
+    List<String> actions = new ArrayList<>();
+    int moves;
+    // UI elements
+    private BufferedImage logo;
+    private List<String> moveHistory = new ArrayList<>();
+    // the graph showing how quickly we solve problems
+    // private FrequencyMassDistributionGraph frequencyGraph = new FrequencyMassDistributionGraph();
+    // this graph doesnt change very often, so we cache it.
+    private BufferedImage frequencyGraphImage = null;
+    private String episodeID;
+
+
+    public TwistyRuntime(Agent agent, TwistyPuzzle puzzle, boolean startSolved, Theme theme) {
+        this.agent = agent;
+        this.puzzle = puzzle;
+        this.startSolved = startSolved;
+        this.theme = theme;
+
+        // load logo
+        try {
+            logo = ImageIO.read(BanditRuntime.class.getResourceAsStream("/images/AILogo.png"));
+        } catch (Exception e) {
+            log.error("Error loading logo", e);
+            logo = new BufferedImage(OutputConstants.LOGO_WIDTH, OutputConstants.LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        }
+        initialisePuzzle();
+        // setup graph
+    /*frequencyGraph.setTitle("# Moves to solve");
+    frequencyGraph.setXaxisHeader("# Moves");
+    frequencyGraph.setYaxisHeader("Frequency");
+    frequencyGraph.setGraphWidth(HISTORY_WIDTH * Move.MOVE_ICON_WIDTH);
+    frequencyGraph.setGraphHeight(350);*/
+    }
+
+
+    public void initialisePuzzle() {
+        puzzle.resetPuzzle();
+        if (!startSolved) {
+            scramblePuzzle();
+        }
+        moves = 0;
+        moveHistory.clear();
+        episodeID = UUID.randomUUID().toString();
+    }
+
+    @Override
+    public void step(OutputRenderer output) {
+        // special case - call display if this is the start of an episode
+        if (moves == 0) {
+            output.display();
+        }
+        // generate the current state
+        TwistyState.Builder builder = TwistyState.newBuilder();
+        builder.setMoves(moves);
+        builder.setEpisodeID(episodeID);
+        builder.setSessionID(sessionID);
+        builder.setState(puzzle.getState());
+        builder.addAllValidMoves(puzzle.getMoveList());
+        // get the next move
+        TwistyAction action = agent.receive(builder.build(), TwistyAction.class);
+        // special case - reset action
+        if ("reset".equalsIgnoreCase(action.getMove())) {
+            // reset the puzzle
+            agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE).build());
+            initialisePuzzle();
+        } else {
+            // apply the move
+            try {
+                puzzle.applyMove(action.getMove());
+            } catch (Exception e) {
+                // TODO this should be thrown to stop the simulation
+                log.error("Error applying move", e);
+            }
+            moves++;
+            moveHistory.add(action.getMove());
+            if (puzzle.isSolved()) {
+                // puzzle solved
+                agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN).build());
+                output.display();
+                initialisePuzzle();
+            } else if (moves == MAX_MOVES) {
+                // ran out of moves
+                agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE).build());
+                output.display();
+                initialisePuzzle();
+            } else {
+                // puzzle continues
+                agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.CONTINUE).build());
+                output.display();
+            }
+        }
+    }
+
+ /* @Override
+  public void writeStatistics(File statisticsOutputFile) {
+    try {
+      PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(statisticsOutputFile)));
+      out.print("mean,");
+      out.println(frequencyGraph.getMean());
+      out.print("std,");
+      out.println(frequencyGraph.getStandardDeviation());
+      out.println("Values");
+      Iterator<Entry<Comparable<?>, Long>> iterator =
+          frequencyGraph.getFrequencyTable().entrySetIterator();
+      while (iterator.hasNext()) {
+        Entry<Comparable<?>, Long> e = iterator.next();
+        out.print(e.getKey());
+        out.print(",");
+        out.println(e.getValue());
+      }
+      out.close();
+    } catch (IOException e) {
+      log.error("Error writing stats to file " + statisticsOutputFile.getAbsolutePath(), e);
+    }
+  }*/
+
+    private void scramblePuzzle() {
+        for (int i = 0; i < SCRAMBLE_MOVES; i++) {
+            try {
+                String randomMove = puzzle.getMoveList().get(random.nextInt(puzzle.getMoveList().size()));
+                puzzle.applyMove(randomMove);
+            } catch (NotExistentMoveException e) {
+                log.error("Non existent move when trying a move defined in the class", e);
+            }
+        }
+    }
+
+
+    @Override
+    public void visualise(Graphics2D graphics2D) {
+        puzzle.drawPuzzle(graphics2D);
+        // add logo
+        graphics2D.drawImage(logo, 100, 50, null);
+        // draw history
+        for (int i = 0; i < moveHistory.size(); i++) {
+            BufferedImage moveImage = puzzle.getMoveImage(moveHistory.get(i));
+            if (moveImage != null) {
+                graphics2D.drawImage(
+                        moveImage,
+                        (i % HISTORY_WIDTH) * Move.MOVE_ICON_WIDTH + 1350,
+                        (i / HISTORY_WIDTH) * Move.MOVE_ICON_HEIGHT + 550,
+                        null);
+            }
+        }
+        //draw graphs
+/*    g.setColor(Color.BLACK);
+    if (frequencyGraphImage != null) {
+      g.drawImage(frequencyGraphImage, 1350, 100, null);
+      g.drawString(
+          "Mean : " + BaseAWTGraph.toSignificantDigitString(frequencyGraph.getMean(), 5),
+          1400,
+          480);
+      g.drawString(
+          "\u03C3\u00B2 : "
+              + BaseAWTGraph.toSignificantDigitString(frequencyGraph.getStandardDeviation(), 5),
+          1400,
+          480 + 24);
+    }*/
+    }
+}
