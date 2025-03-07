@@ -23,7 +23,7 @@ public class TwistyScenario implements SimulationBuilder {
 
     @Getter
     @Setter
-    private boolean startSolved = false;
+    private Boolean startSolved = false;
 
     @Override
     public String getSimulationName() {
