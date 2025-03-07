@@ -116,34 +116,13 @@ public class RuntimeUtils {
         }
     }
 
-    public String getParameterValue(Object bean, SimulationParameter parameter) {
-        if (parameter.parameterType() == Boolean.class) {
-            return getBooleanParameterValue(bean, parameter);
-        } else {
-            return getObjectParameterValue(bean, parameter);
-        }
-    }
-
-    private static String getBooleanParameterValue(Object bean, SimulationParameter parameter) {
-        assert parameter.parameterType() == Boolean.class;
-        try {
-            String methodName = "is" + Character.toUpperCase(parameter.name().charAt(0)) + parameter.name().substring(1);
-            Method getMethod = bean.getClass().getMethod(methodName);
-            boolean result = (Boolean) getMethod.invoke(bean);
-            return String.valueOf(result);
-        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            // this isn't a boolean parameter - return null;
-            return null;
-        }
-    }
-
-    private static String getObjectParameterValue(Object bean, SimulationParameter parameter) {
+    public String getParameterValue(SimulationBuilder simulationBuilder, SimulationParameter parameter) {
         try {
             String methodName = "get" + Character.toUpperCase(parameter.name().charAt(0)) + parameter.name().substring(1);
-            Method getMethod = bean.getClass().getMethod(methodName);
-            return getMethod.invoke(bean).toString();
+            Method getMethod = simulationBuilder.getClass().getMethod(methodName);
+            return getMethod.invoke(simulationBuilder).toString();
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            log.warn("Error getting method information for parameter '{}' on class {}", parameter, bean.getClass().getName(), e);
+            log.warn("Error getting method information for parameter '{}' on class {}", parameter, simulationBuilder.getClass().getName(), e);
             return null;
         }
     }
