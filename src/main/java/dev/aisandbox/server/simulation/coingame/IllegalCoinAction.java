@@ -1,8 +1,8 @@
 package dev.aisandbox.server.simulation.coingame;
 
-import dev.aisandbox.server.engine.GameException;
+import dev.aisandbox.server.engine.exception.SimulationException;
 
-public class IllegalCoinAction extends GameException {
+public class IllegalCoinAction extends SimulationException {
 
     public IllegalCoinAction(String message) {
         super(message);
