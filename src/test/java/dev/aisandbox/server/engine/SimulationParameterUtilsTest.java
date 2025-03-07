@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,6 +54,22 @@ class SimulationParameterUtilsTest {
             assertNotNull(entry.description(), "Description is null");
             assertFalse(entry.description().isBlank(), "Description should not be blank");
             assertNotNull(RuntimeUtils.getParameterValue(builder, entry), "default value is null");
+            // check boolean can be set
+            if (entry.parameterType()==Boolean.class) {
+                RuntimeUtils.setParameterValue(builder, entry, "false");
+                assertTrue(RuntimeUtils.getParameterValue(builder, entry).equalsIgnoreCase("false"),"Setting value to false failed");
+                RuntimeUtils.setParameterValue(builder, entry, "true");
+                assertTrue(RuntimeUtils.getParameterValue(builder, entry).equalsIgnoreCase("true"),"Setting value to true failed");
+            }
+            if (entry.parameterType().isEnum()) {
+                // check enums have different toString() results
+                Set<String> strings = new HashSet<>();
+                for (Object o : entry.parameterType().getEnumConstants()) {
+                    strings.add(o.toString());
+                }
+                assertEquals(entry.parameterType().getEnumConstants().length,strings.size(),"Duplicate enum toString() results");
+            }
+
         }
     }
 

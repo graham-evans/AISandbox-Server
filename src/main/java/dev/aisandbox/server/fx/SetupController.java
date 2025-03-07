@@ -20,10 +20,7 @@ import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 
@@ -55,21 +52,37 @@ public class SetupController {
         label.setMaxWidth(Double.MAX_VALUE);
         label.setAlignment(Pos.CENTER_LEFT);
         node.setCenter(label);
+
         // TODO - this assumes that all params are enums
         if (parameter.parameterType().isEnum()) {
-            // create list of values
-            List<String> enumNames = Arrays.stream(parameter.parameterType().getEnumConstants()).map(Object::toString).toList();
+            // create map of values and their string representation
+            Map<String, String> enumMap = new TreeMap<>();
+            List<String> enumList = new ArrayList<>();
+            Arrays.stream(parameter.parameterType().getEnumConstants()).forEach(o -> {
+                enumMap.put(o.toString(), ((Enum<?>)o).name());
+                enumList.add(o.toString());
+            });
             // add editor
             ComboBox<String> editor = new ComboBox<>();
-            editor.setItems(FXCollections.observableList(enumNames));
+            editor.setItems(FXCollections.observableList(enumList));
             editor.getSelectionModel().select(RuntimeUtils.getParameterValue(builder, parameter));
             editor.valueProperty().addListener((observable, oldValue, newValue) -> {
-                RuntimeUtils.setParameterValue(builder, parameter, newValue);
+                RuntimeUtils.setParameterValue(builder, parameter, enumMap.get(newValue));
+            });
+            node.setRight(editor);
+        } else if (parameter.parameterType() == Boolean.class) {
+            CheckBox editor = new CheckBox();
+            editor.setSelected(RuntimeUtils.getParameterValue(builder, parameter).equalsIgnoreCase("true"));
+            editor.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                RuntimeUtils.setParameterValue(builder, parameter, newValue ? "true" : "false");
             });
             node.setRight(editor);
         } else {
-            log.error("Dont know how to build an editor for {}",parameter.parameterType().getName());
+            log.error("Dont know how to build an editor for {}", parameter.parameterType().getName());
         }
+        // install tooltip
+        Tooltip tooltip = new Tooltip(parameter.description());
+        Tooltip.install(node, tooltip);
         return node;
     }
 
