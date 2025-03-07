@@ -3,6 +3,8 @@ package dev.aisandbox.server.simulation.bandit;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
@@ -79,7 +81,7 @@ public class BanditRuntime implements Simulation {
     }
 
     @Override
-    public void step(OutputRenderer output) {
+    public void step(OutputRenderer output) throws SimulationException {
         sessionStep++;
         log.debug("Starting step {}", sessionStep);
         // work out the 'best' bandit to pull
@@ -92,7 +94,10 @@ public class BanditRuntime implements Simulation {
         if (arm == bestPull) {
             episodeBestMoveCount += 1.0;
         }
-        // todo - test for invalid request
+        // test for invalid request
+        if ((arm < 0)||(arm >= bandits.size())) {
+            throw new IllegalActionException("Invalid arm.");
+        }
         // get the score
         double score = bandits.get(arm).pull(rand);
         episodeScore += score;
