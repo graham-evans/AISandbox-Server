@@ -14,48 +14,79 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Unit tests for the Bandit simulation - testing bad responses are dealt with.
+ */
 public class TestRunBadBandit {
+
+    /**
+     * Test that sending an invalid arm request (too high number) throws an exception.
+     */
     @Test
     public void testRunBadHighBanditGame() {
+        // Verify that attempting to run the simulation with a bad player implementation raises an IllegalActionException.
         assertThrows(IllegalActionException.class, () -> {
-            // create simulation
+            // Create a new Bandit scenario builder.
             BanditScenario banditBuilder = new BanditScenario();
+
+            // Set the update strategy for the bandit to EQUALISE.
             banditBuilder.setBanditUpdate(BanditUpdateEnumeration.EQUALISE);
-            // create players
-            List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1)).map(s -> (Agent) new BadBanditPlayer(s, true)).toList();
-            // create simulation
+
+            // Create a list of players with bad implementations.
+            List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1))
+                    .map(s -> (Agent) new BadBanditPlayer(s, true)) // ask for an arm which doesn't exist.
+                    .toList();
+
+            // Build the simulation using the bad player implementations.
             Simulation sim = banditBuilder.build(agents, Theme.DEFAULT);
-            // create output
+
+            // Set up a null output renderer for the simulation.
             OutputRenderer out = new NullOutputRenderer();
             out.setup(sim);
-            // start simulation
+
+            // Attempt to run the simulation 100 steps.
             for (int step = 0; step < 100; step++) {
                 sim.step(out);
             }
-            // finish simulation
+
+            // Close the simulation and its agents.
             sim.close();
             agents.forEach(Agent::close);
         });
     }
 
+
+    /**
+     * Test that sending a invalid arm request (minus number) throws an exception.
+     */
     @Test
     public void testRunBadLowBanditGame() {
+        // Verify that attempting to run the simulation with a bad player implementation raises an IllegalActionException.
         assertThrows(IllegalActionException.class, () -> {
-            // create simulation
+            // Create a new Bandit scenario builder.
             BanditScenario banditBuilder = new BanditScenario();
+
+            // Set the update strategy for the bandit to EQUALISE.
             banditBuilder.setBanditUpdate(BanditUpdateEnumeration.EQUALISE);
-            // create players
-            List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1)).map(s -> (Agent) new BadBanditPlayer(s, false)).toList();
-            // create simulation
+
+            // Create a list of players with bad implementations.
+            List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1))
+                    .map(s -> (Agent) new BadBanditPlayer(s, false)) // negative number strategy
+                    .toList();
+
+            // Build the simulation using the bad player implementations.
             Simulation sim = banditBuilder.build(agents, Theme.DEFAULT);
-            // create output
+
+            // Set up a null output renderer for the simulation.
             OutputRenderer out = new NullOutputRenderer();
             out.setup(sim);
-            // start simulation
+
+            // Attempt to run the simulation 100 steps.
             for (int step = 0; step < 100; step++) {
                 sim.step(out);
             }
-            // finish simulation
+
+            // Close the simulation and its agents.
             sim.close();
             agents.forEach(Agent::close);
         });
