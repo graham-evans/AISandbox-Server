@@ -52,7 +52,7 @@ public class RollingValueChartWidget {
                         height / 40);
                 BaseGraph graph = new BaseGraph(width, height, title, xTitle, yTitle, theme, xAxis, yAxis);
                 for (int i = 1; i < values.size(); i++) {
-                    graph.addLine(startIndex + i - 1, values.get(i - 1), startIndex + i, values.get(i), theme.getPrimaryColor());
+                    graph.addLine(startIndex + i - 1, values.get(i - 1), startIndex + i, values.get(i), theme.getAgent1Main());
                 }
                 graph.addAxisAndTitle();
                 image = graph.getImage();

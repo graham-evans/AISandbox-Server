@@ -130,7 +130,7 @@ public class MazeRunner implements Simulation {
         // draw maze
         graphics2D.drawImage(mazeImage,MARGIN,MARGIN,maze.getWidth()*SPRITE_SIZE*maze.getZoomLevel(),maze.getHeight()*SPRITE_SIZE*maze.getZoomLevel(),null);
         // draw the player
-        graphics2D.setColor(theme.getPrimaryColor());
+        graphics2D.setColor(theme.getAgent1Main());
         graphics2D.fillOval(
                 currentCell.getPositionX() * mazeSize.getZoomLevel() * SPRITE_SIZE + MARGIN,
                 MARGIN + currentCell.getPositionY() * mazeSize.getZoomLevel() * SPRITE_SIZE ,
