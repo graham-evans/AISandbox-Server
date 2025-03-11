@@ -10,7 +10,7 @@ import java.awt.*;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum Theme {
 
-    DEFAULT(
+    LIGHT(
             Color.decode("#eeeeee"),
             Color.BLACK,
             Color.lightGray,

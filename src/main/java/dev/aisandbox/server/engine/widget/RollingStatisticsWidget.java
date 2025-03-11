@@ -1,7 +1,6 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +100,7 @@ public class RollingStatisticsWidget {
         private int fontHeight = 14;
         private int windowSize = 200;
         private String fontName = "Ariel";
-        private Theme theme = Theme.DEFAULT;
+        private Theme theme = Theme.LIGHT;
 
         public RollingStatisticsWidget build() {
             return new RollingStatisticsWidget(width, height, fontHeight, fontName, windowSize, theme);

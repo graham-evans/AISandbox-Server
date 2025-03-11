@@ -38,7 +38,7 @@ public class TestRunBadBandit {
                     .toList();
 
             // Build the simulation using the bad player implementations.
-            Simulation sim = banditBuilder.build(agents, Theme.DEFAULT);
+            Simulation sim = banditBuilder.build(agents, Theme.LIGHT);
 
             // Set up a null output renderer for the simulation.
             OutputRenderer out = new NullOutputRenderer();
@@ -75,7 +75,7 @@ public class TestRunBadBandit {
                     .toList();
 
             // Build the simulation using the bad player implementations.
-            Simulation sim = banditBuilder.build(agents, Theme.DEFAULT);
+            Simulation sim = banditBuilder.build(agents, Theme.LIGHT);
 
             // Set up a null output renderer for the simulation.
             OutputRenderer out = new NullOutputRenderer();

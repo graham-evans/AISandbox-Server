@@ -114,7 +114,7 @@ public class RollingValueHistogramWidget {
         /**
          * The theme to use whilst drawing.
          */
-        private Theme theme = Theme.DEFAULT;
+        private Theme theme = Theme.LIGHT;
         /**
          * The Main title, shown at the top of the widget
          */

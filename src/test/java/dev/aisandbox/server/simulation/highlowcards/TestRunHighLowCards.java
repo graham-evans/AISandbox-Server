@@ -23,7 +23,7 @@ public class TestRunHighLowCards {
             // create players
             List<Agent> agents = List.of(new MockPlayer());
             // create simulation
-            Simulation sim = simulationBuilder.build(agents, Theme.DEFAULT);
+            Simulation sim = simulationBuilder.build(agents, Theme.LIGHT);
             // create output directory
             File outputDirectory = new File("build/test/highLowCards");
             outputDirectory.mkdirs();

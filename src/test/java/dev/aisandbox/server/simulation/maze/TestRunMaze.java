@@ -8,8 +8,6 @@ import dev.aisandbox.server.engine.output.OutputRenderer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.EnumSources;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
@@ -40,7 +38,7 @@ public class TestRunMaze {
             // create players
             List<Agent> agents = Arrays.stream(builder.getAgentNames(1)).map(s -> (Agent) new MockMazeAgent(s)).toList();
             // create simulation
-            Simulation sim = builder.build(agents, Theme.DEFAULT);
+            Simulation sim = builder.build(agents, Theme.LIGHT);
             // create output
             File targetDir = new File(outputDirectory, mazeType.name()+"-"+mazeSize.name());
             targetDir.mkdirs();

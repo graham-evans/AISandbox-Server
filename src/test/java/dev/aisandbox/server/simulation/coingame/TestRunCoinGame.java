@@ -2,7 +2,6 @@ package dev.aisandbox.server.simulation.coingame;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
-import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -25,7 +24,7 @@ public class TestRunCoinGame {
             // create players
             List<Agent> agents = Arrays.stream(simulationBuilder.getAgentNames(2)).map(s -> (Agent) new MockPlayer(s)).toList();
             // create simulation
-            Simulation sim = simulationBuilder.build(agents, Theme.DEFAULT);
+            Simulation sim = simulationBuilder.build(agents, Theme.LIGHT);
             // create output directory
             File outputDirectory = new File("build/test/coingame");
             outputDirectory.mkdirs();

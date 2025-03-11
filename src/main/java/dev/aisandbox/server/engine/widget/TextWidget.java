@@ -82,7 +82,7 @@ public class TextWidget {
         private int height = 200;
         private int fontHeight = 14;
         private String fontName = "Ariel";
-        private Theme theme = Theme.DEFAULT;
+        private Theme theme = Theme.LIGHT;
 
         public TextWidget build() {
             return new TextWidget(width, height, fontHeight, fontName, theme);

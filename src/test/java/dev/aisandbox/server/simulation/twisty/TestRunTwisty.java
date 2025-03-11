@@ -34,7 +34,7 @@ public class TestRunTwisty {
             // create players
             List<Agent> agents = Arrays.stream(builder.getAgentNames(1)).map(s -> (Agent) new MockTwistyAgent(s)).toList();
             // create simulation
-            Simulation sim = builder.build(agents, Theme.DEFAULT);
+            Simulation sim = builder.build(agents, Theme.LIGHT);
             // create output
             File targetDir = new File(outputDirectory, puzzleType.name());
             targetDir.mkdirs();

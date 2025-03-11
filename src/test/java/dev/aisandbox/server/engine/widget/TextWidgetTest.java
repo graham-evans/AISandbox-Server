@@ -9,7 +9,7 @@ public class TextWidgetTest {
     @Test
     public void defaultValueTest() {
         TextWidget text = TextWidget.builder().build();
-        assertEquals(Theme.DEFAULT, text.getTheme());
+        assertEquals(Theme.LIGHT, text.getTheme());
     }
 
 }

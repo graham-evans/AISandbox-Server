@@ -84,7 +84,7 @@ public class BanditWidget {
     public static class BanditWidgetBuilder {
         private int width = 200;
         private int height = 200;
-        private Theme theme = Theme.DEFAULT;
+        private Theme theme = Theme.LIGHT;
 
         public BanditWidget build() {
             return new BanditWidget(width, height, theme);

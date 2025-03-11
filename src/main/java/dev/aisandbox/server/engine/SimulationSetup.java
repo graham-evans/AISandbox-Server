@@ -19,7 +19,7 @@ public class SimulationSetup {
 
     public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents, OutputRenderer renderer) {
         // create simulation
-        Simulation sim = builder.build(agents, Theme.DEFAULT);
+        Simulation sim = builder.build(agents, Theme.LIGHT);
         // start output
         renderer.setup(sim);
         // create simulation thread

@@ -25,7 +25,7 @@ public class TestRunBandit {
             // create players
             List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1)).map(s -> (Agent) new MockBanditPlayer(s)).toList();
             // create simulation
-            Simulation sim = banditBuilder.build(agents, Theme.DEFAULT);
+            Simulation sim = banditBuilder.build(agents, Theme.LIGHT);
             // create output directory
             File outputDirectory = new File("build/test/bandit");
             outputDirectory.mkdirs();

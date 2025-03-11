@@ -70,7 +70,7 @@ public class RollingValueChartWidget {
         private String title = "Values";
         private String yTitle = "Score";
         private String xTitle = "Episode";
-        private Theme theme = Theme.DEFAULT;
+        private Theme theme = Theme.LIGHT;
 
         public RollingValueChartWidget build() {
             return new RollingValueChartWidget(width, height, window, title, xTitle, yTitle, theme);

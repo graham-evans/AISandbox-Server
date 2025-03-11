@@ -22,7 +22,7 @@ public class BaseGraphTest {
 
     @Test
     public void testTitles() throws IOException {
-        BaseGraph graph = new BaseGraph(500, 300, "Main Title", "X Title", "Y Title", Theme.DEFAULT, new NiceAxisScale(0, 100), new NiceAxisScale(0, 20));
+        BaseGraph graph = new BaseGraph(500, 300, "Main Title", "X Title", "Y Title", Theme.LIGHT, new NiceAxisScale(0, 100), new NiceAxisScale(0, 20));
         graph.addAxisAndTitle();
         BufferedImage image = graph.getImage();
         ImageIO.write(image, "png", new File(outputDir, "title.png"));
