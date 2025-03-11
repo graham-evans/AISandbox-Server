@@ -6,17 +6,14 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.simulation.bandit.BanditRuntime;
+import dev.aisandbox.server.simulation.twisty.model.Move;
 import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyAction;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyResult;
 import dev.aisandbox.server.simulation.twisty.proto.TwistySignal;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyState;
-import dev.aisandbox.server.simulation.twisty.model.Move;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -24,8 +21,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
+
 @Slf4j
-public class TwistyRuntime implements Simulation {
+public class TwistySimulation implements Simulation {
 
     private static final int SCRAMBLE_MOVES = 200;
     private static final int HISTORY_WIDTH = 9;
@@ -38,35 +38,22 @@ public class TwistyRuntime implements Simulation {
     private final Theme theme;
     // puzzle elements
     private final Random random = new Random();
-    // is this the first frame - if so add the starting image
     private final String sessionID = UUID.randomUUID().toString();
     private final int MAX_MOVES = 1000;
     String savedState;
     List<String> actions = new ArrayList<>();
     int moves;
     // UI elements
-    private BufferedImage logo;
     private List<String> moveHistory = new ArrayList<>();
-    // the graph showing how quickly we solve problems
-    // private FrequencyMassDistributionGraph frequencyGraph = new FrequencyMassDistributionGraph();
-    // this graph doesnt change very often, so we cache it.
-    private BufferedImage frequencyGraphImage = null;
     private String episodeID;
 
 
-    public TwistyRuntime(Agent agent, TwistyPuzzle puzzle, boolean startSolved, Theme theme) {
+    public TwistySimulation(Agent agent, TwistyPuzzle puzzle, boolean startSolved, Theme theme) {
         this.agent = agent;
         this.puzzle = puzzle;
         this.startSolved = startSolved;
         this.theme = theme;
-
-        // load logo
-        try {
-            logo = ImageIO.read(BanditRuntime.class.getResourceAsStream("/images/AILogo.png"));
-        } catch (Exception e) {
-            log.error("Error loading logo", e);
-            logo = new BufferedImage(OutputConstants.LOGO_WIDTH, OutputConstants.LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        }
+        // setup puzzle
         initialisePuzzle();
         // setup graph
     /*frequencyGraph.setTitle("# Moves to solve");
@@ -88,7 +75,7 @@ public class TwistyRuntime implements Simulation {
     }
 
     @Override
-    public void step(OutputRenderer output) {
+    public void step(OutputRenderer output) throws NotExistentMoveException {
         // special case - call display if this is the start of an episode
         if (moves == 0) {
             output.display();
@@ -109,12 +96,7 @@ public class TwistyRuntime implements Simulation {
             initialisePuzzle();
         } else {
             // apply the move
-            try {
-                puzzle.applyMove(action.getMove());
-            } catch (Exception e) {
-                // TODO this should be thrown to stop the simulation
-                log.error("Error applying move", e);
-            }
+            puzzle.applyMove(action.getMove());
             moves++;
             moveHistory.add(action.getMove());
             if (puzzle.isSolved()) {
@@ -172,9 +154,13 @@ public class TwistyRuntime implements Simulation {
 
     @Override
     public void visualise(Graphics2D graphics2D) {
-        puzzle.drawPuzzle(graphics2D);
+        // draw background
+        graphics2D.setColor(theme.getBackground());
+        graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
+        // draw puzzle
+        puzzle.drawPuzzle(graphics2D, theme);
         // add logo
-        graphics2D.drawImage(logo, 100, 50, null);
+        graphics2D.drawImage(OutputConstants.logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - OutputConstants.EDGE, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - OutputConstants.EDGE, null);
         // draw history
         for (int i = 0; i < moveHistory.size(); i++) {
             BufferedImage moveImage = puzzle.getMoveImage(moveHistory.get(i));
