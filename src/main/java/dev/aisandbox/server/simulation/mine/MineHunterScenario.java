@@ -38,7 +38,7 @@ public class MineHunterScenario implements SimulationBuilder {
     }
 
     @Override
-    public String[] getAgentNames(int playerCount) {
+    public String[] getAgentNames(int agentCount) {
         return new String[]{"Agent 1"};
     }
 

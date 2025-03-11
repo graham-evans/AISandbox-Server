@@ -39,7 +39,7 @@ public class CoinGameBuilder implements SimulationBuilder {
     }
 
     @Override
-    public String[] getAgentNames(int playerCount) {
+    public String[] getAgentNames(int agentCount) {
         return new String[]{"Player 1", "Player 2"};
     }
 

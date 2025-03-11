@@ -30,7 +30,7 @@ public class BadSimulation implements SimulationBuilder {
     }
 
     @Override
-    public String[] getAgentNames(int playerCount) {
+    public String[] getAgentNames(int agentCount) {
         return new String[0];
     }
 

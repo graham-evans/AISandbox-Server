@@ -83,10 +83,10 @@ public class MazeBuilder implements SimulationBuilder {
      * <p>
      * Returns an array containing a single string, "Agent 1".
      *
-     * @param playerCount The number of players in the simulation (always 1 for this builder).
+     * @param agentCount The number of players in the simulation (always 1 for this builder).
      */
     @Override
-    public String[] getAgentNames(int playerCount) {
+    public String[] getAgentNames(int agentCount) {
         return new String[]{"Agent 1"};
     }
 

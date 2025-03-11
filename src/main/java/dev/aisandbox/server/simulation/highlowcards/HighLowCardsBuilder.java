@@ -32,7 +32,7 @@ public class HighLowCardsBuilder implements SimulationBuilder {
     }
 
     @Override
-    public String[] getAgentNames(int playerCount) {
+    public String[] getAgentNames(int agentCount) {
         return new String[]{"Player 1"};
     }
 
