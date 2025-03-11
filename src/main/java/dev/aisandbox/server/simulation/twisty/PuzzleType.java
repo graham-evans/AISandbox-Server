@@ -1,7 +1,9 @@
 package dev.aisandbox.server.simulation.twisty;
 
 import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 
@@ -12,6 +14,7 @@ import java.io.IOException;
  * @version $Id: $Id
  */
 @Getter
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PuzzleType {
   CUBE3("Cube 3x3x3", "Cube 3x3x3 (OBTM)"),
   CUBE2("Cube 2x2x2", "Cube 2x2x2 (OBTM)"),
@@ -52,15 +55,10 @@ public enum PuzzleType {
   );
 //  PYRAMID3("Pyramid 3", "Pyramid 3");
 
-  PuzzleType(String name, String id) {
-    this.name = name;
-    this.id = id;
-    this.resource = resource;
-  }
 
-  private String name;
-  private String id;
-  private String resource;
+
+  private final String name;
+  private final String id;
 
   public String toString() {
     return name;

@@ -16,7 +16,7 @@ public class Board {
 
     @Getter private GameState state = GameState.INIT;
 
-    @Getter private String boardID = UUID.randomUUID().toString();
+    @Getter private final String boardID = UUID.randomUUID().toString();
 
     @Getter private int unfoundMines = 0;
 
@@ -62,7 +62,7 @@ public class Board {
      *
      * @param x Cell horizontal position.
      * @param y Cell vertical position.
-     * @return The requested {@link dev.aisandbox.client.scenarios.mine.Cell} Cell Object.
+     * @return The requested {@link dev.aisandbox.server.simulation.mine.Cell} Cell Object.
      */
     protected Cell getCell(int x, int y) {
         return grid[x][y];

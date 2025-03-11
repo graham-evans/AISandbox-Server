@@ -1,7 +1,11 @@
 package dev.aisandbox.server.simulation.bandit.model;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Random;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum BanditNormalEnumeration {
   NORMAL_0_1("Normal(0,1)"),
   NORMAL_0_5("Normal(0,5)"),
@@ -9,10 +13,6 @@ public enum BanditNormalEnumeration {
   UNIFORM_0_5("Uniform 0:5");
 
   private final String name;
-
-  BanditNormalEnumeration(String envUrl) {
-    this.name = envUrl;
-  }
 
   public double getNormalValue(Random random) {
     return switch (this) {

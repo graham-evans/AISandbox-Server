@@ -26,7 +26,7 @@ public class MazeRunner implements Simulation {
     private static final double REWARD_STEP = -1.0;
     private static final double REWARD_HIT_WALL = -10.0;
     private static final double REWARD_GOAL = +1000.0;
-    private static int EPISODE_LENGTH = 2000;
+    private static final int EPISODE_LENGTH = 2000;
     private final MazeSize mazeSize;
     private final MazeType mazeType;
     private final Theme theme;

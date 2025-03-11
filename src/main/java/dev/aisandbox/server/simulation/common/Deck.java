@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Deck {
 
-    private List<Card> cards = new ArrayList<>();
+    private final List<Card> cards = new ArrayList<>();
 
     public Deck(int suits) {
         for (int i = 0; i < suits; i++) {

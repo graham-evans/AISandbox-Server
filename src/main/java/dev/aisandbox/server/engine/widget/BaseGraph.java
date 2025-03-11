@@ -20,7 +20,7 @@ public class BaseGraph {
     private final static Font AXIS_FONT = new Font("Arial", Font.PLAIN, AXIS_FONT_SIZE);
     private final static int TICK_FONT_SIZE = 10;
     private final static Font TICK_FONT = new Font("Arial", Font.PLAIN, TICK_FONT_SIZE);
-    private final static float dash1[] = {10.0f};
+    private final static float[] dash1 = {10.0f};
     private final static BasicStroke dashed =
             new BasicStroke(1.0f,
                     BasicStroke.CAP_BUTT,
