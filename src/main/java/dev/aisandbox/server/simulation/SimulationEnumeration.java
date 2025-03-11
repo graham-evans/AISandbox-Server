@@ -6,7 +6,7 @@ import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
 import dev.aisandbox.server.simulation.maze.MazeBuilder;
 import dev.aisandbox.server.simulation.mine.MineHunterScenario;
-import dev.aisandbox.server.simulation.twisty.TwistyScenario;
+import dev.aisandbox.server.simulation.twisty.TwistyBuilder;
 import lombok.Getter;
 
 /**
@@ -39,7 +39,7 @@ public enum SimulationEnumeration {
     /**
      * Twisty puzzles, like cubes and pyramids
      */
-    TWISTY(new TwistyScenario());
+    TWISTY(new TwistyBuilder());
     /**
      * The {@link SimulationBuilder} instance associated with this simulation type.
      */

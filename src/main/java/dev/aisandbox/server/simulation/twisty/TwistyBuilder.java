@@ -14,15 +14,13 @@ import java.util.List;
  * @version $Id: $Id
  */
 
+@Setter
+@Getter
 @Slf4j
-public class TwistyScenario implements SimulationBuilder {
+public class TwistyBuilder implements SimulationBuilder {
 
-    @Getter
-    @Setter
     private PuzzleType puzzleType = PuzzleType.CUBE3;
 
-    @Getter
-    @Setter
     private Boolean startSolved = false;
 
     @Override
@@ -53,14 +51,14 @@ public class TwistyScenario implements SimulationBuilder {
     }
 
     @Override
-    public String[] getAgentNames(int playerCount) {
+    public String[] getAgentNames(int agentCount) {
         return new String[]{"Agent 1"};
     }
 
     @Override
     public Simulation build(List<Agent> agents, Theme theme) {
         try {
-            return new TwistyRuntime(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved, theme);
+            return new TwistySimulation(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved, theme);
         } catch (Exception e) {
             log.error("Error while building Twisty Runtime.", e);
             return null;
