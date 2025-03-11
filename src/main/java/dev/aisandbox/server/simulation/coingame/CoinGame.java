@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
 @Slf4j
 public class CoinGame implements Simulation {
 
-    private static final int MARGIN = 100;
     private static final int TEXT_HEIGHT = 280;
-    private static final int TEXT_WIDTH = OutputConstants.HD_WIDTH - 3 * MARGIN - 920;
+    private static final int TEXT_WIDTH = HD_WIDTH - 3 * MARGIN - 920;
     private final List<Agent> agents;
     private final CoinScenario scenario;
     private final Theme theme;
@@ -36,8 +36,7 @@ public class CoinGame implements Simulation {
     private int currentPlayer = 0;
     private BufferedImage[] rowImages;
     private BufferedImage[] coinImages;
-    private BufferedImage logo;
-    private String sessionID = UUID.randomUUID().toString();
+    private final String sessionID = UUID.randomUUID().toString();
     private String episodeID;
 
     public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
@@ -61,13 +60,6 @@ public class CoinGame implements Simulation {
             coinImages = CoinIcons.getCoinImages(Arrays.stream(scenario.getRows()).max().getAsInt());
         } catch (IOException e) {
             log.error("Error loading images", e);
-        }
-        // load logo
-        try {
-            logo = ImageIO.read(HighLowCards.class.getResourceAsStream("/images/AILogo.png"));
-        } catch (Exception e) {
-            log.error("Error loading logo", e);
-            logo = new BufferedImage(OutputConstants.LOGO_WIDTH, OutputConstants.LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         }
         // reset the game to the initial stage
         reset();
@@ -170,7 +162,7 @@ public class CoinGame implements Simulation {
     @Override
     public void visualise(Graphics2D graphics2D) {
         graphics2D.setColor(theme.getBackground());
-        graphics2D.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
+        graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
         graphics2D.setColor(theme.getText());
         for (int i = 0; i < coins.length; i++) {
             graphics2D.drawImage(rowImages[i], MARGIN, MARGIN + i * CoinIcons.ROW_HEIGHT, null);
@@ -179,7 +171,7 @@ public class CoinGame implements Simulation {
         graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
         graphics2D.drawImage(textSnapshot.getImage(), MARGIN * 2 + 720 + 200, 500, null);
         // draw logo
-        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
 
     }
 }

@@ -5,7 +5,6 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationException;
-import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -19,12 +18,12 @@ import dev.aisandbox.server.simulation.bandit.proto.BanditState;
 import dev.aisandbox.server.simulation.bandit.proto.Signal;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 import java.util.stream.IntStream;
+
+import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
 @Slf4j
 public class BanditRuntime implements Simulation {
@@ -32,7 +31,6 @@ public class BanditRuntime implements Simulation {
     //    private AverageRewardGraph averageRewardGraph;
 //    private OptimalActionGraph optimalActionGraph;
     //   private BanditGraph banditGraph;
-    private static final int MARGIN = 100;
     // initial parameters
     private final Agent agent;
     private final Random rand;
@@ -52,7 +50,6 @@ public class BanditRuntime implements Simulation {
     private double episodeScore = 0;
     private double episodeBestMoveCount = 0;
     private String episodeID = UUID.randomUUID().toString();
-    private BufferedImage logo;
 
     public BanditRuntime(Agent agent, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
         // store parameters
@@ -64,13 +61,6 @@ public class BanditRuntime implements Simulation {
         this.std = std;
         this.updateRule = updateRule;
         this.theme = theme;
-        // load logo
-        try {
-            logo = ImageIO.read(BanditRuntime.class.getResourceAsStream("/images/AILogo.png"));
-        } catch (Exception e) {
-            log.error("Error loading logo", e);
-            logo = new BufferedImage(OutputConstants.LOGO_WIDTH, OutputConstants.LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        }
         // initialise bandits
         initialise();
         // initialise widgets
@@ -95,7 +85,7 @@ public class BanditRuntime implements Simulation {
             episodeBestMoveCount += 1.0;
         }
         // test for invalid request
-        if ((arm < 0)||(arm >= bandits.size())) {
+        if ((arm < 0) || (arm >= bandits.size())) {
             throw new IllegalActionException("Invalid arm.");
         }
         // get the score
@@ -210,9 +200,9 @@ public class BanditRuntime implements Simulation {
     @Override
     public void visualise(Graphics2D graphics2D) {
         graphics2D.setColor(theme.getBackground());
-        graphics2D.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
+        graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
         // draw logo
-        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
         // draw log window
         graphics2D.drawImage(logWidget.getImage(), 800, MARGIN, null);
         // draw bandits

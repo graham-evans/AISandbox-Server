@@ -16,9 +16,9 @@ public class OutputConstants {
     public static final int HD_HEIGHT = 1080;
     public static final int LOGO_WIDTH = 91;
     public static final int LOGO_HEIGHT = 108;
-    public static final int EDGE = 100;
+    public static final int MARGIN = 100;
 
-    public static final BufferedImage logo;
+    public static final BufferedImage LOGO;
 
     static {
         BufferedImage i;
@@ -28,6 +28,6 @@ public class OutputConstants {
             log.error("Error loading logo image", e);
             i = new BufferedImage(LOGO_WIDTH, LOGO_HEIGHT, BufferedImage.TYPE_INT_RGB);
         }
-        logo = i;
+        LOGO = i;
     }
 }

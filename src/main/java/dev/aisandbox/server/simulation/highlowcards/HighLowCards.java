@@ -28,7 +28,6 @@ import static dev.aisandbox.server.engine.output.OutputConstants.*;
 public class HighLowCards implements Simulation {
 
     // UI Elements and constants
-    private static final int MARGIN = 80;
     private static final int TEXT_HEIGHT = 280;
     private static final int TEXT_WIDTH = HD_WIDTH - 3 * MARGIN - 920;
     private static final int GRAPH_WIDTH = 920;
@@ -47,7 +46,6 @@ public class HighLowCards implements Simulation {
     private final RollingValueHistogramWidget scoreHistogramWidget;
     private final TextWidget textWidget;
     private final RollingStatisticsWidget statisticsWidget;
-    private BufferedImage logo;
     private String episodeID;
     private int score = 0;
 
@@ -81,12 +79,6 @@ public class HighLowCards implements Simulation {
                 .fontName("Ariel")
                 .theme(theme)
                 .build();
-        try {
-            logo = ImageIO.read(HighLowCards.class.getResourceAsStream("/images/AILogo.png"));
-        } catch (Exception e) {
-            log.error("Error loading logo", e);
-            logo = new BufferedImage(LOGO_WIDTH, LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        }
         reset();
     }
 
@@ -175,7 +167,7 @@ public class HighLowCards implements Simulation {
         graphics2D.drawImage(scoreHistogramWidget.getImage(), MARGIN, HD_HEIGHT - MARGIN - GRAPH_HEIGHT, null);
         graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
         graphics2D.drawImage(statisticsWidget.getImage(), MARGIN * 2 + 720 + 200, HD_HEIGHT - 2 * MARGIN - GRAPH_HEIGHT * 2, null);
-        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
     }
 
     private BufferedImage getCardImage(String path) {

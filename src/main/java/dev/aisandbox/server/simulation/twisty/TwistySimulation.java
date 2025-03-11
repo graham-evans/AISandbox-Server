@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
-import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
+import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
 @Slf4j
 public class TwistySimulation implements Simulation {
@@ -160,7 +159,7 @@ public class TwistySimulation implements Simulation {
         // draw puzzle
         puzzle.drawPuzzle(graphics2D, theme);
         // add logo
-        graphics2D.drawImage(OutputConstants.logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - OutputConstants.EDGE, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - OutputConstants.EDGE, null);
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
         // draw history
         for (int i = 0; i < moveHistory.size(); i++) {
             BufferedImage moveImage = puzzle.getMoveImage(moveHistory.get(i));

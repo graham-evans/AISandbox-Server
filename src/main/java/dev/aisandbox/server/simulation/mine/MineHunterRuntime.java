@@ -13,12 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
-import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
-import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
+import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
 @Slf4j
 public class MineHunterRuntime implements Simulation {
@@ -28,36 +27,25 @@ public class MineHunterRuntime implements Simulation {
     private final Random random = new Random();
     private final MineSize mineSize;
     private final Theme theme;
+    private final String sessionID = UUID.randomUUID().toString();
+    Font myFont = new Font("Sans-Serif", Font.PLAIN, 28);
     private Board board = null;
     private int flagsLeft;
-    // UI elements
-    private static final int MARGIN = 100;
-    private BufferedImage logo;
     private List<BufferedImage> sprites;
-//    private SuccessRateGraph winRateGraph = new SuccessRateGraph();
+    //    private SuccessRateGraph winRateGraph = new SuccessRateGraph();
 //    private BufferedImage winRateGraphImage = null;
     private long boardsWon = 0;
     private long boardsLost = 0;
     private double scale = 1.0;
-    private final String sessionID = UUID.randomUUID().toString();
     private String episodeID;
-
-    Font myFont = new Font("Sans-Serif", Font.PLAIN, 28);
 
     public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme) {
         this.agent = agent;
         this.mineSize = mineSize;
         this.theme = theme;
         // load sprites
-        sprites = SpriteLoader.loadSpritesFromResources("/images/mine/grid.png",40,40);
-        // load logo
-        try {
-            logo = ImageIO.read(BanditRuntime.class.getResourceAsStream("/images/AILogo.png"));
-        } catch (Exception e) {
-            log.error("Error loading logo", e);
-            logo = new BufferedImage(OutputConstants.LOGO_WIDTH, OutputConstants.LOGO_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        }
-        // create first board
+        sprites = SpriteLoader.loadSpritesFromResources("/images/mine/grid.png", 40, 40);
+         // create first board
         getNewBoard();
     }
 
@@ -76,7 +64,7 @@ public class MineHunterRuntime implements Simulation {
 
     @Override
     public void step(OutputRenderer output) {
-        MineAction action = agent.receive(getState(),MineAction.class);
+        MineAction action = agent.receive(getState(), MineAction.class);
         // place flag or dig
         if (action.getAction().equals(FlagAction.PLACE_FLAG)) {
             board.placeFlag(action.getX(), action.getY());
@@ -84,7 +72,7 @@ public class MineHunterRuntime implements Simulation {
             board.uncover(action.getX(), action.getY());
         }
         // report state
-        MineResult.Builder rBuilder=MineResult.newBuilder();
+        MineResult.Builder rBuilder = MineResult.newBuilder();
         rBuilder.setAction(action.getAction());
         rBuilder.setX(action.getX());
         rBuilder.setY(action.getY());
@@ -95,15 +83,15 @@ public class MineHunterRuntime implements Simulation {
             default -> MazeSignal.CONTINUE;
         });
         agent.send(rBuilder.build());
-        if (board.getState()==GameState.WON) {
+        if (board.getState() == GameState.WON) {
             // update stats
-        } else if (board.getState()==GameState.LOST) {
+        } else if (board.getState() == GameState.LOST) {
             // update stats
         }
         // draw the screen
         output.display();
         // reset?
-        if (board.getState()!=GameState.PLAYING) {
+        if (board.getState() != GameState.PLAYING) {
             getNewBoard();
         }
     }
@@ -125,7 +113,7 @@ public class MineHunterRuntime implements Simulation {
         graphics2D.setColor(theme.getBackground());
         graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
         // draw logo
-        graphics2D.drawImage(logo, OutputConstants.HD_WIDTH - OutputConstants.LOGO_WIDTH - MARGIN, OutputConstants.HD_HEIGHT - OutputConstants.LOGO_HEIGHT - MARGIN, null);
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
 
         // draw mines
 //        g.drawImage(winRateGraphImage, 1200, 200, null);
