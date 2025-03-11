@@ -460,6 +460,8 @@ public class CuboidBuilder {
         // compile moves
         Optional<String> errors = puzzle.compileMoves();
         errors.ifPresent(s -> log.warn("Error compiling moves: {}", s));
+        // center puzzle
+        puzzle.centerPuzzle();
         // set base state
         puzzle.takeSnapshot();
 
