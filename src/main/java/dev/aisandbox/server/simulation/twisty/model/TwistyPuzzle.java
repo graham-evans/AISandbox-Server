@@ -1,5 +1,6 @@
 package dev.aisandbox.server.simulation.twisty.model;
 
+import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.simulation.twisty.NotExistentMoveException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,25 +8,26 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @NoArgsConstructor
 public class TwistyPuzzle {
 
+    public static final int WIDTH = 1280;
+    public static final int HEIGHT = 1000;
+    private final Map<Character, Color> colorMap = Arrays.stream(ColourEnum.values()).collect(Collectors.toMap(colourEnum -> colourEnum.getCharacter(), colourEnum -> colourEnum.getAwtColour()));
+    private final Map<Character, Set<Integer>> faces = new HashMap<>();
     @Getter
     @Setter
     private String baseState;
-    private final Map<Character, Color> colorMap = new HashMap<>();
-    private final Map<Character, Set<Integer>> faces = new HashMap<>();
     private String name;
     @Getter
     private String currentState;
-    public static final int WIDTH = 1280;
-    public static final int HEIGHT = 1000;
-
     @Getter
     private List<Cell> cells = new ArrayList<>();
     @Getter
@@ -78,6 +80,7 @@ public class TwistyPuzzle {
         graphics2D.drawLine(
                 (int) midx, (int) midy, (int) (midx - 8 * ux - 3 * tx), (int) (midy - 8 * uy - 3 * ty));
     }
+
     /**
      * Compile the move based on the latest information
      *
@@ -97,32 +100,32 @@ public class TwistyPuzzle {
             cmove.resetMove();
             // check we have loops
             if (move.getLoops().isEmpty()) {
-                warnings.add("Move '"+move.getName()+"' has no loops");
+                warnings.add("Move '" + move.getName() + "' has no loops");
             }
             // add each loop
-            for (int i=0;i<move.getLoops().size();i++) {
+            for (int i = 0; i < move.getLoops().size(); i++) {
                 Loop loop = move.getLoops().get(i);
                 // check we have at least two cells
-                if (loop.getCells().size()<2) {
-                    warnings.add("Move '"+move.getName()+"' loop "+i+" has less than two cells - can't compile");
+                if (loop.getCells().size() < 2) {
+                    warnings.add("Move '" + move.getName() + "' loop " + i + " has less than two cells - can't compile");
                 } else {
-                    for (int j=0;j<loop.getCells().size()-1;j++) {
+                    for (int j = 0; j < loop.getCells().size() - 1; j++) {
                         cmove.setMatrixElement(
-                                cells.indexOf(loop.getCells().get(j+1)),
+                                cells.indexOf(loop.getCells().get(j + 1)),
                                 cells.indexOf(loop.getCells().get(j))
                         );
                     }
                     cmove.setMatrixElement(
                             cells.indexOf(loop.getCells().get(0)),
-                            cells.indexOf(loop.getCells().get(loop.getCells().size()-1))
+                            cells.indexOf(loop.getCells().get(loop.getCells().size() - 1))
                     );
                 }
             }
             // check for duplicate name
             if (compiledMoves.containsKey(move.getName())) {
-                warnings.add("Duplicate move name '"+move.getName()+"'");
+                warnings.add("Duplicate move name '" + move.getName() + "'");
             }
-            compiledMoves.put(move.getName(),cmove);
+            compiledMoves.put(move.getName(), cmove);
         }
         if (warnings.isEmpty()) {
             return Optional.empty();
@@ -140,7 +143,7 @@ public class TwistyPuzzle {
             sb.append(cell.getColour().getCharacter());
         }
         baseState = sb.toString();
-        currentState=sb.toString();
+        currentState = sb.toString();
     }
 
 /*    public TwistyPuzzle(String tpResourceName, String name) {
@@ -238,7 +241,9 @@ public class TwistyPuzzle {
     }
 
 
-    public void drawPuzzle(Graphics2D g) {
+    public void drawPuzzle(Graphics2D g, Theme theme) {
+        g.setColor(theme.getWidgetBackground());
+        g.fillRect(0, 0, WIDTH, HEIGHT);
         for (int i = 0; i < getCells().size(); i++) {
             Cell cell = getCells().get(i);
             char state = currentState.charAt(i);
@@ -276,5 +281,21 @@ public class TwistyPuzzle {
                     null);
         }
         return image;
+    }
+
+    public void centerPuzzle() {
+        log.info("Centering puzzle");
+        Rectangle2D bounds = cells.getFirst().getPolygon().getBounds2D();
+        for (Cell cell : cells) {
+            bounds = bounds.createUnion(cell.getPolygon().getBounds2D());
+        }
+        log.info("Initial bounds {}",bounds);
+        int dx = (int) (-bounds.getMinX() + (WIDTH - bounds.getWidth()) / 2);
+        int dy = (int) (-bounds.getMinY() + (HEIGHT - bounds.getHeight()) / 2);
+        log.info("Moving cells {},{}",dx,dy);
+        for (Cell cell : cells) {
+            cell.setLocationX(dx + cell.getLocationX());
+            cell.setLocationY(dy + cell.getLocationY());
+        }
     }
 }
