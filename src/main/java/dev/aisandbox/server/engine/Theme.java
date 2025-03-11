@@ -15,17 +15,55 @@ public enum Theme {
             Color.BLACK,
             Color.lightGray,
             Color.WHITE,
-            Color.BLUE,
-            Color.ORANGE,
-            Color.DARK_GRAY
+            Color.DARK_GRAY,
+
+            Color.decode("#014f89"),
+            Color.decode("#2a6f97"),
+            Color.decode("#01497c"),
+
+            Color.decode("#640d14"),
+            Color.decode("#800e13"),
+            Color.decode("#38040e"),
+
+            Color.decode("#ffa200"),
+            Color.decode("#ffaa00"),
+            Color.decode("#ff9500")
+    ), DARK(
+            Color.BLACK,
+            Color.WHITE,
+            Color.lightGray,
+            Color.WHITE,
+            Color.DARK_GRAY,
+
+            Color.decode("#014f89"),
+            Color.decode("#2a6f97"),
+            Color.decode("#01497c"),
+
+            Color.decode("#640d14"),
+            Color.decode("#800e13"),
+            Color.decode("#38040e"),
+
+            Color.decode("#ffa200"),
+            Color.decode("#ffaa00"),
+            Color.decode("#ff9500")
     );
 
     private final Color background;
     private final Color text;
     private final Color widgetBackground;
     private final Color graphBackground;
-    private final Color primaryColor;
-    private final Color secondaryColor;
     private final Color graphOutlineColor;
+
+    private final Color agent1Main;
+    private final Color agent1Highlight;
+    private final Color agent1Lowlight;
+
+    private final Color agent2Main;
+    private final Color agent2Highlight;
+    private final Color agent2Lowlight;
+
+    private final Color agentSelectedMain;
+    private final Color agentSelectedHighlight;
+    private final Color agentSelectedLowlight;
 
 }
