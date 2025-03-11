@@ -25,9 +25,9 @@ public class CuboidBuilder {
     public static TwistyPuzzle buildCuboid(final int width,final int height,final int depth) throws IOException {
         TwistyPuzzle puzzle = new TwistyPuzzle();
         // work out the scale of the cuboid
-        int vscale = TwistyPuzzle.HEIGHT / (height * 6 + gap * 2);
-        int hscale = TwistyPuzzle.WIDTH / (width * 4 + depth * 4 + gap * 3);
-        final int scale = Math.min(vscale, hscale) + 1;
+        int vscale = (TwistyPuzzle.HEIGHT-gap*2) / ((height+depth*2)*2);
+        int hscale = (TwistyPuzzle.WIDTH-gap*3) / ((width * 2 + depth * 2)*2);
+        final int scale = Math.min(vscale, hscale);
 
         // generate sides
         log.info("Calculating sides of cuboid {}x{}x{} with scale {}", width,height,depth,scale);
