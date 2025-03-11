@@ -51,10 +51,10 @@ public interface SimulationBuilder {
      * <p>
      * Generally these will just be "Agent 1", "Agent 2", "Agent 3"... but for simulations where different agents perform different roles this can be used to differentiate between them and make is obvious to the user which agent should be connected to which port. For example "Dispatcher Agent", "Delivery Agent" etc.
      *
-     * @param playerCount the number of agents to return names for (this will be between {@link #getMinAgentCount()} and {@link #getMaxAgentCount()}).
+     * @param agentCount the number of agents to return names for (this will be between {@link #getMinAgentCount()} and {@link #getMaxAgentCount()}).
      * @return an array of agent names.
      */
-    String[] getAgentNames(int playerCount);
+    String[] getAgentNames(int agentCount);
 
     /**
      * Build the {@link Simulation} object from the current settings.
