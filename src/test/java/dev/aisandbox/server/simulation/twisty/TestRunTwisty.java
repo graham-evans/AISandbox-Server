@@ -5,9 +5,6 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.simulation.mine.MineHunterScenario;
-import dev.aisandbox.server.simulation.mine.MineSize;
-import dev.aisandbox.server.simulation.mine.MockMineAgent;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -31,7 +28,7 @@ public class TestRunTwisty {
     public void testRunTwisty(PuzzleType puzzleType) {
         assertDoesNotThrow(() -> {
             // create simulation
-            TwistyScenario builder = new TwistyScenario();
+            TwistyBuilder builder = new TwistyBuilder();
             builder.setPuzzleType(puzzleType);
             builder.setStartSolved(false);
             // create players
