@@ -8,6 +8,11 @@ import java.awt.image.BufferedImage;
 @UtilityClass
 public class GraphicsUtils {
 
+    public static BufferedImage createClearImage(int width, int height) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        return image;
+    }
+
     public static BufferedImage createBlankImage(int width, int height, Color color) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
