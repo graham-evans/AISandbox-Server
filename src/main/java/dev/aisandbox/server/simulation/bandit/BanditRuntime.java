@@ -8,6 +8,7 @@ import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
+import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.bandit.model.Bandit;
 import dev.aisandbox.server.simulation.bandit.model.BanditNormalEnumeration;
 import dev.aisandbox.server.simulation.bandit.model.BanditStdEnumeration;
@@ -46,10 +47,17 @@ public class BanditRuntime implements Simulation {
     private final BanditWidget banditWidget;
     private final RollingValueChartWidget episodeScoreWidget;
     private final RollingValueChartWidget episodeSuccessWidget;
+    private final TitleWidget titleWidget;
     private int sessionStep = 0;
     private double episodeScore = 0;
     private double episodeBestMoveCount = 0;
     private String episodeID = UUID.randomUUID().toString();
+    // UI Constants
+    private static final int LOG_WIDTH = 700;
+    private static final int LOG_HEIGHT = 320;
+    private static final int BANDIT_WIDTH = HD_WIDTH-LEFT_MARGIN-RIGHT_MARGIN-WIDGET_SPACING-LOG_WIDTH;
+    private static final int BANDIT_HEIGHT = LOG_HEIGHT;
+
 
     public BanditRuntime(Agent agent, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
         // store parameters
@@ -64,8 +72,9 @@ public class BanditRuntime implements Simulation {
         // initialise bandits
         initialise();
         // initialise widgets
-        logWidget = TextWidget.builder().width(400).height(300).theme(theme).build();
-        banditWidget = BanditWidget.builder().width(400).height(300).theme(theme).build();
+        titleWidget = TitleWidget.builder().theme(theme).title("Multi-armed Bandit").build();
+        logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).theme(theme).build();
+        banditWidget = BanditWidget.builder().width(BANDIT_WIDTH).height(BANDIT_HEIGHT).theme(theme).build();
         episodeScoreWidget = RollingValueChartWidget.builder().width(400).height(300).window(200).theme(theme).build();
         episodeSuccessWidget = RollingValueChartWidget.builder().width(400).height(300).window(200).theme(theme).build();
     }
@@ -201,12 +210,14 @@ public class BanditRuntime implements Simulation {
     public void visualise(Graphics2D graphics2D) {
         graphics2D.setColor(theme.getBackground());
         graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
+        // draw title
+        graphics2D.drawImage(titleWidget.getImage(), 0,TOP_MARGIN,null);
         // draw logo
-        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN, HD_HEIGHT - LOGO_HEIGHT - BOTTOM_MARGIN, null);
         // draw log window
-        graphics2D.drawImage(logWidget.getImage(), 800, MARGIN, null);
+        graphics2D.drawImage(logWidget.getImage(), HD_WIDTH-RIGHT_MARGIN-LOG_WIDTH,TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING, null);
         // draw bandits
-        graphics2D.drawImage(banditWidget.getImage(), MARGIN, MARGIN, null);
+        graphics2D.drawImage(banditWidget.getImage(), LEFT_MARGIN, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING, null);
         // draw episode scores
         graphics2D.drawImage(episodeScoreWidget.getImage(), MARGIN, MARGIN * 2 + 300, null);
         // draw episode success
