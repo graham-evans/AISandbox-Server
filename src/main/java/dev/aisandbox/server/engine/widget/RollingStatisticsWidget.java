@@ -25,18 +25,22 @@ public class RollingStatisticsWidget {
     private final int fontHeight;
     private final int windowSize;
     private final Theme theme;
+    private final boolean opaque;
     private final Font font;
-    private final List<Double> values=new ArrayList<>();
+    private final List<Double> values = new ArrayList<>();
+    private final String STD = "\u03C3";
+    private final String SQR = "\u00B2";
 
     private BufferedImage cachedImage = null;
 
-    public RollingStatisticsWidget(int width, int height, int fontHeight, String fontName, int windowSize, Theme theme) {
+    public RollingStatisticsWidget(int width, int height, int fontHeight, String fontName, int windowSize, Theme theme, boolean opaque) {
         this.width = width;
         this.height = height;
         this.fontHeight = fontHeight;
         font = new Font(fontName, Font.PLAIN, fontHeight);
         this.windowSize = windowSize;
         this.theme = theme;
+        this.opaque = opaque;
     }
 
     public static RollingStatisticsWidgetBuilder builder() {
@@ -62,11 +66,12 @@ public class RollingStatisticsWidget {
     }
 
     public BufferedImage renderStatistics() {
-        BufferedImage image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
+        BufferedImage image = opaque ? GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground()) : GraphicsUtils.createClearImage(width, height);
         if (!values.isEmpty()) {
             Graphics2D g = image.createGraphics();
             g.setFont(font);
             g.setColor(theme.getText());
+            FontMetrics fm = g.getFontMetrics();
             // generate statistics
             DoubleStatistics stats = DoubleStatistics.of(
                     EnumSet.of(
@@ -77,19 +82,24 @@ public class RollingStatisticsWidget {
                             Statistic.STANDARD_DEVIATION),
                     values.stream().mapToDouble(d -> d).toArray());
             // draw statistics
-            int cursorY = MARGIN + fontHeight;
-            g.drawString("Minimum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MIN)), MARGIN, cursorY);
+            int cursorY = fontHeight + (height - fontHeight * 5) / 2;
+            drawStringCentered("Minimum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MIN)), g, fm, 0, cursorY, width);
             cursorY += fontHeight;
-            g.drawString("Maximum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MAX)), MARGIN, cursorY);
+            drawStringCentered("Maximum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MAX)), g, fm, 0, cursorY, width);
             cursorY += fontHeight;
-            g.drawString("Mean: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MEAN)), MARGIN, cursorY);
+            drawStringCentered("Mean: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MEAN)), g, fm, 0, cursorY, width);
             cursorY += fontHeight;
-            g.drawString("Variance: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.VARIANCE)), MARGIN, cursorY);
+            drawStringCentered(STD + ": " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.STANDARD_DEVIATION)), g, fm, 0, cursorY, width);
             cursorY += fontHeight;
-            g.drawString("Std Deviation: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.STANDARD_DEVIATION)), MARGIN, cursorY);
+            drawStringCentered(STD + SQR + ": " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.VARIANCE)), g, fm, 0, cursorY, width);
         }
         // return image
         return image;
+    }
+
+    private void drawStringCentered(String text, Graphics2D g, FontMetrics fm, int x, int y, int width) {
+        int dx = (width - fm.stringWidth(text)) / 2;
+        g.drawString(text, x + dx, y);
     }
 
     @Setter
@@ -99,11 +109,12 @@ public class RollingStatisticsWidget {
         private int height = 200;
         private int fontHeight = 14;
         private int windowSize = 200;
+        private boolean opaque = true;
         private String fontName = "Ariel";
         private Theme theme = Theme.LIGHT;
 
         public RollingStatisticsWidget build() {
-            return new RollingStatisticsWidget(width, height, fontHeight, fontName, windowSize, theme);
+            return new RollingStatisticsWidget(width, height, fontHeight, fontName, windowSize, theme, opaque);
         }
     }
 }
