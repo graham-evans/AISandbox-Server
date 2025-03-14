@@ -16,11 +16,20 @@ public class OutputConstants {
     public static final int HD_HEIGHT = 1080;
     public static final int LOGO_WIDTH = 91;
     public static final int LOGO_HEIGHT = 108;
+    @Deprecated
     public static final int MARGIN = 100;
+    public static final int TITLE_HEIGHT = 80;
+    public static final int TOP_MARGIN = 50;
+    public static final int BOTTOM_MARGIN = 50;
+    public static final int LEFT_MARGIN = 50;
+    public static final int RIGHT_MARGIN = 50;
+    public static final int WIDGET_SPACING = 50;
+
 
     public static final BufferedImage LOGO;
 
     static {
+        // load logo
         BufferedImage i;
         try {
             i = ImageIO.read(BanditRuntime.class.getResourceAsStream("/images/AILogo.png"));
