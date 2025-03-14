@@ -11,14 +11,14 @@ import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
 import dev.aisandbox.server.options.RuntimeOptions;
 import dev.aisandbox.server.options.RuntimeUtils;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.HelpFormatter;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 public class SandboxServerCLIApplication {
 
     private final List<SimulationBuilder> simulationBuilders;
@@ -55,24 +55,27 @@ public class SandboxServerCLIApplication {
 
     private void helpSimulation(String simulationName) {
         log.info("Simulation name: {}", simulationName);
-        SimulationBuilder simulationBuilder = findBuilder(simulationName);
-        log.info(" Minimum players: {}", simulationBuilder.getMinAgentCount());
-        log.info(" Maximum players: {}", simulationBuilder.getMaxAgentCount());
-        try {
-            List<SimulationParameter> parameters = simulationBuilder.getParameters();
-            if (!parameters.isEmpty()) {
-                log.info("Options (use -o key:value to set)");
-                for (SimulationParameter parameter : parameters) {
-                    // test if this is an enum
-                    if (parameter.parameterType().isEnum()) {
-                        log.info(" {} ({}) - {} {}", parameter.name(), RuntimeUtils.getParameterValue(simulationBuilder, parameter), parameter.description(), parameter.parameterType().getEnumConstants());
-                    } else {
-                        log.info(" {} ({}) - {}", parameter.name(), RuntimeUtils.getParameterValue(simulationBuilder, parameter), parameter.description());
+        Optional<SimulationBuilder> oSim = findBuilder(simulationName);
+        if (oSim.isPresent()) {
+            SimulationBuilder sim = oSim.get();
+            log.info(" Minimum agents: {}", sim.getMinAgentCount());
+            log.info(" Maximum agents: {}", sim.getMaxAgentCount());
+            try {
+                List<SimulationParameter> parameters = sim.getParameters();
+                if (!parameters.isEmpty()) {
+                    log.info("Options (use -o key:value to set)");
+                    for (SimulationParameter parameter : parameters) {
+                        // test if this is an enum
+                        if (parameter.parameterType().isEnum()) {
+                            log.info(" {} ({}) - {} {}", parameter.name(), RuntimeUtils.getParameterValue(sim, parameter), parameter.description(), parameter.parameterType().getEnumConstants());
+                        } else {
+                            log.info(" {} ({}) - {}", parameter.name(), RuntimeUtils.getParameterValue(sim, parameter), parameter.description());
+                        }
                     }
                 }
+            } catch (Exception e) {
+                log.error("Error during describe simulation", e);
             }
-        } catch (Exception e) {
-            log.error("Error during describe simulation", e);
         }
     }
 
@@ -125,9 +128,9 @@ public class SandboxServerCLIApplication {
             log.info("Available simulations:");
             for (SimulationBuilder simulationBuilder : simulationBuilders) {
                 if (simulationBuilder.getMinAgentCount() == simulationBuilder.getMaxAgentCount()) {
-                    log.info("{} ({} agents)", simulationBuilder.getSimulationName(), simulationBuilder.getMinAgentCount());
+                    log.info("{} ({} agents, {})", simulationBuilder.getSimulationName(), simulationBuilder.getMinAgentCount(),simulationBuilder.getDescription());
                 } else {
-                    log.info("{} ({} to {} agents)", simulationBuilder.getSimulationName(), simulationBuilder.getMinAgentCount(), simulationBuilder.getMaxAgentCount());
+                    log.info("{} ({}-{} agents, {})", simulationBuilder.getSimulationName(), simulationBuilder.getMinAgentCount(), simulationBuilder.getMaxAgentCount(),simulationBuilder.getDescription());
                 }
             }
         } else {
@@ -136,15 +139,14 @@ public class SandboxServerCLIApplication {
         }
     }
 
-    private SimulationBuilder findBuilder(String name) {
+    private Optional<SimulationBuilder> findBuilder(String name) {
         for (SimulationBuilder simulationBuilder : simulationBuilders) {
             if (simulationBuilder.getSimulationName().equalsIgnoreCase(name)) {
-                return simulationBuilder;
+                return Optional.of(simulationBuilder);
             }
         }
         log.error("No simulation of that name exists, use the --list option to list all simulations");
-        System.exit(0);
-        return null;
+        return Optional.empty();
     }
 
 
