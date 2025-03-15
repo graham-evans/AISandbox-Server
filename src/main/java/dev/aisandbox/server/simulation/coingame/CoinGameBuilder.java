@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Random;
 
 
 public class CoinGameBuilder implements SimulationBuilder {
@@ -44,7 +45,7 @@ public class CoinGameBuilder implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Agent> agents, Theme theme) {
+    public Simulation build(List<Agent> agents, Theme theme, Random random) {
         return new CoinGame(agents, scenario, theme);
     }
 

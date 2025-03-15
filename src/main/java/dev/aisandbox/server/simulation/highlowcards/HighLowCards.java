@@ -52,7 +52,7 @@ public class HighLowCards implements Simulation {
     // simulation elements
     private final Agent agent;
     private final int cardCount;
-    private final Random rand = new Random();
+    private final Random random;
     private final List<Card> faceUpCards = new ArrayList<>();
     private final List<Card> faceDownCards = new ArrayList<>();
     private final String sessionID = UUID.randomUUID().toString();
@@ -65,10 +65,11 @@ public class HighLowCards implements Simulation {
     private String episodeID;
     private int score = 0;
 
-    public HighLowCards(Agent agent, int cardCount, Theme theme) {
+    public HighLowCards(Agent agent, int cardCount, Theme theme,Random random) {
         this.agent = agent;
         this.cardCount = cardCount;
         this.theme = theme;
+        this.random = random;
         // setup widgets
         titleWidget = TitleWidget.builder().title("High/Low Cards").theme(theme).build();
         scoreWidget = RollingValueChartWidget.builder()
@@ -109,7 +110,7 @@ public class HighLowCards implements Simulation {
         // create a deck of cards
         Deck deck = new Deck();
         // shuffle
-        deck.shuffle(rand);
+        deck.shuffle(random);
         // clear any old cards
         faceDownCards.clear();
         faceUpCards.clear();

@@ -3,14 +3,11 @@ package dev.aisandbox.server.simulation.mine;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
-import dev.aisandbox.server.simulation.bandit.BanditRuntime;
 import dev.aisandbox.server.simulation.mine.proto.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -24,7 +21,7 @@ public class MineHunterRuntime implements Simulation {
     // agents
     private final Agent agent;
     // puzzle elements
-    private final Random random = new Random();
+    private final Random random;
     private final MineSize mineSize;
     private final Theme theme;
     private final String sessionID = UUID.randomUUID().toString();
@@ -39,13 +36,14 @@ public class MineHunterRuntime implements Simulation {
     private double scale = 1.0;
     private String episodeID;
 
-    public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme) {
+    public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme, Random random) {
         this.agent = agent;
+        this.random = random;
         this.mineSize = mineSize;
         this.theme = theme;
         // load sprites
         sprites = SpriteLoader.loadSpritesFromResources("/images/mine/grid.png", 40, 40);
-         // create first board
+        // create first board
         getNewBoard();
     }
 

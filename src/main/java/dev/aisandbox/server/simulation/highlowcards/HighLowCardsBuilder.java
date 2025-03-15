@@ -3,6 +3,7 @@ package dev.aisandbox.server.simulation.highlowcards;
 import dev.aisandbox.server.engine.*;
 
 import java.util.List;
+import java.util.Random;
 
 public class HighLowCardsBuilder implements SimulationBuilder {
 
@@ -37,7 +38,7 @@ public class HighLowCardsBuilder implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Agent> agents, Theme theme) {
-        return new HighLowCards(agents.getFirst(), 9, theme);
+    public Simulation build(List<Agent> agents, Theme theme, Random random) {
+        return new HighLowCards(agents.getFirst(), 9, theme, random);
     }
 }

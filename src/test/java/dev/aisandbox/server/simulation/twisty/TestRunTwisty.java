@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -34,7 +35,7 @@ public class TestRunTwisty {
             // create players
             List<Agent> agents = Arrays.stream(builder.getAgentNames(1)).map(s -> (Agent) new MockTwistyAgent(s)).toList();
             // create simulation
-            Simulation sim = builder.build(agents, Theme.LIGHT);
+            Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
             // create output
             File targetDir = new File(outputDirectory, puzzleType.name());
             targetDir.mkdirs();

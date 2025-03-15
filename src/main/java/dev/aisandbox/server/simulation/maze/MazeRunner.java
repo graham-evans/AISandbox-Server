@@ -3,7 +3,6 @@ package dev.aisandbox.server.simulation.maze;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
 import dev.aisandbox.server.simulation.maze.proto.MazeAction;
@@ -31,7 +30,7 @@ public class MazeRunner implements Simulation {
     private final MazeType mazeType;
     private final Theme theme;
     private final List<BufferedImage> sprites;
-    private final Random rand = new Random();
+    private final Random random;
     private final Agent agent;
     private final String sessionID = UUID.randomUUID().toString();
     private int stepsLeft;
@@ -41,11 +40,12 @@ public class MazeRunner implements Simulation {
     private String episodeID;
     private double episodeScore;
 
-    public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme) {
+    public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme, Random random) {
         this.agent = agent;
         this.mazeSize = mazeSize;
         this.mazeType = mazeType;
         this.theme = theme;
+        this.random = random;
         // load images
         sprites = SpriteLoader.loadSpritesFromResources("/images/maze/bridge.png", SPRITE_SIZE, SPRITE_SIZE);
         // create a new maze
@@ -129,7 +129,7 @@ public class MazeRunner implements Simulation {
     }
 
     private void initialiseMaze() {
-        maze = MazeGenerator.generateMaze(mazeSize, mazeType, rand);
+        maze = MazeGenerator.generateMaze(mazeSize, mazeType, random);
         stepsLeft = EPISODE_LENGTH;
         episodeScore = 0.0;
         mazeImage = renderMaze(maze);

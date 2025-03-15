@@ -1,7 +1,7 @@
 package dev.aisandbox.server.engine;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
 /**
  * Builder class for setting up simulations.
@@ -60,8 +60,9 @@ public interface SimulationBuilder {
      * Build the {@link Simulation} object from the current settings.
      *
      * @param agents A list of player objects
-     * @param theme The theme for any visualisations.
+     * @param theme  The theme for any visualisations.
+     * @param random A random number generator.
      * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner} or stepped through manually.
      */
-    Simulation build(List<Agent> agents, Theme theme);
+    Simulation build(List<Agent> agents, Theme theme, Random random);
 }

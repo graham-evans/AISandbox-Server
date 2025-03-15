@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -24,7 +25,7 @@ public class TestRunCoinGame {
             // create players
             List<Agent> agents = Arrays.stream(simulationBuilder.getAgentNames(2)).map(s -> (Agent) new MockPlayer(s)).toList();
             // create simulation
-            Simulation sim = simulationBuilder.build(agents, Theme.LIGHT);
+            Simulation sim = simulationBuilder.build(agents, Theme.LIGHT, new Random());
             // create output directory
             File outputDirectory = new File("build/test/coingame");
             outputDirectory.mkdirs();

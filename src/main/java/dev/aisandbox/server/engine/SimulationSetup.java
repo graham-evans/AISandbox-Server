@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @UtilityClass
@@ -19,7 +20,7 @@ public class SimulationSetup {
 
     public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents, OutputRenderer renderer) {
         // create simulation
-        Simulation sim = builder.build(agents, Theme.LIGHT);
+        Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
         // start output
         renderer.setup(sim);
         // create simulation thread

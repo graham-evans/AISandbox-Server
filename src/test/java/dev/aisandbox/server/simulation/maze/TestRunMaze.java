@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -38,7 +39,7 @@ public class TestRunMaze {
             // create players
             List<Agent> agents = Arrays.stream(builder.getAgentNames(1)).map(s -> (Agent) new MockMazeAgent(s)).toList();
             // create simulation
-            Simulation sim = builder.build(agents, Theme.LIGHT);
+            Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
             // create output
             File targetDir = new File(outputDirectory, mazeType.name()+"-"+mazeSize.name());
             targetDir.mkdirs();

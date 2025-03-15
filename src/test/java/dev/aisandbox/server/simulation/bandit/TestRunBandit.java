@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -25,7 +26,7 @@ public class TestRunBandit {
             // create players
             List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1)).map(s -> (Agent) new MockBanditPlayer(s)).toList();
             // create simulation
-            Simulation sim = banditBuilder.build(agents, Theme.LIGHT);
+            Simulation sim = banditBuilder.build(agents, Theme.LIGHT, new Random());
             // create output directory
             File outputDirectory = new File("build/test/bandit");
             outputDirectory.mkdirs();

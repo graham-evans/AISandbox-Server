@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * TwistyScenario class.
@@ -56,9 +57,9 @@ public class TwistyBuilder implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Agent> agents, Theme theme) {
+    public Simulation build(List<Agent> agents, Theme theme, Random random) {
         try {
-            return new TwistySimulation(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved, theme);
+            return new TwistySimulation(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved, theme, random);
         } catch (Exception e) {
             log.error("Error while building Twisty Runtime.", e);
             return null;

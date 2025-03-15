@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -38,7 +39,7 @@ public class TestRunBadBandit {
                     .toList();
 
             // Build the simulation using the bad player implementations.
-            Simulation sim = banditBuilder.build(agents, Theme.LIGHT);
+            Simulation sim = banditBuilder.build(agents, Theme.LIGHT, new Random());
 
             // Set up a null output renderer for the simulation.
             OutputRenderer out = new NullOutputRenderer();
@@ -75,7 +76,7 @@ public class TestRunBadBandit {
                     .toList();
 
             // Build the simulation using the bad player implementations.
-            Simulation sim = banditBuilder.build(agents, Theme.LIGHT);
+            Simulation sim = banditBuilder.build(agents, Theme.LIGHT, new Random());
 
             // Set up a null output renderer for the simulation.
             OutputRenderer out = new NullOutputRenderer();

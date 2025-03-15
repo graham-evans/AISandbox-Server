@@ -83,8 +83,8 @@ public class BanditScenario implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Agent> agents, Theme theme) {
-        return new BanditRuntime(agents.getFirst(), new Random(), banditCount.getNumber(), banditPulls.getNumber(), banditNormal, banditStd, banditUpdate, theme);
+    public Simulation build(List<Agent> agents, Theme theme, Random random) {
+        return new BanditRuntime(agents.getFirst(), random, banditCount.getNumber(), banditPulls.getNumber(), banditNormal, banditStd, banditUpdate, theme);
     }
 
 }

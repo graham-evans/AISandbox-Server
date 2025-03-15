@@ -36,7 +36,7 @@ public class TwistySimulation implements Simulation {
     private final boolean startSolved;
     private final Theme theme;
     // puzzle elements
-    private final Random random = new Random();
+    private final Random random;
     private final String sessionID = UUID.randomUUID().toString();
     private final int MAX_MOVES = 1000;
     String savedState;
@@ -47,11 +47,12 @@ public class TwistySimulation implements Simulation {
     private String episodeID;
 
 
-    public TwistySimulation(Agent agent, TwistyPuzzle puzzle, boolean startSolved, Theme theme) {
+    public TwistySimulation(Agent agent, TwistyPuzzle puzzle, boolean startSolved, Theme theme, Random random) {
         this.agent = agent;
         this.puzzle = puzzle;
         this.startSolved = startSolved;
         this.theme = theme;
+        this.random = random;
         // setup puzzle
         initialisePuzzle();
         // setup graph

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * A builder for creating a simulation of a maze.
@@ -97,9 +98,10 @@ public class MazeBuilder implements SimulationBuilder {
      *
      * @param agents The list of agents to use in the simulation (always contains at least one agent).
      * @param theme  The theme for the simulation.
+     * @param random
      */
     @Override
-    public Simulation build(List<Agent> agents, Theme theme) {
-        return new MazeRunner(agents.getFirst(), mazeSize, mazeType, theme);
+    public Simulation build(List<Agent> agents, Theme theme, Random random) {
+        return new MazeRunner(agents.getFirst(), mazeSize, mazeType, theme, random);
     }
 }

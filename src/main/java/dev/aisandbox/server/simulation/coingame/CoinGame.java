@@ -3,22 +3,20 @@ package dev.aisandbox.server.simulation.coingame;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import dev.aisandbox.server.simulation.coingame.proto.Signal;
-import dev.aisandbox.server.simulation.highlowcards.HighLowCards;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
 import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
 @Slf4j
@@ -31,12 +29,12 @@ public class CoinGame implements Simulation {
     private final Theme theme;
     private final TextWidget textWidget;
     private final TextWidget textSnapshot;
+    private final String sessionID = UUID.randomUUID().toString();
     private int[] coins;
     private int maxPic = 2;
     private int currentPlayer = 0;
     private BufferedImage[] rowImages;
     private BufferedImage[] coinImages;
-    private final String sessionID = UUID.randomUUID().toString();
     private String episodeID;
 
     public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {

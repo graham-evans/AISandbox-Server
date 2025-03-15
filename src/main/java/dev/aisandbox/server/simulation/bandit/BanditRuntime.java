@@ -34,7 +34,7 @@ public class BanditRuntime implements Simulation {
     //   private BanditGraph banditGraph;
     // initial parameters
     private final Agent agent;
-    private final Random rand;
+    private final Random random;
     private final int banditCount;
     private final int pullCount;
     private final BanditNormalEnumeration normal;
@@ -59,10 +59,10 @@ public class BanditRuntime implements Simulation {
     private static final int BANDIT_HEIGHT = LOG_HEIGHT;
 
 
-    public BanditRuntime(Agent agent, Random rand, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
+    public BanditRuntime(Agent agent, Random random, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
         // store parameters
         this.agent = agent;
-        this.rand = rand;
+        this.random = random;
         this.banditCount = banditCount;
         this.pullCount = pullCount;
         this.normal = normal;
@@ -98,7 +98,7 @@ public class BanditRuntime implements Simulation {
             throw new IllegalActionException("Invalid arm.");
         }
         // get the score
-        double score = bandits.get(arm).pull(rand);
+        double score = bandits.get(arm).pull(random);
         episodeScore += score;
         // log the action
         logWidget.addText(agent.getAgentName() + " selects bandit " + arm + " gets reward " + String.format("%.4f", score));
@@ -162,7 +162,7 @@ public class BanditRuntime implements Simulation {
         // clear the bandits
         bandits.clear();
         for (int i = 0; i < banditCount; i++) {
-            bandits.add(new Bandit(normal.getNormalValue(rand), std.getValue()));
+            bandits.add(new Bandit(normal.getNormalValue(random), std.getValue()));
         }
         sessionStep = 0;
         episodeID = UUID.randomUUID().toString();
@@ -175,7 +175,7 @@ public class BanditRuntime implements Simulation {
      */
     public void updateRandom() {
         for (Bandit b : bandits) {
-            b.setMean(b.getMean() + rand.nextGaussian() * 0.001);
+            b.setMean(b.getMean() + random.nextGaussian() * 0.001);
         }
     }
 

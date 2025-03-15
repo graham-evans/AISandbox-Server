@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Random;
 
 public class MineHunterScenario implements SimulationBuilder {
 
@@ -43,8 +44,8 @@ public class MineHunterScenario implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Agent> agents, Theme theme) {
-        return new MineHunterRuntime(agents.getFirst(), mineSize, theme);
+    public Simulation build(List<Agent> agents, Theme theme, Random random) {
+        return new MineHunterRuntime(agents.getFirst(), mineSize, theme, random);
     }
 
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -23,7 +24,7 @@ public class TestRunHighLowCards {
             // create players
             List<Agent> agents = List.of(new MockPlayer());
             // create simulation
-            Simulation sim = simulationBuilder.build(agents, Theme.LIGHT);
+            Simulation sim = simulationBuilder.build(agents, Theme.LIGHT, new Random());
             // create output directory
             File outputDirectory = new File("build/test/highLowCards");
             outputDirectory.mkdirs();

@@ -1,6 +1,7 @@
 package dev.aisandbox.server.engine;
 
 import java.util.List;
+import java.util.Random;
 
 public class BadSimulation implements SimulationBuilder {
 
@@ -35,7 +36,7 @@ public class BadSimulation implements SimulationBuilder {
     }
 
     @Override
-    public Simulation build(List<Agent> agents, Theme theme) {
+    public Simulation build(List<Agent> agents, Theme theme, Random random) {
         return null;
     }
 }
