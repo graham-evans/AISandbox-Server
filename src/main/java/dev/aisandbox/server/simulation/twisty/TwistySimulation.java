@@ -4,7 +4,6 @@ package dev.aisandbox.server.simulation.twisty;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.simulation.twisty.model.Move;
 import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;

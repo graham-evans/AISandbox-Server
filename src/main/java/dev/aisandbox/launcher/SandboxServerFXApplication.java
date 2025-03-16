@@ -8,11 +8,9 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ResourceBundle;
-
 @Slf4j
 public class SandboxServerFXApplication extends Application {
-//    private ConfigurableApplicationContext context;
+    //    private ConfigurableApplicationContext context;
     private Parent rootNode;
 
     @Override
@@ -34,7 +32,7 @@ public class SandboxServerFXApplication extends Application {
         log.info("Starting application - FX");
 
         Parent root = FXMLLoader.load(getClass().getResource("/fx/simulation.fxml"));
-        Scene scene = new Scene(root,800,600);
+        Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.setTitle("AI Sandbox");
@@ -55,7 +53,7 @@ public class SandboxServerFXApplication extends Application {
         } catch (Exception e) {
             log.debug("Error when closing runtime", e);
         }*/
-  //      context.close();
-     //   System.exit(0);
+        //      context.close();
+        //   System.exit(0);
     }
 }

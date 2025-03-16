@@ -108,8 +108,7 @@ public class MazeGenerator {
     public static void applyRecursiveBacktracker(Random rand, Maze maze) {
         log.debug("Applying recursive backtracker");
         List<Cell> stack = new ArrayList<>();
-        List<Cell> unvisited = new ArrayList<>();
-        unvisited.addAll(maze.getCellList());
+        List<Cell> unvisited = new ArrayList<>(maze.getCellList());
         stack.add(unvisited.remove(rand.nextInt(unvisited.size())));
         while (!stack.isEmpty()) {
             // copy the last entry off the stack

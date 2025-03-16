@@ -1,6 +1,5 @@
 package dev.aisandbox.server.simulation.mine;
 
-import dev.aisandbox.server.simulation.mine.proto.MineState;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,20 +9,21 @@ import java.util.*;
 public class Board {
     @Getter
     private final int width;
-    @Getter private final int height;
+    @Getter
+    private final int height;
 
     private final Cell[][] grid;
-
-    @Getter private GameState state = GameState.INIT;
-
-    @Getter private final String boardID = UUID.randomUUID().toString();
-
-    @Getter private int unfoundMines = 0;
+    @Getter
+    private final String boardID = UUID.randomUUID().toString();
+    @Getter
+    private GameState state = GameState.INIT;
+    @Getter
+    private int unfoundMines = 0;
 
     /**
      * Constructor based on a predefined width and height.
      *
-     * @param width the width of the board (in squares).
+     * @param width  the width of the board (in squares).
      * @param height the height of the board (in squares).
      */
     public Board(int width, int height) {
@@ -40,7 +40,7 @@ public class Board {
     /**
      * Place mines randomly on the board.
      *
-     * @param rand a {@link java.util.Random} random number generator.
+     * @param rand  a {@link java.util.Random} random number generator.
      * @param count the number of mines to place;
      */
     public void placeMines(Random rand, int count) {

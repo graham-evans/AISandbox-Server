@@ -31,35 +31,25 @@ public class CuboidBuilder {
 
         // generate sides
         log.info("Calculating sides of cuboid {}x{}x{} with scale {}", width,height,depth,scale);
-        final List<Cell> left = new ArrayList<>();
-        final List<Cell> right = new ArrayList<>();
-        final List<Cell> top = new ArrayList<>();
-        final List<Cell> bottom = new ArrayList<>();
-        final List<Cell> front = new ArrayList<>();
-        final List<Cell> back = new ArrayList<>();
-          // create white (top) grid
-        top.addAll(createGrid(0, 0, width, depth, ColourEnum.WHITE, scale));
+        // create white (top) grid
+        final List<Cell> top = new ArrayList<>(createGrid(0, 0, width, depth, ColourEnum.WHITE, scale));
         // create orange (left) grid
-        left.addAll(
-                createGrid(
-                        -depth * scale * 2 - gap, depth * scale * 2 + gap, depth, height, ColourEnum.ORANGE, scale));
+        final List<Cell> left = new ArrayList<>(createGrid(
+                -depth * scale * 2 - gap, depth * scale * 2 + gap, depth, height, ColourEnum.ORANGE, scale));
         // create green (front) grid
-        front.addAll(createGrid(0, depth * scale * 2 + gap, width, height, ColourEnum.GREEN, scale));
+        final List<Cell> front = new ArrayList<>(createGrid(0, depth * scale * 2 + gap, width, height, ColourEnum.GREEN, scale));
         // create red (right) grid
-        right.addAll(
-                createGrid(
-                        width * scale * 2 + gap, depth * scale * 2 + gap, depth, height, ColourEnum.RED, scale));
+        final List<Cell> right = new ArrayList<>(createGrid(
+                width * scale * 2 + gap, depth * scale * 2 + gap, depth, height, ColourEnum.RED, scale));
         // create blue (back) grid
-        back.addAll(
-                createGrid(
-                        (width + depth) * scale * 2 + gap * 2,
-                        depth * scale * 2 + gap,
-                        width,
-                        height,
-                        ColourEnum.BLUE, scale));
+        final List<Cell> back = new ArrayList<>(createGrid(
+                (width + depth) * scale * 2 + gap * 2,
+                depth * scale * 2 + gap,
+                width,
+                height,
+                ColourEnum.BLUE, scale));
         // create yellow (bottom) grid
-        bottom.addAll(
-                createGrid(0, (depth + height) * scale * 2 + gap * 2, width, depth, ColourEnum.YELLOW, scale));
+        final List<Cell> bottom = new ArrayList<>(createGrid(0, (depth + height) * scale * 2 + gap * 2, width, depth, ColourEnum.YELLOW, scale));
         // add all cells to the puzzle
         puzzle.getCells().addAll(left);
         puzzle.getCells().addAll(right);
