@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
 @Slf4j
-public class BanditRuntime implements Simulation {
+public final class BanditRuntime implements Simulation {
 
     //    private AverageRewardGraph averageRewardGraph;
 //    private OptimalActionGraph optimalActionGraph;

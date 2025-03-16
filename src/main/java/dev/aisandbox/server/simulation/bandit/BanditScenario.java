@@ -9,42 +9,34 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.Random;
 
+@Setter
+@Getter
 @Slf4j
-public class BanditScenario implements SimulationBuilder {
+public final class BanditScenario implements SimulationBuilder {
 
     /**
      * How many pulls in each test
      */
-    @Getter
-    @Setter
     private BanditPullEnumeration banditPulls = BanditPullEnumeration.ONE_HUNDRED;
 
     /**
      * How the normals for each bandit are chosen
      */
-    @Getter
-    @Setter
     private BanditNormalEnumeration banditNormal = BanditNormalEnumeration.NORMAL_0_1;
 
     /**
      * How the std for each bandit are chosen
      */
-    @Getter
-    @Setter
     private BanditStdEnumeration banditStd = BanditStdEnumeration.ONE;
 
     /**
      * How the bandits are updated after each step
      */
-    @Getter
-    @Setter
     private BanditUpdateEnumeration banditUpdate = BanditUpdateEnumeration.FIXED;
 
     /**
      * The number of bandits to include
      */
-    @Getter
-    @Setter
     private BanditCountEnumeration banditCount = BanditCountEnumeration.FIVE;
 
     @Override
