@@ -40,6 +40,11 @@ public class RollingValueChartWidget {
         image = null;
     }
 
+    public void resetValues() {
+        values.clear();
+        image = null;
+    }
+
     public BufferedImage getImage() {
         if (image == null) {
             if (values.isEmpty()) {
