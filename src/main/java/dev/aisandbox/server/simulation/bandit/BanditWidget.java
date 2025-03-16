@@ -64,10 +64,10 @@ public class BanditWidget {
                 BaseGraph graph = new BaseGraph(width, height, "Multi-Arm Bandits", "Bandits", "Output", theme, xAxis, yAxis);
                 for (int i=0; i<bandits.size(); i++) {
                     Color banditColor = theme.getAgent1Main();
-                    Color banditOutlinr = theme.getAgent1Highlight();
+                    Color banditOutlinr = theme.getAgent2Main();
                     if (activeBandit == i) {
-                        banditColor = theme.getAgentSelectedMain();
-                        banditOutlinr = theme.getAgentSelectedHighlight();
+                        banditColor = theme.getAgent2Main();
+                        banditOutlinr = theme.getAgent1Main();
                     }
                     Bandit bandit = bandits.get(i);
                     graph.addBox(i-0.2,bandit.getMean()-bandit.getStd(),i+0.2,bandit.getMean()+bandit.getStd(), banditColor,banditOutlinr);
