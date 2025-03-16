@@ -29,9 +29,6 @@ import static dev.aisandbox.server.engine.output.OutputConstants.*;
 @Slf4j
 public final class BanditRuntime implements Simulation {
 
-    //    private AverageRewardGraph averageRewardGraph;
-//    private OptimalActionGraph optimalActionGraph;
-    //   private BanditGraph banditGraph;
     // initial parameters
     private final Agent agent;
     private final Random random;
@@ -45,6 +42,7 @@ public final class BanditRuntime implements Simulation {
     private final List<Bandit> bandits = new ArrayList<>();
     private final TextWidget logWidget;
     private final BanditWidget banditWidget;
+    private final RollingValueChartWidget scoreWidget;
     private final RollingValueChartWidget episodeScoreWidget;
     private final RollingValueChartWidget episodeSuccessWidget;
     private final TitleWidget titleWidget;
@@ -57,6 +55,8 @@ public final class BanditRuntime implements Simulation {
     private static final int LOG_HEIGHT = 320;
     private static final int BANDIT_WIDTH = HD_WIDTH-LEFT_MARGIN-RIGHT_MARGIN-WIDGET_SPACING-LOG_WIDTH;
     private static final int BANDIT_HEIGHT = LOG_HEIGHT;
+    private static final int GRAPH_WIDTH = (HD_WIDTH-LEFT_MARGIN-RIGHT_MARGIN-WIDGET_SPACING*3-LOGO_WIDTH) / 3;
+    private static final int GRAPH_HEIGHT = HD_HEIGHT-TOP_MARGIN-BOTTOM_MARGIN-TITLE_HEIGHT-LOG_HEIGHT-WIDGET_SPACING*2;
 
 
     public BanditRuntime(Agent agent, Random random, int banditCount, int pullCount, BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule, Theme theme) {
@@ -75,8 +75,9 @@ public final class BanditRuntime implements Simulation {
         titleWidget = TitleWidget.builder().theme(theme).title("Multi-armed Bandit").build();
         logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).theme(theme).build();
         banditWidget = BanditWidget.builder().width(BANDIT_WIDTH).height(BANDIT_HEIGHT).theme(theme).build();
-        episodeScoreWidget = RollingValueChartWidget.builder().width(400).height(300).window(200).theme(theme).build();
-        episodeSuccessWidget = RollingValueChartWidget.builder().width(400).height(300).window(200).theme(theme).build();
+        episodeScoreWidget = RollingValueChartWidget.builder().width(GRAPH_WIDTH).height(GRAPH_HEIGHT).window(200).theme(theme).title("Score per episode").build();
+        episodeSuccessWidget = RollingValueChartWidget.builder().width(GRAPH_WIDTH).height(GRAPH_HEIGHT).window(200).theme(theme).title("% best moves per episode").build();
+        scoreWidget = RollingValueChartWidget.builder().width(GRAPH_WIDTH).height(GRAPH_HEIGHT).window(pullCount).theme(theme).title("Score this episode").build();
     }
 
     @Override
@@ -89,17 +90,18 @@ public final class BanditRuntime implements Simulation {
         BanditAction action = agent.receive(getState(), BanditAction.class);
         int arm = action.getArm();
         log.debug("Received request to pull arm {}", arm);
-        // was this the best move
-        if (arm == bestPull) {
-            episodeBestMoveCount += 1.0;
-        }
         // test for invalid request
         if ((arm < 0) || (arm >= bandits.size())) {
             throw new IllegalActionException("Invalid arm.");
         }
+        // was this the best move
+        if (arm == bestPull) {
+            episodeBestMoveCount += 1.0;
+        }
         // get the score
         double score = bandits.get(arm).pull(random);
         episodeScore += score;
+        scoreWidget.addValue(score);
         // log the action
         logWidget.addText(agent.getAgentName() + " selects bandit " + arm + " gets reward " + String.format("%.4f", score));
         // should we reset
@@ -118,25 +120,22 @@ public final class BanditRuntime implements Simulation {
         // move to next episode if needed.
         if (reset) {
             logWidget.addText("pull count reached, starting a new game.");
-
-        }
-        // update the bandits
-        switch (updateRule) {
-            case RANDOM:
-                updateRandom();
-                break;
-            case EQUALISE:
-                updateEqualise(arm);
-                break;
-            case FADE:
-                updateFade(arm);
-                break;
-            default: // FIXED
-                // no action
-        }
-        // reset?
-        if (reset) {
             initialise();
+        } else {
+            // if this isn't the last pull - update the bandits
+            switch (updateRule) {
+                case RANDOM:
+                    updateRandom();
+                    break;
+                case EQUALISE:
+                    updateEqualise(arm);
+                    break;
+                case FADE:
+                    updateFade(arm);
+                    break;
+                default: // FIXED
+                    // no action
+            }
         }
     }
 
@@ -212,15 +211,17 @@ public final class BanditRuntime implements Simulation {
         graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
         // draw title
         graphics2D.drawImage(titleWidget.getImage(), 0,TOP_MARGIN,null);
-        // draw logo
-        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN, HD_HEIGHT - LOGO_HEIGHT - BOTTOM_MARGIN, null);
         // draw log window
         graphics2D.drawImage(logWidget.getImage(), HD_WIDTH-RIGHT_MARGIN-LOG_WIDTH,TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING, null);
         // draw bandits
         graphics2D.drawImage(banditWidget.getImage(), LEFT_MARGIN, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING, null);
+        // draw scores
+        graphics2D.drawImage(scoreWidget.getImage(),LEFT_MARGIN, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING*2+LOG_HEIGHT, null);
         // draw episode scores
-        graphics2D.drawImage(episodeScoreWidget.getImage(), MARGIN, MARGIN * 2 + 300, null);
+        graphics2D.drawImage(episodeScoreWidget.getImage(), LEFT_MARGIN+GRAPH_WIDTH+WIDGET_SPACING, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING*2+LOG_HEIGHT, null);
         // draw episode success
-        graphics2D.drawImage(episodeSuccessWidget.getImage(), MARGIN * 2 + 500, MARGIN * 2 + 300, null);
+        graphics2D.drawImage(episodeSuccessWidget.getImage(), LEFT_MARGIN+GRAPH_WIDTH*2+WIDGET_SPACING*2, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING*2+LOG_HEIGHT, null);
+        // draw logo
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN, HD_HEIGHT - LOGO_HEIGHT - BOTTOM_MARGIN, null);
     }
 }
