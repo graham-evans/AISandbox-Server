@@ -69,8 +69,6 @@ public final class BanditRuntime implements Simulation {
         this.std = std;
         this.updateRule = updateRule;
         this.theme = theme;
-        // initialise bandits
-        initialise();
         // initialise widgets
         titleWidget = TitleWidget.builder().theme(theme).title("Multi-armed Bandit").build();
         logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).theme(theme).build();
@@ -78,6 +76,8 @@ public final class BanditRuntime implements Simulation {
         episodeScoreWidget = RollingValueChartWidget.builder().width(GRAPH_WIDTH).height(GRAPH_HEIGHT).window(200).theme(theme).title("Score per episode").build();
         episodeSuccessWidget = RollingValueChartWidget.builder().width(GRAPH_WIDTH).height(GRAPH_HEIGHT).window(200).theme(theme).title("% best moves per episode").build();
         scoreWidget = RollingValueChartWidget.builder().width(GRAPH_WIDTH).height(GRAPH_HEIGHT).window(pullCount).theme(theme).title("Score this episode").build();
+        // initialise bandits
+        initialise();
     }
 
     @Override
@@ -167,6 +167,7 @@ public final class BanditRuntime implements Simulation {
         episodeID = UUID.randomUUID().toString();
         episodeScore = 0;
         episodeBestMoveCount = 0;
+        scoreWidget.resetValues();
     }
 
     /**
