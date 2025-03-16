@@ -23,10 +23,7 @@ It simply wouldn't be possible to maintain the application code without the work
 | Work                                         | Licence                | Original Source                        |
 |----------------------------------------------|------------------------|----------------------------------------|
 | Protocol Buffers (Protobuf)                  | BSD                    | https://protobuf.dev/                  |
-| Spring Framework & spring Boot               | Apache version 2.0     | https://spring.io/                     |
-| XChart                                       | Apache version 2.0     | https://knowm.org/open-source/xchart/  |
 | Apache Commons (CLI, Statistics, Math, Lang) | Apache version 2.0     | https://commons.apache.org/            |
-| JCodec                                       | FreeBSD Licence        | http://jcodec.org/                     |
 | Lombok *                                     | MIT Licence            | https://projectlombok.org/             |
 | JUnit *                                      | Eclipse Public License | https://junit.org/                     |
 | Gradle *                                     | Apache version 2.0     | https://gradle.org/                    |
