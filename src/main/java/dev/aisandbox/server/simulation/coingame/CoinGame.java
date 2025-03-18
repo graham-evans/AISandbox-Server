@@ -27,7 +27,7 @@ public class CoinGame implements Simulation {
     private final List<Agent> agents;
     private final CoinScenario scenario;
     private final Theme theme;
-    private final TextWidget textWidget;
+    private final TextWidget logWidget;
     private final TextWidget textSnapshot;
     private final String sessionID = UUID.randomUUID().toString();
     private int[] coins;
@@ -45,11 +45,10 @@ public class CoinGame implements Simulation {
         coins = new int[scenario.getRows().length];
         // set up the widgets
         textSnapshot = TextWidget.builder().width(200).height(200).theme(theme).build();
-        textWidget = TextWidget.builder()
+        logWidget = TextWidget.builder()
                 .width(TEXT_WIDTH)
                 .height(TEXT_HEIGHT)
-                .fontHeight(24)
-                .fontName("Ariel")
+                .fontName(LOG_FONT).fontHeight(LOG_FONT_HEIGHT)
                 .theme(theme)
                 .build();
         // generate the images
@@ -80,17 +79,17 @@ public class CoinGame implements Simulation {
         // try and make the move
         try {
             coins = makeMove(action.getSelectedRow(), action.getRemoveCount());
-            textWidget.addText(agents.get(currentPlayer).getAgentName() + " takes " + action.getRemoveCount() + " from row " + action.getSelectedRow() + " leaving " + coins[action.getSelectedRow()] + ".");
+            logWidget.addText(agents.get(currentPlayer).getAgentName() + " takes " + action.getRemoveCount() + " from row " + action.getSelectedRow() + " leaving " + coins[action.getSelectedRow()] + ".");
             if (isGameFinished()) {
                 // current player lost
-                textWidget.addText(agents.get(currentPlayer).getAgentName() + " lost");
+                logWidget.addText(agents.get(currentPlayer).getAgentName() + " lost");
                 informResult((currentPlayer + 1) % 2);
                 output.display();
                 reset();
             }
         } catch (IllegalCoinAction e) {
             log.error(e.getMessage());
-            textWidget.addText(agents.get(currentPlayer).getAgentName() + " makes an illegal move.");
+            logWidget.addText(agents.get(currentPlayer).getAgentName() + " makes an illegal move.");
             // player has tried an illegal move - end the game
             informResult((currentPlayer + 1) % 2);
             output.display();
@@ -166,7 +165,7 @@ public class CoinGame implements Simulation {
             graphics2D.drawImage(rowImages[i], MARGIN, MARGIN + i * CoinIcons.ROW_HEIGHT, null);
             graphics2D.drawImage(coinImages[coins[i]], MARGIN + CoinIcons.ROW_WIDTH, MARGIN + i * CoinIcons.ROW_HEIGHT, null);
         }
-        graphics2D.drawImage(textWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
+        graphics2D.drawImage(logWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
         graphics2D.drawImage(textSnapshot.getImage(), MARGIN * 2 + 720 + 200, 500, null);
         // draw logo
         graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);

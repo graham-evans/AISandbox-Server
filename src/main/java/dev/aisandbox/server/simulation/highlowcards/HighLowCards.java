@@ -90,8 +90,7 @@ public class HighLowCards implements Simulation {
         textWidget = TextWidget.builder()
                 .width(TEXT_WIDTH)
                 .height(TEXT_HEIGHT)
-                .fontHeight(24)
-                .fontName("Ariel")
+                .fontName(LOG_FONT).fontHeight(LOG_FONT_HEIGHT)
                 .theme(theme)
                 .build();
         statisticsWidget = RollingStatisticsWidget.builder()

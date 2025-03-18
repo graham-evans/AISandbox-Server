@@ -24,6 +24,8 @@ public class OutputConstants {
     public static final int LEFT_MARGIN = 50;
     public static final int RIGHT_MARGIN = 50;
     public static final int WIDGET_SPACING = 50;
+    public static final int LOG_FONT_HEIGHT = 14;
+    public static final String LOG_FONT = "Arial";
 
 
     public static final BufferedImage LOGO;
