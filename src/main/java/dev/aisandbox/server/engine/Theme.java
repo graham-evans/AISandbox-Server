@@ -69,4 +69,11 @@ public enum Theme {
     private final Color agentSelectedHighlight;
     private final Color agentSelectedLowlight;
 
+    public Color getAgentMain(int i) {
+        return switch (i) {
+            case 0 -> agent1Main;
+            case 1 -> agent2Main;
+            default -> Color.DARK_GRAY;
+        };
+    }
 }
