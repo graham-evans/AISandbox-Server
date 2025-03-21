@@ -15,9 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.IntStream;
 
 import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
@@ -28,8 +28,8 @@ public class CoinGame implements Simulation {
     // UI measurements
     private static final int LOG_WIDTH = 700;
     private static final int LOG_HEIGHT = 320;
-    private static final int BAIZE_WIDTH = HD_WIDTH-LEFT_MARGIN-RIGHT_MARGIN-WIDGET_SPACING-LOG_WIDTH;
-    private static final int BAIZE_HEIGHT = HD_HEIGHT-BOTTOM_MARGIN-TOP_MARGIN-TITLE_HEIGHT-WIDGET_SPACING;
+    private static final int BAIZE_WIDTH = HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING - LOG_WIDTH;
+    private static final int BAIZE_HEIGHT = HD_HEIGHT - BOTTOM_MARGIN - TOP_MARGIN - TITLE_HEIGHT - WIDGET_SPACING;
     private final List<Agent> agents;
     private final CoinScenario scenario;
     private final Theme theme;
@@ -43,6 +43,7 @@ public class CoinGame implements Simulation {
     private BufferedImage[] rowImages;
     private BufferedImage[] coinImages;
     private String episodeID;
+    private List<Double> agentScores = new ArrayList<>();
 
     public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
         this.agents = agents;
@@ -58,7 +59,7 @@ public class CoinGame implements Simulation {
                 .fontName(LOG_FONT).fontHeight(LOG_FONT_HEIGHT)
                 .theme(theme)
                 .build();
-        pieChartWidget = PieChartWidget.builder().width(500).height(500).build();
+        pieChartWidget = PieChartWidget.builder().width(LOG_WIDTH).height(HD_HEIGHT-LOG_HEIGHT-TITLE_HEIGHT-TOP_MARGIN-BOTTOM_MARGIN-WIDGET_SPACING*2).build();
         // generate the images
         try {
             rowImages = CoinIcons.getRowImages(scenario.getRows().length);
@@ -66,6 +67,8 @@ public class CoinGame implements Simulation {
         } catch (IOException e) {
             log.error("Error loading images", e);
         }
+        // set the scores to 0
+        agents.forEach(a -> agentScores.add(0.0));
         // reset the game to the initial stage
         reset();
     }
@@ -115,6 +118,8 @@ public class CoinGame implements Simulation {
         winAgent.send(generateCurrentState(Signal.WIN));
         loseAgent.send(generateCurrentState(Signal.LOSE));
         logWidget.addText("Player [" + winner + "] wins");
+        agentScores.set(winner, agentScores.get(winner)+1);
+        pieChartWidget.setPie(IntStream.range(0,agents.size()-1).mapToObj(operand -> new PieChartWidget.Slice(agents.get(operand).getAgentName(),agentScores.get(operand),theme.getAgentMain(operand) )).toList());
     }
 
     private int[] makeMove(int row, int amount) throws IllegalCoinAction {
@@ -171,18 +176,18 @@ public class CoinGame implements Simulation {
         // draw widgets
         graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
         graphics2D.drawImage(logWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
-        graphics2D.drawImage(pieChartWidget.getImage(), 0, 0, null);
+        graphics2D.drawImage(pieChartWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING+LOG_HEIGHT+WIDGET_SPACING, null);
         // draw baize
         graphics2D.setColor(theme.getBaize());
-        graphics2D.fillRect(LEFT_MARGIN,TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING,BAIZE_WIDTH,BAIZE_HEIGHT);
+        graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH, BAIZE_HEIGHT);
         graphics2D.setColor(theme.getText());
         for (int i = 0; i < coins.length; i++) {
-            graphics2D.drawImage(rowImages[i], MARGIN, MARGIN + i * CoinIcons.ROW_HEIGHT, null);
-            graphics2D.drawImage(coinImages[coins[i]], MARGIN + CoinIcons.ROW_WIDTH, MARGIN + i * CoinIcons.ROW_HEIGHT, null);
+            graphics2D.drawImage(rowImages[i], LEFT_MARGIN, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING + i * CoinIcons.ROW_HEIGHT, null);
+            graphics2D.drawImage(coinImages[coins[i]], LEFT_MARGIN + CoinIcons.ROW_WIDTH, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING + i * CoinIcons.ROW_HEIGHT, null);
         }
 
         // draw logo
-        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN, HD_HEIGHT - LOGO_HEIGHT - BOTTOM_MARGIN, null);
 
     }
 }

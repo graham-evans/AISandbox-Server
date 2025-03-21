@@ -63,11 +63,10 @@ public class PieChartWidget {
         for (Slice slice : segments) {
             totalValue += slice.value;
         }
-        // draw each slice
+        // draw each slice using drawArc and fillArc (degrees with 90' = north)
         double startAngle = 90;
         for (Slice slice : segments) {
             // Draw slice
-
             double value = slice.value / totalValue;
             double angle = value * 360;
             g.setColor(slice.baseColor);
@@ -76,11 +75,25 @@ public class PieChartWidget {
             g.fill(arc);
             g.setColor(theme.getGraphBackground());
             g.draw(arc);
-
-            // Draw label for slice
-            GraphicsUtils.drawCenteredText(g, bounds.x, bounds.y, bounds.width, bounds.height, slice.title, TITLE_FONT, theme.getText());
-
             startAngle -= angle;
+        }
+        // draw each title using sin/cos (radians with 0 = east)
+        startAngle = -Math.PI / 2.0;
+        g.setColor(theme.getText());
+        for (Slice slice : segments) {
+            double value = slice.value / totalValue;
+            double angle = value * 360.0 * Math.PI / 180.0;
+            // Draw the value in the middle of the arc
+            double midAngle = startAngle + (angle / 2);
+            int textX = (int) (startX + pieDiameter / 2 + Math.cos(midAngle) * pieDiameter / 3);
+            int textY = (int) (startY + pieDiameter / 2 + Math.sin(midAngle) * pieDiameter / 3);
+
+       //     g.fillOval(textX-3,textY-3,6,6);
+            GraphicsUtils.drawCenteredText(g, textX - 20, textY - 10, 40, 20,
+                    slice.title,
+                   new Font("Arial", Font.PLAIN, 12),
+                 theme.getText());
+            startAngle += angle;
         }
         return image;
     }
