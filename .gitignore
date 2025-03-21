@@ -30,3 +30,4 @@ replay_pid*
 /.gradle/
 /build/
 aisandbox.log*
+.vscode
