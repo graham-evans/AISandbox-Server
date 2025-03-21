@@ -4,7 +4,9 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.widget.PieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
+import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import dev.aisandbox.server.simulation.coingame.proto.Signal;
@@ -22,13 +24,18 @@ import static dev.aisandbox.server.engine.output.OutputConstants.*;
 @Slf4j
 public class CoinGame implements Simulation {
 
-    private static final int TEXT_HEIGHT = 280;
-    private static final int TEXT_WIDTH = HD_WIDTH - 3 * MARGIN - 920;
+
+    // UI measurements
+    private static final int LOG_WIDTH = 700;
+    private static final int LOG_HEIGHT = 320;
+    private static final int BAIZE_WIDTH = HD_WIDTH-LEFT_MARGIN-RIGHT_MARGIN-WIDGET_SPACING-LOG_WIDTH;
+    private static final int BAIZE_HEIGHT = HD_HEIGHT-BOTTOM_MARGIN-TOP_MARGIN-TITLE_HEIGHT-WIDGET_SPACING;
     private final List<Agent> agents;
     private final CoinScenario scenario;
     private final Theme theme;
+    private final TitleWidget titleWidget;
     private final TextWidget logWidget;
-    private final TextWidget textSnapshot;
+    private final PieChartWidget pieChartWidget;
     private final String sessionID = UUID.randomUUID().toString();
     private int[] coins;
     private int maxPic = 2;
@@ -44,13 +51,14 @@ public class CoinGame implements Simulation {
         // build the coin pile
         coins = new int[scenario.getRows().length];
         // set up the widgets
-        textSnapshot = TextWidget.builder().width(200).height(200).theme(theme).build();
+        titleWidget = TitleWidget.builder().title("The Coin Game").theme(theme).build();
         logWidget = TextWidget.builder()
-                .width(TEXT_WIDTH)
-                .height(TEXT_HEIGHT)
+                .width(LOG_WIDTH)
+                .height(LOG_HEIGHT)
                 .fontName(LOG_FONT).fontHeight(LOG_FONT_HEIGHT)
                 .theme(theme)
                 .build();
+        pieChartWidget = PieChartWidget.builder().width(500).height(500).build();
         // generate the images
         try {
             rowImages = CoinIcons.getRowImages(scenario.getRows().length);
@@ -106,7 +114,7 @@ public class CoinGame implements Simulation {
         Agent loseAgent = agents.get((winner + 1) % 2);
         winAgent.send(generateCurrentState(Signal.WIN));
         loseAgent.send(generateCurrentState(Signal.LOSE));
-        textSnapshot.addText("Player [" + winner + "] wins");
+        logWidget.addText("Player [" + winner + "] wins");
     }
 
     private int[] makeMove(int row, int amount) throws IllegalCoinAction {
@@ -160,13 +168,19 @@ public class CoinGame implements Simulation {
     public void visualise(Graphics2D graphics2D) {
         graphics2D.setColor(theme.getBackground());
         graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
+        // draw widgets
+        graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
+        graphics2D.drawImage(logWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
+        graphics2D.drawImage(pieChartWidget.getImage(), 0, 0, null);
+        // draw baize
+        graphics2D.setColor(theme.getBaize());
+        graphics2D.fillRect(LEFT_MARGIN,TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING,BAIZE_WIDTH,BAIZE_HEIGHT);
         graphics2D.setColor(theme.getText());
         for (int i = 0; i < coins.length; i++) {
             graphics2D.drawImage(rowImages[i], MARGIN, MARGIN + i * CoinIcons.ROW_HEIGHT, null);
             graphics2D.drawImage(coinImages[coins[i]], MARGIN + CoinIcons.ROW_WIDTH, MARGIN + i * CoinIcons.ROW_HEIGHT, null);
         }
-        graphics2D.drawImage(logWidget.getImage(), MARGIN * 2 + 720 + 200, MARGIN, null);
-        graphics2D.drawImage(textSnapshot.getImage(), MARGIN * 2 + 720 + 200, 500, null);
+
         // draw logo
         graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN, null);
 
