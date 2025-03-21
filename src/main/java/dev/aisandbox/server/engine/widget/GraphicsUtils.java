@@ -42,4 +42,12 @@ public class GraphicsUtils {
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     }
 
+    public static void drawCenteredText(Graphics2D graphics,int x, int y, int width, int height, String text, Font font, Color colour) {
+        graphics.setFont(font);
+        graphics.setColor(colour);
+        FontMetrics metrics = graphics.getFontMetrics(font);
+        int dx = (width - metrics.stringWidth(text)) / 2;
+        graphics.drawString(text, x + dx, y + height);
+    }
+
 }

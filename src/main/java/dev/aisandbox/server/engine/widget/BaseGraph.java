@@ -119,9 +119,9 @@ public class BaseGraph {
 
     public void addAxisAndTitle() {
         // draw titles
-        drawCenteredText(PADDING, PADDING, width - PADDING * 2, TITLE_FONT_SIZE, title, TITLE_FONT, Color.RED);
-        drawCenteredText(PADDING, height - PADDING - AXIS_FONT_SIZE, width - PADDING * 2, AXIS_FONT_SIZE, xAxisTitle, AXIS_FONT, Color.CYAN);
-        drawVirticalCenteredTest(PADDING, height - PADDING, height - PADDING * 2, AXIS_FONT_SIZE, yAxisTitle, AXIS_FONT, Color.YELLOW);
+        GraphicsUtils.drawCenteredText(graphics,PADDING, PADDING, width - PADDING * 2, TITLE_FONT_SIZE, title, TITLE_FONT, theme.getText());
+        GraphicsUtils.drawCenteredText(graphics,PADDING, height - PADDING - AXIS_FONT_SIZE, width - PADDING * 2, AXIS_FONT_SIZE, xAxisTitle, AXIS_FONT, theme.getText());
+        GraphicsUtils.drawCenteredText(graphics,PADDING, height - PADDING, height - PADDING * 2, AXIS_FONT_SIZE, yAxisTitle, AXIS_FONT, theme.getText());
         // draw graph border
         graphics.setColor(theme.getGraphOutlineColor());
         graphics.drawRect(xBoxStart, yBoxStart, boxWidth, boxHeight);
@@ -130,7 +130,7 @@ public class BaseGraph {
         for (double x : xAxisScale.getTicks()) {
             int dx = (int) (boxWidth * xAxisScale.getScaledValue(x));
             graphics.drawLine(xBoxStart + dx, yBoxStart + boxHeight + MARGIN, xBoxStart + dx, yBoxStart + boxHeight + MARGIN * 2);
-            drawCenteredText(xBoxStart + dx - 20, yBoxStart + boxHeight + MARGIN * 2, 40, TICK_FONT_SIZE, xAxisScale.getValueString(x), TICK_FONT, Color.magenta);
+            GraphicsUtils.drawCenteredText(graphics,xBoxStart + dx - 20, yBoxStart + boxHeight + MARGIN * 2, 40, TICK_FONT_SIZE, xAxisScale.getValueString(x), TICK_FONT, theme.getText());
         }
         // draw y axis
         graphics.drawLine(xBoxStart - MARGIN, yBoxStart, xBoxStart - MARGIN, yBoxStart + boxHeight);
@@ -139,20 +139,6 @@ public class BaseGraph {
             graphics.drawLine(xBoxStart - MARGIN * 2, yBoxStart + dy, xBoxStart - MARGIN, yBoxStart + dy);
             drawVirticalCenteredTest(xBoxStart - MARGIN * 3 - TICK_FONT_SIZE, yBoxStart + dy + 20, 40, TICK_FONT_SIZE, yAxisScale.getValueString(y), TICK_FONT, Color.green);
         }
-    }
-
-    private void drawCenteredText(int x, int y, int width, int height, String title, Font font, Color debugColour) {
-        if (debugColour != null) {
-            graphics.setColor(debugColour);
-            //           graphics.fillRect(x, y, width, height);
-        }
-        graphics.setFont(font);
-        graphics.setColor(theme.getText());
-
-        FontMetrics metrics = graphics.getFontMetrics(font);
-        int dx = (width - metrics.stringWidth(title)) / 2;
-
-        graphics.drawString(title, x + dx, y + height);
     }
 
     private void drawVirticalCenteredTest(int x, int y, int width, int height, String title, Font font, Color debugColour) {
