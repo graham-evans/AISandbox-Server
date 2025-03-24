@@ -1,4 +1,1 @@
-Downloaded: https://opengameart.org/content/playing-cards
-Licenced: CC-By 4.0
-Author: Sharm
-Altered: scaling to fit screen
+Cards created via https://www.me.uk/cards - Copyright 2018 Adrian Kennard, CC0 Public Domain Licence
