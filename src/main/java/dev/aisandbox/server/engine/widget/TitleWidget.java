@@ -1,6 +1,7 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.output.OutputConstants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -26,10 +27,11 @@ public class TitleWidget {
         // generate image
         image = new BufferedImage(HD_WIDTH, TITLE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
+        GraphicsUtils.setupRenderingHints(g);
         g.setColor(theme.getBackground());
         g.fillRect(0, 0, HD_WIDTH, TITLE_HEIGHT);
         g.setColor(theme.getText());
-        g.setFont(new Font("Arial", Font.PLAIN, TITLE_HEIGHT));
+        g.setFont(OutputConstants.TITLE_FONT);
         FontMetrics fm = g.getFontMetrics();
         int stringWidth = fm.stringWidth(title);
         g.drawString(title, HD_WIDTH / 2 - stringWidth / 2, TITLE_HEIGHT-fm.getDescent());
