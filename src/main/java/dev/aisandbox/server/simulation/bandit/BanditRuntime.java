@@ -71,7 +71,7 @@ public final class BanditRuntime implements Simulation {
         this.theme = theme;
         // initialise widgets
         titleWidget = TitleWidget.builder().theme(theme).title("Multi-armed Bandit").build();
-        logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).fontName(LOG_FONT).fontHeight(LOG_FONT_HEIGHT).theme(theme).build();
+        logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).font(LOG_FONT).theme(theme).build();
         banditWidget = BanditWidget.builder().width(BANDIT_WIDTH).height(BANDIT_HEIGHT).theme(theme).build();
         episodeScoreWidget = RollingValueChartWidget.builder().width(GRAPH_WIDTH).height(GRAPH_HEIGHT).window(200).theme(theme).title("Score per episode").build();
         episodeSuccessWidget = RollingValueChartWidget.builder().width(GRAPH_WIDTH).height(GRAPH_HEIGHT).window(200).theme(theme).title("% best moves per episode").build();

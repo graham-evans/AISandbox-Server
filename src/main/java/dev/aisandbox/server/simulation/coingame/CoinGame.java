@@ -56,7 +56,7 @@ public class CoinGame implements Simulation {
         logWidget = TextWidget.builder()
                 .width(LOG_WIDTH)
                 .height(LOG_HEIGHT)
-                .fontName(LOG_FONT).fontHeight(LOG_FONT_HEIGHT)
+                .font(LOG_FONT)
                 .theme(theme)
                 .build();
         pieChartWidget = PieChartWidget.builder().width(LOG_WIDTH).height(HD_HEIGHT-LOG_HEIGHT-TITLE_HEIGHT-TOP_MARGIN-BOTTOM_MARGIN-WIDGET_SPACING*2).build();
