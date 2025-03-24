@@ -11,14 +11,12 @@ import java.awt.*;
 public enum Theme {
 
     LIGHT(
-            Color.decode("#eeeeee"),
-            Color.BLACK,
-            Color.lightGray,
-            Color.WHITE,
-            Color.DARK_GRAY,
-            Color.LIGHT_GRAY,
-
-//            Color.decode("#006400"),
+            Color.decode("#efefef"), // background
+            Color.BLACK, // text
+            Color.WHITE, // widget background
+            Color.WHITE, // graph background
+            Color.DARK_GRAY, // graph outline (axis)
+            Color.WHITE, // baize (play area)
 
             Color.decode("#014f89"),
             Color.decode("#2a6f97"),
