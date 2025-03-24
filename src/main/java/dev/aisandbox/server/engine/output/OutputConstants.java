@@ -20,7 +20,7 @@ public class OutputConstants {
     public static final int LOGO_HEIGHT = 108;
     @Deprecated
     public static final int MARGIN = 100;
-    public static final int TITLE_HEIGHT = 80;
+    public static final int TITLE_HEIGHT = 60;
     public static final int TOP_MARGIN = 50;
     public static final int BOTTOM_MARGIN = 50;
     public static final int LEFT_MARGIN = 50;
@@ -59,7 +59,7 @@ public class OutputConstants {
             log.error("Error loading fonts", e);
         }
         // create base fonts
-        TITLE_FONT = new Font("Arimo Regular", Font.BOLD, TITLE_HEIGHT);
+        TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, TITLE_HEIGHT);
         LOG_FONT = new Font("Hack Regular", Font.PLAIN, LOG_FONT_HEIGHT);
         STATISTICS_FONT=new Font("Arimo Regular", Font.PLAIN, 40);
     }
