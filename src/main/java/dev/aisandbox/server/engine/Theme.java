@@ -16,7 +16,9 @@ public enum Theme {
             Color.lightGray,
             Color.WHITE,
             Color.DARK_GRAY,
-            Color.decode("#006400"),
+            Color.LIGHT_GRAY,
+
+//            Color.decode("#006400"),
 
             Color.decode("#014f89"),
             Color.decode("#2a6f97"),
@@ -35,6 +37,7 @@ public enum Theme {
             Color.lightGray,
             Color.WHITE,
             Color.DARK_GRAY,
+
             Color.decode("#006400"),
 
             Color.decode("#014f89"),
