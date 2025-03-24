@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.LOG_FONT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TextWidgetTest {
@@ -36,8 +37,8 @@ public class TextWidgetTest {
 
     @Test
     public void wrapTest() throws IOException {
-        TextWidget text = TextWidget.builder().width(500).height(400).fontHeight(14).fontHeight(24)
-                .fontName("Ariel").fontName("arial").build();
+        TextWidget text = TextWidget.builder().width(500).height(400).font(LOG_FONT)
+                .build();
         text.addText("Line 1");
         text.addText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mollis mauris at ipsum fringilla, at lacinia felis pretium. Phasellus placerat neque at aliquet mattis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In eleifend arcu eu velit condimentum ornare. Cras mauris dolor, accumsan sit amet dapibus eget, vulputate et metus. Proin convallis tristique placerat. Integer id lorem auctor, faucibus sapien vel, tincidunt elit.");
         text.addText("Line 3");
