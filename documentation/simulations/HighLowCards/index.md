@@ -1,4 +1,7 @@
 # High Low Cards
+
+The 'High Low' card game involves predicting whether the next card draw from a pack will be higher or lower than the one before. 
+
 ## Overview
 This simulation tests an AI's ability to predict the next card to be tuned over.
 
