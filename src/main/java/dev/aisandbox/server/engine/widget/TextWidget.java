@@ -8,7 +8,6 @@ import lombok.experimental.Accessors;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 import java.util.StringJoiner;
 
 public class TextWidget {
@@ -23,14 +22,14 @@ public class TextWidget {
     @Getter
     private final BufferedImage image;
     private final Graphics2D graphics;
-    private  BufferedImage blankLine;
+    private final BufferedImage blankLine;
     private final FontMetrics fontMetrics;
-    private final int descender;
+    private final int DESCENDER;
 
-    private TextWidget(int width, int height, int fontHeight, String fontName, Theme theme) {
+    private TextWidget(int width, int height,Font font, Theme theme) {
         this.width = width;
         this.height = height;
-        this.lineHeight = fontHeight + 2;
+        this.lineHeight = font.getSize() + 2;
         this.theme = theme;
         // create blank image
         image = GraphicsUtils.createBlankImage(width,height,theme.getWidgetBackground());
@@ -38,11 +37,10 @@ public class TextWidget {
         blankLine = GraphicsUtils.createBlankImage(width-PADDING,lineHeight,theme.getWidgetBackground());
         // setup text
         graphics.setColor(theme.getText());
-        Font font = new Font(fontName, Font.PLAIN, fontHeight);
         graphics.setFont(font);
         GraphicsUtils.setupRenderingHints(graphics);
         fontMetrics = graphics.getFontMetrics();
-        descender = fontMetrics.getDescent();
+        DESCENDER = fontMetrics.getDescent();
     }
 
     public static TextWidgetBuilder builder() {
@@ -56,7 +54,7 @@ public class TextWidget {
         // blank the bottom line
         graphics.drawImage(blankLine,PADDING,height-PADDING-lineHeight,null);
         // draw the text line
-        graphics.drawString(text,PADDING,height-PADDING- descender);
+        graphics.drawString(text,PADDING,height-PADDING- DESCENDER);
     }
 
     public void addText(final String text) {
@@ -100,24 +98,13 @@ public class TextWidget {
     public static class TextWidgetBuilder {
         private int width = 200;
         private int height = 200;
-        private int fontHeight = 14;
-        private String fontName = "Ariel";
+        private Font font = new Font(Font.SANS_SERIF,Font.PLAIN,16);
         private Theme theme = Theme.LIGHT;
 
         public TextWidget build() {
-            return new TextWidget(width, height, fontHeight, fontName, theme);
+            return new TextWidget(width, height, font, theme);
         }
 
-        @Override
-        public String toString() {
-            return new StringJoiner(", ", TextWidgetBuilder.class.getSimpleName() + "[", "]")
-                    .add("width=" + width)
-                    .add("height=" + height)
-                    .add("fontHeight=" + fontHeight)
-                    .add("fontName='" + fontName + "'")
-                    .add("theme=" + theme)
-                    .toString();
-        }
     }
 
 }
