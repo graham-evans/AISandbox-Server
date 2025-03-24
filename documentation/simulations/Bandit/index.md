@@ -4,7 +4,7 @@ The Multi-Armed Bandit is one of the classic problems studied in probability the
 
 This trade-off between exploration and exploitation can be seen in many real-world scenarios and research on advanced versions of the Multi-Armed Bandit problem is still ongoing nearly seventy years after the problem was first explored.
 
-For more background information see the [Wikipedia Article - Mulri-armed Bandit](https://en.wikipedia.org/wiki/Multi-armed_bandit).
+For more background information see the [Wikipedia Article - Multi-armed Bandit](https://en.wikipedia.org/wiki/Multi-armed_bandit).
 
 # Goal
 
