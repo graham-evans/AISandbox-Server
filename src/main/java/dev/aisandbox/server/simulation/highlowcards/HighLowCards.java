@@ -20,33 +20,27 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static dev.aisandbox.server.engine.output.OutputConstants.*;
+import static dev.aisandbox.server.simulation.common.Card.CARD_HEIGHT;
+import static dev.aisandbox.server.simulation.common.Card.CARD_WIDTH;
 
 @Slf4j
 public class HighLowCards implements Simulation {
 
     // UI Elements and constants
-
-    // card sizes - from original PNG files
-    private static final int CARD_WIDTH = 200;
-    private static final int CARD_HEIGHT = 280;
-    // the padding around the edge of the cards for the baize
-    private static final int BAIZE_PADDING = 20;
-    // text box (for the logs)
-    private static final int TEXT_HEIGHT = CARD_HEIGHT + BAIZE_PADDING * 2; // height of the text box is the same as the height of the baize
-    private static final int TEXT_WIDTH = 700;
     // baize
-    private static final int BAIZE_WIDTH = HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - TEXT_WIDTH - WIDGET_SPACING;
-    private static final int BAIZE_HEIGHT = CARD_HEIGHT + BAIZE_PADDING * 2;
-    private static final int GRAPH_HEIGHT = (HD_HEIGHT - TITLE_HEIGHT - BAIZE_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - WIDGET_SPACING * 3) / 2;
+    private static final int BAIZE_WIDTH = HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING-400;
+    private static final int BAIZE_HEIGHT = 450;
+    private static final int BAIZE_PADDING = 20;
     // card layout
     private static final int CARD_GAP = 50; // the horizontal gap between the left (face up) card and the right (face down) card
-    private static final int GRAPH_WIDTH = 920;
-    private final int CARD_SPACE; // this is calculated based on the card count
     // statistics widget
-    private static final int STATISTICS_WIDTH = HD_WIDTH - LEFT_MARGIN-RIGHT_MARGIN-WIDGET_SPACING-GRAPH_WIDTH;
-    private static final int STATISTICS_HEIGHT = HD_HEIGHT - TITLE_HEIGHT - BOTTOM_MARGIN-TOP_MARGIN-WIDGET_SPACING*2-BAIZE_HEIGHT;
+    private static final int STATISTICS_WIDTH = HD_WIDTH-LEFT_MARGIN-RIGHT_MARGIN-WIDGET_SPACING-BAIZE_WIDTH;
+    private static final int STATISTICS_HEIGHT = 450;
+    // results widgets
+    private static final int RESULTS_WIDTH = (HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING * 2) / 3;
+    private static final int RESULTS_HEIGHT = 350;
 
-
+    private final int CARD_SPACE; // this is calculated based on the card count
     private final Map<String, BufferedImage> cardImages = new HashMap<>();
     private final Theme theme;
     // simulation elements
@@ -60,12 +54,12 @@ public class HighLowCards implements Simulation {
     private final TitleWidget titleWidget;
     private final RollingValueChartWidget scoreWidget;
     private final RollingValueHistogramWidget scoreHistogramWidget;
-    private final TextWidget textWidget;
+    private final TextWidget logWidget;
     private final RollingStatisticsWidget statisticsWidget;
     private String episodeID;
     private int score = 0;
 
-    public HighLowCards(Agent agent, int cardCount, Theme theme,Random random) {
+    public HighLowCards(Agent agent, int cardCount, Theme theme, Random random) {
         this.agent = agent;
         this.cardCount = cardCount;
         this.theme = theme;
@@ -73,33 +67,31 @@ public class HighLowCards implements Simulation {
         // setup widgets
         titleWidget = TitleWidget.builder().title("High/Low Cards").theme(theme).build();
         scoreWidget = RollingValueChartWidget.builder()
-                .width(GRAPH_WIDTH)
-                .height(GRAPH_HEIGHT)
+                .width(RESULTS_WIDTH)
+                .height(RESULTS_HEIGHT)
                 .window(200)
                 .theme(theme)
                 .title("Final Score")
                 .build();
         scoreHistogramWidget = RollingValueHistogramWidget.builder()
-                .width(GRAPH_WIDTH)
-                .height(GRAPH_HEIGHT)
+                .width(RESULTS_WIDTH)
+                .height(RESULTS_HEIGHT)
                 .window(200)
                 .binEngine(new IntegerBinner(0, cardCount))
                 .theme(theme)
                 .title("Score Distribution")
                 .build();
-        textWidget = TextWidget.builder()
-                .width(TEXT_WIDTH)
-                .height(TEXT_HEIGHT)
-                .fontName(LOG_FONT).fontHeight(LOG_FONT_HEIGHT)
+        logWidget = TextWidget.builder()
+                .width(RESULTS_WIDTH)
+                .height(RESULTS_HEIGHT)
+                .font(LOG_FONT)
                 .theme(theme)
                 .build();
         statisticsWidget = RollingStatisticsWidget.builder()
                 .width(STATISTICS_WIDTH)
                 .height(STATISTICS_HEIGHT)
-                .fontHeight(32)
-                .fontName("Ariel")
                 .theme(theme)
-                .opaque(false)
+              //  .opaque(false)
                 .build();
         CARD_SPACE = (BAIZE_WIDTH - BAIZE_PADDING * 2 - CARD_WIDTH * 2 - CARD_GAP) / (cardCount - 2);
         reset();
@@ -131,7 +123,7 @@ public class HighLowCards implements Simulation {
         Card previousCard = faceUpCards.getLast();
         Card nextCard = faceDownCards.getFirst();
         // render the current frame
-        textWidget.addText("Showing " + faceUpCards.stream().map(Card::getShortDrescription).collect(Collectors.joining(",")));
+        logWidget.addText("Showing " + faceUpCards.stream().map(Card::getShortDrescription).collect(Collectors.joining(",")));
         output.display();
         // send the current state and request an action
         HighLowCardsAction action = agent.receive(
@@ -154,9 +146,9 @@ public class HighLowCards implements Simulation {
         // adjust score and show result
         if (correctGuess) {
             score++;
-            textWidget.addText("[" + agent.getAgentName() + "] " + action.getAction().name() + " - correct");
+            logWidget.addText("[" + agent.getAgentName() + "] " + action.getAction().name() + " - correct ("+faceUpCards.getLast().getShortDrescription()+")");
         } else {
-            textWidget.addText("[" + agent.getAgentName() + "] " + action.getAction().name() + " - wrong");
+            logWidget.addText("[" + agent.getAgentName() + "] " + action.getAction().name() + " - wrong ("+faceUpCards.getLast().getShortDrescription()+")");
         }
         output.display();
         // is the episode finished?
@@ -185,18 +177,18 @@ public class HighLowCards implements Simulation {
         for (int dx = 0; dx < faceUpCards.size(); dx++) {
             Card card = faceUpCards.get(dx);
             BufferedImage cardImage = getCardImage(card.getImageName());
-            graphics2D.drawImage(cardImage, dx * CARD_SPACE + LEFT_MARGIN + BAIZE_PADDING, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + BAIZE_PADDING, null);
+            graphics2D.drawImage(cardImage, dx * CARD_SPACE + LEFT_MARGIN + BAIZE_PADDING, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + (BAIZE_HEIGHT-CARD_HEIGHT)/2, null);
         }
         for (int dx = faceDownCards.size() - 1; dx >= 0; dx--) {
-            BufferedImage cardImage = getCardImage("/images/cards/back.png");
-            graphics2D.drawImage(cardImage, LEFT_MARGIN + BAIZE_PADDING + CARD_GAP + (dx + faceUpCards.size() - 1) * CARD_SPACE + CARD_WIDTH, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + BAIZE_PADDING, null);
+            BufferedImage cardImage = getCardImage("/images/cards/1B.png");
+            graphics2D.drawImage(cardImage, LEFT_MARGIN + BAIZE_PADDING + CARD_GAP + (dx + faceUpCards.size() - 1) * CARD_SPACE + CARD_WIDTH, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + (BAIZE_HEIGHT-CARD_HEIGHT)/2, null);
         }
         // draw widgets
-        graphics2D.drawImage(scoreWidget.getImage(), LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + BAIZE_HEIGHT + WIDGET_SPACING * 2, null);
-        graphics2D.drawImage(scoreHistogramWidget.getImage(), LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + BAIZE_HEIGHT + WIDGET_SPACING * 3 + GRAPH_HEIGHT, null);
-        graphics2D.drawImage(textWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - TEXT_WIDTH, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
-        graphics2D.drawImage(statisticsWidget.getImage(), LEFT_MARGIN + GRAPH_WIDTH + WIDGET_SPACING, TOP_MARGIN + TITLE_HEIGHT + BAIZE_HEIGHT + WIDGET_SPACING * 2, null);
-        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN, HD_HEIGHT - LOGO_HEIGHT - BOTTOM_MARGIN, null);
+        graphics2D.drawImage(scoreWidget.getImage(), LEFT_MARGIN, HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
+        graphics2D.drawImage(scoreHistogramWidget.getImage(), LEFT_MARGIN + RESULTS_WIDTH + WIDGET_SPACING, HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
+        graphics2D.drawImage(logWidget.getImage(), LEFT_MARGIN + RESULTS_WIDTH * 2 + WIDGET_SPACING * 2, HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
+        graphics2D.drawImage(statisticsWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - STATISTICS_WIDTH, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
+        graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN, 36, null);
     }
 
     private BufferedImage getCardImage(String path) {
