@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.STATISTICS_FONT;
+
 /**
  * Widget that shows statistics (mean/std/var) of a moving window o values.
  */
@@ -33,11 +35,11 @@ public class RollingStatisticsWidget {
 
     private BufferedImage cachedImage = null;
 
-    public RollingStatisticsWidget(int width, int height, int fontHeight, String fontName, int windowSize, Theme theme, boolean opaque) {
+    public RollingStatisticsWidget(int width, int height, Font font, int windowSize, Theme theme, boolean opaque) {
         this.width = width;
         this.height = height;
-        this.fontHeight = fontHeight;
-        font = new Font(fontName, Font.PLAIN, fontHeight);
+        this.font = font;
+        this.fontHeight = font.getSize();
         this.windowSize = windowSize;
         this.theme = theme;
         this.opaque = opaque;
@@ -69,6 +71,7 @@ public class RollingStatisticsWidget {
         BufferedImage image = opaque ? GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground()) : GraphicsUtils.createClearImage(width, height);
         if (!values.isEmpty()) {
             Graphics2D g = image.createGraphics();
+            GraphicsUtils.setupRenderingHints(g);
             g.setFont(font);
             g.setColor(theme.getText());
             FontMetrics fm = g.getFontMetrics();
@@ -107,14 +110,13 @@ public class RollingStatisticsWidget {
     public static class RollingStatisticsWidgetBuilder {
         private int width = 200;
         private int height = 200;
-        private int fontHeight = 14;
         private int windowSize = 200;
         private boolean opaque = true;
-        private String fontName = "Ariel";
+        private Font font = STATISTICS_FONT;
         private Theme theme = Theme.LIGHT;
 
         public RollingStatisticsWidget build() {
-            return new RollingStatisticsWidget(width, height, fontHeight, fontName, windowSize, theme, opaque);
+            return new RollingStatisticsWidget(width, height, font, windowSize, theme, opaque);
         }
     }
 }
