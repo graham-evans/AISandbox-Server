@@ -24,22 +24,28 @@ public class RollingStatisticsWidget {
     private static final int MARGIN = 5;
     private final int width;
     private final int height;
+    private final int padding;
     private final int fontHeight;
+    private final int titleFontSize;
     private final int windowSize;
     private final Theme theme;
     private final boolean opaque;
     private final Font font;
+    private final Font titleFont;
     private final List<Double> values = new ArrayList<>();
     private final String STD = "\u03C3";
     private final String SQR = "\u00B2";
 
     private BufferedImage cachedImage = null;
 
-    public RollingStatisticsWidget(int width, int height, Font font, int windowSize, Theme theme, boolean opaque) {
+    public RollingStatisticsWidget(int width, int height, int padding, Font font, Font titleFont, int windowSize, Theme theme, boolean opaque) {
         this.width = width;
         this.height = height;
+        this.padding = padding;
         this.font = font;
+        this.titleFont = titleFont;
         this.fontHeight = font.getSize();
+        this.titleFontSize = titleFont.getSize();
         this.windowSize = windowSize;
         this.theme = theme;
         this.opaque = opaque;
@@ -85,7 +91,8 @@ public class RollingStatisticsWidget {
                             Statistic.STANDARD_DEVIATION),
                     values.stream().mapToDouble(d -> d).toArray());
             // draw statistics
-            int cursorY = fontHeight + (height - fontHeight * 5) / 2;
+            drawStringCentered("Statistics", g, fm, 0, font.getSize() + padding, width);
+            int cursorY = fontHeight + (height - titleFontSize - fontHeight * 5) / 2+titleFontSize;
             drawStringCentered("Minimum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MIN)), g, fm, 0, cursorY, width);
             cursorY += fontHeight;
             drawStringCentered("Maximum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MAX)), g, fm, 0, cursorY, width);
@@ -110,13 +117,15 @@ public class RollingStatisticsWidget {
     public static class RollingStatisticsWidgetBuilder {
         private int width = 200;
         private int height = 200;
+        private int padding = 40;
         private int windowSize = 200;
         private boolean opaque = true;
         private Font font = STATISTICS_FONT;
+        private Font titleFont = STATISTICS_FONT;
         private Theme theme = Theme.LIGHT;
 
         public RollingStatisticsWidget build() {
-            return new RollingStatisticsWidget(width, height, font, windowSize, theme, opaque);
+            return new RollingStatisticsWidget(width, height, padding, font, titleFont, windowSize, theme, opaque);
         }
     }
 }
