@@ -60,7 +60,9 @@ public class RollingValueHistogramWidget {
                 // draw the graph
                 BaseGraph graph = new BaseGraph(width, height, title, xAxisTitle, yAxisTitle, theme, xAxis, yAxis);
                 for (BinContents bin : bins) {
-                    graph.addBox(bin.binStart(), 0.0, bin.binEnd(), bin.quantity(), theme.getAgent1Main(), theme.getAgent1Highlight());
+                    if (bin.quantity() > 0) {
+                        graph.addBox(bin.binStart(), 0.0, bin.binEnd(), bin.quantity(), theme.getAgent1Main(), theme.getAgent1Highlight());
+                    }
                 }
                 graph.addAxisAndTitle();
                 image = graph.getImage();
@@ -68,26 +70,6 @@ public class RollingValueHistogramWidget {
         }
         return image;
     }
-
-
-
-
-
- /*   private BufferedImage renderImage() {
-        BufferedImage image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
-        if (!values.isEmpty()) {
-            Histogram histogram = new Histogram(values,binCount,minValue,maxValue);
-            CategoryChart chart = new CategoryChartBuilder().width(width).height(height).title(title).xAxisTitle(xAxisTitle).yAxisTitle(yAxisTitle).theme(theme.getChartTheme()).build();
-            chart.getStyler().setAvailableSpaceFill(.96);
-            chart.getStyler().setOverlapped(false);
-            chart.addSeries("histogram ", histogram.getxAxisData(), histogram.getyAxisData());
-            chart.getStyler().setLegendVisible(false);
-            Graphics2D g2d = image.createGraphics();
-            chart.paint(g2d,width,height);
-        }
-        return image;
-    }
-*/
 
     @Setter
     @Accessors(chain = true, fluent = true)
