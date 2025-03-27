@@ -61,7 +61,7 @@ public class RollingValueHistogramWidget {
                 BaseGraph graph = new BaseGraph(width, height, title, xAxisTitle, yAxisTitle, theme, xAxis, yAxis);
                 for (BinContents bin : bins) {
                     if (bin.quantity() > 0) {
-                        graph.addBox(bin.binStart(), 0.0, bin.binEnd(), bin.quantity(), theme.getAgent1Main(), theme.getAgent1Highlight());
+                        graph.addBox(bin.binStart(), 0.0, bin.binEnd(), bin.quantity(), theme.getGraphColor1(), theme.getGraphColor1());
                     }
                 }
                 graph.addAxisAndTitle();
