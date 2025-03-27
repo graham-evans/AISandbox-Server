@@ -17,7 +17,7 @@ public class TextWidget {
     private final int lineHeight;
     @Getter(AccessLevel.PACKAGE)
     private final Theme theme;
-    private final int PADDING = 10;
+    private final int PADDING = 20;
     // internal state
     @Getter
     private final BufferedImage image;
