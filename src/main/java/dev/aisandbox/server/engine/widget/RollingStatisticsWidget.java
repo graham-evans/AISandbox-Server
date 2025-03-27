@@ -92,7 +92,7 @@ public class RollingStatisticsWidget {
                     values.stream().mapToDouble(d -> d).toArray());
             // draw statistics
             drawStringCentered("Statistics", g, fm, 0, font.getSize() + padding, width);
-            int cursorY = fontHeight + (height - titleFontSize - fontHeight * 5) / 2+titleFontSize;
+            int cursorY = fontHeight + (height -  fontHeight * 5) / 2;
             drawStringCentered("Minimum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MIN)), g, fm, 0, cursorY, width);
             cursorY += fontHeight;
             drawStringCentered("Maximum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MAX)), g, fm, 0, cursorY, width);
