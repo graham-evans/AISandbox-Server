@@ -30,9 +30,9 @@ public class HighLowCards implements Simulation {
     // baize
     private static final int BAIZE_WIDTH = HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING - 400;
     private static final int BAIZE_HEIGHT = (HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2) * 5 / 8;
-    private static final int BAIZE_PADDING = 20;
+    private static final int BAIZE_PADDING = 30;
     // card layout
-    private static final int CARD_GAP = 50; // the horizontal gap between the left (face up) card and the right (face down) card
+    private static final int CARD_GAP = 30; // the horizontal gap between the left (face up) card and the right (face down) card
     // statistics widget
     private static final int STATISTICS_WIDTH = HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING - BAIZE_WIDTH;
     private static final int STATISTICS_HEIGHT = BAIZE_HEIGHT;
