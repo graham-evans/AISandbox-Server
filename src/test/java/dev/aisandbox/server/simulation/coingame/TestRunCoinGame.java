@@ -5,7 +5,8 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.util.Arrays;
@@ -16,8 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class TestRunCoinGame {
 
-    @Test
-    public void testRunCoinGame() {
+    @ParameterizedTest
+    @EnumSource(Theme.class)
+    public void testRunCoinGame(Theme theme) {
         assertDoesNotThrow(() -> {
             // create simulation
             CoinGameBuilder simulationBuilder = new CoinGameBuilder();
@@ -27,7 +29,7 @@ public class TestRunCoinGame {
             // create simulation
             Simulation sim = simulationBuilder.build(agents, Theme.LIGHT, new Random());
             // create output directory
-            File outputDirectory = new File("build/test/coingame");
+            File outputDirectory = new File("build/test/coingame/" + theme.name().toLowerCase());
             outputDirectory.mkdirs();
             // create output
             OutputRenderer out = new BitmapOutputRenderer();

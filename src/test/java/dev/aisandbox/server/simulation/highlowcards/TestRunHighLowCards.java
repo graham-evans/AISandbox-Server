@@ -6,10 +6,8 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.EnumSources;
 
 import java.io.File;
 import java.util.List;
@@ -30,7 +28,7 @@ public class TestRunHighLowCards {
             // create simulation
             Simulation sim = simulationBuilder.build(agents, theme, new Random());
             // create output directory
-            File outputDirectory = new File("build/test/highLowCards/"+theme.name());
+            File outputDirectory = new File("build/test/highLowCards/" + theme.name().toLowerCase());
             outputDirectory.mkdirs();
             // create output
             OutputRenderer out = new BitmapOutputRenderer();

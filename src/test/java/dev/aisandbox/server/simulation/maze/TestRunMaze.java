@@ -28,9 +28,21 @@ public class TestRunMaze {
         outputDirectory.mkdirs();
     }
 
+    static Stream<Arguments> allMazeProvider() {
+        Stream.Builder<Arguments> arguments = Stream.builder();
+        for (MazeType mazeType : MazeType.values()) {
+            for (MazeSize mazeSize : MazeSize.values()) {
+                for (Theme theme : Theme.values()) {
+                    arguments.add(Arguments.of(mazeType, mazeSize, theme));
+                }
+            }
+        }
+        return arguments.build();
+    }
+
     @ParameterizedTest
     @MethodSource("allMazeProvider")
-    public void testRunMaze(MazeType mazeType,MazeSize mazeSize) {
+    public void testRunMaze(MazeType mazeType, MazeSize mazeSize, Theme theme) {
         assertDoesNotThrow(() -> {
             // create simulation
             MazeBuilder builder = new MazeBuilder();
@@ -41,7 +53,7 @@ public class TestRunMaze {
             // create simulation
             Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
             // create output
-            File targetDir = new File(outputDirectory, mazeType.name()+"-"+mazeSize.name());
+            File targetDir = new File(outputDirectory, mazeType.name() + "-" + mazeSize.name() + "-" + theme.name().toLowerCase());
             targetDir.mkdirs();
             OutputRenderer out = new BitmapOutputRenderer();
 //        out.setSkipFrames(100);
@@ -55,15 +67,5 @@ public class TestRunMaze {
             sim.close();
             agents.forEach(Agent::close);
         });
-    }
-
-    static Stream<Arguments> allMazeProvider() {
-        Stream.Builder<Arguments> arguments = Stream.builder();
-        for (MazeType mazeType : MazeType.values()) {
-            for (MazeSize mazeSize : MazeSize.values()) {
-                arguments.add(Arguments.of(mazeType, mazeSize));
-            }
-        }
-        return arguments.build();
     }
 }

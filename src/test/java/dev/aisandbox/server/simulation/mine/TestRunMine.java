@@ -7,12 +7,14 @@ import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -25,9 +27,19 @@ public class TestRunMine {
         outputDirectory.mkdirs();
     }
 
+    static Stream<Arguments> allMineProvider() {
+        Stream.Builder<Arguments> arguments = Stream.builder();
+        for (MineSize mineSize : MineSize.values()) {
+            for (Theme theme : Theme.values()) {
+                arguments.add(Arguments.of(mineSize, theme));
+            }
+        }
+        return arguments.build();
+    }
+
     @ParameterizedTest
-    @EnumSource(MineSize.class)
-    public void testRunMineSize(MineSize mineSize) {
+    @MethodSource("allMineProvider")
+    public void testRunMineSize(MineSize mineSize, Theme theme) {
         assertDoesNotThrow(() -> {
             // create simulation
             MineHunterScenario builder = new MineHunterScenario();
@@ -37,7 +49,7 @@ public class TestRunMine {
             // create simulation
             Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
             // create output
-            File targetDir = new File(outputDirectory, mineSize.name());
+            File targetDir = new File(outputDirectory, mineSize.name() + "-" + theme.name().toLowerCase());
             targetDir.mkdirs();
             OutputRenderer out = new BitmapOutputRenderer();
             out.setSkipFrames(100);

@@ -7,12 +7,14 @@ import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -24,9 +26,19 @@ public class TestRunTwisty {
         outputDirectory.mkdirs();
     }
 
+    static Stream<Arguments> allTwistyProvider() {
+        Stream.Builder<Arguments> arguments = Stream.builder();
+        for (PuzzleType puzzle : PuzzleType.values()) {
+            for (Theme theme : Theme.values()) {
+                arguments.add(Arguments.of(puzzle, theme));
+            }
+        }
+        return arguments.build();
+    }
+
     @ParameterizedTest
-    @EnumSource(PuzzleType.class)
-    public void testRunTwisty(PuzzleType puzzleType) {
+    @MethodSource("allTwistyProvider")
+    public void testRunTwisty(PuzzleType puzzleType, Theme theme) {
         assertDoesNotThrow(() -> {
             // create simulation
             TwistyBuilder builder = new TwistyBuilder();
@@ -37,7 +49,7 @@ public class TestRunTwisty {
             // create simulation
             Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
             // create output
-            File targetDir = new File(outputDirectory, puzzleType.name());
+            File targetDir = new File(outputDirectory, puzzleType.name() + "_" + theme.name().toLowerCase());
             targetDir.mkdirs();
             OutputRenderer out = new BitmapOutputRenderer();
             out.setSkipFrames(100);

@@ -6,7 +6,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.File;
 import java.util.Arrays;
@@ -17,8 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class TestRunBandit {
 
-    @Test
-    public void testRunBanditGame() {
+    @ParameterizedTest
+    @EnumSource(Theme.class)
+    public void testRunBanditGame(Theme theme) {
         assertDoesNotThrow(() -> {
             // create simulation
             BanditScenario banditBuilder = new BanditScenario();
@@ -26,9 +28,9 @@ public class TestRunBandit {
             // create players
             List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1)).map(s -> (Agent) new MockBanditPlayer(s)).toList();
             // create simulation
-            Simulation sim = banditBuilder.build(agents, Theme.LIGHT, new Random());
+            Simulation sim = banditBuilder.build(agents, theme, new Random());
             // create output directory
-            File outputDirectory = new File("build/test/bandit");
+            File outputDirectory = new File("build/test/bandit/" + theme.name().toLowerCase());
             outputDirectory.mkdirs();
             // create output
             OutputRenderer out = new BitmapOutputRenderer();
