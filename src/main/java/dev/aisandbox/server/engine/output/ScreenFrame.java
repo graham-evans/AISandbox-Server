@@ -18,6 +18,8 @@ public class ScreenFrame extends JFrame {
   private BufferedImage image;
 
   public ScreenFrame() throws HeadlessException {
+    // set title
+    super("AISandbox-Server");
     // setup default image
     try {
       image = ImageIO.read(
@@ -30,7 +32,6 @@ public class ScreenFrame extends JFrame {
       g.setColor(Color.BLUE);
       g.fillRect(0, 0, OutputConstants.HD_WIDTH, OutputConstants.HD_HEIGHT);
     }
-    this.setTitle("AISandbox-Server");
     canvas = new ImageCanvas();
     canvas.setDoubleBuffered(true);
     this.add(canvas);
