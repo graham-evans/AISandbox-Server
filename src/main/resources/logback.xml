@@ -1,17 +1,17 @@
 <configuration>
-    <!-- console / syslog appender -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <encoder>
-            <pattern>%msg%n</pattern>
-        </encoder>
-    </appender>
+  <!-- console / syslog appender -->
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT">
+    <encoder>
+      <pattern>%msg%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+  </appender>
 
-    <logger name="dev.aisandbox" level="INFO">
-        <appender-ref ref="STDOUT"/>
-    </logger>
+  <logger level="INFO" name="dev.aisandbox">
+    <appender-ref ref="STDOUT"/>
+  </logger>
 
-    <root level="INFO"/>
+  <root level="INFO"/>
 </configuration>

@@ -1,30 +1,31 @@
 package dev.aisandbox.server.engine;
 
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import lombok.experimental.UtilityClass;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class SimulationSetup {
 
-    public static SimulationRunner setupSimulation(SimulationBuilder builder,int agentCount,int defaultPort,OutputRenderer renderer) {
-        AtomicInteger port = new AtomicInteger(defaultPort);
-        List<Agent> agents = Arrays.stream(builder.getAgentNames(agentCount))
-                .map(s -> (Agent) new NetworkAgent(s, port.getAndIncrement())).toList();
-        return setupSimulation(builder,agents,renderer);
-    }
+  public static SimulationRunner setupSimulation(SimulationBuilder builder, int agentCount,
+      int defaultPort, OutputRenderer renderer) {
+    AtomicInteger port = new AtomicInteger(defaultPort);
+    List<Agent> agents = Arrays.stream(builder.getAgentNames(agentCount))
+        .map(s -> (Agent) new NetworkAgent(s, port.getAndIncrement())).toList();
+    return setupSimulation(builder, agents, renderer);
+  }
 
-    public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents, OutputRenderer renderer) {
-        // create simulation
-        Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
-        // start output
-        renderer.setup(sim);
-        // create simulation thread
-        return new SimulationRunner(sim,renderer,agents);
-    }
+  public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents,
+      OutputRenderer renderer) {
+    // create simulation
+    Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
+    // start output
+    renderer.setup(sim);
+    // create simulation thread
+    return new SimulationRunner(sim, renderer, agents);
+  }
 
 }

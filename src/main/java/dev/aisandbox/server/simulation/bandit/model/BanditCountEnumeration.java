@@ -8,7 +8,8 @@ public enum BanditCountEnumeration {
   TWENTY(20),
   FIFTY(50);
 
-  @Getter private final int number;
+  @Getter
+  private final int number;
 
   BanditCountEnumeration(int number) {
     this.number = number;

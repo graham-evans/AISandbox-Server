@@ -14,101 +14,125 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="430.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.aisandbox.server.fx.SetupController">
-   <center>
-      <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="4.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Simulation" textAlignment="CENTER" />
-                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                     <content>
-                        <ListView fx:id="simulationList" prefHeight="200.0" prefWidth="200.0" />
-                     </content>
-                  </ScrollPane>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                     <content>
-                        <TextArea fx:id="simDescription" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
-                     </content>
-                  </ScrollPane>
-               </children>
-            </VBox>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Parameters" textAlignment="CENTER" />
-                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
-                     <content>
-                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="4.0">
-                           <children>
-                              <BorderPane>
-                                 <right>
-                                    <Spinner fx:id="agentCounter" BorderPane.alignment="CENTER" />
-                                 </right>
-                                 <center>
-                                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Agents" BorderPane.alignment="CENTER" />
-                                 </center>
-                              </BorderPane>
-                              <VBox fx:id="parameterBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="4.0" />
-                           </children>
-                           <padding>
-                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-                           </padding>
-                        </VBox>
-                     </content>
-                  </ScrollPane>
-               </children>
-            </VBox>
-            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Output Options" textAlignment="CENTER" />
-                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                     <content>
-                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="4.0">
-                           <children>
-                              <Label text="Render to ..." />
-                              <RadioButton mnemonicParsing="false" text="No Output">
-                                 <toggleGroup>
-                                    <ToggleGroup fx:id="render" />
-                                 </toggleGroup>
-                              </RadioButton>
-                              <RadioButton fx:id="outputScreenChoice" mnemonicParsing="false" selected="true" text="Screen" toggleGroup="$render" />
-                              <RadioButton fx:id="outputImageChoice" mnemonicParsing="false" text="Write PNG images" toggleGroup="$render" />
-                              <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-                                 <left>
-                                    <Label text="Directory" BorderPane.alignment="CENTER" />
-                                 </left>
-                                 <center>
-                                    <TextField BorderPane.alignment="CENTER" />
-                                 </center>
-                              </BorderPane>
-                              <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-                              <Separator prefWidth="200.0" />
-                              <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-                                 <right>
-                                    <Spinner BorderPane.alignment="CENTER" />
-                                 </right>
-                                 <center>
-                                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Skip Frames" BorderPane.alignment="CENTER" />
-                                 </center>
-                              </BorderPane>
-                           </children>
-                           <padding>
-                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-                           </padding>
-                        </VBox>
-                     </content></ScrollPane>
-                  <Button mnemonicParsing="false" onAction="#startSimulation" text="Start Simulation">
-                     <VBox.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                     </VBox.margin>
-                  </Button>
-               </children>
-            </VBox>
-         </children>
-         <padding>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-         </padding>
-      </HBox>
-   </center>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+  prefHeight="430.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/20.0.1"
+  fx:controller="dev.aisandbox.server.fx.SetupController">
+  <center>
+    <HBox BorderPane.alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+      spacing="5.0">
+      <children>
+        <VBox HBox.hgrow="ALWAYS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+          spacing="4.0">
+          <children>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
+              maxWidth="1.7976931348623157E308" text="Simulation" textAlignment="CENTER"/>
+            <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" prefHeight="200.0"
+              prefWidth="200.0">
+              <content>
+                <ListView prefHeight="200.0" prefWidth="200.0" fx:id="simulationList"/>
+              </content>
+            </ScrollPane>
+            <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" prefHeight="200.0"
+              prefWidth="200.0">
+              <content>
+                <TextArea editable="false" prefHeight="200.0" prefWidth="200.0"
+                  wrapText="true" fx:id="simDescription"/>
+              </content>
+            </ScrollPane>
+          </children>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" maxHeight="1.7976931348623157E308"
+          maxWidth="1.7976931348623157E308">
+          <children>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
+              maxWidth="1.7976931348623157E308" text="Parameters" textAlignment="CENTER"/>
+            <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true"
+              maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+              <content>
+                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                  spacing="4.0">
+                  <children>
+                    <BorderPane>
+                      <center>
+                        <Label BorderPane.alignment="CENTER" maxHeight="1.7976931348623157E308"
+                          maxWidth="1.7976931348623157E308" text="Agents"/>
+                      </center>
+                      <right>
+                        <Spinner BorderPane.alignment="CENTER" fx:id="agentCounter"/>
+                      </right>
+                    </BorderPane>
+                    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                      spacing="4.0" fx:id="parameterBox"/>
+                  </children>
+                  <padding>
+                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                  </padding>
+                </VBox>
+              </content>
+            </ScrollPane>
+          </children>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" alignment="TOP_CENTER"
+          maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+          <children>
+            <Button mnemonicParsing="false" onAction="#startSimulation" text="Start Simulation">
+              <VBox.margin>
+                <Insets bottom="10.0" top="10.0"/>
+              </VBox.margin>
+            </Button>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
+              maxWidth="1.7976931348623157E308" text="Output Options" textAlignment="CENTER"/>
+            <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" prefHeight="200.0"
+              prefWidth="200.0">
+              <content>
+                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                  spacing="4.0">
+                  <children>
+                    <BorderPane maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308">
+                      <center>
+                        <TextField BorderPane.alignment="CENTER"/>
+                      </center>
+                      <left>
+                        <Label BorderPane.alignment="CENTER" text="Directory"/>
+                      </left>
+                    </BorderPane>
+                    <BorderPane maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308"/>
+                    <BorderPane maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308">
+                      <center>
+                        <Label BorderPane.alignment="CENTER" maxHeight="1.7976931348623157E308"
+                          maxWidth="1.7976931348623157E308" text="Skip Frames"/>
+                      </center>
+                      <right>
+                        <Spinner BorderPane.alignment="CENTER"/>
+                      </right>
+                    </BorderPane>
+                    <Label text="Render to ..."/>
+                    <RadioButton mnemonicParsing="false" text="No Output">
+                      <toggleGroup>
+                        <ToggleGroup fx:id="render"/>
+                      </toggleGroup>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" selected="true" text="Screen"
+                      toggleGroup="$render" fx:id="outputScreenChoice"/>
+                    <RadioButton mnemonicParsing="false" text="Write PNG images"
+                      toggleGroup="$render" fx:id="outputImageChoice"/>
+                    <Separator prefWidth="200.0"/>
+                  </children>
+                  <padding>
+                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                  </padding>
+                </VBox>
+              </content>
+            </ScrollPane>
+          </children>
+        </VBox>
+      </children>
+      <padding>
+        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+      </padding>
+    </HBox>
+  </center>
 </BorderPane>

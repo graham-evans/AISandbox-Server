@@ -2,7 +2,9 @@ package dev.aisandbox.server.simulation.twisty.model.shapes;
 
 import java.awt.Polygon;
 
-/** A Unit square */
+/**
+ * A Unit square
+ */
 public class Square implements CellShape {
 
   @Override

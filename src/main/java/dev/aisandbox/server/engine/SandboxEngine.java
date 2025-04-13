@@ -1,13 +1,12 @@
 package dev.aisandbox.server.engine;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class SandboxEngine {
 
-    private final SimulationBuilder simulation;
-    private final List<NetworkAgent> players;
+  private final SimulationBuilder simulation;
+  private final List<NetworkAgent> players;
 
 }

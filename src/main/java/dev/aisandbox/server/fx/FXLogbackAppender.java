@@ -10,11 +10,11 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class FXLogbackAppender extends AppenderBase<ILoggingEvent> {
 
-    private final TextArea textArea;
+  private final TextArea textArea;
 
-    @Override
-    protected void append(ILoggingEvent iLoggingEvent) {
-        textArea.appendText(iLoggingEvent.getFormattedMessage());
-        textArea.appendText(System.lineSeparator());
-    }
+  @Override
+  protected void append(ILoggingEvent iLoggingEvent) {
+    textArea.appendText(iLoggingEvent.getFormattedMessage());
+    textArea.appendText(System.lineSeparator());
+  }
 }

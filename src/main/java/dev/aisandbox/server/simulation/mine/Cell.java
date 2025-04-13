@@ -5,41 +5,41 @@ import lombok.Data;
 @Data
 public class Cell {
 
-    private boolean mine;
+  private boolean mine;
 
-    // is this cell still covered
-    private boolean covered = true;
+  // is this cell still covered
+  private boolean covered = true;
 
-    // has this cell been flagged
-    private boolean flagged;
+  // has this cell been flagged
+  private boolean flagged;
 
-    // the number of neighbours that are mines
-    private int neighbours;
+  // the number of neighbours that are mines
+  private int neighbours;
 
-    /**
-     * getPlayerView.
-     *
-     * @return a char.
-     */
-    public char getPlayerView() {
-        if (covered) {
-            if (flagged) {
-                if (mine) {
-                    return 'F';
-                } else {
-                    return 'f';
-                }
-            } else {
-                return '#';
-            }
+  /**
+   * getPlayerView.
+   *
+   * @return a char.
+   */
+  public char getPlayerView() {
+    if (covered) {
+      if (flagged) {
+        if (mine) {
+          return 'F';
         } else {
-            if (mine) {
-                return 'X';
-            } else if (neighbours == 0) {
-                return '.';
-            } else {
-                return Integer.toString(neighbours).charAt(0);
-            }
+          return 'f';
         }
+      } else {
+        return '#';
+      }
+    } else {
+      if (mine) {
+        return 'X';
+      } else if (neighbours == 0) {
+        return '.';
+      } else {
+        return Integer.toString(neighbours).charAt(0);
+      }
     }
+  }
 }

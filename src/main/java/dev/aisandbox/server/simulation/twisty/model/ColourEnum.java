@@ -16,9 +16,12 @@ public enum ColourEnum {
   GREY("B8B8B8", 'E'),
   IVORY("D2D399", 'I');
 
-  @Getter private final String hex;
-  @Getter private final Color awtColour;
-  @Getter private final char character;
+  @Getter
+  private final String hex;
+  @Getter
+  private final Color awtColour;
+  @Getter
+  private final char character;
 
   ColourEnum(String hex, char character) {
     this.hex = hex;

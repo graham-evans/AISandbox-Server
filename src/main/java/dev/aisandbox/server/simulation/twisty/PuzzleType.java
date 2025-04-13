@@ -1,11 +1,10 @@
 package dev.aisandbox.server.simulation.twisty;
 
 import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;
+import java.io.IOException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.io.IOException;
 
 /**
  * PuzzleType class.
@@ -56,7 +55,6 @@ public enum PuzzleType {
 //  PYRAMID3("Pyramid 3", "Pyramid 3");
 
 
-
   private final String name;
   private final String id;
 
@@ -70,21 +68,21 @@ public enum PuzzleType {
 
   public TwistyPuzzle getTwistyPuzzle() throws IOException {
     return switch (this) {
-        case CUBE3 -> CuboidBuilder.buildCuboid(3,3,3);
-        case CUBE2 -> CuboidBuilder.buildCuboid(2,2,2);
-        case CUBE4 -> CuboidBuilder.buildCuboid(4,4,4);
-        case CUBE5 -> CuboidBuilder.buildCuboid(5,5,5);
-        case CUBE6 -> CuboidBuilder.buildCuboid(6,6,6);
-        case CUBE7 -> CuboidBuilder.buildCuboid(7,7,7);
-        case CUBE8 -> CuboidBuilder.buildCuboid(8,8,8);
-        case CUBE9 -> CuboidBuilder.buildCuboid(9,9,9);
-        case CUBE223 -> CuboidBuilder.buildCuboid(2,2,3);
-        case CUBE224 -> CuboidBuilder.buildCuboid(2,2,4);
-        case CUBE225 -> CuboidBuilder.buildCuboid(2,2,5);
-        case CUBE226 -> CuboidBuilder.buildCuboid(2,2,6);
-        case CUBE332 -> CuboidBuilder.buildCuboid(3,3,2);
-        case CUBE334 -> CuboidBuilder.buildCuboid(3,3,4);
-        case CUBE335 -> CuboidBuilder.buildCuboid(3,3,5);
+      case CUBE3 -> CuboidBuilder.buildCuboid(3, 3, 3);
+      case CUBE2 -> CuboidBuilder.buildCuboid(2, 2, 2);
+      case CUBE4 -> CuboidBuilder.buildCuboid(4, 4, 4);
+      case CUBE5 -> CuboidBuilder.buildCuboid(5, 5, 5);
+      case CUBE6 -> CuboidBuilder.buildCuboid(6, 6, 6);
+      case CUBE7 -> CuboidBuilder.buildCuboid(7, 7, 7);
+      case CUBE8 -> CuboidBuilder.buildCuboid(8, 8, 8);
+      case CUBE9 -> CuboidBuilder.buildCuboid(9, 9, 9);
+      case CUBE223 -> CuboidBuilder.buildCuboid(2, 2, 3);
+      case CUBE224 -> CuboidBuilder.buildCuboid(2, 2, 4);
+      case CUBE225 -> CuboidBuilder.buildCuboid(2, 2, 5);
+      case CUBE226 -> CuboidBuilder.buildCuboid(2, 2, 6);
+      case CUBE332 -> CuboidBuilder.buildCuboid(3, 3, 2);
+      case CUBE334 -> CuboidBuilder.buildCuboid(3, 3, 4);
+      case CUBE335 -> CuboidBuilder.buildCuboid(3, 3, 5);
     };
   }
 }

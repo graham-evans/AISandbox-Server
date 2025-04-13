@@ -4,5 +4,5 @@ import java.awt.Polygon;
 
 public interface CellShape {
 
-  public Polygon getPolygon(int locationX, int locationY, int rotation, int scale);
+  Polygon getPolygon(int locationX, int locationY, int rotation, int scale);
 }

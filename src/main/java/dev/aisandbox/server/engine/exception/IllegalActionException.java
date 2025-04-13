@@ -6,7 +6,8 @@ package dev.aisandbox.server.engine.exception;
  * Will result in the simulation being aborted.
  */
 public class IllegalActionException extends SimulationException {
-    public IllegalActionException(String message) {
-        super(message);
-    }
+
+  public IllegalActionException(String message) {
+    super(message);
+  }
 }

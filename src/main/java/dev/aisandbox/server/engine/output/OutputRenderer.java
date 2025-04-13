@@ -1,26 +1,26 @@
 package dev.aisandbox.server.engine.output;
 
 import dev.aisandbox.server.engine.Simulation;
-
 import java.io.File;
 
 public interface OutputRenderer {
-    public String getName();
 
-    public void setup(Simulation simulation);
+  String getName();
 
-    default void setSkipFrames(int framesToSkip) {
-        // do nothing
-    }
+  void setup(Simulation simulation);
 
-    default void setOutputDirectory(File outputDirectory) {
-        // do nothing
-    }
+  default void setSkipFrames(int framesToSkip) {
+    // do nothing
+  }
 
-    void display();
+  default void setOutputDirectory(File outputDirectory) {
+    // do nothing
+  }
 
-    default void close() {
-        // do nothing
-    }
+  void display();
+
+  default void close() {
+    // do nothing
+  }
 
 }
