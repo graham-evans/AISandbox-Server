@@ -3,9 +3,7 @@ package dev.aisandbox.server.simulation.maze;
 import lombok.Getter;
 
 public enum MazeSize {
-  SMALL(8, 6, 5),
-  MEDIUM(20, 15, 2),
-  LARGE(40, 30, 1);
+  SMALL(8, 6, 5), MEDIUM(20, 15, 2), LARGE(40, 30, 1);
 
   @Getter
   private final int width;

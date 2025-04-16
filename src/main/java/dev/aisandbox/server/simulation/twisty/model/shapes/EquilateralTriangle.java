@@ -10,8 +10,8 @@ public class EquilateralTriangle implements CellShape {
     // add points
     for (double ang = 90.0; ang < 360.0; ang += 120.0) {
       double a2 = Math.toRadians(ang + rotation);
-      poly.addPoint(
-          (int) (locationX + scale * Math.sin(a2)), (int) (locationY + scale * Math.cos(a2)));
+      poly.addPoint((int) (locationX + scale * Math.sin(a2)),
+          (int) (locationY + scale * Math.cos(a2)));
     }
     return poly;
   }

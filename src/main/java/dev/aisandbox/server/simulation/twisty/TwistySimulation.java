@@ -42,11 +42,11 @@ public class TwistySimulation implements Simulation {
   private final Random random;
   private final String sessionID = UUID.randomUUID().toString();
   private final int MAX_MOVES = 1000;
+  // UI elements
+  private final List<String> moveHistory = new ArrayList<>();
   String savedState;
   List<String> actions = new ArrayList<>();
   int moves;
-  // UI elements
-  private final List<String> moveHistory = new ArrayList<>();
   private String episodeID;
 
 
@@ -176,11 +176,8 @@ public class TwistySimulation implements Simulation {
     for (int i = 0; i < moveHistory.size(); i++) {
       BufferedImage moveImage = puzzle.getMoveImage(moveHistory.get(i));
       if (moveImage != null) {
-        graphics2D.drawImage(
-            moveImage,
-            (i % HISTORY_WIDTH) * Move.MOVE_ICON_WIDTH + 1350,
-            (i / HISTORY_WIDTH) * Move.MOVE_ICON_HEIGHT + 550,
-            null);
+        graphics2D.drawImage(moveImage, (i % HISTORY_WIDTH) * Move.MOVE_ICON_WIDTH + 1350,
+            (i / HISTORY_WIDTH) * Move.MOVE_ICON_HEIGHT + 550, null);
       }
     }
     //draw graphs

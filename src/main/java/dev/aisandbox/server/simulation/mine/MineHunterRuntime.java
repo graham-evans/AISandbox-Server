@@ -36,14 +36,14 @@ public class MineHunterRuntime implements Simulation {
   private final MineSize mineSize;
   private final Theme theme;
   private final String sessionID = UUID.randomUUID().toString();
-  Font myFont = new Font("Sans-Serif", Font.PLAIN, 28);
-  private Board board = null;
-  private int flagsLeft;
   private final List<BufferedImage> sprites;
   //    private SuccessRateGraph winRateGraph = new SuccessRateGraph();
 //    private BufferedImage winRateGraphImage = null;
   private final long boardsWon = 0;
   private final long boardsLost = 0;
+  Font myFont = new Font("Sans-Serif", Font.PLAIN, 28);
+  private Board board = null;
+  private int flagsLeft;
   private double scale = 1.0;
   private String episodeID;
 

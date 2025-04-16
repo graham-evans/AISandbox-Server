@@ -42,7 +42,8 @@ public class RuntimeUtils {
     options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
     // simulation options
     options.addOption("p", "parameter", true,
-        "Simulation specific parameter in the format key:value, use the list options to show all available parameters");
+        "Simulation specific parameter in the format key:value, use the list options to show all "
+            + "available parameters");
     return options;
   }
 
@@ -164,8 +165,7 @@ public class RuntimeUtils {
           .filter((m) -> m.getName().equals(methodName))
           .filter(method -> Modifier.isPublic(method.getModifiers()))
           .filter(method -> method.getParameterCount() == 1)
-          .filter(method -> method.getParameterTypes()[0] == parameter.parameterType())
-          .findFirst();
+          .filter(method -> method.getParameterTypes()[0] == parameter.parameterType()).findFirst();
       if (oMethod.isEmpty()) {
         log.error("Method {} not found", methodName);
       } else {

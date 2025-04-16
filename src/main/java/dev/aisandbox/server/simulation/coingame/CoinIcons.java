@@ -28,8 +28,8 @@ public class CoinIcons {
       images[i] = new BufferedImage(ROW_WIDTH, ROW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = images[i].createGraphics();
       g.setColor(Color.BLACK);
-      drawCenteredString(g, "Row " + i,
-          new Rectangle(0, 0, ROW_WIDTH, ROW_HEIGHT), new Font("Arial", Font.BOLD, 20));
+      drawCenteredString(g, "Row " + i, new Rectangle(0, 0, ROW_WIDTH, ROW_HEIGHT),
+          new Font("Arial", Font.BOLD, 20));
     }
     return images;
   }
@@ -68,7 +68,8 @@ public class CoinIcons {
       int textWidth = metrics.stringWidth(text);
       int x = (COINS_WIDTH - textWidth) / 2;
       int boxX = x - 10;
-      // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
+      // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top
+      // of the screen)
       int y = ((ROW_HEIGHT - metrics.getHeight()) / 2) + metrics.getAscent();
       int boxY = ((ROW_HEIGHT - metrics.getHeight()) / 2);
       int textHeight = metrics.getHeight();
@@ -96,7 +97,8 @@ public class CoinIcons {
     FontMetrics metrics = g.getFontMetrics(font);
     // Determine the X coordinate for the text
     int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
-    // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
+    // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of
+    // the screen)
     int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
     // Set the font
     g.setFont(font);

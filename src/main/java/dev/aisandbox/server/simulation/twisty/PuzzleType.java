@@ -15,43 +15,15 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PuzzleType {
-  CUBE3("Cube 3x3x3", "Cube 3x3x3 (OBTM)"),
-  CUBE2("Cube 2x2x2", "Cube 2x2x2 (OBTM)"),
-  CUBE4("Cube 4x4x4", "Cube 4x4x4 (OBTM)"),
-  CUBE5("Cube 5x5x5", "Cube 5x5x5 (OBTM)"),
-  CUBE6("Cube 6x6x6", "Cube 6x6x6 (OBTM)"),
-  CUBE7("Cube 7x7x7", "Cube 7x7x7 (OBTM)"),
-  CUBE8("Cube 8x8x8", "Cube 8x8x8 (OBTM)"),
-  CUBE9(
-      "Cube 10x10x10", "Cube 10x10x10 (OBTM)"),
-  CUBE223(
-      "Cuboid 2x2x3",
-      "Cuboid 2x2x3 (OBTM)"
-  ),
-  CUBE224(
-      "Cuboid 2x2x4",
-      "Cuboid 2x2x4 (OBTM)"
-  ),
-  CUBE225(
-      "Cuboid 2x2x5",
-      "Cuboid 2x2x5 (OBTM)"
-  ),
-  CUBE226(
-      "Cuboid 2x2x6",
-      "Cuboid 2x2x6 (OBTM)"
-  ),
-  CUBE332(
-      "Cuboid 3x3x2",
-      "Cuboid 3x3x2 (OBTM)"
-  ),
-  CUBE334(
-      "Cuboid 3x3x4",
-      "Cuboid 3x3x4 (OBTM)"
-  ),
-  CUBE335(
-      "Cuboid 3x3x5",
-      "Cuboid 3x3x5 (OBTM)"
-  );
+  CUBE3("Cube 3x3x3", "Cube 3x3x3 (OBTM)"), CUBE2("Cube 2x2x2", "Cube 2x2x2 (OBTM)"), CUBE4(
+      "Cube 4x4x4", "Cube 4x4x4 (OBTM)"), CUBE5("Cube 5x5x5", "Cube 5x5x5 (OBTM)"), CUBE6(
+      "Cube 6x6x6", "Cube 6x6x6 (OBTM)"), CUBE7("Cube 7x7x7", "Cube 7x7x7 (OBTM)"), CUBE8(
+      "Cube 8x8x8", "Cube 8x8x8 (OBTM)"), CUBE9("Cube 10x10x10", "Cube 10x10x10 (OBTM)"), CUBE223(
+      "Cuboid 2x2x3", "Cuboid 2x2x3 (OBTM)"), CUBE224("Cuboid 2x2x4",
+      "Cuboid 2x2x4 (OBTM)"), CUBE225("Cuboid 2x2x5", "Cuboid 2x2x5 (OBTM)"), CUBE226(
+      "Cuboid 2x2x6", "Cuboid 2x2x6 (OBTM)"), CUBE332("Cuboid 3x3x2",
+      "Cuboid 3x3x2 (OBTM)"), CUBE334("Cuboid 3x3x4", "Cuboid 3x3x4 (OBTM)"), CUBE335(
+      "Cuboid 3x3x5", "Cuboid 3x3x5 (OBTM)");
 //  PYRAMID3("Pyramid 3", "Pyramid 3");
 
 

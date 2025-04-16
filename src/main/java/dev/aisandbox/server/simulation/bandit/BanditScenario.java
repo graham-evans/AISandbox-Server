@@ -53,7 +53,8 @@ public final class BanditScenario implements SimulationBuilder {
 
   @Override
   public String getDescription() {
-    return "The classic 'Multi-Armed Bandit scenario where an agent needs to learn which 'bandit' returns the best results.";
+    return "The classic 'Multi-Armed Bandit scenario where an agent needs to learn which 'bandit'"
+        + " returns the best results.";
   }
 
   @Override
@@ -63,12 +64,10 @@ public final class BanditScenario implements SimulationBuilder {
         new SimulationParameter("banditUpdate", "How bandits change between pulls",
             BanditUpdateEnumeration.class),
         new SimulationParameter("banditStd", "How the standard deviation for each bandit is chosen",
-            BanditStdEnumeration.class),
-        new SimulationParameter("banditNormal",
+            BanditStdEnumeration.class), new SimulationParameter("banditNormal",
             "How the normal (average) for each bandit is chosen", BanditNormalEnumeration.class),
         new SimulationParameter("banditPulls", "The number of bandit 'pulls' in each episode",
-            BanditPullEnumeration.class)
-    );
+            BanditPullEnumeration.class));
   }
 
   @Override

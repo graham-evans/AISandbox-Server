@@ -28,15 +28,12 @@ public class Move {
 
   @Setter
   @Getter
-  private BufferedImage imageIcon =
-      new BufferedImage(MOVE_ICON_WIDTH, MOVE_ICON_HEIGHT, BufferedImage.TYPE_INT_RGB);
+  private BufferedImage imageIcon = new BufferedImage(MOVE_ICON_WIDTH, MOVE_ICON_HEIGHT,
+      BufferedImage.TYPE_INT_RGB);
 
   @Override
   public String toString() {
-    String sb = name
-        + " ("
-        + loops.size()
-        + ")";
+    String sb = name + " (" + loops.size() + ")";
     return sb;
   }
 }

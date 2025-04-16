@@ -196,8 +196,7 @@ public class MazeGenerator {
    * @param maze The maze to apply the Dijkstra algorithm to.
    */
   public static void applyDijkstra(Maze maze) {
-    log.info(
-        "Applying dijkstra - picking random start cell from maze with {} cells",
+    log.info("Applying dijkstra - picking random start cell from maze with {} cells",
         maze.getCellList().size());
     Random rand = new Random(System.currentTimeMillis());
     applyDijkstra(maze, maze.getCellList().get(rand.nextInt(maze.getCellList().size())));

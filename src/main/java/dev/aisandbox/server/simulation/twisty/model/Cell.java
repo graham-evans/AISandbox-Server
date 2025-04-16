@@ -38,12 +38,8 @@ public class Cell {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-        .append("shape", shape)
-        .append("scale", scale)
-        .append("locationX", locationX)
-        .append("locationY", locationY)
-        .append("rotation", rotation)
-        .toString();
+    return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("shape", shape)
+        .append("scale", scale).append("locationX", locationX).append("locationY", locationY)
+        .append("rotation", rotation).toString();
   }
 }

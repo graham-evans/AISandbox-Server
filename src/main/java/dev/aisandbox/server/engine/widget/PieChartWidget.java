@@ -96,10 +96,8 @@ public class PieChartWidget {
       int textY = (int) (startY + pieDiameter / 2 + Math.sin(midAngle) * pieDiameter / 3);
 
       //     g.fillOval(textX-3,textY-3,6,6);
-      GraphicsUtils.drawCenteredText(g, textX - 20, textY - 10, 40, 20,
-          slice.title,
-          new Font("Arial", Font.PLAIN, 12),
-          theme.getText());
+      GraphicsUtils.drawCenteredText(g, textX - 20, textY - 10, 40, 20, slice.title,
+          new Font("Arial", Font.PLAIN, 12), theme.getText());
       startAngle += angle;
     }
     return image;

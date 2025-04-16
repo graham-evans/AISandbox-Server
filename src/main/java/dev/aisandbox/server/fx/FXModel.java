@@ -19,7 +19,8 @@ public enum FXModel {
 
   // model vars
   @Getter
-  private final ObjectProperty<SimulationBuilder> selectedSimulationBuilder = new SimpleObjectProperty<>();
+  private final ObjectProperty<SimulationBuilder> selectedSimulationBuilder =
+      new SimpleObjectProperty<>();
   @Getter
   private final ObservableList<SimulationBuilder> simulations = FXCollections.observableArrayList();
   @Getter
@@ -31,8 +32,7 @@ public enum FXModel {
 
   FXModel() {
     // populate simulation list
-    Arrays.stream(SimulationEnumeration.values())
-        .map(SimulationEnumeration::getBuilder)
+    Arrays.stream(SimulationEnumeration.values()).map(SimulationEnumeration::getBuilder)
         .forEach(simulations::add);
     simulations.sort(new SimulationComparator());
   }

@@ -37,16 +37,16 @@ public class CuboidMoveIcon {
     this.height = height;
     this.depth = depth;
     // setup images
-    background =
-        new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT, BufferedImage.TYPE_INT_RGB);
+    background = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
+        BufferedImage.TYPE_INT_RGB);
     backgroundGraphics = background.createGraphics();
     backgroundGraphics.setColor(Color.WHITE);
     backgroundGraphics.fillRect(0, 0, Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT);
-    midground =
-        new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    midground = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
+        BufferedImage.TYPE_INT_ARGB);
     midgroundGraphics = midground.createGraphics();
-    foreground =
-        new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    foreground = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
+        BufferedImage.TYPE_INT_ARGB);
     foregroundGraphics = foreground.createGraphics();
     // work out scale
     double hscale = (Move.MOVE_ICON_WIDTH - marginLeft - marginRight) / (1.0 * width);
@@ -64,7 +64,8 @@ public class CuboidMoveIcon {
         (int) (height * scale));
 
     //   midgroundGraphics.setColor(Color.cyan);
-    //   midgroundGraphics.fillRect(marginLeft,marginTop,Move.MOVE_ICON_WIDTH-marginLeft-marginRight,Move.MOVE_ICON_HEIGHT-marginTop-marginBottom);
+    //   midgroundGraphics.fillRect(marginLeft,marginTop,Move
+    //   .MOVE_ICON_WIDTH-marginLeft-marginRight,Move.MOVE_ICON_HEIGHT-marginTop-marginBottom);
     // load arrows
     arrows = ImageIO.read(
         CuboidMoveIcon.class.getResourceAsStream("/images/twisty/CuboidArrows.png"));
@@ -125,8 +126,7 @@ public class CuboidMoveIcon {
         break;
       case 'U':
         backgroundGraphics.drawImage(arrows.getSubimage(4 * 60, 0, 60, 30), 0, 0, null);
-        foregroundGraphics.drawImage(arrows.getSubimage((inverse ? 60 : 0), 0, 60, 15), 0, 0,
-            null);
+        foregroundGraphics.drawImage(arrows.getSubimage((inverse ? 60 : 0), 0, 60, 15), 0, 0, null);
         break;
       case 'D':
         backgroundGraphics.drawImage(arrows.getSubimage(4 * 60, 40, 60, 35), 0, 40, null);
@@ -148,8 +148,8 @@ public class CuboidMoveIcon {
     // draw cube overlay
     drawCuboid();
     // merge the layers
-    BufferedImage image =
-        new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT, BufferedImage.TYPE_INT_RGB);
+    BufferedImage image = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
+        BufferedImage.TYPE_INT_RGB);
     Graphics2D g = image.createGraphics();
     g.drawImage(background, 0, 0, null);
     g.drawImage(midground, 0, 0, null);

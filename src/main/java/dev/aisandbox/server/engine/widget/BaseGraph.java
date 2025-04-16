@@ -24,11 +24,8 @@ public class BaseGraph {
   private final static int TICK_FONT_SIZE = 10;
   private final static Font TICK_FONT = new Font("Arial", Font.PLAIN, TICK_FONT_SIZE);
   private final static float[] dash1 = {10.0f};
-  private final static BasicStroke dashed =
-      new BasicStroke(1.0f,
-          BasicStroke.CAP_BUTT,
-          BasicStroke.JOIN_MITER,
-          10.0f, dash1, 0.0f);
+  private final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
+      BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
   // graph inputs
   private final int width;
   private final int height;
@@ -128,15 +125,15 @@ public class BaseGraph {
     GraphicsUtils.drawCenteredText(graphics, PADDING, PADDING, width - PADDING * 2, TITLE_FONT_SIZE,
         title, TITLE_FONT, theme.getText());
     // draw X axis title
-    GraphicsUtils.drawCenteredText(graphics, xBoxStart, height - PADDING - AXIS_FONT_SIZE,
-        boxWidth, AXIS_FONT_SIZE, xAxisTitle, AXIS_FONT, theme.getText());
+    GraphicsUtils.drawCenteredText(graphics, xBoxStart, height - PADDING - AXIS_FONT_SIZE, boxWidth,
+        AXIS_FONT_SIZE, xAxisTitle, AXIS_FONT, theme.getText());
     // draw Y axis title
     GraphicsUtils.drawVerticalCenteredText(graphics, PADDING, PADDING + TITLE_FONT_SIZE + MARGIN,
         AXIS_FONT_SIZE,
         height - PADDING * 2 - TITLE_FONT_SIZE - AXIS_FONT_SIZE - MARGIN - TITLE_FONT_SIZE,
-        yAxisTitle, AXIS_FONT,
-        theme.getText());
-//    GraphicsUtils.drawVerticalCenteredText(graphics, PADDING, height - PADDING, height - PADDING * 2,
+        yAxisTitle, AXIS_FONT, theme.getText());
+//    GraphicsUtils.drawVerticalCenteredText(graphics, PADDING, height - PADDING, height -
+//    PADDING * 2,
 //        AXIS_FONT_SIZE, yAxisTitle, AXIS_FONT, theme.getText());
     // draw graph border
     graphics.setColor(theme.getGraphOutlineColor());
@@ -161,8 +158,8 @@ public class BaseGraph {
       graphics.setColor(theme.getGraphOutlineColor());
       graphics.drawLine(xBoxStart - MARGIN * 2, yBoxStart + dy, xBoxStart - MARGIN, yBoxStart + dy);
       GraphicsUtils.drawVerticalCenteredText(graphics, xBoxStart - MARGIN * 3 - TICK_FONT_SIZE,
-          yBoxStart + dy - 20,
-          TICK_FONT_SIZE, 40, yAxisScale.getValueString(y), TICK_FONT,theme.getText());
+          yBoxStart + dy - 20, TICK_FONT_SIZE, 40, yAxisScale.getValueString(y), TICK_FONT,
+          theme.getText());
     }
   }
 

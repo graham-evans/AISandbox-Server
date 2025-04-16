@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum BanditNormalEnumeration {
-  NORMAL_0_1("Normal(0,1)"),
-  NORMAL_0_5("Normal(0,5)"),
-  UNIFORM_1_1("Uniform -1:1"),
-  UNIFORM_0_5("Uniform 0:5");
+  NORMAL_0_1("Normal(0,1)"), NORMAL_0_5("Normal(0,5)"), UNIFORM_1_1("Uniform -1:1"), UNIFORM_0_5(
+      "Uniform 0:5");
 
   private final String name;
 

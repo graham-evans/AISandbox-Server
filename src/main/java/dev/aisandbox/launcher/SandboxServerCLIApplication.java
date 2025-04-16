@@ -84,8 +84,8 @@ public class SandboxServerCLIApplication {
 
   private void runSimulation(RuntimeOptions options) {
     if (options.simulation() == null) {
-      log.info(
-          "Simulation name has not been set, use the '-s name' to choose the simulation or '--help' for more information.");
+      log.info("Simulation name has not been set, use the '-s name' to choose the simulation or "
+          + "'--help' for more information.");
     } else {
       // create simulation
       Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(

@@ -42,22 +42,20 @@ public class CuboidBuilder {
     // create white (top) grid
     final List<Cell> top = new ArrayList<>(createGrid(0, 0, width, depth, ColourEnum.WHITE, scale));
     // create orange (left) grid
-    final List<Cell> left = new ArrayList<>(createGrid(
-        -depth * scale * 2 - gap, depth * scale * 2 + gap, depth, height, ColourEnum.ORANGE,
-        scale));
+    final List<Cell> left = new ArrayList<>(
+        createGrid(-depth * scale * 2 - gap, depth * scale * 2 + gap, depth, height,
+            ColourEnum.ORANGE, scale));
     // create green (front) grid
     final List<Cell> front = new ArrayList<>(
         createGrid(0, depth * scale * 2 + gap, width, height, ColourEnum.GREEN, scale));
     // create red (right) grid
-    final List<Cell> right = new ArrayList<>(createGrid(
-        width * scale * 2 + gap, depth * scale * 2 + gap, depth, height, ColourEnum.RED, scale));
+    final List<Cell> right = new ArrayList<>(
+        createGrid(width * scale * 2 + gap, depth * scale * 2 + gap, depth, height, ColourEnum.RED,
+            scale));
     // create blue (back) grid
-    final List<Cell> back = new ArrayList<>(createGrid(
-        (width + depth) * scale * 2 + gap * 2,
-        depth * scale * 2 + gap,
-        width,
-        height,
-        ColourEnum.BLUE, scale));
+    final List<Cell> back = new ArrayList<>(
+        createGrid((width + depth) * scale * 2 + gap * 2, depth * scale * 2 + gap, width, height,
+            ColourEnum.BLUE, scale));
     // create yellow (bottom) grid
     final List<Cell> bottom = new ArrayList<>(
         createGrid(0, (depth + height) * scale * 2 + gap * 2, width, depth, ColourEnum.YELLOW,
@@ -762,9 +760,8 @@ public class CuboidBuilder {
 
   public static BufferedImage getMoveIcon(String name) {
     // create a new icon
-    BufferedImage image =
-        new BufferedImage(
-            Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT, BufferedImage.TYPE_INT_RGB);
+    BufferedImage image = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
+        BufferedImage.TYPE_INT_RGB);
     Graphics2D graphics2D = image.createGraphics();
     graphics2D.setColor(Color.WHITE);
     graphics2D.fillRect(0, 0, Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT);
@@ -775,8 +772,8 @@ public class CuboidBuilder {
     Graphics2D graphics2D = image.createGraphics();
     Font font = new Font("Hack", Font.PLAIN, 22);
     graphics2D.setFont(font);
-    graphics2D.setRenderingHint(
-        RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+    graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+        RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     // Get the FontMetrics
     FontMetrics metrics = graphics2D.getFontMetrics(font);
     // Determine the X coordinate for the text

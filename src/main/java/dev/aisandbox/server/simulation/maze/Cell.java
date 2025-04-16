@@ -148,15 +148,7 @@ public class Cell {
    */
   @Override
   public String toString() {
-    return "Cell{"
-        + "positionX="
-        + positionX
-        + ", positionY="
-        + positionY
-        + ", paths="
-        + paths
-        + ", value="
-        + value
-        + '}';
+    return "Cell{" + "positionX=" + positionX + ", positionY=" + positionY + ", paths=" + paths
+        + ", value=" + value + '}';
   }
 }

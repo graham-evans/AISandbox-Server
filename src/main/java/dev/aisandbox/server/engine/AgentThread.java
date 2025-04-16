@@ -72,9 +72,7 @@ public class AgentThread extends Thread {
           } else {
             log.error("Agent response error, sent {} object, looking for {} received {}",
                 outgoingMessage.message().getClass().getName(),
-                outgoingMessage.expectedResponse().get().getName(),
-                response.getClass().getName()
-            );
+                outgoingMessage.expectedResponse().get().getName(), response.getClass().getName());
             // TODO - respond to receiving the wrong response.
             System.exit(-1);
           }

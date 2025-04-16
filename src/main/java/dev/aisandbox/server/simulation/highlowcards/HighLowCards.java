@@ -56,7 +56,8 @@ public class HighLowCards implements Simulation {
       (HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2) * 5 / 8;
   private static final int BAIZE_PADDING = 30;
   // card layout
-  private static final int CARD_GAP = 30; // the horizontal gap between the left (face up) card and the right (face down) card
+  private static final int CARD_GAP = 30; // the horizontal gap between the left (face up) card
+  // and the right (face down) card
   // statistics widget
   private static final int STATISTICS_WIDTH =
       HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING - BAIZE_WIDTH;
@@ -93,31 +94,15 @@ public class HighLowCards implements Simulation {
     this.random = random;
     // setup widgets
     titleWidget = TitleWidget.builder().title("High / Low Cards").theme(theme).build();
-    scoreWidget = RollingValueChartWidget.builder()
-        .width(RESULTS_WIDTH)
-        .height(RESULTS_HEIGHT)
-        .window(200)
-        .theme(theme)
-        .title("Final Score")
-        .build();
-    scoreHistogramWidget = RollingValueHistogramWidget.builder()
-        .width(RESULTS_WIDTH)
-        .height(RESULTS_HEIGHT)
-        .window(200)
-        .binEngine(new IntegerBinner(0, cardCount))
-        .theme(theme)
-        .title("Score Distribution")
-        .build();
-    logWidget = TextWidget.builder()
-        .width(RESULTS_WIDTH)
-        .height(RESULTS_HEIGHT)
-        .font(LOG_FONT)
-        .theme(theme)
-        .build();
-    statisticsWidget = RollingStatisticsWidget.builder()
-        .width(STATISTICS_WIDTH)
-        .height(STATISTICS_HEIGHT)
-        .theme(theme)
+    scoreWidget = RollingValueChartWidget.builder().width(RESULTS_WIDTH).height(RESULTS_HEIGHT)
+        .window(200).theme(theme).title("Final Score").build();
+    scoreHistogramWidget = RollingValueHistogramWidget.builder().width(RESULTS_WIDTH)
+        .height(RESULTS_HEIGHT).window(200).binEngine(new IntegerBinner(0, cardCount)).theme(theme)
+        .title("Score Distribution").build();
+    logWidget = TextWidget.builder().width(RESULTS_WIDTH).height(RESULTS_HEIGHT).font(LOG_FONT)
+        .theme(theme).build();
+    statisticsWidget = RollingStatisticsWidget.builder().width(STATISTICS_WIDTH)
+        .height(STATISTICS_HEIGHT).theme(theme)
         //  .opaque(false)
         .build();
     CARD_SPACE = (BAIZE_WIDTH - BAIZE_PADDING * 2 - CARD_WIDTH * 2 - CARD_GAP) / (cardCount - 2);
@@ -154,26 +139,18 @@ public class HighLowCards implements Simulation {
         .collect(Collectors.joining(",")));
     output.display();
     // send the current state and request an action
-    HighLowCardsAction action = agent.receive(
-        HighLowCardsState.newBuilder()
-            .setCardCount(cardCount)
+    HighLowCardsAction action = agent.receive(HighLowCardsState.newBuilder().setCardCount(cardCount)
             .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
-            .setScore(score)
-            .setSessionID(sessionID)
-            .setEpisodeID(episodeID)
-            .build(),
+            .setScore(score).setSessionID(sessionID).setEpisodeID(episodeID).build(),
         HighLowCardsAction.class);
     log.debug("Client action: {}", action.getAction().name());
     // turn over the next card
     faceUpCards.add(faceDownCards.removeFirst());
     // did the player guess correctly
-    boolean correctGuess =
-        (action.getAction() == HighLowChoice.LOW
-            && nextCard.cardValue().getValueAceHigh() < previousCard.cardValue().getValueAceHigh())
-            ||
-            (action.getAction() == HighLowChoice.HIGH
-                && nextCard.cardValue().getValueAceHigh() > previousCard.cardValue()
-                .getValueAceHigh());
+    boolean correctGuess = (action.getAction() == HighLowChoice.LOW
+        && nextCard.cardValue().getValueAceHigh() < previousCard.cardValue().getValueAceHigh()) || (
+        action.getAction() == HighLowChoice.HIGH
+            && nextCard.cardValue().getValueAceHigh() > previousCard.cardValue().getValueAceHigh());
     // adjust score and show result
     if (correctGuess) {
       score++;

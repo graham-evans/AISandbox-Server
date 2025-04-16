@@ -51,13 +51,13 @@ public class CoinGame implements Simulation {
   private final TextWidget logWidget;
   private final PieChartWidget pieChartWidget;
   private final String sessionID = UUID.randomUUID().toString();
-  private int[] coins;
   private final int maxPic = 2;
+  private final List<Double> agentScores = new ArrayList<>();
+  private int[] coins;
   private int currentPlayer = 0;
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;
   private String episodeID;
-  private final List<Double> agentScores = new ArrayList<>();
 
   public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
     this.agents = agents;
@@ -67,11 +67,7 @@ public class CoinGame implements Simulation {
     coins = new int[scenario.getRows().length];
     // set up the widgets
     titleWidget = TitleWidget.builder().title("The Coin Game").theme(theme).build();
-    logWidget = TextWidget.builder()
-        .width(LOG_WIDTH)
-        .height(LOG_HEIGHT)
-        .font(LOG_FONT)
-        .theme(theme)
+    logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).font(LOG_FONT).theme(theme)
         .build();
     pieChartWidget = PieChartWidget.builder().width(LOG_WIDTH).height(
             HD_HEIGHT - LOG_HEIGHT - TITLE_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - WIDGET_SPACING * 2)
@@ -180,14 +176,9 @@ public class CoinGame implements Simulation {
   }
 
   private CoinGameState generateCurrentState(Signal signal) {
-    return CoinGameState.newBuilder()
-        .addAllCoinCount(Arrays.stream(coins).boxed().toList())
-        .setRowCount(coins.length)
-        .setMaxPick(maxPic)
-        .setSignal(signal)
-        .setSessionID(sessionID)
-        .setEpisodeID(episodeID)
-        .build();
+    return CoinGameState.newBuilder().addAllCoinCount(Arrays.stream(coins).boxed().toList())
+        .setRowCount(coins.length).setMaxPick(maxPic).setSignal(signal).setSessionID(sessionID)
+        .setEpisodeID(episodeID).build();
   }
 
   @Override

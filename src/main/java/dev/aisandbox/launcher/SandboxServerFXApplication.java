@@ -17,7 +17,8 @@ public class SandboxServerFXApplication extends Application {
   @Override
   public void init() throws Exception {
     log.info("Initialising application - FX");
- /*       SpringApplicationBuilder builder = new SpringApplicationBuilder(SandboxServerFXApplication.class);
+ /*       SpringApplicationBuilder builder = new SpringApplicationBuilder
+ (SandboxServerFXApplication.class);
         builder.headless(false);
         context = builder.run(getParameters().getRaw().toArray(new String[0]));
         // load the root FXML screen, using spring to create the controller
@@ -37,11 +38,8 @@ public class SandboxServerFXApplication extends Application {
     stage.setScene(scene);
     stage.centerOnScreen();
     stage.setTitle("AI Sandbox");
-    stage
-        .getIcons()
-        .add(
-            new Image(
-                SandboxServerFXApplication.class.getResourceAsStream("/images/AILogo.png")));
+    stage.getIcons()
+        .add(new Image(SandboxServerFXApplication.class.getResourceAsStream("/images/AILogo.png")));
     stage.show();
   }
 

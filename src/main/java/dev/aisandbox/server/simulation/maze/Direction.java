@@ -4,10 +4,7 @@ package dev.aisandbox.server.simulation.maze;
  * Enum class representing the directions in a 2D space.
  */
 public enum Direction {
-  NORTH,
-  SOUTH,
-  EAST,
-  WEST;
+  NORTH, SOUTH, EAST, WEST;
 
   /**
    * Converts a {@link dev.aisandbox.server.simulation.maze.proto.Direction} enum from the proto

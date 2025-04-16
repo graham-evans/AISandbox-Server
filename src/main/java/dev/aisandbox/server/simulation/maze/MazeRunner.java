@@ -65,12 +65,8 @@ public class MazeRunner implements Simulation {
     int startX = currentCell.getPositionX();
     int startY = currentCell.getPositionY();
     // ask for a direction to move in
-    MazeState state = MazeState.newBuilder()
-        .setSessionID(sessionID)
-        .setEpisodeID(episodeID)
-        .setMovesLeft(stepsLeft)
-        .setStartX(startX)
-        .setStartY(startY).build();
+    MazeState state = MazeState.newBuilder().setSessionID(sessionID).setEpisodeID(episodeID)
+        .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).build();
     MazeAction action = agent.receive(state, MazeAction.class);
     Direction direction = Direction.fromProto(action.getDirection());
     log.info("{} moves {}", agent.getAgentName(), direction);
@@ -92,16 +88,10 @@ public class MazeRunner implements Simulation {
     }
     // report result
     episodeScore += score;
-    agent.send(
-        MazeResult.newBuilder()
-            .setStartX(startX)
-            .setStartY(startY)
-            .setEndX(currentCell.getPositionX())
-            .setEndY(currentCell.getPositionY())
-            .setDirection(action.getDirection())
-            .setStepScore(score)
-            .setAccumulatedScore(episodeScore)
-            .build());
+    agent.send(MazeResult.newBuilder().setStartX(startX).setStartY(startY)
+        .setEndX(currentCell.getPositionX()).setEndY(currentCell.getPositionY())
+        .setDirection(action.getDirection()).setStepScore(score).setAccumulatedScore(episodeScore)
+        .build());
     // SPECIAL CASE 1 - found end point of maze
     if (currentCell.equals(maze.getEndCell())) {
       // draw the screen an extra time
@@ -126,11 +116,9 @@ public class MazeRunner implements Simulation {
         maze.getHeight() * SPRITE_SIZE * maze.getZoomLevel(), null);
     // draw the player
     graphics2D.setColor(theme.getAgent1Main());
-    graphics2D.fillOval(
-        currentCell.getPositionX() * mazeSize.getZoomLevel() * SPRITE_SIZE + MARGIN,
+    graphics2D.fillOval(currentCell.getPositionX() * mazeSize.getZoomLevel() * SPRITE_SIZE + MARGIN,
         MARGIN + currentCell.getPositionY() * mazeSize.getZoomLevel() * SPRITE_SIZE,
-        mazeSize.getZoomLevel() * SPRITE_SIZE,
-        mazeSize.getZoomLevel() * SPRITE_SIZE);
+        mazeSize.getZoomLevel() * SPRITE_SIZE, mazeSize.getZoomLevel() * SPRITE_SIZE);
     // draw logo
     graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN,
         null);
@@ -152,10 +140,8 @@ public class MazeRunner implements Simulation {
    * @return a {@link java.awt.image.BufferedImage} object.
    */
   public BufferedImage renderMaze(Maze maze) {
-    BufferedImage image =
-        new BufferedImage(
-            maze.getWidth() * SPRITE_SIZE, maze.getHeight() * SPRITE_SIZE,
-            BufferedImage.TYPE_INT_RGB);
+    BufferedImage image = new BufferedImage(maze.getWidth() * SPRITE_SIZE,
+        maze.getHeight() * SPRITE_SIZE, BufferedImage.TYPE_INT_RGB);
     Graphics2D g = image.createGraphics();
     for (Cell c : maze.getCellList()) {
       // work out which sprite to load
@@ -177,15 +163,13 @@ public class MazeRunner implements Simulation {
     }
     Cell start = maze.getStartCell();
     if (start != null) {
-      g.drawImage(
-          sprites.get(17), start.getPositionX() * SPRITE_SIZE, start.getPositionY() * SPRITE_SIZE,
-          null);
+      g.drawImage(sprites.get(17), start.getPositionX() * SPRITE_SIZE,
+          start.getPositionY() * SPRITE_SIZE, null);
     }
     Cell finish = maze.getEndCell();
     if (finish != null) {
-      g.drawImage(
-          sprites.get(18), finish.getPositionX() * SPRITE_SIZE, finish.getPositionY() * SPRITE_SIZE,
-          null);
+      g.drawImage(sprites.get(18), finish.getPositionX() * SPRITE_SIZE,
+          finish.getPositionY() * SPRITE_SIZE, null);
     }
     return image;
   }

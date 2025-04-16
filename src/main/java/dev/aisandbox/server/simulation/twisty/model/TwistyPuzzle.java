@@ -31,16 +31,15 @@ public class TwistyPuzzle {
           colourEnum -> colourEnum.getAwtColour()));
   private final Map<Character, Set<Integer>> faces = new HashMap<>();
   @Getter
+  private final List<Cell> cells = new ArrayList<>();
+  @Getter
+  private final List<Move> moves = new ArrayList<>();
+  @Getter
   @Setter
   private String baseState;
   private String name;
   @Getter
   private String currentState;
-  @Getter
-  private final List<Cell> cells = new ArrayList<>();
-  @Getter
-  private final List<Move> moves = new ArrayList<>();
-
   @Getter
   private Map<String, CompiledMove> compiledMoves = new HashMap<>();
 
@@ -83,10 +82,10 @@ public class TwistyPuzzle {
     //    end.getLocationY());
     graphics2D.drawLine(start.getLocationX(), start.getLocationY(), (int) midx, (int) midy);
     graphics2D.drawLine((int) midx, (int) midy, end.getLocationX(), end.getLocationY());
-    graphics2D.drawLine(
-        (int) midx, (int) midy, (int) (midx - 8 * ux + 3 * tx), (int) (midy - 8 * uy + 3 * ty));
-    graphics2D.drawLine(
-        (int) midx, (int) midy, (int) (midx - 8 * ux - 3 * tx), (int) (midy - 8 * uy - 3 * ty));
+    graphics2D.drawLine((int) midx, (int) midy, (int) (midx - 8 * ux + 3 * tx),
+        (int) (midy - 8 * uy + 3 * ty));
+    graphics2D.drawLine((int) midx, (int) midy, (int) (midx - 8 * ux - 3 * tx),
+        (int) (midy - 8 * uy - 3 * ty));
   }
 
   /**
@@ -119,15 +118,11 @@ public class TwistyPuzzle {
               + " has less than two cells - can't compile");
         } else {
           for (int j = 0; j < loop.getCells().size() - 1; j++) {
-            cmove.setMatrixElement(
-                cells.indexOf(loop.getCells().get(j + 1)),
-                cells.indexOf(loop.getCells().get(j))
-            );
+            cmove.setMatrixElement(cells.indexOf(loop.getCells().get(j + 1)),
+                cells.indexOf(loop.getCells().get(j)));
           }
-          cmove.setMatrixElement(
-              cells.indexOf(loop.getCells().get(0)),
-              cells.indexOf(loop.getCells().get(loop.getCells().size() - 1))
-          );
+          cmove.setMatrixElement(cells.indexOf(loop.getCells().get(0)),
+              cells.indexOf(loop.getCells().get(loop.getCells().size() - 1)));
         }
       }
       // check for duplicate name
@@ -276,18 +271,14 @@ public class TwistyPuzzle {
     if (getMoves().size() % 6 > 0) {
       rows++;
     }
-    BufferedImage image =
-        new BufferedImage(
-            Move.MOVE_ICON_WIDTH * 6, Move.MOVE_ICON_HEIGHT * rows, BufferedImage.TYPE_INT_RGB);
+    BufferedImage image = new BufferedImage(Move.MOVE_ICON_WIDTH * 6, Move.MOVE_ICON_HEIGHT * rows,
+        BufferedImage.TYPE_INT_RGB);
     Graphics2D g = image.createGraphics();
     for (int i = 0; i < getMoves().size(); i++) {
       int x = i % 6;
       int y = i / 6;
-      g.drawImage(
-          getMoves().get(i).getImageIcon(),
-          x * Move.MOVE_ICON_WIDTH,
-          y * Move.MOVE_ICON_HEIGHT,
-          null);
+      g.drawImage(getMoves().get(i).getImageIcon(), x * Move.MOVE_ICON_WIDTH,
+          y * Move.MOVE_ICON_HEIGHT, null);
     }
     return image;
   }

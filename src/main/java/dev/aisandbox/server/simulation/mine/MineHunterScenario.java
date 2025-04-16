@@ -23,7 +23,10 @@ public class MineHunterScenario implements SimulationBuilder {
 
   @Override
   public String getDescription() {
-    return "Find the mines in a grid using deduction. Mine Hunter pits the AI against a minefield! A known quantity of mines have been distributed across a grid of squares and the AI agent must work out where they are. To help, each uncovered square will show how many mines are in the surrounding squares.";
+    return "Find the mines in a grid using deduction. Mine Hunter pits the AI against a "
+        + "minefield! A known quantity of mines have been distributed across a grid of squares "
+        + "and the AI agent must work out where they are. To help, each uncovered square will "
+        + "show how many mines are in the surrounding squares.";
   }
 
   @Override

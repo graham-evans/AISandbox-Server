@@ -24,7 +24,8 @@ public class CoinGameBuilder implements SimulationBuilder {
 
   @Override
   public String getDescription() {
-    return "Various versions of the 'Coin Game' where agents take turns to remove coins from one or more piles. The loser is the one who it forced to take the last coin.";
+    return "Various versions of the 'Coin Game' where agents take turns to remove coins from one "
+        + "or more piles. The loser is the one who it forced to take the last coin.";
   }
 
   @Override

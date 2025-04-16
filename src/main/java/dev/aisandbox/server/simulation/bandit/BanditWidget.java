@@ -47,21 +47,11 @@ public class BanditWidget {
         image = GraphicsUtils.createBlankImage(width, height, theme.getBackground());
       } else {
         // work out min and max bandit bounds
-        Pair<Double, Double> minMax = StatisticsUtils.getMinMax(
-            Stream.concat(
-                bandits.stream().flatMap(bandit -> Stream.of(bandit.getMean() - bandit.getStd(),
-                    bandit.getMean() + bandit.getStd())),
-                Stream.of(0.0)).toList()
-        );
-        AxisScale yAxis = new NiceAxisScale(
-            minMax.getLeft(),
-            minMax.getRight(),
-            height / 40);
-        AxisScale xAxis = new TightAxisScale(
-            -0.4,
-            bandits.size() - 0.4,
-            bandits.size()
-        );
+        Pair<Double, Double> minMax = StatisticsUtils.getMinMax(Stream.concat(bandits.stream()
+            .flatMap(bandit -> Stream.of(bandit.getMean() - bandit.getStd(),
+                bandit.getMean() + bandit.getStd())), Stream.of(0.0)).toList());
+        AxisScale yAxis = new NiceAxisScale(minMax.getLeft(), minMax.getRight(), height / 40);
+        AxisScale xAxis = new TightAxisScale(-0.4, bandits.size() - 0.4, bandits.size());
         BaseGraph graph = new BaseGraph(width, height, "Multi-Arm Bandits", "Bandits", "Output",
             theme, xAxis, yAxis);
         for (int i = 0; i < bandits.size(); i++) {

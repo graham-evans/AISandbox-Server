@@ -88,13 +88,8 @@ public class RollingStatisticsWidget {
       FontMetrics fm = g.getFontMetrics();
       // generate statistics
       DoubleStatistics stats = DoubleStatistics.of(
-          EnumSet.of(
-              Statistic.MIN,
-              Statistic.MAX,
-              Statistic.MEAN,
-              Statistic.VARIANCE,
-              Statistic.STANDARD_DEVIATION),
-          values.stream().mapToDouble(d -> d).toArray());
+          EnumSet.of(Statistic.MIN, Statistic.MAX, Statistic.MEAN, Statistic.VARIANCE,
+              Statistic.STANDARD_DEVIATION), values.stream().mapToDouble(d -> d).toArray());
       // draw statistics
       drawStringCentered("Statistics", g, fm, 0, font.getSize() + padding, width);
       int cursorY = fontHeight + (height - fontHeight * 5) / 2;

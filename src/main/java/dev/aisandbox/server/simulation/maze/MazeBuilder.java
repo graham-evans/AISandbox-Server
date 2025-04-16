@@ -42,8 +42,8 @@ public class MazeBuilder implements SimulationBuilder {
   @Override
   public String getDescription() {
     return
-        "Navigate the maze and find the exit, then optimise the path to find the shortest route. " +
-            "The AI agent will be placed in a Maze and tasked with finding its way to the exit."
+        "Navigate the maze and find the exit, then optimise the path to find the shortest route. "
+            + "The AI agent will be placed in a Maze and tasked with finding its way to the exit."
             + " Once there it will be rewarded and sent to a random position. "
             + "At each turn the AI agent is given information about the maze (dimensions,"
             + " directions etc),"
@@ -58,8 +58,7 @@ public class MazeBuilder implements SimulationBuilder {
    */
   @Override
   public List<SimulationParameter> getParameters() {
-    return List.of(
-        new SimulationParameter("mazeSize", "The size of the maze", MazeSize.class),
+    return List.of(new SimulationParameter("mazeSize", "The size of the maze", MazeSize.class),
         new SimulationParameter("mazeType", "The style of the maze", MazeType.class));
   }
 

@@ -105,17 +105,23 @@ public class SetupController {
   void initialize() {
     // FX assertions
     assert agentCounter
-        != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation.fxml'.";
+        != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
     assert outputImageChoice
-        != null : "fx:id=\"outputImageChoice\" was not injected: check your FXML file 'simulation.fxml'.";
+        != null : "fx:id=\"outputImageChoice\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
     assert outputScreenChoice
-        != null : "fx:id=\"outputScreenChoice\" was not injected: check your FXML file 'simulation.fxml'.";
+        != null : "fx:id=\"outputScreenChoice\" was not injected: check your FXML file "
+        + "'simulation.fxml'.";
     assert parameterBox
-        != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation.fxml'.";
+        != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
     assert simDescription
-        != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation.fxml'.";
+        != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
     assert simulationList
-        != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation.fxml'.";
+        != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
     // bind simulation list to model
     simulationList.setItems(model.getSimulations());
     simulationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -124,11 +130,7 @@ public class SetupController {
     // disable agent counter until builder is selected
 //        model.getAgentCount().bind(agentCounter.valueProperty());
     agentCounter.setDisable(true);
-    agentCounter.setValueFactory(
-        new SpinnerValueFactory.IntegerSpinnerValueFactory(
-            1,
-            1,
-            1));
+    agentCounter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
 
     // initialise the agent counter
     /*   */
@@ -136,34 +138,31 @@ public class SetupController {
     simulationList.setCellFactory(new SimulationBuilderRenderer());
     // update when selecting a new builder
     simulationList.getSelectionModel().selectedItemProperty()
-        .addListener((observableValue, oldValue, newValue) ->
-            {
-              if (newValue != null) {
-                // update description
-                simDescription.setText(newValue.getDescription());
-                // update agent count options
-                model.getAgentCount().unbind();
-                agentCounter.setValueFactory(
-                    new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                        newValue.getMinAgentCount(),
-                        newValue.getMaxAgentCount(),
-                        getValueInRange(agentCounter.getValue(), newValue.getMinAgentCount(),
-                            newValue.getMaxAgentCount())));
-                agentCounter.setDisable(false);
-                model.getAgentCount().bind(agentCounter.valueProperty());
-                // populate the parameters with editor boxes
-                parameterBox.getChildren().clear();
-                for (SimulationParameter parameter : newValue.getParameters()) {
-                  parameterBox.getChildren().add(createParameterEditor(newValue, parameter));
-                }
-              } else {
-                simDescription.setText("");
-                model.getAgentCount().unbind();
-                agentCounter.setDisable(true);
-                parameterBox.getChildren().clear();
-              }
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (newValue != null) {
+            // update description
+            simDescription.setText(newValue.getDescription());
+            // update agent count options
+            model.getAgentCount().unbind();
+            agentCounter.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(newValue.getMinAgentCount(),
+                    newValue.getMaxAgentCount(),
+                    getValueInRange(agentCounter.getValue(), newValue.getMinAgentCount(),
+                        newValue.getMaxAgentCount())));
+            agentCounter.setDisable(false);
+            model.getAgentCount().bind(agentCounter.valueProperty());
+            // populate the parameters with editor boxes
+            parameterBox.getChildren().clear();
+            for (SimulationParameter parameter : newValue.getParameters()) {
+              parameterBox.getChildren().add(createParameterEditor(newValue, parameter));
             }
-        );
+          } else {
+            simDescription.setText("");
+            model.getAgentCount().unbind();
+            agentCounter.setDisable(true);
+            parameterBox.getChildren().clear();
+          }
+        });
     // select the first simulation in the list
     simulationList.getSelectionModel().select(0);
   }

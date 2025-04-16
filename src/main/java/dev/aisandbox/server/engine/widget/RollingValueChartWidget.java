@@ -54,8 +54,7 @@ public class RollingValueChartWidget {
             width / 40);
         AxisScale yAxis = new NiceAxisScale(
             values.stream().mapToDouble(value -> value).min().orElse(0.0),
-            values.stream().mapToDouble(value -> value).max().orElse(0.0),
-            height / 40);
+            values.stream().mapToDouble(value -> value).max().orElse(0.0), height / 40);
         BaseGraph graph = new BaseGraph(width, height, title, xTitle, yTitle, theme, xAxis, yAxis);
         for (int i = 1; i < values.size(); i++) {
           graph.addLine(startIndex + i - 1, values.get(i - 1), startIndex + i, values.get(i),

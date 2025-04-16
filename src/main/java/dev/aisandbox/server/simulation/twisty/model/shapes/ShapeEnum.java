@@ -3,8 +3,7 @@ package dev.aisandbox.server.simulation.twisty.model.shapes;
 import lombok.Getter;
 
 public enum ShapeEnum {
-  SQUARE(new Square()),
-  EQ_TRIANGLE(new EquilateralTriangle());
+  SQUARE(new Square()), EQ_TRIANGLE(new EquilateralTriangle());
 
   @Getter
   private final CellShape shape;

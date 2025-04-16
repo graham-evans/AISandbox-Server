@@ -247,13 +247,12 @@ public final class BanditRuntime implements Simulation {
     graphics2D.drawImage(statisticsWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - 400,
         TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
     // draw episode scores
-    graphics2D.drawImage(episodeScoreWidget.getImage(),
-        LEFT_MARGIN, HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT,
-        null);
+    graphics2D.drawImage(episodeScoreWidget.getImage(), LEFT_MARGIN,
+        HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
     // draw episode success
     graphics2D.drawImage(episodeSuccessWidget.getImage(),
-        LEFT_MARGIN + RESULTS_WIDTH + WIDGET_SPACING,
-        HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
+        LEFT_MARGIN + RESULTS_WIDTH + WIDGET_SPACING, HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT,
+        null);
     // draw log window
     graphics2D.drawImage(logWidget.getImage(), LEFT_MARGIN + RESULTS_WIDTH * 2 + WIDGET_SPACING * 2,
         HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
