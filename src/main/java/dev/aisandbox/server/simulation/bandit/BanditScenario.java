@@ -83,7 +83,7 @@ public final class BanditScenario implements SimulationBuilder {
 
   @Override
   public String[] getAgentNames(int agentCount) {
-    return new String[]{"Player 1"};
+    return new String[]{"Agent 1"};
   }
 
   @Override
