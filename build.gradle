@@ -38,6 +38,7 @@ javadoc {
 
 checkstyle {
     toolVersion = "10.23.0"
+    checkstyleMain.source = "src/main/java"
 }
 
 tasks.register('copyDocs', Copy) {
