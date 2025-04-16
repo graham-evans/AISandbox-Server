@@ -8,14 +8,18 @@ import javax.imageio.ImageIO;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Utility class to load a spritesheet and return a {@link java.util.List} of
+ * {@link java.awt.image.BufferedImage}.
+ */
 @Slf4j
 @UtilityClass
 public class SpriteLoader {
 
   /**
-   * Load sprites as a list of {@link java.awt.image.BufferedImage}'s from a resource path</i>.
-   * <p>
-   * The source image will be cut up into pieces, each with the given dimensions.
+   * Load sprites as a list of {@link java.awt.image.BufferedImage}'s from a resource path.
+   *
+   * <p>The source image will be cut up into pieces, each with the given dimensions.
    *
    * @param path   The file path to load from.
    * @param width  the width of the sprites
