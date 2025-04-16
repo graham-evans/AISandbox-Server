@@ -19,6 +19,7 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -49,7 +50,7 @@ public final class BanditRuntime implements Simulation {
       (HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2) * 5 / 8;
   // results widgets
   private static final int RESULTS_WIDTH =
-      (HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING * 3) / 4;
+      (HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING * 2) / 3;
   private static final int RESULTS_HEIGHT =
       HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2 - BANDIT_HEIGHT;
   // initial parameters
@@ -65,9 +66,9 @@ public final class BanditRuntime implements Simulation {
   private final List<Bandit> bandits = new ArrayList<>();
   private final TextWidget logWidget;
   private final BanditWidget banditWidget;
-  private final RollingValueChartWidget scoreWidget;
   private final RollingValueChartWidget episodeScoreWidget;
   private final RollingValueChartWidget episodeSuccessWidget;
+  private final RollingStatisticsWidget statisticsWidget;
   private final TitleWidget titleWidget;
   private int sessionStep = 0;
   private double episodeScore = 0;
@@ -97,8 +98,8 @@ public final class BanditRuntime implements Simulation {
         .height(RESULTS_HEIGHT).window(200).theme(theme).title("Score per episode").build();
     episodeSuccessWidget = RollingValueChartWidget.builder().width(RESULTS_WIDTH)
         .height(RESULTS_HEIGHT).window(200).theme(theme).title("% best moves per episode").build();
-    scoreWidget = RollingValueChartWidget.builder().width(RESULTS_WIDTH).height(RESULTS_HEIGHT)
-        .window(pullCount).theme(theme).title("Score this episode").build();
+    statisticsWidget = RollingStatisticsWidget.builder().width(400).height(BANDIT_HEIGHT)
+        .theme(theme).windowSize(200).build();
     // initialise bandits
     initialise();
   }
@@ -125,7 +126,6 @@ public final class BanditRuntime implements Simulation {
     // get the score
     double score = bandits.get(arm).pull(random);
     episodeScore += score;
-    scoreWidget.addValue(score);
     // log the action
     logWidget.addText(
         agent.getAgentName() + " selects bandit " + arm + " gets reward " + String.format("%.4f",
@@ -138,6 +138,7 @@ public final class BanditRuntime implements Simulation {
     if (reset) {
       episodeScoreWidget.addValue(episodeScore);
       episodeSuccessWidget.addValue(episodeBestMoveCount / pullCount);
+      statisticsWidget.addScore(episodeScore);
     }
     // update the screen
     output.display();
@@ -194,7 +195,6 @@ public final class BanditRuntime implements Simulation {
     episodeID = UUID.randomUUID().toString();
     episodeScore = 0;
     episodeBestMoveCount = 0;
-    scoreWidget.resetValues();
   }
 
   /**
@@ -243,19 +243,19 @@ public final class BanditRuntime implements Simulation {
     // draw bandits
     graphics2D.drawImage(banditWidget.getImage(), LEFT_MARGIN,
         TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
-    // draw scores
-    graphics2D.drawImage(scoreWidget.getImage(), LEFT_MARGIN,
-        HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
+    // draw statistics
+    graphics2D.drawImage(statisticsWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - 400,
+        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
     // draw episode scores
     graphics2D.drawImage(episodeScoreWidget.getImage(),
-        LEFT_MARGIN + RESULTS_WIDTH + WIDGET_SPACING, HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT,
+        LEFT_MARGIN, HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT,
         null);
     // draw episode success
     graphics2D.drawImage(episodeSuccessWidget.getImage(),
-        LEFT_MARGIN + RESULTS_WIDTH * 2 + WIDGET_SPACING * 2,
+        LEFT_MARGIN + RESULTS_WIDTH + WIDGET_SPACING,
         HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
     // draw log window
-    graphics2D.drawImage(logWidget.getImage(), LEFT_MARGIN + RESULTS_WIDTH * 3 + WIDGET_SPACING * 3,
+    graphics2D.drawImage(logWidget.getImage(), LEFT_MARGIN + RESULTS_WIDTH * 2 + WIDGET_SPACING * 2,
         HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
     // draw logo
     graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
