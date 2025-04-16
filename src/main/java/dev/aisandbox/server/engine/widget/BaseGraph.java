@@ -5,10 +5,8 @@ import dev.aisandbox.server.engine.widget.axis.AxisScale;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -126,13 +124,20 @@ public class BaseGraph {
 
 
   public void addAxisAndTitle() {
-    // draw titles
+    // draw main title
     GraphicsUtils.drawCenteredText(graphics, PADDING, PADDING, width - PADDING * 2, TITLE_FONT_SIZE,
         title, TITLE_FONT, theme.getText());
-    GraphicsUtils.drawCenteredText(graphics, PADDING, height - PADDING - AXIS_FONT_SIZE,
-        width - PADDING * 2, AXIS_FONT_SIZE, xAxisTitle, AXIS_FONT, theme.getText());
-    GraphicsUtils.drawCenteredText(graphics, PADDING, height - PADDING, height - PADDING * 2,
-        AXIS_FONT_SIZE, yAxisTitle, AXIS_FONT, theme.getText());
+    // draw X axis title
+    GraphicsUtils.drawCenteredText(graphics, xBoxStart, height - PADDING - AXIS_FONT_SIZE,
+        boxWidth, AXIS_FONT_SIZE, xAxisTitle, AXIS_FONT, theme.getText());
+    // draw Y axis title
+    GraphicsUtils.drawVerticalCenteredText(graphics, PADDING, PADDING + TITLE_FONT_SIZE + MARGIN,
+        AXIS_FONT_SIZE,
+        height - PADDING * 2 - TITLE_FONT_SIZE - AXIS_FONT_SIZE - MARGIN - TITLE_FONT_SIZE,
+        yAxisTitle, AXIS_FONT,
+        theme.getText());
+//    GraphicsUtils.drawVerticalCenteredText(graphics, PADDING, height - PADDING, height - PADDING * 2,
+//        AXIS_FONT_SIZE, yAxisTitle, AXIS_FONT, theme.getText());
     // draw graph border
     graphics.setColor(theme.getGraphOutlineColor());
     graphics.drawRect(xBoxStart, yBoxStart, boxWidth, boxHeight);
@@ -141,6 +146,7 @@ public class BaseGraph {
         yBoxStart + boxHeight + MARGIN);
     for (double x : xAxisScale.getTicks()) {
       int dx = (int) (boxWidth * xAxisScale.getScaledValue(x));
+      graphics.setColor(theme.getGraphOutlineColor());
       graphics.drawLine(xBoxStart + dx, yBoxStart + boxHeight + MARGIN, xBoxStart + dx,
           yBoxStart + boxHeight + MARGIN * 2);
       GraphicsUtils.drawCenteredText(graphics, xBoxStart + dx - 20,
@@ -148,36 +154,17 @@ public class BaseGraph {
           TICK_FONT, theme.getText());
     }
     // draw y axis
+    graphics.setColor(theme.getGraphOutlineColor());
     graphics.drawLine(xBoxStart - MARGIN, yBoxStart, xBoxStart - MARGIN, yBoxStart + boxHeight);
     for (double y : yAxisScale.getTicks()) {
       int dy = (int) (boxHeight * (1.0 - yAxisScale.getScaledValue(y)));
+      graphics.setColor(theme.getGraphOutlineColor());
       graphics.drawLine(xBoxStart - MARGIN * 2, yBoxStart + dy, xBoxStart - MARGIN, yBoxStart + dy);
-      drawVirticalCenteredTest(xBoxStart - MARGIN * 3 - TICK_FONT_SIZE, yBoxStart + dy + 20, 40,
-          TICK_FONT_SIZE, yAxisScale.getValueString(y), TICK_FONT, Color.green);
+      GraphicsUtils.drawVerticalCenteredText(graphics, xBoxStart - MARGIN * 3 - TICK_FONT_SIZE,
+          yBoxStart + dy - 20,
+          TICK_FONT_SIZE, 40, yAxisScale.getValueString(y), TICK_FONT,theme.getText());
     }
   }
 
-  private void drawVirticalCenteredTest(int x, int y, int width, int height, String title,
-      Font font, Color debugColour) {
 
-    AffineTransform origTransform = graphics.getTransform();
-
-    graphics.rotate(Math.toRadians(-90));
-    graphics.translate(-y, x);
-
-    if (debugColour != null) {
-      graphics.setColor(debugColour);
-      //        graphics.fillRect(0, 0, width, height);
-    }
-
-    graphics.setFont(font);
-    graphics.setColor(theme.getText());
-
-    FontMetrics metrics = graphics.getFontMetrics(font);
-    int dx = (width - metrics.stringWidth(title)) / 2;
-
-    graphics.drawString(title, dx, height);
-
-    graphics.setTransform(origTransform);
-  }
 }

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import lombok.experimental.UtilityClass;
 
@@ -56,6 +57,19 @@ public class GraphicsUtils {
     FontMetrics metrics = graphics.getFontMetrics(font);
     int dx = (width - metrics.stringWidth(text)) / 2;
     graphics.drawString(text, x + dx, y + height);
+  }
+
+  public static void drawVerticalCenteredText(Graphics2D graphics,int x, int y, int width, int height, String title,
+      Font font,Color colour) {
+    // store original transformation
+    AffineTransform origTransform = graphics.getTransform();
+    // add transformation
+    graphics.translate(x,y+height);
+    graphics.rotate(Math.toRadians(-90));
+    // draw centered text
+    drawCenteredText(graphics,0,0,height,width,title,font,colour);
+    // restore original transformation
+    graphics.setTransform(origTransform);
   }
 
 }
