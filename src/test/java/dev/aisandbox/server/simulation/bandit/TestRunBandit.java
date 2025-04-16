@@ -7,6 +7,7 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.simulation.bandit.model.BanditPullEnumeration;
 import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
 import java.io.File;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ public class TestRunBandit {
       // create simulation
       BanditScenario banditBuilder = new BanditScenario();
       banditBuilder.setBanditUpdate(BanditUpdateEnumeration.EQUALISE);
+      banditBuilder.setBanditPulls(BanditPullEnumeration.TWENTY);
       // create players
       List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1))
           .map(s -> (Agent) new MockBanditPlayer(s)).toList();
