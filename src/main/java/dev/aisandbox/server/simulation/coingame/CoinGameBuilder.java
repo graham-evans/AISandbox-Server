@@ -10,7 +10,9 @@ import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 
-
+/**
+ * Simulation builder for the Coin game simulation, as explained in the book AlphaGo Simplified.
+ */
 public class CoinGameBuilder implements SimulationBuilder {
 
   @Getter
@@ -45,7 +47,7 @@ public class CoinGameBuilder implements SimulationBuilder {
 
   @Override
   public String[] getAgentNames(int agentCount) {
-    return new String[]{"Player 1", "Player 2"};
+    return new String[]{"Agent 1", "Agent 2"};
   }
 
   @Override
