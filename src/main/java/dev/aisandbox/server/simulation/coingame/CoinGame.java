@@ -33,32 +33,44 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Simulation for the coin game, as explained in the book AlphaGo Simplified.
+ */
 @Slf4j
 public class CoinGame implements Simulation {
 
 
   // UI measurements
-  private static final int LOG_WIDTH = 700;
-  private static final int LOG_HEIGHT = 320;
-  private static final int BAIZE_WIDTH =
-      HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING - LOG_WIDTH;
   private static final int BAIZE_HEIGHT =
-      HD_HEIGHT - BOTTOM_MARGIN - TOP_MARGIN - TITLE_HEIGHT - WIDGET_SPACING;
+      HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING; // 1173
+  private static final int BAIZE_WIDTH = BAIZE_HEIGHT * 4 / 3; // 880
+
+  private static final int LOG_WIDTH =
+      HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - BAIZE_WIDTH - WIDGET_SPACING;
+  private static final int LOG_HEIGHT = (BAIZE_HEIGHT - WIDGET_SPACING) / 2;
+
   private final List<Agent> agents;
   private final CoinScenario scenario;
   private final Theme theme;
   private final TitleWidget titleWidget;
   private final TextWidget logWidget;
   private final PieChartWidget pieChartWidget;
-  private final String sessionID = UUID.randomUUID().toString();
+  private final String session = UUID.randomUUID().toString();
   private final int maxPic = 2;
   private final List<Double> agentScores = new ArrayList<>();
   private int[] coins;
   private int currentPlayer = 0;
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;
-  private String episodeID;
+  private String episode;
 
+  /**
+   * Simulation constructor.
+   *
+   * @param agents   List of {@link dev.aisandbox.server.engine.Agent} to run the simulation with.
+   * @param scenario The specific {@link CoinScenario} to run - defines the number of piles.
+   * @param theme    The {@link dev.aisandbox.server.engine.Theme} to use while drawing.
+   */
   public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
     this.agents = agents;
     this.scenario = scenario;
@@ -69,8 +81,7 @@ public class CoinGame implements Simulation {
     titleWidget = TitleWidget.builder().title("The Coin Game").theme(theme).build();
     logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).font(LOG_FONT).theme(theme)
         .build();
-    pieChartWidget = PieChartWidget.builder().width(LOG_WIDTH).height(
-            HD_HEIGHT - LOG_HEIGHT - TITLE_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - WIDGET_SPACING * 2)
+    pieChartWidget = PieChartWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).theme(theme)
         .build();
     // generate the images
     try {
@@ -89,7 +100,7 @@ public class CoinGame implements Simulation {
     // reset the number of coins in each pile
     System.arraycopy(scenario.getRows(), 0, coins, 0, scenario.getRows().length);
     // change the episode ID
-    episodeID = UUID.randomUUID().toString();
+    episode = UUID.randomUUID().toString();
   }
 
   @Override
@@ -132,7 +143,7 @@ public class CoinGame implements Simulation {
     Agent loseAgent = agents.get((winner + 1) % 2);
     winAgent.send(generateCurrentState(Signal.WIN));
     loseAgent.send(generateCurrentState(Signal.LOSE));
-    logWidget.addText("Player [" + winner + "] wins");
+    logWidget.addText(agents.get(winner).getAgentName() + " wins");
     agentScores.set(winner, agentScores.get(winner) + 1);
     pieChartWidget.setPie(IntStream.range(0, agents.size() - 1).mapToObj(
         operand -> new PieChartWidget.Slice(agents.get(operand).getAgentName(),
@@ -177,8 +188,8 @@ public class CoinGame implements Simulation {
 
   private CoinGameState generateCurrentState(Signal signal) {
     return CoinGameState.newBuilder().addAllCoinCount(Arrays.stream(coins).boxed().toList())
-        .setRowCount(coins.length).setMaxPick(maxPic).setSignal(signal).setSessionID(sessionID)
-        .setEpisodeID(episodeID).build();
+        .setRowCount(coins.length).setMaxPick(maxPic).setSignal(signal).setSessionID(session)
+        .setEpisodeID(episode).build();
   }
 
   @Override
@@ -187,14 +198,15 @@ public class CoinGame implements Simulation {
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
     // draw widgets
     graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
-    graphics2D.drawImage(logWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
-        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
     graphics2D.drawImage(pieChartWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
+        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
+    graphics2D.drawImage(logWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
         TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + LOG_HEIGHT + WIDGET_SPACING, null);
     // draw baize
     graphics2D.setColor(theme.getBaize());
     graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
         BAIZE_HEIGHT);
+
     graphics2D.setColor(theme.getText());
     for (int i = 0; i < coins.length; i++) {
       graphics2D.drawImage(rowImages[i], LEFT_MARGIN,
@@ -205,7 +217,7 @@ public class CoinGame implements Simulation {
 
     // draw logo
     graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
-        HD_HEIGHT - LOGO_HEIGHT - BOTTOM_MARGIN, null);
+        (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
 
   }
 }
