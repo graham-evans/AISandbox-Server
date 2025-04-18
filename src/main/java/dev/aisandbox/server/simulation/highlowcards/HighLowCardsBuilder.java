@@ -8,7 +8,7 @@ import dev.aisandbox.server.engine.Theme;
 import java.util.List;
 import java.util.Random;
 
-public class HighLowCardsBuilder implements SimulationBuilder {
+public final class HighLowCardsBuilder implements SimulationBuilder {
 
   @Override
   public String getSimulationName() {

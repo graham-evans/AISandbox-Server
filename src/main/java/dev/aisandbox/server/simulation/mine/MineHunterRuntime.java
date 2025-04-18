@@ -27,7 +27,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MineHunterRuntime implements Simulation {
+public final class MineHunterRuntime implements Simulation {
 
   // agents
   private final Agent agent;

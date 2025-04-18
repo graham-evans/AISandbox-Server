@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @Getter
 @Slf4j
-public class TwistyBuilder implements SimulationBuilder {
+public final class TwistyBuilder implements SimulationBuilder {
 
   private PuzzleType puzzleType = PuzzleType.CUBE3;
 

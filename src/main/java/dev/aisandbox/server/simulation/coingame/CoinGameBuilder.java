@@ -13,7 +13,7 @@ import lombok.Setter;
 /**
  * Simulation builder for the Coin game simulation, as explained in the book AlphaGo Simplified.
  */
-public class CoinGameBuilder implements SimulationBuilder {
+public final class CoinGameBuilder implements SimulationBuilder {
 
   @Getter
   @Setter

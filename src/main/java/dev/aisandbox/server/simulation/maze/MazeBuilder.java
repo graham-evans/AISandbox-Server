@@ -13,7 +13,7 @@ import lombok.Setter;
 /**
  * A builder for creating a simulation of a maze.
  */
-public class MazeBuilder implements SimulationBuilder {
+public final class MazeBuilder implements SimulationBuilder {
 
   /**
    * The size of the maze, defaults to MEDIUM.

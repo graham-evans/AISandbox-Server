@@ -46,7 +46,7 @@ import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class HighLowCards implements Simulation {
+public final class HighLowCards implements Simulation {
 
   // UI Elements and constants
   // baize

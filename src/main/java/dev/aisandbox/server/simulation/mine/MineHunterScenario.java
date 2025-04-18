@@ -10,7 +10,7 @@ import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 
-public class MineHunterScenario implements SimulationBuilder {
+public final class MineHunterScenario implements SimulationBuilder {
 
   @Getter
   @Setter

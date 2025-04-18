@@ -23,7 +23,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MazeRunner implements Simulation {
+public final class MazeRunner implements Simulation {
 
   public static final int SPRITE_SIZE = 25;
   private static final double REWARD_STEP = -1.0;

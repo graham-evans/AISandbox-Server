@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
  * Simulation for the coin game, as explained in the book AlphaGo Simplified.
  */
 @Slf4j
-public class CoinGame implements Simulation {
+public final class CoinGame implements Simulation {
 
 
   // UI measurements
