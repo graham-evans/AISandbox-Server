@@ -27,7 +27,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TwistySimulation implements Simulation {
+public final class TwistySimulation implements Simulation {
 
   private static final int SCRAMBLE_MOVES = 200;
   private static final int HISTORY_WIDTH = 9;
