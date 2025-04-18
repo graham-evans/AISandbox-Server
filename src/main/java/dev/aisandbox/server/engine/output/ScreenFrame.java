@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ScreenFrame extends JFrame {
+public final class ScreenFrame extends JFrame {
 
   private final ImageCanvas canvas;
   private BufferedImage image;

@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * Represents a maze with its cells, dimensions, and zoom level.
  */
 @Slf4j
-public class Maze {
+public final class Maze {
 
   /**
    * Unique identifier for the board (maze).
