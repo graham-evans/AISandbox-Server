@@ -27,7 +27,7 @@ public class TestRunCoinGame {
       List<Agent> agents = Arrays.stream(simulationBuilder.getAgentNames(2))
           .map(s -> (Agent) new MockPlayer(s)).toList();
       // create simulation
-      Simulation sim = simulationBuilder.build(agents, Theme.LIGHT, new Random());
+      Simulation sim = simulationBuilder.build(agents, theme, new Random());
       // create output directory
       File outputDirectory = new File("build/test/coingame/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();
