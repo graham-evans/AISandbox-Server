@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.image.BufferedImage;
+import java.io.Serial;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -14,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class ScreenFrame extends JFrame {
 
+  @Serial
+  private static final long serialVersionUID = -5464920993358869235L;
   private final ImageCanvas canvas;
   private BufferedImage image;
 
@@ -50,6 +53,9 @@ public final class ScreenFrame extends JFrame {
   }
 
   private class ImageCanvas extends JPanel {
+
+    @Serial
+    private static final long serialVersionUID = -1432009394376930530L;
 
     @Override
     public void paint(Graphics g) {

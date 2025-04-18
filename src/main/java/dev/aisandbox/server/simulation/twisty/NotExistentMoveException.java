@@ -1,6 +1,7 @@
 package dev.aisandbox.server.simulation.twisty;
 
 import dev.aisandbox.server.engine.exception.SimulationException;
+import java.io.Serial;
 
 /**
  * NotExistentMoveException class.
@@ -9,6 +10,9 @@ import dev.aisandbox.server.engine.exception.SimulationException;
  * @version $Id: $Id
  */
 public class NotExistentMoveException extends SimulationException {
+
+  @Serial
+  private static final long serialVersionUID = 2581482828224322482L;
 
   /**
    * Constructor for NotExistentMoveException.
