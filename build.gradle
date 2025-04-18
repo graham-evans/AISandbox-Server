@@ -41,6 +41,18 @@ checkstyle {
     checkstyleMain.source = "src/main/java"
 }
 
+pmd {
+    toolVersion = "6.55.0"
+
+    sourceSets = [ project.sourceSets.main ]
+
+    pmdMain {
+        excludes = [
+                '**/proto/**'
+        ]
+    }
+}
+
 tasks.register('copyDocs', Copy) {
     group = "documentation"
     description = "Copies documentation into the build tree."
