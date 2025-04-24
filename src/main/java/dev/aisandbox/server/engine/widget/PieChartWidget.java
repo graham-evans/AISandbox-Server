@@ -25,7 +25,6 @@ public class PieChartWidget {
   private final int height;
   private final String title;
   private final Theme theme;
-  private final Random random = new Random();
   @Getter
   private BufferedImage image;
   private List<Slice> segments = List.of();
