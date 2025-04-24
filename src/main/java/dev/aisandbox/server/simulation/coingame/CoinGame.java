@@ -23,7 +23,6 @@ import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import dev.aisandbox.server.simulation.coingame.proto.Signal;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -155,11 +154,7 @@ public final class CoinGame implements Simulation {
     }
     // is the row out of the allowed indexing range
     if (row < 0 || row >= coins.length) {
-      if (coins.length == 1) {
-        throw new IllegalCoinAction("Must select row 0.");
-      } else {
-        throw new IllegalCoinAction("Must select row from 0 to " + (coins.length - 1) + ".");
-      }
+      throw new IllegalCoinAction("Must select row from 0 to " + (coins.length - 1) + ".");
     }
     // does the selected row have enough coins
     if (coins[row] < amount) {
