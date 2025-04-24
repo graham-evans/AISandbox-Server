@@ -17,12 +17,13 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.widget.PieChartWidget;
+import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import dev.aisandbox.server.simulation.coingame.proto.Signal;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -30,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -54,7 +54,7 @@ public final class CoinGame implements Simulation {
   private final Theme theme;
   private final TitleWidget titleWidget;
   private final TextWidget logWidget;
-  private final PieChartWidget pieChartWidget;
+  private final RollingPieChartWidget pieChartWidget;
   private final String session = UUID.randomUUID().toString();
   private final int maxPic = 2;
   private final List<Double> agentScores = new ArrayList<>();
@@ -81,8 +81,8 @@ public final class CoinGame implements Simulation {
     titleWidget = TitleWidget.builder().title("The Coin Game").theme(theme).build();
     logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).font(LOG_FONT).theme(theme)
         .build();
-    pieChartWidget = PieChartWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).theme(theme)
-        .build();
+    pieChartWidget = RollingPieChartWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT)
+        .title("Winner of the last 200 episodes.").theme(theme).build();
     // generate the images
     try {
       rowImages = CoinIcons.getRowImages(scenario.getRows().length);
@@ -145,9 +145,7 @@ public final class CoinGame implements Simulation {
     loseAgent.send(generateCurrentState(Signal.LOSE));
     logWidget.addText(agents.get(winner).getAgentName() + " wins");
     agentScores.set(winner, agentScores.get(winner) + 1);
-    pieChartWidget.setPie(IntStream.range(0, agents.size() - 1).mapToObj(
-        operand -> new PieChartWidget.Slice(agents.get(operand).getAgentName(),
-            agentScores.get(operand), theme.getAgentMain(operand))).toList());
+    pieChartWidget.addValue(agents.get(winner).getAgentName(), theme.getAgentMain(winner));
   }
 
   private int[] makeMove(int row, int amount) throws IllegalCoinAction {
