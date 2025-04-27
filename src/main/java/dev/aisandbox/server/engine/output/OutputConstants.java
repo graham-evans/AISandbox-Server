@@ -22,6 +22,7 @@ public class OutputConstants {
   @Deprecated
   public static final int MARGIN = 100;
   public static final int TITLE_HEIGHT = 50;
+  public static final int HEADER_HEIGHT = 40;
   public static final int TOP_MARGIN = 50;
   public static final int BOTTOM_MARGIN = 50;
   public static final int LEFT_MARGIN = 50;
@@ -29,6 +30,7 @@ public class OutputConstants {
   public static final int WIDGET_SPACING = 50;
   public static final int LOG_FONT_HEIGHT = 16;
   public static final Font TITLE_FONT;
+  public static final Font HEADER_FONT;
   public static final Font LOG_FONT;
   public static final Font STATISTICS_FONT;
 
@@ -63,6 +65,7 @@ public class OutputConstants {
     }
     // create base fonts
     TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, TITLE_HEIGHT);
+    HEADER_FONT = new Font("Arimo Regular", Font.PLAIN, HEADER_HEIGHT);
     LOG_FONT = new Font("Hack Regular", Font.PLAIN, LOG_FONT_HEIGHT);
     STATISTICS_FONT = new Font("Arimo Regular", Font.PLAIN, 32);
   }
