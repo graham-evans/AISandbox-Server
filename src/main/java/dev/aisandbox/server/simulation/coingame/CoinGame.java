@@ -48,6 +48,10 @@ public final class CoinGame implements Simulation {
       HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - BAIZE_WIDTH - WIDGET_SPACING;
   private static final int LOG_HEIGHT = (BAIZE_HEIGHT - WIDGET_SPACING) / 2;
 
+  private final int COIN_ROW_INDENT;
+  private final int COIN_COLUMN_INDENT =
+      (BAIZE_HEIGHT - CoinIcons.COINS_HEIGHT - CoinIcons.ROW_HEIGHT) / 2;
+
   private final List<Agent> agents;
   private final CoinScenario scenario;
   private final Theme theme;
@@ -82,6 +86,7 @@ public final class CoinGame implements Simulation {
         .build();
     pieChartWidget = RollingPieChartWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT)
         .title("Winner of the last 200 episodes.").theme(theme).build();
+    COIN_ROW_INDENT = (BAIZE_WIDTH - 290 * scenario.getRows().length) / 2;
     // generate the images
     try {
       rowImages = CoinIcons.getRowImages(scenario.getRows().length);
@@ -202,10 +207,15 @@ public final class CoinGame implements Simulation {
 
     graphics2D.setColor(theme.getText());
     for (int i = 0; i < coins.length; i++) {
-      graphics2D.drawImage(rowImages[i], LEFT_MARGIN,
-          TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + i * CoinIcons.ROW_HEIGHT, null);
-      graphics2D.drawImage(coinImages[coins[i]], LEFT_MARGIN + CoinIcons.ROW_WIDTH,
-          TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + i * CoinIcons.ROW_HEIGHT, null);
+//      graphics2D.drawRect(LEFT_MARGIN + i * CoinIcons.PILE_WIDTH + COIN_ROW_INDENT,
+//          TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING , CoinIcons.PILE_WIDTH,
+//          BAIZE_HEIGHT);
+      graphics2D.drawImage(rowImages[i], LEFT_MARGIN + i * CoinIcons.PILE_WIDTH + COIN_ROW_INDENT,
+          TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + COIN_COLUMN_INDENT, null);
+      graphics2D.drawImage(coinImages[coins[i]],
+          LEFT_MARGIN + i * CoinIcons.PILE_WIDTH + COIN_ROW_INDENT,
+          TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + CoinIcons.ROW_HEIGHT + COIN_COLUMN_INDENT,
+          null);
     }
 
     // draw logo
