@@ -13,6 +13,7 @@
 - Coin Game
 - High/low Cards
 - Mazes
+  -  Binary Tree, Sidewinder, Recursive Backtracker, Braided
 - Mine Hunter
 - Twisty Puzzles
   - Cubes 2x2x2, 3x3x3, 4x4x4, 5x5x5, 6x6x6, 7x7x7, 8x8x8, 10x10x10
