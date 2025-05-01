@@ -17,7 +17,10 @@ public class CoinIcons {
 
   public static final int PILE_WIDTH = 290;
   public static final int ROW_HEIGHT = 80;
-  public static final int COINS_HEIGHT = 500;
+  private static final int COIN_SPACE = 20;
+  private static final int COIN_IMAGE_WIDTH = 241;
+  private static final int COIN_IMAGE_HEIGHT = 91;
+  public static final int COINS_HEIGHT = 20 * COIN_SPACE + COIN_IMAGE_HEIGHT;
 
   public static BufferedImage[] getRowImages(int rowCount) {
     BufferedImage[] images = new BufferedImage[rowCount];
@@ -47,17 +50,16 @@ public class CoinIcons {
       images[i] = new BufferedImage(PILE_WIDTH, COINS_HEIGHT, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = images[i].createGraphics();
       GraphicsUtils.setupRenderingHints(g);
- //     g.setColor(Color.white);
- //     g.fillRect(0, 0, PILE_WIDTH, COINS_HEIGHT);
       int xPadding = (PILE_WIDTH - coinImage.getWidth()) / 2;
       // draw coins
       for (int j = 1; j <= i; j++) {
-        g.drawImage(coinImage, xPadding, COINS_HEIGHT - coinImage.getHeight() - j * 20, null);
+        g.drawImage(coinImage, xPadding, COINS_HEIGHT - coinImage.getHeight() - (j-1) * COIN_SPACE,
+            null);
       }
       // draw number
       g.setColor(Color.DARK_GRAY);
       g.fillRect(PILE_WIDTH / 2 - 40, COINS_HEIGHT - 40, 80, 40);
-      GraphicsUtils.drawCenteredText(g, PILE_WIDTH / 2 - 40, COINS_HEIGHT - 40-6, 80, 40,
+      GraphicsUtils.drawCenteredText(g, PILE_WIDTH / 2 - 40, COINS_HEIGHT - 40 - 6, 80, 40,
           Integer.toString(i), OutputConstants.HEADER_FONT, Color.WHITE);
     }
     return images;
