@@ -18,6 +18,7 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
+import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.maze.proto.MazeAction;
@@ -53,6 +54,7 @@ public final class MazeRunner implements Simulation {
   // widgets
   private final TitleWidget titleWidget;
   private final TextWidget logWidget;
+  private final RollingValueChartWidget episodeScoreWidget;
   // maze settings
   private final MazeSize mazeSize;
   private final MazeType mazeType;
@@ -82,6 +84,7 @@ public final class MazeRunner implements Simulation {
     titleWidget = TitleWidget.builder().title("Maze - " + mazeType.name()).theme(theme).build();
     logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).font(LOG_FONT).theme(theme)
         .build();
+    episodeScoreWidget = RollingValueChartWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).theme(theme).window(200).build();
     // create a new maze
     initialiseMaze();
   }
@@ -132,6 +135,7 @@ public final class MazeRunner implements Simulation {
     // SPECIAL CASE  - end of the episode?
     if (stepsLeft == 0) {
       logWidget.addText("Episode finished, resetting maze");
+      episodeScoreWidget.addValue(episodeScore);
       initialiseMaze();
     }
 
@@ -162,6 +166,9 @@ public final class MazeRunner implements Simulation {
     // draw log
     graphics2D.drawImage(logWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
         TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + LOG_HEIGHT + WIDGET_SPACING, null);
+    // draw episode scores
+    graphics2D.drawImage(episodeScoreWidget.getImage(),HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
+        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING,null);
   }
 
   private void initialiseMaze() {
@@ -207,11 +214,7 @@ public final class MazeRunner implements Simulation {
       g.drawImage(sprites.get(icon), c.getPositionX() * SPRITE_SIZE, c.getPositionY() * SPRITE_SIZE,
           null);
     }
- /*   Cell start = maze.getStartCell();
-    if (start != null) {
-      g.drawImage(sprites.get(17), start.getPositionX() * SPRITE_SIZE,
-          start.getPositionY() * SPRITE_SIZE, null);
-    } */
+
     Cell finish = maze.getEndCell();
     if (finish != null) {
       g.drawImage(sprites.get(18), finish.getPositionX() * SPRITE_SIZE,
