@@ -49,7 +49,7 @@ public class TestRunMaze {
       builder.setMazeType(mazeType);
       // create players
       List<Agent> agents = Arrays.stream(builder.getAgentNames(1))
-          .map(s -> (Agent) new MockMazeAgent(s)).toList();
+          .map(s -> (Agent) new QLearningMazeAgent(s)).toList();
       // create simulation
       Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
       // create output
