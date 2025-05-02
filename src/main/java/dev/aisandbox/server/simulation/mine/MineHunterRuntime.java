@@ -1,24 +1,30 @@
 package dev.aisandbox.server.simulation.mine;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
+import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
-import static dev.aisandbox.server.engine.output.OutputConstants.MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.RIGHT_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.TITLE_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.TOP_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
+import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.mine.proto.FlagAction;
 import dev.aisandbox.server.simulation.mine.proto.MazeSignal;
 import dev.aisandbox.server.simulation.mine.proto.MineAction;
 import dev.aisandbox.server.simulation.mine.proto.MineResult;
 import dev.aisandbox.server.simulation.mine.proto.MineState;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -29,6 +35,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class MineHunterRuntime implements Simulation {
 
+  private static final int BAIZE_HEIGHT =
+      HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING; // 1173
+  private static final int BAIZE_WIDTH = BAIZE_HEIGHT * 4 / 3; // 880
+
+  private static final int BOARD_START_X = LEFT_MARGIN + (BAIZE_WIDTH - 800) / 2;
+  private static final int BOARD_START_Y =
+      TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + (BAIZE_HEIGHT - 800) / 2;
   // agents
   private final Agent agent;
   // puzzle elements
@@ -39,9 +52,9 @@ public final class MineHunterRuntime implements Simulation {
   private final List<BufferedImage> sprites;
   //    private SuccessRateGraph winRateGraph = new SuccessRateGraph();
 //    private BufferedImage winRateGraphImage = null;
+  private final TitleWidget titleWidget;
   private final long boardsWon = 0;
   private final long boardsLost = 0;
-  Font myFont = new Font("Sans-Serif", Font.PLAIN, 28);
   private Board board = null;
   private int flagsLeft;
   private double scale = 1.0;
@@ -54,6 +67,7 @@ public final class MineHunterRuntime implements Simulation {
     this.theme = theme;
     // load sprites
     sprites = SpriteLoader.loadSpritesFromResources("/images/mine/grid.png", 40, 40);
+    titleWidget = TitleWidget.builder().title("Mine Hunter").theme(theme).build();
     // create first board
     getNewBoard();
   }
@@ -121,67 +135,25 @@ public final class MineHunterRuntime implements Simulation {
   public void visualise(Graphics2D graphics2D) {
     graphics2D.setColor(theme.getBackground());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
-    // draw logo
-    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN,
-        null);
-
+    // draw title
+    graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
+    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
+        (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
+    // draw baize
+    graphics2D.setColor(theme.getBaize());
+    graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
+        BAIZE_HEIGHT);
     // draw mines
-//        g.drawImage(winRateGraphImage, 1200, 200, null);
     graphics2D.setColor(Color.BLACK);
-    graphics2D.setFont(myFont);
+    graphics2D.setFont(OutputConstants.LOG_FONT);
     graphics2D.drawString("Mines Remaining : " + board.getUnfoundMines(), 1200, 500);
     // transform for drawing the board
-    graphics2D.translate(100, 200);
+    graphics2D.translate(BOARD_START_X, BOARD_START_Y);
     graphics2D.scale(scale, scale);
     for (int x = 0; x < board.getWidth(); x++) {
       for (int y = 0; y < board.getHeight(); y++) {
         Cell c = board.getCell(x, y);
-        switch (c.getPlayerView()) {
-          case '#':
-            graphics2D.drawImage(sprites.get(11), x * 40, y * 40, null);
-            break;
-          case 'F':
-            graphics2D.drawImage(sprites.get(12), x * 40, y * 40, null);
-            break;
-          case 'f':
-            graphics2D.drawImage(sprites.get(13), x * 40, y * 40, null);
-            break;
-          case 'X':
-            graphics2D.drawImage(sprites.get(10), x * 40, y * 40, null);
-            break;
-          case '.':
-            graphics2D.drawImage(sprites.get(0), x * 40, y * 40, null);
-            break;
-          case '1':
-            graphics2D.drawImage(sprites.get(1), x * 40, y * 40, null);
-            break;
-          case '2':
-            graphics2D.drawImage(sprites.get(2), x * 40, y * 40, null);
-            break;
-          case '3':
-            graphics2D.drawImage(sprites.get(3), x * 40, y * 40, null);
-            break;
-          case '4':
-            graphics2D.drawImage(sprites.get(4), x * 40, y * 40, null);
-            break;
-          case '5':
-            graphics2D.drawImage(sprites.get(5), x * 40, y * 40, null);
-            break;
-          case '6':
-            graphics2D.drawImage(sprites.get(6), x * 40, y * 40, null);
-            break;
-          case '7':
-            graphics2D.drawImage(sprites.get(7), x * 40, y * 40, null);
-            break;
-          case '8':
-            graphics2D.drawImage(sprites.get(8), x * 40, y * 40, null);
-            break;
-          case '9':
-            graphics2D.drawImage(sprites.get(9), x * 40, y * 40, null);
-            break;
-          default:
-            log.warn("Unexpected char");
-        }
+        graphics2D.drawImage(sprites.get(c.getPlayerViewSprite()), x * 40, y * 40, null);
       }
     }
   }

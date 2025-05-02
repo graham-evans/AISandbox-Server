@@ -21,7 +21,6 @@ public class TestRunMine {
 
   private final static File outputDirectory = new File("build/test/mine");
 
-
   @BeforeAll
   public static void setupDir() {
     outputDirectory.mkdirs();
