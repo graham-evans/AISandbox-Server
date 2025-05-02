@@ -95,7 +95,7 @@ public final class MazeRunner implements Simulation {
     int startY = currentCell.getPositionY();
     // ask for a direction to move in
     MazeState state = MazeState.newBuilder().setSessionID(sessionID).setEpisodeID(episodeID)
-        .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).build();
+        .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).setWidth(maze.getWidth()).setHeight(maze.getHeight()).build();
     MazeAction action = agent.receive(state, MazeAction.class);
     Direction direction = Direction.fromProto(action.getDirection());
     log.info("{} moves {}", agent.getAgentName(), direction);
