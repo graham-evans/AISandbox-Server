@@ -1,5 +1,11 @@
 package dev.aisandbox.server.simulation.twisty.model;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.TITLE_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.TOP_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
+
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.simulation.twisty.NotExistentMoveException;
 import java.awt.Color;
@@ -24,8 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 public class TwistyPuzzle {
 
-  public static final int WIDTH = 1280;
-  public static final int HEIGHT = 1000;
+  public static final int HEIGHT =
+      HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING; // 1173
+  public static final int WIDTH = HEIGHT * 4 / 3;// 800
   private final Map<Character, Color> colorMap = Arrays.stream(ColourEnum.values()).collect(
       Collectors.toMap(colourEnum -> colourEnum.getCharacter(),
           colourEnum -> colourEnum.getAwtColour()));
@@ -37,56 +44,13 @@ public class TwistyPuzzle {
   @Getter
   @Setter
   private String baseState;
-  private String name;
+  @Getter
+  @Setter
+  private String puzzleName;
   @Getter
   private String currentState;
   @Getter
   private Map<String, CompiledMove> compiledMoves = new HashMap<>();
-
-  public BufferedImage getStateImage(String state) {
-    BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-    Graphics2D g = image.createGraphics();
-
-    g.setColor(Color.white);
-    g.fillRect(0, 0, WIDTH, HEIGHT);
-    // draw polygons
-    for (int i = 0; i < cells.size(); i++) {
-      Cell c = cells.get(i);
-      Polygon poly = c.getPolygon();
-      g.setColor(c.getColour().getAwtColour());
-      g.fillPolygon(poly);
-      g.setColor(Color.DARK_GRAY);
-      g.drawPolygon(poly);
-    }
-    return image;
-  }
-
-  private void drawCellConnection(Graphics2D graphics2D, Cell start, Cell end) {
-    // get start position
-    double startX = start.getLocationX();
-    double startY = start.getLocationY();
-    // work out unit vector from start to end
-    double dx = end.getLocationX() - startX;
-    double dy = end.getLocationY() - startY;
-    double len = Math.sqrt(dx * dx + dy * dy);
-    double ux = dx / len;
-    double uy = dy / len;
-    // create a unit vector 90 degrees off
-    double tx = -uy;
-    double ty = ux;
-    // find the mid point of the line + 4t
-    double midx = startX + dx / 2 + 5 * tx;
-    double midy = startY + dy / 2 + 5 * ty;
-    // straight line
-    // graphics2D.drawLine(start.getLocationX(), start.getLocationY(), end.getLocationX(),
-    //    end.getLocationY());
-    graphics2D.drawLine(start.getLocationX(), start.getLocationY(), (int) midx, (int) midy);
-    graphics2D.drawLine((int) midx, (int) midy, end.getLocationX(), end.getLocationY());
-    graphics2D.drawLine((int) midx, (int) midy, (int) (midx - 8 * ux + 3 * tx),
-        (int) (midy - 8 * uy + 3 * ty));
-    graphics2D.drawLine((int) midx, (int) midy, (int) (midx - 8 * ux - 3 * tx),
-        (int) (midy - 8 * uy - 3 * ty));
-  }
 
   /**
    * Compile the move based on the latest information
@@ -189,10 +153,6 @@ public class TwistyPuzzle {
     }
 */
 
-  public String getPuzzleName() {
-    return name;
-  }
-
 
   public void resetPuzzle() {
     currentState = baseState;
@@ -245,13 +205,14 @@ public class TwistyPuzzle {
   }
 
 
-  public void drawPuzzle(Graphics2D g, Theme theme) {
-    g.setColor(theme.getWidgetBackground());
-    g.fillRect(0, 0, WIDTH, HEIGHT);
+  public void drawPuzzle(Graphics2D g, int originX, int originY, Theme theme) {
+    g.setColor(theme.getBaize());
+    g.fillRect(originX, originY, WIDTH, HEIGHT);
     for (int i = 0; i < getCells().size(); i++) {
       Cell cell = getCells().get(i);
       char state = currentState.charAt(i);
       Polygon polygon = cell.getPolygon();
+      polygon.translate(originX, originY);
       g.setColor(colorMap.get(state));
       g.fillPolygon(polygon);
       g.setColor(Color.LIGHT_GRAY);

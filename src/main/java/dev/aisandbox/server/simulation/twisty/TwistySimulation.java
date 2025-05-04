@@ -3,15 +3,21 @@ package dev.aisandbox.server.simulation.twisty;
 
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
+import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.RIGHT_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.TITLE_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.TOP_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.twisty.model.Move;
 import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyAction;
@@ -43,6 +49,7 @@ public final class TwistySimulation implements Simulation {
   private final String sessionID = UUID.randomUUID().toString();
   private final int MAX_MOVES = 1000;
   // UI elements
+  private final TitleWidget titleWidget;
   private final List<String> moveHistory = new ArrayList<>();
   String savedState;
   List<String> actions = new ArrayList<>();
@@ -59,7 +66,8 @@ public final class TwistySimulation implements Simulation {
     this.random = random;
     // setup puzzle
     initialisePuzzle();
-    // setup graph
+    // setup ui
+    titleWidget = TitleWidget.builder().title("Twisty Puzzle - "+puzzle.getPuzzleName()).theme(theme).build();
     /*frequencyGraph.setTitle("# Moves to solve");
     frequencyGraph.setXaxisHeader("# Moves");
     frequencyGraph.setYaxisHeader("Frequency");
@@ -167,11 +175,13 @@ public final class TwistySimulation implements Simulation {
     // draw background
     graphics2D.setColor(theme.getBackground());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
+    // draw title
+    graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
     // draw puzzle
-    puzzle.drawPuzzle(graphics2D, theme);
+    puzzle.drawPuzzle(graphics2D, LEFT_MARGIN, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING, theme);
     // add logo
-    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - MARGIN, HD_HEIGHT - LOGO_HEIGHT - MARGIN,
-        null);
+    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
+        (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
     // draw history
     for (int i = 0; i < moveHistory.size(); i++) {
       BufferedImage moveImage = puzzle.getMoveImage(moveHistory.get(i));

@@ -32,6 +32,10 @@ public class CuboidBuilder {
   public static TwistyPuzzle buildCuboid(final int width, final int height, final int depth)
       throws IOException {
     TwistyPuzzle puzzle = new TwistyPuzzle();
+    // work out the name of the puzzle
+    puzzle.setPuzzleName(
+        ((width == height) && (height == depth) ? "Cube " : "Cuboid ") + width + "x" + height + "x"
+            + depth);
     // work out the scale of the cuboid
     int vscale = (TwistyPuzzle.HEIGHT - gap * 2) / ((height + depth * 2) * 2);
     int hscale = (TwistyPuzzle.WIDTH - gap * 3) / ((width * 2 + depth * 2) * 2);
