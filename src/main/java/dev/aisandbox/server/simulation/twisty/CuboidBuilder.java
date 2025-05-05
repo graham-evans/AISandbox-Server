@@ -2,7 +2,7 @@ package dev.aisandbox.server.simulation.twisty;
 
 import dev.aisandbox.server.simulation.twisty.model.Cell;
 import dev.aisandbox.server.simulation.twisty.model.ColourEnum;
-import dev.aisandbox.server.simulation.twisty.model.Loop;
+import dev.aisandbox.server.simulation.twisty.model.MoveLoop;
 import dev.aisandbox.server.simulation.twisty.model.Move;
 import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;
 import dev.aisandbox.server.simulation.twisty.model.shapes.ShapeEnum;
@@ -72,424 +72,402 @@ public class CuboidBuilder {
     puzzle.getCells().addAll(front);
     puzzle.getCells().addAll(back);
     // create moves
-    Move move;
-    CuboidMoveIcon icon;
-    if (width == height) {
+    if (width == height) { // we can rotate the faces 90' left or right
       // we can have F,F',B,B',z,z' moves
       for (int deep = 1; deep < depth; deep++) {
         // create F moves
-        move = new Move();
-        move.setName(getMoveName(deep, 'F', 1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('F', false);
-        icon.fillFrontFace();
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'F', 1)));
-        log.info("Generating {}", move.getName());
-        move.getLoops().addAll(faceTurn(front, width, height));
+        log.info("Generating F at depth {}", deep);
+        Move fMove = new Move();
+        fMove.setName(getMoveName(deep, 'F', 1));
+        fMove.setImageIcon(CuboidMoveIcon.builer(width,height, fMove.getName()).fillFrontFace().setRotation('F', false).getImage());
+        fMove.getLoops().addAll(faceTurn(front, width, height));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops()
+          fMove.getLoops()
               .addAll(frontSideTurn(layer, width, height, depth, left, right, top, bottom));
         }
-        puzzle.getMoves().add(move);
+        puzzle.getMoves().add(fMove);
         // create F' move
-        move = new Move();
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('F', true);
-        icon.fillFrontFace();
-        move.setName(getMoveName(deep, 'F', -1));
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'F', -1)));
-        log.info("Generating {}", move.getName());
-        move.getLoops().addAll(faceReverseTurn(front, width, height));
+        log.info("Generating F' at depth {}", deep );
+        Move fPrimeMove = new Move();
+        fPrimeMove.setName(getMoveName(deep, 'F', -1));
+        fPrimeMove.setImageIcon(CuboidMoveIcon.builer(width,height, fPrimeMove.getName()).fillFrontFace().setRotation('F', true).getImage());
+        fPrimeMove.getLoops().addAll(faceReverseTurn(front, width, height));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops()
+          fPrimeMove.getLoops()
               .addAll(frontSideReverseTurn(layer, width, height, depth, left, right, top, bottom));
         }
-        puzzle.getMoves().add(move);
+        puzzle.getMoves().add(fPrimeMove);
         // B moves
-        move = new Move();
-        move.setName(getMoveName(deep, 'B', 1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('B', false);
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'B', 1)));
-        move.getLoops().addAll(faceTurn(back, width, height));
+        log.info("Generating B at depth {}", deep);
+        Move bMove = new Move();
+        bMove.setName(getMoveName(deep, 'B', 1));
+        bMove.setImageIcon(CuboidMoveIcon.builer(width,height, bMove.getName()).setRotation('B', false).getImage());
+        bMove.getLoops().addAll(faceTurn(back, width, height));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops().addAll(
+          bMove.getLoops().addAll(
               frontSideReverseTurn(depth - layer + 1, width, height, depth, left, right, top,
                   bottom));
         }
-        puzzle.getMoves().add(move);
+        puzzle.getMoves().add(bMove);
         // B' moves
-        move = new Move();
-        move.setName(getMoveName(deep, 'B', -1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('B', true);
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'B', -1)));
-        move.getLoops().addAll(faceReverseTurn(back, width, height));
+        log.info("Generating B' at depth {}", deep);
+        Move bPrimeMove = new Move();
+        bPrimeMove.setName(getMoveName(deep, 'B', -1));
+        bMove.setImageIcon(CuboidMoveIcon.builer(width,height, bMove.getName()).setRotation('B', true).getImage());
+        bPrimeMove.getLoops().addAll(faceReverseTurn(back, width, height));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops().addAll(
+          bPrimeMove.getLoops().addAll(
               frontSideTurn(depth - layer + 1, width, height, depth, left, right, top, bottom));
         }
-        puzzle.getMoves().add(move);
+        puzzle.getMoves().add(bPrimeMove);
       }
       // z move
-      move = new Move();
-      move.setName(getMoveName(0, 'F', 1));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('F', false);
-      icon.fillFrontFace();
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'F', 1)));
-      move.getLoops().addAll(faceTurn(front, width, height));
-      move.getLoops().addAll(faceReverseTurn(back, width, height));
+      log.info("Generating Z");
+      Move zMove = new Move();
+      zMove.setName(getMoveName(0, 'F', 1));
+      zMove.setImageIcon(CuboidMoveIcon.builer(width,height, zMove.getName()).fillFrontFace().setRotation('F', false).getImage());
+      zMove.getLoops().addAll(faceTurn(front, width, height));
+      zMove.getLoops().addAll(faceReverseTurn(back, width, height));
       for (int layer = 1; layer <= depth; layer++) {
-        move.getLoops()
+        zMove.getLoops()
             .addAll(frontSideTurn(layer, width, height, depth, left, right, top, bottom));
       }
-      move.setCost(0);
-      puzzle.getMoves().add(move);
+      zMove.setCost(0);
+      puzzle.getMoves().add(zMove);
       // z' move
-      move = new Move();
-      move.setName(getMoveName(0, 'F', -1));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('F', true);
-      icon.fillFrontFace();
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'F', -1)));
-      move.getLoops().addAll(faceReverseTurn(front, width, height));
-      move.getLoops().addAll(faceTurn(back, width, height));
+      log.info("Generating Z'");
+      Move zPrimeMove = new Move();
+      zPrimeMove.setName(getMoveName(0, 'F', -1));
+      zPrimeMove.setImageIcon(CuboidMoveIcon.builer(width,height, zPrimeMove.getName()).fillFrontFace().setRotation('F', true).getImage());
+      zPrimeMove.getLoops().addAll(faceReverseTurn(front, width, height));
+      zPrimeMove.getLoops().addAll(faceTurn(back, width, height));
       for (int layer = 1; layer <= depth; layer++) {
-        move.getLoops()
+        zPrimeMove.getLoops()
             .addAll(frontSideReverseTurn(layer, width, height, depth, left, right, top, bottom));
       }
-      move.setCost(0);
-      puzzle.getMoves().add(move);
+      zPrimeMove.setCost(0);
+      puzzle.getMoves().add(zPrimeMove);
     }
     if (width == depth) {
       // we can have U,U',D,D',y,y'
       for (int deep = 1; deep < height; deep++) {
         // U Move
-        move = new Move();
-        move.setName(getMoveName(deep, 'U', 1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('U', false);
-        move.getLoops().addAll(faceTurn(top, width, depth));
+        log.info("Generating U to depth {}", deep);
+        Move uMove = new Move();
+        uMove.setName(getMoveName(deep, 'U', 1));
+        uMove.setImageIcon(CuboidMoveIcon.builer(width,height, uMove.getName()).fillFromTop(deep).setRotation('U', false).getImage());
+        uMove.getLoops().addAll(faceTurn(top, width, depth));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops()
+          uMove.getLoops()
               .addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
-          for (int x = 0; x < width; x++) {
-            icon.fillFrontFace(x, layer - 1);
-          }
-        }
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'U', 1)));
-        puzzle.getMoves().add(move);
+         }
+         puzzle.getMoves().add(uMove);
         // U' move
-        move = new Move();
-        move.setName(getMoveName(deep, 'U', -1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('U', true);
-        move.getLoops().addAll(faceReverseTurn(top, width, depth));
+        log.info("Generating U' to depth {}", deep);
+        Move uPrimeMove = new Move();
+        uPrimeMove.setName(getMoveName(deep, 'U', -1));
+        uPrimeMove.setImageIcon(CuboidMoveIcon.builer(width,height, uPrimeMove.getName()).fillFromTop(deep).setRotation('U', true).getImage());
+        uPrimeMove.getLoops().addAll(faceReverseTurn(top, width, depth));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops()
+          uPrimeMove.getLoops()
               .addAll(topSideReverseTurn(layer, width, height, depth, left, right, front, back));
-          for (int x = 0; x < width; x++) {
-            icon.fillFrontFace(x, layer - 1);
-          }
         }
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'U', -1)));
-        puzzle.getMoves().add(move);
+        puzzle.getMoves().add(uPrimeMove);
         // D move
-        move = new Move();
-        move.setName(getMoveName(deep, 'D', 1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('D', false);
-        move.getLoops().addAll(faceTurn(bottom, width, depth));
+        Move dMove = new Move();
+        dMove.setName(getMoveName(deep, 'D', 1));
+   //     icon = new CuboidMoveIcon(width, height);
+   //     icon.setRotation('D', false);
+        dMove.getLoops().addAll(faceTurn(bottom, width, depth));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops().addAll(
+          dMove.getLoops().addAll(
               topSideReverseTurn(height - layer + 1, width, height, depth, left, right, front,
                   back));
           for (int x = 0; x < width; x++) {
-            icon.fillFrontFace(x, height - layer);
+   //         icon.fillFrontFace(x, height - layer);
           }
         }
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'D', 1)));
-        puzzle.getMoves().add(move);
+  //      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'D', 1)));
+        puzzle.getMoves().add(dMove);
         // D' move
-        move = new Move();
-        move.setName(getMoveName(deep, 'D', -1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('D', true);
-        move.getLoops().addAll(faceReverseTurn(bottom, width, depth));
+        Move dPrimeMove = new Move();
+        dPrimeMove.setName(getMoveName(deep, 'D', -1));
+  //      icon = new CuboidMoveIcon(width, height);
+  //      icon.setRotation('D', true);
+        dPrimeMove.getLoops().addAll(faceReverseTurn(bottom, width, depth));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops().addAll(
+          dPrimeMove.getLoops().addAll(
               topSideTurn(height - layer + 1, width, height, depth, left, right, front, back));
           for (int x = 0; x < width; x++) {
-            icon.fillFrontFace(x, height - layer);
+  //          icon.fillFrontFace(x, height - layer);
           }
         }
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'D', -1)));
-        puzzle.getMoves().add(move);
+  //      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'D', -1)));
+        puzzle.getMoves().add(dPrimeMove);
       }
       // y move
-      move = new Move();
-      move.setName(getMoveName(0, 'U', 1));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('U', false);
-      icon.fillFrontFace();
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'U', 1)));
-      move.getLoops().addAll(faceTurn(top, width, depth));
-      move.getLoops().addAll(faceReverseTurn(bottom, width, depth));
+      Move yMove = new Move();
+      yMove.setName(getMoveName(0, 'U', 1));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('U', false);
+//      icon.fillFrontFace();
+ //     move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'U', 1)));
+      yMove.getLoops().addAll(faceTurn(top, width, depth));
+      yMove.getLoops().addAll(faceReverseTurn(bottom, width, depth));
       for (int layer = 1; layer <= height; layer++) {
-        move.getLoops().addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
+        yMove.getLoops().addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
       }
-      move.setCost(0);
-      puzzle.getMoves().add(move);
+      yMove.setCost(0);
+      puzzle.getMoves().add(yMove);
       // y' move
-      move = new Move();
-      move.setName(getMoveName(0, 'U', -1));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('U', true);
-      icon.fillFrontFace();
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'U', -1)));
-      move.getLoops().addAll(faceReverseTurn(top, width, depth));
-      move.getLoops().addAll(faceTurn(bottom, width, depth));
+      Move yPrimeMove = new Move();
+      yPrimeMove.setName(getMoveName(0, 'U', -1));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('U', true);
+//      icon.fillFrontFace();
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'U', -1)));
+      yPrimeMove.getLoops().addAll(faceReverseTurn(top, width, depth));
+      yPrimeMove.getLoops().addAll(faceTurn(bottom, width, depth));
       for (int layer = 1; layer <= height; layer++) {
-        move.getLoops()
+        yPrimeMove.getLoops()
             .addAll(topSideReverseTurn(layer, width, height, depth, left, right, front, back));
       }
-      move.setCost(0);
-      puzzle.getMoves().add(move);
+      yPrimeMove.setCost(0);
+      puzzle.getMoves().add(yPrimeMove);
     }
     if (depth == height) {
       // we can have R,R',L,L',z,z'
       for (int deep = 1; deep < width; deep++) {
         // R
-        move = new Move();
-        move.setName(getMoveName(deep, 'R', 1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('R', false);
-        move.getLoops().addAll(faceTurn(right, depth, height));
+        Move rMove = new Move();
+        rMove.setName(getMoveName(deep, 'R', 1));
+//        icon = new CuboidMoveIcon(width, height);
+//        icon.setRotation('R', false);
+        rMove.getLoops().addAll(faceTurn(right, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops()
+          rMove.getLoops()
               .addAll(rightSideTurn(layer, width, height, depth, front, back, top, bottom));
           for (int y = 0; y < height; y++) {
-            icon.fillFrontFace(width - layer, y);
+//            icon.fillFrontFace(width - layer, y);
           }
         }
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'R', 1)));
-        puzzle.getMoves().add(move);
+//        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'R', 1)));
+        puzzle.getMoves().add(rMove);
         // R'
-        move = new Move();
-        move.setName(getMoveName(deep, 'R', -1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('R', true);
-        move.getLoops().addAll(faceReverseTurn(right, depth, height));
+        Move rPrimeMove = new Move();
+        rPrimeMove.setName(getMoveName(deep, 'R', -1));
+//        icon = new CuboidMoveIcon(width, height);
+//        icon.setRotation('R', true);
+        rPrimeMove.getLoops().addAll(faceReverseTurn(right, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops()
+          rPrimeMove.getLoops()
               .addAll(rightSideReverseTurn(layer, width, height, depth, front, back, top, bottom));
           for (int y = 0; y < height; y++) {
-            icon.fillFrontFace(width - layer, y);
+//            icon.fillFrontFace(width - layer, y);
           }
         }
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'R', -1)));
-        puzzle.getMoves().add(move);
+//        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'R', -1)));
+        puzzle.getMoves().add(rPrimeMove);
         // L
-        move = new Move();
-        move.setName(getMoveName(deep, 'L', 1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('L', false);
-        move.getLoops().addAll(faceTurn(left, depth, height));
+        Move lMove = new Move();
+        lMove.setName(getMoveName(deep, 'L', 1));
+//        icon = new CuboidMoveIcon(width, height);
+        //icon.setRotation('L', false);
+        lMove.getLoops().addAll(faceTurn(left, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops().addAll(
+          lMove.getLoops().addAll(
               rightSideReverseTurn(width - layer + 1, width, height, depth, front, back, top,
                   bottom));
           for (int y = 0; y < height; y++) {
-            icon.fillFrontFace(layer - 1, y);
+//            icon.fillFrontFace(layer - 1, y);
           }
         }
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'L', 1)));
-        puzzle.getMoves().add(move);
+//        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'L', 1)));
+        puzzle.getMoves().add(lMove);
         // L'
-        move = new Move();
-        move.setName(getMoveName(deep, 'L', -1));
-        icon = new CuboidMoveIcon(width, height, depth);
-        icon.setRotation('L', true);
-        move.getLoops().addAll(faceReverseTurn(left, depth, height));
+        Move lPrimeMove = new Move();
+        lPrimeMove.setName(getMoveName(deep, 'L', -1));
+//        icon = new CuboidMoveIcon(width, height);
+//        icon.setRotation('L', true);
+        lPrimeMove.getLoops().addAll(faceReverseTurn(left, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
-          move.getLoops().addAll(
+          lPrimeMove.getLoops().addAll(
               rightSideTurn(width - layer + 1, width, height, depth, front, back, top, bottom));
           for (int y = 0; y < height; y++) {
-            icon.fillFrontFace(layer - 1, y);
+//            icon.fillFrontFace(layer - 1, y);
           }
         }
-        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'L', -1)));
-        puzzle.getMoves().add(move);
+//        move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'L', -1)));
+        puzzle.getMoves().add(lPrimeMove);
       }
       // z
-      move = new Move();
-      move.setName(getMoveName(0, 'R', 1));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.fillFrontFace();
-      icon.setRotation('R', false);
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'R', 1)));
-      move.getLoops().addAll(faceTurn(right, depth, height));
-      move.getLoops().addAll(faceReverseTurn(left, depth, height));
+      Move zMove = new Move();
+      zMove.setName(getMoveName(0, 'R', 1));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.fillFrontFace();
+//      icon.setRotation('R', false);
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'R', 1)));
+      zMove.getLoops().addAll(faceTurn(right, depth, height));
+      zMove.getLoops().addAll(faceReverseTurn(left, depth, height));
       for (int layer = 1; layer <= width; layer++) {
-        move.getLoops()
+        zMove.getLoops()
             .addAll(rightSideTurn(layer, width, height, depth, front, back, top, bottom));
       }
-      move.setCost(0);
-      puzzle.getMoves().add(move);
+      zMove.setCost(0);
+      puzzle.getMoves().add(zMove);
       // z'
-      move = new Move();
-      move.setName(getMoveName(0, 'R', -1));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('R', true);
-      icon.fillFrontFace();
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'R', -1)));
-      move.getLoops().addAll(faceReverseTurn(right, depth, height));
-      move.getLoops().addAll(faceTurn(left, depth, height));
+      Move zPrimeMove = new Move();
+      zPrimeMove.setName(getMoveName(0, 'R', -1));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('R', true);
+//      icon.fillFrontFace();
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'R', -1)));
+      zPrimeMove.getLoops().addAll(faceReverseTurn(right, depth, height));
+      zPrimeMove.getLoops().addAll(faceTurn(left, depth, height));
       for (int layer = 1; layer <= width; layer++) {
-        move.getLoops()
+        zPrimeMove.getLoops()
             .addAll(rightSideReverseTurn(layer, width, height, depth, front, back, top, bottom));
       }
-      move.setCost(0);
-      puzzle.getMoves().add(move);
+      zPrimeMove.setCost(0);
+      puzzle.getMoves().add(zPrimeMove);
     }
     // we can always have double turns
     for (int deep = 1; deep < depth; deep++) {
       // F2 moves
-      move = new Move();
-      move.setName(getMoveName(deep, 'F', 2));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('F', false);
-      icon.fillFrontFace();
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'F', 2)));
-      move.getLoops().addAll(faceDoubleTurn(front, width, height));
+      Move f2Move = new Move();
+      f2Move.setName(getMoveName(deep, 'F', 2));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('F', false);
+//      icon.fillFrontFace();
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'F', 2)));
+      f2Move.getLoops().addAll(faceDoubleTurn(front, width, height));
       for (int layer = 1; layer <= deep; layer++) {
-        move.getLoops()
+        f2Move.getLoops()
             .addAll(frontSideDoubleTurn(layer, width, height, depth, left, right, top, bottom));
       }
-      puzzle.getMoves().add(move);
+      puzzle.getMoves().add(f2Move);
       // B2
-      move = new Move();
-      move.setName(getMoveName(deep, 'B', 2));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('B', false);
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'B', 2)));
-      move.getLoops().addAll(faceDoubleTurn(back, width, height));
+      Move b2Move = new Move();
+      b2Move.setName(getMoveName(deep, 'B', 2));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('B', false);
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'B', 2)));
+      b2Move.getLoops().addAll(faceDoubleTurn(back, width, height));
       for (int layer = 1; layer <= deep; layer++) {
-        move.getLoops().addAll(
+        b2Move.getLoops().addAll(
             frontSideDoubleTurn(depth - layer + 1, width, height, depth, left, right, top, bottom));
       }
-      puzzle.getMoves().add(move);
+      puzzle.getMoves().add(b2Move);
     }
     // z2
-    move = new Move();
-    move.setName(getMoveName(0, 'F', 2));
-    icon = new CuboidMoveIcon(width, height, depth);
-    icon.fillFrontFace();
-    icon.setRotation('F', false);
-    move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'F', 2)));
-    move.getLoops().addAll(faceDoubleTurn(front, width, height));
-    move.getLoops().addAll(faceDoubleTurn(back, width, height));
+    Move z2Move = new Move();
+    z2Move.setName(getMoveName(0, 'F', 2));
+//    icon = new CuboidMoveIcon(width, height);
+//    icon.fillFrontFace();
+//    icon.setRotation('F', false);
+//    move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'F', 2)));
+    z2Move.getLoops().addAll(faceDoubleTurn(front, width, height));
+    z2Move.getLoops().addAll(faceDoubleTurn(back, width, height));
     for (int layer = 1; layer <= depth; layer++) {
-      move.getLoops()
+      z2Move.getLoops()
           .addAll(frontSideDoubleTurn(layer, width, height, depth, left, right, top, bottom));
     }
-    move.setCost(0);
-    puzzle.getMoves().add(move);
+    z2Move.setCost(0);
+    puzzle.getMoves().add(z2Move);
     for (int deep = 1; deep < height; deep++) {
       // U2
-      move = new Move();
-      move.setName(getMoveName(deep, 'U', 2));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('U', false);
-      move.getLoops().addAll(faceDoubleTurn(top, width, depth));
+      Move u2Move = new Move();
+      u2Move.setName(getMoveName(deep, 'U', 2));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('U', false);
+      u2Move.getLoops().addAll(faceDoubleTurn(top, width, depth));
       for (int layer = 1; layer <= deep; layer++) {
-        move.getLoops()
+        u2Move.getLoops()
             .addAll(topSideDoubleTurn(layer, width, height, depth, right, left, front, back));
         for (int x = 0; x < width; x++) {
-          icon.fillFrontFace(x, layer - 1);
+  //        icon.fillFrontFace(x, layer - 1);
         }
       }
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'U', 2)));
-      puzzle.getMoves().add(move);
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'U', 2)));
+      puzzle.getMoves().add(u2Move);
       //  D2
-      move = new Move();
-      move.setName(getMoveName(deep, 'D', 2));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('D', false);
-      move.getLoops().addAll(faceDoubleTurn(bottom, width, depth));
+      Move d2Move = new Move();
+      d2Move.setName(getMoveName(deep, 'D', 2));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('D', false);
+      d2Move.getLoops().addAll(faceDoubleTurn(bottom, width, depth));
       for (int layer = 1; layer <= deep; layer++) {
-        move.getLoops().addAll(
+        d2Move.getLoops().addAll(
             topSideDoubleTurn(height - layer + 1, width, height, depth, right, left, front, back));
         for (int x = 0; x < width; x++) {
-          icon.fillFrontFace(x, height - layer);
+//          icon.fillFrontFace(x, height - layer);
         }
       }
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'D', 2)));
-      puzzle.getMoves().add(move);
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'D', 2)));
+      puzzle.getMoves().add(d2Move);
     }
     //  y2
-    move = new Move();
-    move.setName(getMoveName(0, 'U', 2));
-    icon = new CuboidMoveIcon(width, height, depth);
-    icon.setRotation('U', false);
-    icon.fillFrontFace();
-    move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'U', 2)));
-    move.getLoops().addAll(faceDoubleTurn(top, width, depth));
-    move.getLoops().addAll(faceDoubleTurn(bottom, width, depth));
+    Move y2Move = new Move();
+    y2Move.setName(getMoveName(0, 'U', 2));
+//    icon = new CuboidMoveIcon(width, height);
+//    icon.setRotation('U', false);
+//    icon.fillFrontFace();
+//    move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'U', 2)));
+    y2Move.getLoops().addAll(faceDoubleTurn(top, width, depth));
+    y2Move.getLoops().addAll(faceDoubleTurn(bottom, width, depth));
     for (int layer = 1; layer <= height; layer++) {
-      move.getLoops()
+      y2Move.getLoops()
           .addAll(topSideDoubleTurn(layer, width, height, depth, right, left, front, back));
     }
-    move.setCost(0);
-    puzzle.getMoves().add(move);
+    y2Move.setCost(0);
+    puzzle.getMoves().add(y2Move);
     for (int deep = 1; deep < width; deep++) {
       //  R2
-      move = new Move();
-      move.setName(getMoveName(deep, 'R', 2));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('R', false);
-      move.getLoops().addAll(faceDoubleTurn(right, depth, height));
+      Move r2Move = new Move();
+      r2Move.setName(getMoveName(deep, 'R', 2));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('R', false);
+      r2Move.getLoops().addAll(faceDoubleTurn(right, depth, height));
       for (int layer = 1; layer <= deep; layer++) {
-        move.getLoops()
+        r2Move.getLoops()
             .addAll(rightSideDoubleTurn(layer, width, height, depth, front, back, top, bottom));
         for (int y = 0; y < height; y++) {
-          icon.fillFrontFace(width - layer, y);
+//          icon.fillFrontFace(width - layer, y);
         }
       }
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'R', 2)));
-      puzzle.getMoves().add(move);
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'R', 2)));
+      puzzle.getMoves().add(r2Move);
       //  L2
-      move = new Move();
-      move.setName(getMoveName(deep, 'L', 2));
-      icon = new CuboidMoveIcon(width, height, depth);
-      icon.setRotation('L', false);
-      move.getLoops().addAll(faceDoubleTurn(left, depth, height));
+      Move l2Move = new Move();
+      l2Move.setName(getMoveName(deep, 'L', 2));
+//      icon = new CuboidMoveIcon(width, height);
+//      icon.setRotation('L', false);
+      l2Move.getLoops().addAll(faceDoubleTurn(left, depth, height));
       for (int layer = 1; layer <= deep; layer++) {
-        move.getLoops().addAll(
+        l2Move.getLoops().addAll(
             rightSideDoubleTurn(width - layer + 1, width, height, depth, front, back, top, bottom));
         for (int y = 0; y < height; y++) {
-          icon.fillFrontFace(layer - 1, y);
+//          icon.fillFrontFace(layer - 1, y);
         }
       }
-      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'L', 2)));
-      puzzle.getMoves().add(move);
+//      move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(deep, 'L', 2)));
+      puzzle.getMoves().add(l2Move);
     }
     // x2
-    move = new Move();
-    move.setName(getMoveName(0, 'R', 2));
-    icon = new CuboidMoveIcon(width, height, depth);
-    icon.setRotation('R', false);
-    icon.fillFrontFace();
-    move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'R', 2)));
-    move.getLoops().addAll(faceDoubleTurn(right, depth, height));
-    move.getLoops().addAll(faceDoubleTurn(left, depth, height));
+    Move x2Move = new Move();
+    x2Move.setName(getMoveName(0, 'R', 2));
+//    icon = new CuboidMoveIcon(width, height);
+//    icon.setRotation('R', false);
+//    icon.fillFrontFace();
+//    move.setImageIcon(getMoveIcon(icon.getImage(), getMoveName(0, 'R', 2)));
+    x2Move.getLoops().addAll(faceDoubleTurn(right, depth, height));
+    x2Move.getLoops().addAll(faceDoubleTurn(left, depth, height));
     for (int layer = 1; layer <= width; layer++) {
-      move.getLoops()
+      x2Move.getLoops()
           .addAll(rightSideDoubleTurn(layer, width, height, depth, front, back, top, bottom));
     }
-    move.setCost(0);
-    puzzle.getMoves().add(move);
+    x2Move.setCost(0);
+    puzzle.getMoves().add(x2Move);
     // compile moves
     Optional<String> errors = puzzle.compileMoves();
     errors.ifPresent(s -> log.warn("Error compiling moves: {}", s));
@@ -549,20 +527,6 @@ public class CuboidBuilder {
     return result.toString();
   }
 
-  /**
-   * Create the move name, if depth<1 then assume a cube rotation
-   *
-   * @param depth        the depth of the turn 0 for all layers
-   * @param face         the face to turn
-   * @param quarterTurns the number of quarter turns
-   * @return
-   */
-  @Deprecated
-  public BufferedImage getMoveIcon(int depth, char face, int quarterTurns) {
-    BufferedImage image = getMoveIcon(getMoveName(depth, face, quarterTurns));
-    return image;
-  }
-
   private List<Cell> createGrid(int x, int y, int w, int h, ColourEnum colour, int scale) {
     List<Cell> cells = new ArrayList<>();
     for (int dy = 0; dy < h; dy++) {
@@ -580,14 +544,14 @@ public class CuboidBuilder {
     return cells;
   }
 
-  private List<Loop> frontSideTurn(int layer, int width, int height, int depth, List<Cell> left,
+  private List<MoveLoop> frontSideTurn(int layer, int width, int height, int depth, List<Cell> left,
       List<Cell> right, List<Cell> top, List<Cell> bottom) {
     if (width != height) {
       throw new IllegalStateException();
     }
-    List<Loop> result = new ArrayList<>();
+    List<MoveLoop> result = new ArrayList<>();
     for (int i = 0; i < width; i++) {
-      Loop loop = new Loop();
+      MoveLoop loop = new MoveLoop();
       loop.getCells().add(top.get(i + width * (depth - layer)));
       loop.getCells().add(right.get(layer - 1 + i * depth));
       loop.getCells().add(bottom.get(width - i - 1 + width * (layer - 1)));
@@ -597,14 +561,14 @@ public class CuboidBuilder {
     return result;
   }
 
-  private List<Loop> topSideTurn(int layer, int width, int height, int depth, List<Cell> left,
+  private List<MoveLoop> topSideTurn(int layer, int width, int height, int depth, List<Cell> left,
       List<Cell> right, List<Cell> front, List<Cell> back) {
     if (width != depth) {
       throw new IllegalStateException();
     }
-    List<Loop> result = new ArrayList<>();
+    List<MoveLoop> result = new ArrayList<>();
     for (int i = 0; i < width; i++) {
-      Loop loop = new Loop();
+      MoveLoop loop = new MoveLoop();
       loop.getCells().add(front.get(i + (layer - 1) * width));
       loop.getCells().add(left.get(i + (layer - 1) * width));
       loop.getCells().add(back.get(i + (layer - 1) * width));
@@ -614,14 +578,14 @@ public class CuboidBuilder {
     return result;
   }
 
-  private List<Loop> rightSideTurn(int layer, int width, int height, int depth, List<Cell> front,
+  private List<MoveLoop> rightSideTurn(int layer, int width, int height, int depth, List<Cell> front,
       List<Cell> back, List<Cell> top, List<Cell> bottom) {
     if (height != depth) {
       throw new IllegalStateException();
     }
-    List<Loop> result = new ArrayList<>();
+    List<MoveLoop> result = new ArrayList<>();
     for (int i = 0; i < height; i++) {
-      Loop loop = new Loop();
+      MoveLoop loop = new MoveLoop();
       loop.getCells().add(front.get(width - layer + i * width));
       loop.getCells().add(top.get(width - layer + i * width));
       loop.getCells().add(back.get(layer - 1 + (height - i - 1) * width));
@@ -631,44 +595,44 @@ public class CuboidBuilder {
     return result;
   }
 
-  private List<Loop> frontSideReverseTurn(int layer, int width, int height, int depth,
+  private List<MoveLoop> frontSideReverseTurn(int layer, int width, int height, int depth,
       List<Cell> left, List<Cell> right, List<Cell> top, List<Cell> bottom) {
-    List<Loop> result = frontSideTurn(layer, width, height, depth, left, right, top, bottom);
-    for (Loop loop : result) {
+    List<MoveLoop> result = frontSideTurn(layer, width, height, depth, left, right, top, bottom);
+    for (MoveLoop loop : result) {
       Collections.reverse(loop.getCells());
     }
     return result;
   }
 
-  private List<Loop> topSideReverseTurn(int layer, int width, int height, int depth,
+  private List<MoveLoop> topSideReverseTurn(int layer, int width, int height, int depth,
       List<Cell> left, List<Cell> right, List<Cell> front, List<Cell> back) {
-    List<Loop> result = topSideTurn(layer, width, height, depth, left, right, front, back);
-    for (Loop loop : result) {
+    List<MoveLoop> result = topSideTurn(layer, width, height, depth, left, right, front, back);
+    for (MoveLoop loop : result) {
       Collections.reverse(loop.getCells());
     }
     return result;
   }
 
-  private List<Loop> rightSideReverseTurn(int layer, int width, int height, int depth,
+  private List<MoveLoop> rightSideReverseTurn(int layer, int width, int height, int depth,
       List<Cell> front, List<Cell> back, List<Cell> top, List<Cell> bottom) {
-    List<Loop> result = rightSideTurn(layer, width, height, depth, front, back, top, bottom);
-    for (Loop loop : result) {
+    List<MoveLoop> result = rightSideTurn(layer, width, height, depth, front, back, top, bottom);
+    for (MoveLoop loop : result) {
       Collections.reverse(loop.getCells());
     }
     return result;
   }
 
-  private List<Loop> frontSideDoubleTurn(int layer, int width, int height, int depth,
+  private List<MoveLoop> frontSideDoubleTurn(int layer, int width, int height, int depth,
       List<Cell> left, List<Cell> right, List<Cell> top, List<Cell> bottom) {
-    List<Loop> result = new ArrayList<>();
+    List<MoveLoop> result = new ArrayList<>();
     for (int i = 0; i < width; i++) {
-      Loop l = new Loop();
+      MoveLoop l = new MoveLoop();
       l.getCells().add(top.get(i + (depth - layer) * width));
       l.getCells().add(bottom.get(width - i - 1 + (layer - 1) * width));
       result.add(l);
     }
     for (int i = 0; i < height; i++) {
-      Loop l = new Loop();
+      MoveLoop l = new MoveLoop();
       l.getCells().add(right.get(layer - 1 + i * depth));
       l.getCells().add(left.get(depth - layer + (height - i - 1) * depth));
       result.add(l);
@@ -676,17 +640,17 @@ public class CuboidBuilder {
     return result;
   }
 
-  private List<Loop> topSideDoubleTurn(int layer, int width, int height, int depth,
+  private List<MoveLoop> topSideDoubleTurn(int layer, int width, int height, int depth,
       List<Cell> right, List<Cell> left, List<Cell> front, List<Cell> back) {
-    List<Loop> result = new ArrayList<>();
+    List<MoveLoop> result = new ArrayList<>();
     for (int i = 0; i < width; i++) {
-      Loop l = new Loop();
+      MoveLoop l = new MoveLoop();
       l.getCells().add(front.get(i + (layer - 1) * width));
       l.getCells().add(back.get(i + (layer - 1) * width));
       result.add(l);
     }
     for (int i = 0; i < depth; i++) {
-      Loop l = new Loop();
+      MoveLoop l = new MoveLoop();
       l.getCells().add(right.get(i + (layer - 1) * depth));
       l.getCells().add(left.get(i + (layer - 1) * depth));
       result.add(l);
@@ -694,17 +658,17 @@ public class CuboidBuilder {
     return result;
   }
 
-  private List<Loop> rightSideDoubleTurn(int layer, int width, int height, int depth,
+  private List<MoveLoop> rightSideDoubleTurn(int layer, int width, int height, int depth,
       List<Cell> front, List<Cell> back, List<Cell> top, List<Cell> bottom) {
-    List<Loop> result = new ArrayList<>();
+    List<MoveLoop> result = new ArrayList<>();
     for (int i = 0; i < height; i++) {
-      Loop l = new Loop();
+      MoveLoop l = new MoveLoop();
       l.getCells().add(front.get(i * width + width - layer));
       l.getCells().add(back.get((height - i - 1) * width + layer - 1));
       result.add(l);
     }
     for (int i = 0; i < depth; i++) {
-      Loop l = new Loop();
+      MoveLoop l = new MoveLoop();
       l.getCells().add(top.get(i * width + width - layer));
       l.getCells().add(bottom.get(i * width + width - layer));
       result.add(l);
@@ -712,11 +676,11 @@ public class CuboidBuilder {
     return result;
   }
 
-  private List<Loop> faceTurn(List<Cell> face, int width, int height) {
-    List<Loop> result = new ArrayList<>();
+  private List<MoveLoop> faceTurn(List<Cell> face, int width, int height) {
+    List<MoveLoop> result = new ArrayList<>();
     for (int dx = 0; dx < divRoundUp(width, 2); dx++) {
       for (int dy = 0; dy < height / 2; dy++) {
-        Loop loop = new Loop();
+        MoveLoop loop = new MoveLoop();
         loop.getCells().add(face.get(dx + dy * width));
         loop.getCells().add(face.get((width - dy - 1) + width * dx));
         loop.getCells().add(face.get(width - dx - 1 + width * (height - dy - 1)));
@@ -727,19 +691,19 @@ public class CuboidBuilder {
     return result;
   }
 
-  private List<Loop> faceReverseTurn(List<Cell> face, int width, int height) {
-    List<Loop> result = faceTurn(face, width, height);
-    for (Loop loop : result) {
+  private List<MoveLoop> faceReverseTurn(List<Cell> face, int width, int height) {
+    List<MoveLoop> result = faceTurn(face, width, height);
+    for (MoveLoop loop : result) {
       Collections.reverse(loop.getCells());
     }
     return result;
   }
 
-  private List<Loop> faceDoubleTurn(List<Cell> face, int width, int height) {
-    List<Loop> result = new ArrayList<>();
+  private List<MoveLoop> faceDoubleTurn(List<Cell> face, int width, int height) {
+    List<MoveLoop> result = new ArrayList<>();
     for (int dx = 0; dx < width; dx++) {
       for (int dy = 0; dy < height / 2; dy++) {
-        Loop loop = new Loop();
+        MoveLoop loop = new MoveLoop();
         loop.getCells().add(face.get(dx + dy * width));
         loop.getCells().add(face.get(width - dx - 1 + width * (height - dy - 1)));
         result.add(loop);
@@ -749,7 +713,7 @@ public class CuboidBuilder {
     if (height % 2 == 1) {
       int dy = divRoundUp(height, 2) - 1;
       for (int dx = 0; dx < width / 2; dx++) {
-        Loop loop = new Loop();
+        MoveLoop loop = new MoveLoop();
         loop.getCells().add(face.get(dx + dy * width));
         loop.getCells().add(face.get(width - dx - 1 + dy * width));
         result.add(loop);
@@ -762,30 +726,7 @@ public class CuboidBuilder {
     return (num + divisor - 1) / divisor;
   }
 
-  public static BufferedImage getMoveIcon(String name) {
-    // create a new icon
-    BufferedImage image = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
-        BufferedImage.TYPE_INT_RGB);
-    Graphics2D graphics2D = image.createGraphics();
-    graphics2D.setColor(Color.WHITE);
-    graphics2D.fillRect(0, 0, Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT);
-    return getMoveIcon(image, name);
-  }
 
-  public static BufferedImage getMoveIcon(BufferedImage image, String name) {
-    Graphics2D graphics2D = image.createGraphics();
-    Font font = new Font("Hack", Font.PLAIN, 22);
-    graphics2D.setFont(font);
-    graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-        RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-    // Get the FontMetrics
-    FontMetrics metrics = graphics2D.getFontMetrics(font);
-    // Determine the X coordinate for the text
-    int dx = (Move.MOVE_ICON_WIDTH - metrics.stringWidth(name)) / 2;
-    // Set the font
-    graphics2D.setColor(Color.BLACK);
-    // Draw the String
-    graphics2D.drawString(name, dx, Move.MOVE_ICON_HEIGHT - 4);
-    return image;
-  }
+
+
 }
