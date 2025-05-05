@@ -21,7 +21,7 @@ public class Move {
   @Setter
   String name;
   @Getter
-  List<Loop> loops = new ArrayList<>();
+  List<MoveLoop> loops = new ArrayList<>();
   @Setter
   @Getter
   int cost;
@@ -35,5 +35,37 @@ public class Move {
   public String toString() {
     String sb = name + " (" + loops.size() + ")";
     return sb;
+  }
+
+  protected CompiledMove compileMove() {
+ /*  CompiledMove cmove = new CompiledMove(cells.size());
+    // copy move image
+    cmove.setImage(move.getImageIcon());
+    // copy move cost
+    cmove.setCost(move.getCost());
+    // setup matrix
+    cmove.resetMove();
+    // check we have loops
+    if (move.getLoops().isEmpty()) {
+      warnings.add("Move '" + move.getName() + "' has no loops");
+    }
+    // add each loop
+    for (int i = 0; i < move.getLoops().size(); i++) {
+      MoveLoop loop = move.getLoops().get(i);
+      // check we have at least two cells
+      if (loop.getCells().size() < 2) {
+        warnings.add("Move '" + move.getName() + "' loop " + i
+            + " has less than two cells - can't compile");
+      } else {
+        for (int j = 0; j < loop.getCells().size() - 1; j++) {
+          cmove.setMatrixElement(cells.indexOf(loop.getCells().get(j + 1)),
+              cells.indexOf(loop.getCells().get(j)));
+        }
+        cmove.setMatrixElement(cells.indexOf(loop.getCells().get(0)),
+            cells.indexOf(loop.getCells().get(loop.getCells().size() - 1)));
+      }
+    }
+  }*/
+    return null;
   }
 }
