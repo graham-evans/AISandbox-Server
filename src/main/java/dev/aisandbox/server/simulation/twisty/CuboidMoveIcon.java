@@ -1,12 +1,16 @@
 package dev.aisandbox.server.simulation.twisty;
 
+import dev.aisandbox.server.engine.output.OutputConstants;
+import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import dev.aisandbox.server.simulation.twisty.model.Move;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CuboidMoveIcon {
 
   // constants to frame the icon
@@ -17,102 +21,121 @@ public class CuboidMoveIcon {
   // colours to fill squares
   final static Color UNFILLED = Color.WHITE;
   final static Color FILLED = Color.lightGray;
+  // arrow images
+  final static BufferedImage arrows;
+
+  static {
+    BufferedImage arrowImage = null;
+    try {
+      arrowImage = ImageIO.read(
+          CuboidMoveIcon.class.getResourceAsStream("/images/twisty/CuboidArrows.png"));
+    } catch (IOException e) {
+      log.error("Error loading arrows!", e);
+    }
+    arrows = arrowImage;
+  }
+
+  // dimentions
   final int width;
   final int height;
-  final int depth; // NOT USED CURRENTLY
-  // calculated values
+  final int originX;
+  //  final int originY;
   final double scale;
-  final int startX;
-  final int startY;
-  BufferedImage background;
-  BufferedImage midground;
-  BufferedImage foreground;
-  BufferedImage arrows;
-  Graphics2D backgroundGraphics;
-  Graphics2D midgroundGraphics;
-  Graphics2D foregroundGraphics;
+  // drawing objects
+  BufferedImage backgroundImage = GraphicsUtils.createBlankImage(Move.MOVE_ICON_WIDTH,
+      Move.MOVE_ICON_HEIGHT, Color.WHITE);
+  BufferedImage foregroundImage = GraphicsUtils.createClearImage(Move.MOVE_ICON_WIDTH,
+      Move.MOVE_ICON_HEIGHT);
+  Graphics2D backgroundGraphics = backgroundImage.createGraphics();
+  Graphics2D foregroundGraphics = foregroundImage.createGraphics();
 
-  public CuboidMoveIcon(int width, int height, int depth) throws IOException {
+  public CuboidMoveIcon(int width, int height, String name) {
     this.width = width;
     this.height = height;
-    this.depth = depth;
-    // setup images
-    background = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
-        BufferedImage.TYPE_INT_RGB);
-    backgroundGraphics = background.createGraphics();
-    backgroundGraphics.setColor(Color.WHITE);
-    backgroundGraphics.fillRect(0, 0, Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT);
-    midground = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
-        BufferedImage.TYPE_INT_ARGB);
-    midgroundGraphics = midground.createGraphics();
-    foreground = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
-        BufferedImage.TYPE_INT_ARGB);
-    foregroundGraphics = foreground.createGraphics();
-    // work out scale
-    double hscale = (Move.MOVE_ICON_WIDTH - marginLeft - marginRight) / (1.0 * width);
-    double vscale = (Move.MOVE_ICON_HEIGHT - marginTop - marginBottom) / (1.0 * height);
-    scale = Math.min(hscale, vscale);
+    // setup image
+    GraphicsUtils.setupRenderingHints(foregroundGraphics);
+    // work out scale of each small square
+    double hScale = (Move.MOVE_ICON_WIDTH - marginLeft - marginRight) / (1.0 * width);
+    double vScale = (Move.MOVE_ICON_HEIGHT - marginTop - marginBottom) / (1.0 * height);
+    scale = Math.min(hScale, vScale);
+    // work out the origin of the grid
+//    originY = Move.MOVE_ICON_HEIGHT - marginBottom - (int) (
+//        (Move.MOVE_ICON_HEIGHT - marginBottom - marginTop - height * scale) / 2.0);
 
-    startY = Move.MOVE_ICON_HEIGHT - marginBottom - (int) (
-        (Move.MOVE_ICON_HEIGHT - marginBottom - marginTop - height * scale) / 2.0);
-    startX = marginLeft + (int) ((Move.MOVE_ICON_WIDTH - marginLeft - marginRight - width * scale)
+    originX = marginLeft + (int) ((Move.MOVE_ICON_WIDTH - marginLeft - marginRight - width * scale)
         / 2.0);
 
     // draw cuboid
-    midgroundGraphics.setColor(UNFILLED);
-    midgroundGraphics.fillRect(startX, startY - (int) (height * scale), (int) (width * scale),
-        (int) (height * scale));
+    drawCuboid(foregroundGraphics, originX, marginTop, width, height, scale);
+    // write label
+    drawName(foregroundGraphics, name);
+//    midgroundGraphics.setColor(UNFILLED);
+//    midgroundGraphics.fillRect(originX, originY - (int) (height * scale), (int) (width * scale),
+//        (int) (height * scale));
 
     //   midgroundGraphics.setColor(Color.cyan);
     //   midgroundGraphics.fillRect(marginLeft,marginTop,Move
     //   .MOVE_ICON_WIDTH-marginLeft-marginRight,Move.MOVE_ICON_HEIGHT-marginTop-marginBottom);
     // load arrows
-    arrows = ImageIO.read(
-        CuboidMoveIcon.class.getResourceAsStream("/images/twisty/CuboidArrows.png"));
+    //  arrows = ImageIO.read(
+    //      CuboidMoveIcon.class.getResourceAsStream("/images/twisty/CuboidArrows.png"));
+    // overlay images onto background
   }
 
-  private void drawCuboid() {
-    midgroundGraphics.setColor(Color.darkGray);
+  public static CuboidMoveIcon builer(int width, int height, String name) {
+    return new CuboidMoveIcon(width, height, name);
+  }
+
+  private static void drawCuboid(Graphics2D g, int originX, int originY, int width, int height,
+      double scale) {
+    g.setColor(Color.darkGray);
     // draw front vertical lines
     for (int i = 0; i <= width; i++) {
-      midgroundGraphics.drawLine((int) (startX + i * scale), startY, (int) (startX + i * scale),
-          (int) (startY - height * scale));
+      g.drawLine((int) (originX + i * scale), (int) originY, (int) (originX + i * scale),
+          (int) (originY + height * scale));
     }
     // draw front horizontal lines
     for (int i = 0; i <= height; i++) {
-      midgroundGraphics.drawLine(startX, startY - (int) (i * scale), startX + (int) (width * scale),
-          startY - (int) (i * scale));
+      g.drawLine(originX, originY + (int) (i * scale), originX + (int) (width * scale),
+          originY + (int) (i * scale));
     }
-
-
   }
 
-  public void fillFrontFace(int num) {
-    fillFrontFace(num % width, num / width);
+  private static void drawName(Graphics2D g, String name) {
+    GraphicsUtils.drawCenteredText(g, 0,
+        Move.MOVE_ICON_HEIGHT - OutputConstants.LOG_FONT_HEIGHT * 2, Move.MOVE_ICON_WIDTH,
+        OutputConstants.LOG_FONT_HEIGHT, name, OutputConstants.LOG_FONT, Color.BLACK);
   }
 
-  public void fillFrontFace() {
+  public CuboidMoveIcon fillFrontFace() {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
         fillFrontFace(x, y);
       }
     }
+    return this;
   }
 
-  public void fillFrontFace(int left, int down) {
-    midgroundGraphics.setColor(FILLED);
-    midgroundGraphics.fillRect(startX + (int) (left * scale),
-        startY + (int) (scale * (down - height)), (int) scale + 1, (int) scale + 1);
+  public CuboidMoveIcon fillFromTop(int n) {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < n; y++) {
+        fillFrontFace(x, y);
+      }
+    }
+    return this;
   }
 
-  public void fillFrontFace(int left, int down, Color color) {
-    midgroundGraphics.setColor(color);
-    midgroundGraphics.setColor(FILLED);
-    midgroundGraphics.fillRect(startX + (int) (left * scale),
-        startY + (int) (scale * (down - height)), (int) scale + 1, (int) scale + 1);
+  private void fillFrontFace(int x, int y) {
+    fillFrontFace(x, y, FILLED);
   }
 
-  public void setRotation(char face, boolean inverse) {
+  private void fillFrontFace(int x, int y, Color color) {
+    backgroundGraphics.setColor(color);
+    backgroundGraphics.fillRect((int) (originX + x * scale), (int) (marginTop + scale * y),
+        (int) scale + 1, (int) scale + 1);
+  }
+
+  public CuboidMoveIcon setRotation(char face, boolean inverse) {
     switch (face) {
       case 'R':
         backgroundGraphics.drawImage(arrows.getSubimage(32 + 4 * 60, 20, 28, 40), 32, 20, null);
@@ -142,18 +165,18 @@ public class CuboidMoveIcon {
             null);
         break;
     }
+    return this;
   }
 
   public BufferedImage getImage() {
-    // draw cube overlay
-    drawCuboid();
     // merge the layers
     BufferedImage image = new BufferedImage(Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_HEIGHT,
         BufferedImage.TYPE_INT_RGB);
     Graphics2D g = image.createGraphics();
-    g.drawImage(background, 0, 0, null);
-    g.drawImage(midground, 0, 0, null);
-    g.drawImage(foreground, 0, 0, null);
+    g.drawImage(backgroundImage, 0, 0, null);
+    g.drawImage(foregroundImage, 0, 0, null);
     return image;
   }
+
+
 }
