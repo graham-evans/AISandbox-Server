@@ -72,7 +72,7 @@ public class MoveCompilerTest {
     // Create a move 2->3->4->2
     Move m1 = new Move();
     m1.setName("Move1");
-    Loop loop1 = new Loop();
+    MoveLoop loop1 = new MoveLoop();
     loop1.getCells().add(c2);
     loop1.getCells().add(c3);
     loop1.getCells().add(c4);
@@ -109,7 +109,7 @@ public class MoveCompilerTest {
     // Create a move 1->2->3->4->5->1
     Move m1 = new Move();
     m1.setName("Move1");
-    Loop loop1 = new Loop();
+    MoveLoop loop1 = new MoveLoop();
     loop1.getCells().add(c1);
     loop1.getCells().add(c2);
     loop1.getCells().add(c3);
