@@ -75,7 +75,7 @@ public class TwistyPuzzle {
       }
       // add each loop
       for (int i = 0; i < move.getLoops().size(); i++) {
-        Loop loop = move.getLoops().get(i);
+        MoveLoop loop = move.getLoops().get(i);
         // check we have at least two cells
         if (loop.getCells().size() < 2) {
           warnings.add("Move '" + move.getName() + "' loop " + i
