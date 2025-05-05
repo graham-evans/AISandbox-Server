@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
-public class Loop {
+public class MoveLoop {
 
   @Getter
   List<Cell> cells = new ArrayList<>();
