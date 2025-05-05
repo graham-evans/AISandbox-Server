@@ -1,6 +1,7 @@
 package dev.aisandbox.server.simulation.twisty;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
@@ -49,6 +50,7 @@ public class TestRunTwisty {
           .map(s -> (Agent) new MockTwistyAgent(s)).toList();
       // create simulation
       Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
+      assertNotNull(sim);
       // create output
       File targetDir = new File(outputDirectory,
           puzzleType.name() + "_" + theme.name().toLowerCase());
