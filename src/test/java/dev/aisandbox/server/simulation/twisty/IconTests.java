@@ -26,11 +26,11 @@ public class IconTests {
 
   @ParameterizedTest
   @EnumSource(PuzzleType.class)
-  public void testRunHighLowCards(PuzzleType ptype) throws IOException {
+  public void testDrawMoveIcons(PuzzleType ptype) throws IOException {
     // get all moves
     Map<String, CompiledMove> moves = ptype.getTwistyPuzzle().getCompiledMoves();
     List<String> movesNames = moves.keySet().stream().sorted().toList();
-    BufferedImage image = GraphicsUtils.createBlankImage((Move.MOVE_ICON_WIDTH + 2) * moves.size(),
+    BufferedImage image = GraphicsUtils.createBlankImage((Move.MOVE_ICON_WIDTH + 1) * moves.size(),
         Move.MOVE_ICON_HEIGHT + 2, Color.DARK_GRAY);
     Graphics2D g = image.createGraphics();
     int cursor = 1;

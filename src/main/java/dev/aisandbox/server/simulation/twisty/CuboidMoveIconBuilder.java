@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CuboidMoveIcon {
+public class CuboidMoveIconBuilder {
 
   // constants to frame the icon
   final static int marginLeft = 10;
@@ -28,7 +28,7 @@ public class CuboidMoveIcon {
     BufferedImage arrowImage = null;
     try {
       arrowImage = ImageIO.read(
-          CuboidMoveIcon.class.getResourceAsStream("/images/twisty/CuboidArrows.png"));
+          CuboidMoveIconBuilder.class.getResourceAsStream("/images/twisty/CuboidArrows.png"));
     } catch (IOException e) {
       log.error("Error loading arrows!", e);
     }
@@ -49,7 +49,7 @@ public class CuboidMoveIcon {
   Graphics2D backgroundGraphics = backgroundImage.createGraphics();
   Graphics2D foregroundGraphics = foregroundImage.createGraphics();
 
-  public CuboidMoveIcon(int width, int height, String name) {
+  public CuboidMoveIconBuilder(int width, int height, String name) {
     this.width = width;
     this.height = height;
     // setup image
@@ -82,8 +82,8 @@ public class CuboidMoveIcon {
     // overlay images onto background
   }
 
-  public static CuboidMoveIcon builer(int width, int height, String name) {
-    return new CuboidMoveIcon(width, height, name);
+  public static CuboidMoveIconBuilder builer(int width, int height, String name) {
+    return new CuboidMoveIconBuilder(width, height, name);
   }
 
   private static void drawCuboid(Graphics2D g, int originX, int originY, int width, int height,
@@ -107,7 +107,7 @@ public class CuboidMoveIcon {
         OutputConstants.LOG_FONT_HEIGHT, name, OutputConstants.LOG_FONT, Color.BLACK);
   }
 
-  public CuboidMoveIcon fillFrontFace() {
+  public CuboidMoveIconBuilder fillFrontFace() {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
         fillFrontFace(x, y);
@@ -116,7 +116,7 @@ public class CuboidMoveIcon {
     return this;
   }
 
-  public CuboidMoveIcon fillFromTop(int n) {
+  public CuboidMoveIconBuilder fillFromTop(int n) {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < n; y++) {
         fillFrontFace(x, y);
@@ -125,6 +125,32 @@ public class CuboidMoveIcon {
     return this;
   }
 
+  public CuboidMoveIconBuilder fillFromBottom(int n) {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < n; y++) {
+        fillFrontFace(x, height - y-1);
+      }
+    }
+    return this;
+  }
+
+  public CuboidMoveIconBuilder fillFromLeft(int n) {
+    for (int x = 0; x < n; x++) {
+      for (int y = 0; y < height; y++) {
+        fillFrontFace(x, y);
+      }
+    }
+    return this;
+  }
+
+  public CuboidMoveIconBuilder fillFromRight(int n) {
+    for (int x = 0; x < n; x++) {
+      for (int y = 0; y < height; y++) {
+        fillFrontFace(width-x-1, y);
+      }
+    }
+    return this;
+  }
   private void fillFrontFace(int x, int y) {
     fillFrontFace(x, y, FILLED);
   }
@@ -135,7 +161,7 @@ public class CuboidMoveIcon {
         (int) scale + 1, (int) scale + 1);
   }
 
-  public CuboidMoveIcon setRotation(char face, boolean inverse) {
+  public CuboidMoveIconBuilder setRotation(char face, boolean inverse) {
     switch (face) {
       case 'R':
         backgroundGraphics.drawImage(arrows.getSubimage(32 + 4 * 60, 20, 28, 40), 32, 20, null);
