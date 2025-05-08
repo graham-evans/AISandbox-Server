@@ -23,16 +23,13 @@ public class Cell {
   int locationY;
   @Getter
   @Setter
-  int rotation;
-  @Getter
-  @Setter
   ColourEnum colour;
 
   public Polygon getPolygon() {
     if (shape == null) {
       return null;
     } else {
-      return shape.getShape().getPolygon(locationX, locationY, rotation, scale);
+      return shape.getShape().getPolygon(locationX, locationY, scale);
     }
   }
 
@@ -40,6 +37,6 @@ public class Cell {
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("shape", shape)
         .append("scale", scale).append("locationX", locationX).append("locationY", locationY)
-        .append("rotation", rotation).toString();
+        .toString();
   }
 }

@@ -2,13 +2,28 @@ package dev.aisandbox.server.simulation.twisty.model.shapes;
 
 import lombok.Getter;
 
+/**
+ * Enum representing different types of shapes used in the simulation.
+ * Each enum constant is associated with a specific implementation of {@link CellShape}.
+ */
 public enum ShapeEnum {
-  SQUARE(new Square()), EQ_TRIANGLE(new EquilateralTriangle());
+    /**
+     * Represents a square shape.
+     */
+    SQUARE(new Square());
 
-  @Getter
-  private final CellShape shape;
+    /**
+     * The specific shape instance associated with the enum constant.
+     */
+    @Getter
+    private final CellShape shape;
 
-  ShapeEnum(CellShape shape) {
-    this.shape = shape;
-  }
+    /**
+     * Constructor for the ShapeEnum.
+     *
+     * @param shape The specific {@link CellShape} instance associated with the enum constant.
+     */
+    ShapeEnum(CellShape shape) {
+        this.shape = shape;
+    }
 }
