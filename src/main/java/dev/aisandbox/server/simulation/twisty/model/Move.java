@@ -15,7 +15,7 @@ public class Move {
   /**
    * Constant <code>MOVE_ICON_HEIGHT=100</code>.
    */
-  public static final int MOVE_ICON_HEIGHT = 100;
+  public static final int MOVE_ICON_HEIGHT = 85;
 
   @Getter
   @Setter
