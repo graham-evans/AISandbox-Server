@@ -215,7 +215,9 @@ public class CuboidBuilder {
       Move yMove = new Move();
       log.info("Generating y");
       yMove.setName(getMoveName(0, 'U', 1));
-      yMove.setImageIcon(CuboidMoveIconBuilder.builer(width, height, yMove.getName()).fillFrontFace().setRotation('U', false).getImage());
+      yMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, yMove.getName()).fillFrontFace()
+              .setRotation('U', false).getImage());
       yMove.getLoops().addAll(faceTurn(top, width, depth));
       yMove.getLoops().addAll(faceReverseTurn(bottom, width, depth));
       for (int layer = 1; layer <= height; layer++) {
@@ -227,7 +229,9 @@ public class CuboidBuilder {
       log.info("Generating y'");
       Move yPrimeMove = new Move();
       yPrimeMove.setName(getMoveName(0, 'U', -1));
-      yPrimeMove.setImageIcon(CuboidMoveIconBuilder.builer(width, height, yPrimeMove.getName()).fillFrontFace().setRotation('U', true).getImage());
+      yPrimeMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, yPrimeMove.getName()).fillFrontFace()
+              .setRotation('U', true).getImage());
       yPrimeMove.getLoops().addAll(faceReverseTurn(top, width, depth));
       yPrimeMove.getLoops().addAll(faceTurn(bottom, width, depth));
       for (int layer = 1; layer <= height; layer++) {
@@ -244,7 +248,9 @@ public class CuboidBuilder {
         log.info("Generating R to depth {}", deep);
         Move rMove = new Move();
         rMove.setName(getMoveName(deep, 'R', 1));
-        rMove.setImageIcon(CuboidMoveIconBuilder.builer(width, height, rMove.getName()).fillFromRight(deep).setRotation('R', false).getImage());
+        rMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, rMove.getName()).fillFromRight(deep)
+                .setRotation('R', false).getImage());
         rMove.getLoops().addAll(faceTurn(right, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
           rMove.getLoops()
@@ -255,7 +261,9 @@ public class CuboidBuilder {
         log.info("Generating R' to depth {}", deep);
         Move rPrimeMove = new Move();
         rPrimeMove.setName(getMoveName(deep, 'R', -1));
-        rPrimeMove.setImageIcon(CuboidMoveIconBuilder.builer(width, height, rPrimeMove.getName()).fillFromRight(deep).setRotation('R', true).getImage());
+        rPrimeMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, rPrimeMove.getName()).fillFromRight(deep)
+                .setRotation('R', true).getImage());
         rPrimeMove.getLoops().addAll(faceReverseTurn(right, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
           rPrimeMove.getLoops()
@@ -266,7 +274,9 @@ public class CuboidBuilder {
         log.info("Generating L to depth {}", deep);
         Move lMove = new Move();
         lMove.setName(getMoveName(deep, 'L', 1));
-        lMove.setImageIcon(CuboidMoveIconBuilder.builer(width, height, lMove.getName()).fillFromLeft(deep).setRotation('L', false).getImage());
+        lMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, lMove.getName()).fillFromLeft(deep)
+                .setRotation('L', false).getImage());
         lMove.getLoops().addAll(faceTurn(left, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
           lMove.getLoops().addAll(
@@ -278,7 +288,9 @@ public class CuboidBuilder {
         log.info("Generating L' to depth {}", deep);
         Move lPrimeMove = new Move();
         lPrimeMove.setName(getMoveName(deep, 'L', -1));
-        lPrimeMove.setImageIcon(CuboidMoveIconBuilder.builer(width, height, lPrimeMove.getName()).fillFromLeft(deep).setRotation('L', true).getImage());
+        lPrimeMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, lPrimeMove.getName()).fillFromLeft(deep)
+                .setRotation('L', true).getImage());
         lPrimeMove.getLoops().addAll(faceReverseTurn(left, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
           lPrimeMove.getLoops().addAll(
@@ -290,7 +302,9 @@ public class CuboidBuilder {
       log.info("Generating x");
       Move xMove = new Move();
       xMove.setName(getMoveName(0, 'R', 1));
-      xMove.setImageIcon(CuboidMoveIconBuilder.builer(width, height, xMove.getName()).setRotation('R', false).getImage());
+      xMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, xMove.getName()).fillFrontFace()
+              .setRotation('R', false).getImage());
       xMove.getLoops().addAll(faceTurn(right, depth, height));
       xMove.getLoops().addAll(faceReverseTurn(left, depth, height));
       for (int layer = 1; layer <= width; layer++) {
@@ -303,7 +317,9 @@ public class CuboidBuilder {
       log.info("Generating x'");
       Move xPrimeMove = new Move();
       xPrimeMove.setName(getMoveName(0, 'R', -1));
-      xPrimeMove.setImageIcon(CuboidMoveIconBuilder.builer(width, height, xPrimeMove.getName()).setRotation('R', true).getImage());
+      xPrimeMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, xPrimeMove.getName()).fillFrontFace()
+              .setRotation('R', true).getImage());
       xPrimeMove.getLoops().addAll(faceReverseTurn(right, depth, height));
       xPrimeMove.getLoops().addAll(faceTurn(left, depth, height));
       for (int layer = 1; layer <= width; layer++) {
@@ -319,7 +335,9 @@ public class CuboidBuilder {
       log.info("Generating F2");
       Move f2Move = new Move();
       f2Move.setName(getMoveName(deep, 'F', 2));
-      f2Move.setImageIcon(CuboidMoveIconBuilder.builer(width, height, f2Move.getName()).fillFrontFace().setRotation('F', false).getImage());
+      f2Move.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, f2Move.getName()).fillFrontFace()
+              .setRotation('F', false).getImage());
       f2Move.getLoops().addAll(faceDoubleTurn(front, width, height));
       for (int layer = 1; layer <= deep; layer++) {
         f2Move.getLoops()
@@ -330,7 +348,9 @@ public class CuboidBuilder {
       log.info("Generating B2");
       Move b2Move = new Move();
       b2Move.setName(getMoveName(deep, 'B', 2));
-      b2Move.setImageIcon(CuboidMoveIconBuilder.builer(width, height, b2Move.getName()).setRotation('B', false).getImage());
+      b2Move.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, b2Move.getName()).setRotation('B', false)
+              .getImage());
       b2Move.getLoops().addAll(faceDoubleTurn(back, width, height));
       for (int layer = 1; layer <= deep; layer++) {
         b2Move.getLoops().addAll(
@@ -342,7 +362,9 @@ public class CuboidBuilder {
     log.info("Generating z2");
     Move z2Move = new Move();
     z2Move.setName(getMoveName(0, 'F', 2));
-    z2Move.setImageIcon(CuboidMoveIconBuilder.builer(width, height, z2Move.getName()).fillFrontFace().setRotation('F', false).getImage());
+    z2Move.setImageIcon(
+        CuboidMoveIconBuilder.builer(width, height, z2Move.getName()).fillFrontFace()
+            .setRotation('F', false).getImage());
     z2Move.getLoops().addAll(faceDoubleTurn(front, width, height));
     z2Move.getLoops().addAll(faceDoubleTurn(back, width, height));
     for (int layer = 1; layer <= depth; layer++) {
@@ -383,7 +405,9 @@ public class CuboidBuilder {
     log.info("Generating y2");
     Move y2Move = new Move();
     y2Move.setName(getMoveName(0, 'U', 2));
-    y2Move.setImageIcon(CuboidMoveIconBuilder.builer(width, height, y2Move.getName()).fillFrontFace().setRotation('U', false).getImage());
+    y2Move.setImageIcon(
+        CuboidMoveIconBuilder.builer(width, height, y2Move.getName()).fillFrontFace()
+            .setRotation('U', false).getImage());
     y2Move.getLoops().addAll(faceDoubleTurn(top, width, depth));
     y2Move.getLoops().addAll(faceDoubleTurn(bottom, width, depth));
     for (int layer = 1; layer <= height; layer++) {
@@ -397,7 +421,9 @@ public class CuboidBuilder {
       log.info("Generating R2 to depth {}", deep);
       Move r2Move = new Move();
       r2Move.setName(getMoveName(deep, 'R', 2));
-      r2Move.setImageIcon(CuboidMoveIconBuilder.builer(width, height, r2Move.getName()).fillFromRight(deep).setRotation('R', false).getImage());
+      r2Move.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, r2Move.getName()).fillFromRight(deep)
+              .setRotation('R', false).getImage());
       r2Move.getLoops().addAll(faceDoubleTurn(right, depth, height));
       for (int layer = 1; layer <= deep; layer++) {
         r2Move.getLoops()
@@ -408,7 +434,9 @@ public class CuboidBuilder {
       log.info("Generating L2 to depth {}", deep);
       Move l2Move = new Move();
       l2Move.setName(getMoveName(deep, 'L', 2));
-      l2Move.setImageIcon(CuboidMoveIconBuilder.builer(width, height, l2Move.getName()).fillFromLeft(deep).setRotation('L', false).getImage());
+      l2Move.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, l2Move.getName()).fillFromLeft(deep)
+              .setRotation('L', false).getImage());
       l2Move.getLoops().addAll(faceDoubleTurn(left, depth, height));
       for (int layer = 1; layer <= deep; layer++) {
         l2Move.getLoops().addAll(
@@ -420,7 +448,9 @@ public class CuboidBuilder {
     log.info("Generating x2");
     Move x2Move = new Move();
     x2Move.setName(getMoveName(0, 'R', 2));
-    x2Move.setImageIcon(CuboidMoveIconBuilder.builer(width, height, x2Move.getName()).setRotation('R', false).getImage());
+    x2Move.setImageIcon(
+        CuboidMoveIconBuilder.builer(width, height, x2Move.getName()).setRotation('R', false)
+            .getImage());
     x2Move.getLoops().addAll(faceDoubleTurn(right, depth, height));
     x2Move.getLoops().addAll(faceDoubleTurn(left, depth, height));
     for (int layer = 1; layer <= width; layer++) {
