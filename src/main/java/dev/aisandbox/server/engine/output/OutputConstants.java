@@ -30,10 +30,12 @@ public class OutputConstants {
   public static final int WIDGET_SPACING = 50;
   public static final int LOG_FONT_HEIGHT = 16;
   public static final int STATISTICS_HEIGHT = 32;
+  public static final int WIDGET_TITLE_HEIGHT = 18;
   public static final Font TITLE_FONT;
   public static final Font HEADER_FONT;
   public static final Font LOG_FONT;
   public static final Font STATISTICS_FONT;
+  public static final Font WIDGET_TITLE_FONT;
 
 
   public static final BufferedImage LOGO;
@@ -69,5 +71,6 @@ public class OutputConstants {
     HEADER_FONT = new Font("Arimo Regular", Font.PLAIN, HEADER_HEIGHT);
     LOG_FONT = new Font("Hack Regular", Font.PLAIN, LOG_FONT_HEIGHT);
     STATISTICS_FONT = new Font("Arimo Regular", Font.PLAIN, STATISTICS_HEIGHT);
+    WIDGET_TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, WIDGET_TITLE_HEIGHT);
   }
 }
