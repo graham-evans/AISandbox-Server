@@ -19,15 +19,14 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
-import dev.aisandbox.server.simulation.twisty.model.CompiledMove;
 import dev.aisandbox.server.simulation.twisty.model.Move;
+import dev.aisandbox.server.simulation.twisty.model.MoveResult;
 import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyAction;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyResult;
 import dev.aisandbox.server.simulation.twisty.proto.TwistySignal;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyState;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -111,6 +110,7 @@ public final class TwistySimulation implements Simulation {
     builder.addAllValidMoves(puzzle.getMoveList());
     // get the next move
     TwistyAction action = agent.receive(builder.build(), TwistyAction.class);
+    log.info("action: {}", action.getMove());
     // special case - reset action
     if ("reset".equalsIgnoreCase(action.getMove())) {
       // reset the puzzle
@@ -119,17 +119,18 @@ public final class TwistySimulation implements Simulation {
       initialisePuzzle();
     } else {
       // apply the move
-
-      puzzle.applyMove(action.getMove());
+      MoveResult result = puzzle.applyMove(action.getMove());
+      moveHistoryWidget.addIcon(result.icon());
       moves++;
-  //    moveHistoryWidget.addIcon(action.getMove());
       if (puzzle.isSolved()) {
+        log.info("solved");
         // puzzle solved
         agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN)
             .build());
         output.display();
         initialisePuzzle();
       } else if (moves == MAX_MOVES) {
+        log.info("max moves");
         // ran out of moves
         agent.send(
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
@@ -171,6 +172,7 @@ public final class TwistySimulation implements Simulation {
     graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
     // draw history
+    graphics2D.drawImage(moveHistoryWidget.getImage(), HD_WIDTH-RIGHT_MARGIN-WIDGET_WIDTH, HD_HEIGHT-BOTTOM_MARGIN-WIDGET_HEIGHT, null);
 /*    for (int i = 0; i < moveHistory.size(); i++) {
       BufferedImage moveImage = puzzle.getMoveImage(moveHistory.get(i));
       if (moveImage != null) {
