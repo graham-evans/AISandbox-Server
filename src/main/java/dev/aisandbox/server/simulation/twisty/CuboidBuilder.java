@@ -10,66 +10,99 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Utility class for building cuboid twisty puzzles like cubes, 2x3x3 cuboids, etc. Provides methods
+ * to create the puzzle structure, define the faces, and set up all the possible moves for the
+ * puzzle.
+ */
 @Slf4j
 @UtilityClass
 public class CuboidBuilder {
 
-  /***
-   * The gap between sides as they are drawn
+  /**
+   * The visual gap between sides when rendering the puzzle. Used to separate faces for better
+   * visibility.
    */
   private static final int gap = 4;
 
+  /**
+   * Builds a cuboid puzzle with the specified dimensions. Creates all cells, faces, and valid moves
+   * for the puzzle. Handles special cases like standard cubes with equal dimensions vs. non-cubic
+   * cuboids.
+   *
+   * @param width  The width (x-dimension) of the cuboid
+   * @param height The height (y-dimension) of the cuboid
+   * @param depth  The depth (z-dimension) of the cuboid
+   * @return A fully initialized TwistyPuzzle representing the cuboid
+   * @throws IOException If there's an error creating or processing the puzzle
+   */
   public static TwistyPuzzle buildCuboid(final int width, final int height, final int depth)
       throws IOException {
     TwistyPuzzle puzzle = new TwistyPuzzle();
-    // work out the name of the puzzle
+
+    // Set puzzle name based on whether it's a cube (all dimensions equal) or a cuboid
     puzzle.setPuzzleName(
         ((width == height) && (height == depth) ? "Cube " : "Cuboid ") + width + "x" + height + "x"
             + depth);
-    // work out the scale of the cuboid
+
+    // Calculate appropriate scale to fit the puzzle within the display area
     int vscale = (TwistyPuzzle.HEIGHT - gap * 2) / ((height + depth * 2) * 2);
     int hscale = (TwistyPuzzle.WIDTH - gap * 3) / ((width * 2 + depth * 2) * 2);
     final int scale = Math.min(vscale, hscale);
 
-    // generate sides
+    // Generate the six faces of the cuboid with appropriate positions and colors
     log.info("Calculating sides of cuboid {}x{}x{} with scale {}", width, height, depth, scale);
-    // create white (top) grid
+
+    // Create white (top) grid
     final List<Cell> top = new ArrayList<>(createGrid(0, 0, width, depth, ColourEnum.WHITE, scale));
-    // create orange (left) grid
+
+    // Create orange (left) grid
     final List<Cell> left = new ArrayList<>(
         createGrid(-depth * scale * 2 - gap, depth * scale * 2 + gap, depth, height,
             ColourEnum.ORANGE, scale));
-    // create green (front) grid
+
+    // Create green (front) grid
     final List<Cell> front = new ArrayList<>(
         createGrid(0, depth * scale * 2 + gap, width, height, ColourEnum.GREEN, scale));
-    // create red (right) grid
+
+    // Create red (right) grid
     final List<Cell> right = new ArrayList<>(
         createGrid(width * scale * 2 + gap, depth * scale * 2 + gap, depth, height, ColourEnum.RED,
             scale));
-    // create blue (back) grid
+
+    // Create blue (back) grid
     final List<Cell> back = new ArrayList<>(
         createGrid((width + depth) * scale * 2 + gap * 2, depth * scale * 2 + gap, width, height,
             ColourEnum.BLUE, scale));
-    // create yellow (bottom) grid
+
+    // Create yellow (bottom) grid
     final List<Cell> bottom = new ArrayList<>(
         createGrid(0, (depth + height) * scale * 2 + gap * 2, width, depth, ColourEnum.YELLOW,
             scale));
-    // add all cells to the puzzle
+
+    // Add all cells to the puzzle (order is important)
     puzzle.getCells().addAll(left);
+    puzzle.getFaceSizes().add(left.size());
     puzzle.getCells().addAll(right);
+    puzzle.getFaceSizes().add(right.size());
     puzzle.getCells().addAll(top);
+    puzzle.getFaceSizes().add(top.size());
     puzzle.getCells().addAll(bottom);
+    puzzle.getFaceSizes().add(bottom.size());
     puzzle.getCells().addAll(front);
+    puzzle.getFaceSizes().add(front.size());
     puzzle.getCells().addAll(back);
-    // create moves
-    if (width == height) { // we can rotate the faces 90' left or right
-      // we can have F,F',B,B',z,z' moves
+    puzzle.getFaceSizes().add(back.size());
+    // Create moves based on puzzle dimensions
+
+    // Front face moves (if width equals height, we can do 90° rotations)
+    if (width == height) {
+      // Create F, F', B, B', z, z' moves
       for (int deep = 1; deep < depth; deep++) {
-        // create F moves
+        // Create F moves (clockwise front face rotation)
         log.info("Generating F at depth {}", deep);
         Move fMove = new Move();
         fMove.setName(getMoveName(deep, 'F', 1));
@@ -81,8 +114,9 @@ public class CuboidBuilder {
           fMove.getLoops()
               .addAll(frontSideTurn(layer, width, height, depth, left, right, top, bottom));
         }
-        puzzle.getMoves().add(fMove);
-        // create F' move
+        puzzle.addMove(fMove);
+
+        // Create F' moves (counterclockwise front face rotation)
         log.info("Generating F' at depth {}", deep);
         Move fPrimeMove = new Move();
         fPrimeMove.setName(getMoveName(deep, 'F', -1));
@@ -94,8 +128,9 @@ public class CuboidBuilder {
           fPrimeMove.getLoops()
               .addAll(frontSideReverseTurn(layer, width, height, depth, left, right, top, bottom));
         }
-        puzzle.getMoves().add(fPrimeMove);
-        // B moves
+        puzzle.addMove(fPrimeMove);
+
+        // Create B moves (clockwise back face rotation)
         log.info("Generating B at depth {}", deep);
         Move bMove = new Move();
         bMove.setName(getMoveName(deep, 'B', 1));
@@ -108,8 +143,9 @@ public class CuboidBuilder {
               frontSideReverseTurn(depth - layer + 1, width, height, depth, left, right, top,
                   bottom));
         }
-        puzzle.getMoves().add(bMove);
-        // B' moves
+        puzzle.addMove(bMove);
+
+        // Create B' moves (counterclockwise back face rotation)
         log.info("Generating B' at depth {}", deep);
         Move bPrimeMove = new Move();
         bPrimeMove.setName(getMoveName(deep, 'B', -1));
@@ -121,9 +157,10 @@ public class CuboidBuilder {
           bPrimeMove.getLoops().addAll(
               frontSideTurn(depth - layer + 1, width, height, depth, left, right, top, bottom));
         }
-        puzzle.getMoves().add(bPrimeMove);
+        puzzle.addMove(bPrimeMove);
       }
-      // z move
+
+      // Create z move (whole puzzle rotation around front-back axis, no cost)
       log.info("Generating Z");
       Move zMove = new Move();
       zMove.setName(getMoveName(0, 'F', 1));
@@ -136,9 +173,10 @@ public class CuboidBuilder {
         zMove.getLoops()
             .addAll(frontSideTurn(layer, width, height, depth, left, right, top, bottom));
       }
-      zMove.setCost(0);
-      puzzle.getMoves().add(zMove);
-      // z' move
+      zMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(zMove);
+
+      // Create z' move (inverse whole puzzle rotation, no cost)
       log.info("Generating Z'");
       Move zPrimeMove = new Move();
       zPrimeMove.setName(getMoveName(0, 'F', -1));
@@ -151,13 +189,15 @@ public class CuboidBuilder {
         zPrimeMove.getLoops()
             .addAll(frontSideReverseTurn(layer, width, height, depth, left, right, top, bottom));
       }
-      zPrimeMove.setCost(0);
-      puzzle.getMoves().add(zPrimeMove);
+      zPrimeMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(zPrimeMove);
     }
+
+    // Top face moves (if width equals depth, we can do 90° rotations)
     if (width == depth) {
-      // we can have U,U',D,D',y,y'
+      // Create U, U', D, D', y, y' moves
       for (int deep = 1; deep < height; deep++) {
-        // U Move
+        // Create U move (clockwise top face rotation)
         log.info("Generating U to depth {}", deep);
         Move uMove = new Move();
         uMove.setName(getMoveName(deep, 'U', 1));
@@ -169,8 +209,9 @@ public class CuboidBuilder {
           uMove.getLoops()
               .addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
         }
-        puzzle.getMoves().add(uMove);
-        // U' move
+        puzzle.addMove(uMove);
+
+        // Create U' move (counterclockwise top face rotation)
         log.info("Generating U' to depth {}", deep);
         Move uPrimeMove = new Move();
         uPrimeMove.setName(getMoveName(deep, 'U', -1));
@@ -182,8 +223,9 @@ public class CuboidBuilder {
           uPrimeMove.getLoops()
               .addAll(topSideReverseTurn(layer, width, height, depth, left, right, front, back));
         }
-        puzzle.getMoves().add(uPrimeMove);
-        // D move
+        puzzle.addMove(uPrimeMove);
+
+        // Create D move (clockwise bottom face rotation)
         log.info("Generating D to depth {}", deep);
         Move dMove = new Move();
         dMove.setName(getMoveName(deep, 'D', 1));
@@ -196,8 +238,9 @@ public class CuboidBuilder {
               topSideReverseTurn(height - layer + 1, width, height, depth, left, right, front,
                   back));
         }
-        puzzle.getMoves().add(dMove);
-        // D' move
+        puzzle.addMove(dMove);
+
+        // Create D' move (counterclockwise bottom face rotation)
         log.info("Generating D' to depth {}", deep);
         Move dPrimeMove = new Move();
         dPrimeMove.setName(getMoveName(deep, 'D', -1));
@@ -209,9 +252,10 @@ public class CuboidBuilder {
           dPrimeMove.getLoops().addAll(
               topSideTurn(height - layer + 1, width, height, depth, left, right, front, back));
         }
-        puzzle.getMoves().add(dPrimeMove);
+        puzzle.addMove(dPrimeMove);
       }
-      // y move
+
+      // Create y move (whole puzzle rotation around top-bottom axis, no cost)
       Move yMove = new Move();
       log.info("Generating y");
       yMove.setName(getMoveName(0, 'U', 1));
@@ -223,9 +267,10 @@ public class CuboidBuilder {
       for (int layer = 1; layer <= height; layer++) {
         yMove.getLoops().addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
       }
-      yMove.setCost(0);
-      puzzle.getMoves().add(yMove);
-      // y' move
+      yMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(yMove);
+
+      // Create y' move (inverse whole puzzle rotation, no cost)
       log.info("Generating y'");
       Move yPrimeMove = new Move();
       yPrimeMove.setName(getMoveName(0, 'U', -1));
@@ -238,13 +283,15 @@ public class CuboidBuilder {
         yPrimeMove.getLoops()
             .addAll(topSideReverseTurn(layer, width, height, depth, left, right, front, back));
       }
-      yPrimeMove.setCost(0);
-      puzzle.getMoves().add(yPrimeMove);
+      yPrimeMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(yPrimeMove);
     }
+
+    // Right face moves (if depth equals height, we can do 90° rotations)
     if (depth == height) {
-      // we can have R,R',L,L',x,x'
+      // Create R, R', L, L', x, x' moves
       for (int deep = 1; deep < width; deep++) {
-        // R
+        // Create R move (clockwise right face rotation)
         log.info("Generating R to depth {}", deep);
         Move rMove = new Move();
         rMove.setName(getMoveName(deep, 'R', 1));
@@ -256,8 +303,9 @@ public class CuboidBuilder {
           rMove.getLoops()
               .addAll(rightSideTurn(layer, width, height, depth, front, back, top, bottom));
         }
-        puzzle.getMoves().add(rMove);
-        // R'
+        puzzle.addMove(rMove);
+
+        // Create R' move (counterclockwise right face rotation)
         log.info("Generating R' to depth {}", deep);
         Move rPrimeMove = new Move();
         rPrimeMove.setName(getMoveName(deep, 'R', -1));
@@ -269,8 +317,9 @@ public class CuboidBuilder {
           rPrimeMove.getLoops()
               .addAll(rightSideReverseTurn(layer, width, height, depth, front, back, top, bottom));
         }
-        puzzle.getMoves().add(rPrimeMove);
-        // L
+        puzzle.addMove(rPrimeMove);
+
+        // Create L move (clockwise left face rotation)
         log.info("Generating L to depth {}", deep);
         Move lMove = new Move();
         lMove.setName(getMoveName(deep, 'L', 1));
@@ -283,8 +332,9 @@ public class CuboidBuilder {
               rightSideReverseTurn(width - layer + 1, width, height, depth, front, back, top,
                   bottom));
         }
-        puzzle.getMoves().add(lMove);
-        // L'
+        puzzle.addMove(lMove);
+
+        // Create L' move (counterclockwise left face rotation)
         log.info("Generating L' to depth {}", deep);
         Move lPrimeMove = new Move();
         lPrimeMove.setName(getMoveName(deep, 'L', -1));
@@ -296,9 +346,10 @@ public class CuboidBuilder {
           lPrimeMove.getLoops().addAll(
               rightSideTurn(width - layer + 1, width, height, depth, front, back, top, bottom));
         }
-        puzzle.getMoves().add(lPrimeMove);
+        puzzle.addMove(lPrimeMove);
       }
-      // x
+
+      // Create x move (whole puzzle rotation around left-right axis, no cost)
       log.info("Generating x");
       Move xMove = new Move();
       xMove.setName(getMoveName(0, 'R', 1));
@@ -311,9 +362,10 @@ public class CuboidBuilder {
         xMove.getLoops()
             .addAll(rightSideTurn(layer, width, height, depth, front, back, top, bottom));
       }
-      xMove.setCost(0);
-      puzzle.getMoves().add(xMove);
-      // x'
+      xMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(xMove);
+
+      // Create x' move (inverse whole puzzle rotation, no cost)
       log.info("Generating x'");
       Move xPrimeMove = new Move();
       xPrimeMove.setName(getMoveName(0, 'R', -1));
@@ -326,12 +378,15 @@ public class CuboidBuilder {
         xPrimeMove.getLoops()
             .addAll(rightSideReverseTurn(layer, width, height, depth, front, back, top, bottom));
       }
-      xPrimeMove.setCost(0);
-      puzzle.getMoves().add(xPrimeMove);
+      xPrimeMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(xPrimeMove);
     }
-    // we can always have double turns
+
+    // Double turns (180° rotations) - these are always possible regardless of dimensions
+
+    // Front-back axis double turns
     for (int deep = 1; deep < depth; deep++) {
-      // F2 moves
+      // F2 moves (180° front face rotation)
       log.info("Generating F2");
       Move f2Move = new Move();
       f2Move.setName(getMoveName(deep, 'F', 2));
@@ -343,8 +398,9 @@ public class CuboidBuilder {
         f2Move.getLoops()
             .addAll(frontSideDoubleTurn(layer, width, height, depth, left, right, top, bottom));
       }
-      puzzle.getMoves().add(f2Move);
-      // B2
+      puzzle.addMove(f2Move);
+
+      // B2 moves (180° back face rotation)
       log.info("Generating B2");
       Move b2Move = new Move();
       b2Move.setName(getMoveName(deep, 'B', 2));
@@ -356,9 +412,10 @@ public class CuboidBuilder {
         b2Move.getLoops().addAll(
             frontSideDoubleTurn(depth - layer + 1, width, height, depth, left, right, top, bottom));
       }
-      puzzle.getMoves().add(b2Move);
+      puzzle.addMove(b2Move);
     }
-    // z2
+
+    // z2 move (180° whole puzzle rotation around front-back axis, no cost)
     log.info("Generating z2");
     Move z2Move = new Move();
     z2Move.setName(getMoveName(0, 'F', 2));
@@ -371,10 +428,12 @@ public class CuboidBuilder {
       z2Move.getLoops()
           .addAll(frontSideDoubleTurn(layer, width, height, depth, left, right, top, bottom));
     }
-    z2Move.setCost(0);
-    puzzle.getMoves().add(z2Move);
+    z2Move.setCost(0); // Free move since it's a whole puzzle rotation
+    puzzle.addMove(z2Move);
+
+    // Top-bottom axis double turns
     for (int deep = 1; deep < height; deep++) {
-      // U2
+      // U2 moves (180° top face rotation)
       log.info("Generating U2 to depth {}", deep);
       Move u2Move = new Move();
       u2Move.setName(getMoveName(deep, 'U', 2));
@@ -386,8 +445,9 @@ public class CuboidBuilder {
         u2Move.getLoops()
             .addAll(topSideDoubleTurn(layer, width, height, depth, right, left, front, back));
       }
-      puzzle.getMoves().add(u2Move);
-      //  D2
+      puzzle.addMove(u2Move);
+
+      // D2 moves (180° bottom face rotation)
       log.info("Generating D2 to depth {}", deep);
       Move d2Move = new Move();
       d2Move.setName(getMoveName(deep, 'D', 2));
@@ -399,9 +459,10 @@ public class CuboidBuilder {
         d2Move.getLoops().addAll(
             topSideDoubleTurn(height - layer + 1, width, height, depth, right, left, front, back));
       }
-      puzzle.getMoves().add(d2Move);
+      puzzle.addMove(d2Move);
     }
-    //  y2
+
+    // y2 move (180° whole puzzle rotation around top-bottom axis, no cost)
     log.info("Generating y2");
     Move y2Move = new Move();
     y2Move.setName(getMoveName(0, 'U', 2));
@@ -414,10 +475,12 @@ public class CuboidBuilder {
       y2Move.getLoops()
           .addAll(topSideDoubleTurn(layer, width, height, depth, right, left, front, back));
     }
-    y2Move.setCost(0);
-    puzzle.getMoves().add(y2Move);
+    y2Move.setCost(0); // Free move since it's a whole puzzle rotation
+    puzzle.addMove(y2Move);
+
+    // Left-right axis double turns
     for (int deep = 1; deep < width; deep++) {
-      //  R2
+      // R2 moves (180° right face rotation)
       log.info("Generating R2 to depth {}", deep);
       Move r2Move = new Move();
       r2Move.setName(getMoveName(deep, 'R', 2));
@@ -429,8 +492,9 @@ public class CuboidBuilder {
         r2Move.getLoops()
             .addAll(rightSideDoubleTurn(layer, width, height, depth, front, back, top, bottom));
       }
-      puzzle.getMoves().add(r2Move);
-      //  L2
+      puzzle.addMove(r2Move);
+
+      // L2 moves (180° left face rotation)
       log.info("Generating L2 to depth {}", deep);
       Move l2Move = new Move();
       l2Move.setName(getMoveName(deep, 'L', 2));
@@ -442,9 +506,10 @@ public class CuboidBuilder {
         l2Move.getLoops().addAll(
             rightSideDoubleTurn(width - layer + 1, width, height, depth, front, back, top, bottom));
       }
-      puzzle.getMoves().add(l2Move);
+      puzzle.addMove(l2Move);
     }
-    // x2
+
+    // x2 move (180° whole puzzle rotation around left-right axis, no cost)
     log.info("Generating x2");
     Move x2Move = new Move();
     x2Move.setName(getMoveName(0, 'R', 2));
@@ -457,67 +522,85 @@ public class CuboidBuilder {
       x2Move.getLoops()
           .addAll(rightSideDoubleTurn(layer, width, height, depth, front, back, top, bottom));
     }
-    x2Move.setCost(0);
-    puzzle.getMoves().add(x2Move);
-    // compile moves
-    Optional<String> errors = puzzle.compileMoves();
-    errors.ifPresent(s -> log.warn("Error compiling moves: {}", s));
-    // center puzzle
+    x2Move.setCost(0); // Free move since it's a whole puzzle rotation
+    puzzle.addMove(x2Move);
+
+    // Center the puzzle in the rendering area
     puzzle.centerPuzzle();
-    // set base state
+
+    // Initialize the puzzle's base state
     puzzle.takeSnapshot();
 
-    log.info("Finished building puzzle with {} cells, {} moves, {} compiled moves",
-        puzzle.getCells().size(), puzzle.getMoves().size(), puzzle.getCompiledMoves().size());
+    log.info("Finished building puzzle with {} cells, {} compiled moves", puzzle.getCells().size(),
+        puzzle.getCompiledMoves().size());
     return puzzle;
-
   }
 
   /**
-   * Create the move name, if depth<1 then assume a cube rotation
+   * Generates a move name based on the depth, face, and number of quarter turns. Handles special
+   * cases for cube rotations when depth is 0.
    *
-   * @param depth        the depth of the turn 0 for all layers
-   * @param face         the face to turn
-   * @param quarterTurns the number of quarter turns
-   * @return
+   * @param depth        The depth of the move (0 for whole cube rotation, 1 for outer face, etc.)
+   * @param face         The face being rotated ('F', 'B', 'U', 'D', 'L', 'R')
+   * @param quarterTurns The number of quarter turns (1 for 90°, 2 for 180°, -1 for -90°)
+   * @return A standardized move name following cube notation conventions
    */
   public static String getMoveName(int depth, char face, int quarterTurns) {
     StringBuilder result = new StringBuilder();
-    // outer block moves
+
+    // For moves deeper than 2 layers, prefix with depth number
     if (depth > 2) {
       result.append(depth);
     }
-    // face
+
+    // Face designation
     if (depth > 0) {
+      // Regular face move
       result.append(face);
     } else {
+      // Whole cube rotation
       switch (face) {
         case 'R':
-          result.append("x");
+          result.append("x"); // Right face corresponds to x rotation
           break;
         case 'U':
-          result.append("y");
+          result.append("y"); // Up face corresponds to y rotation
           break;
         case 'F':
-          result.append("z");
+          result.append("z"); // Front face corresponds to z rotation
           break;
         default:
           result.append("?");
       }
     }
-    // outer block move
+
+    // For moves with multiple layers but not the whole puzzle, add 'w' for wide
     if (depth > 1) {
       result.append("w");
     }
-    // rotations
+
+    // Rotation indicator
     if (quarterTurns == 2) {
-      result.append("2");
+      result.append("2"); // 180° turn
     } else if (quarterTurns == -1) {
-      result.append("'");
+      result.append("'"); // Counterclockwise turn
     }
+    // Default clockwise has no suffix
+
     return result.toString();
   }
 
+  /**
+   * Creates a grid of cells at the specified position with the given color and scale.
+   *
+   * @param x      The x-coordinate of the top-left corner of the grid
+   * @param y      The y-coordinate of the top-left corner of the grid
+   * @param w      The width of the grid in cells
+   * @param h      The height of the grid in cells
+   * @param colour The color to assign to all cells in the grid
+   * @param scale  The scale factor for the cells
+   * @return A list of Cell objects forming the grid
+   */
   private List<Cell> createGrid(int x, int y, int w, int h, ColourEnum colour, int scale) {
     List<Cell> cells = new ArrayList<>();
     for (int dy = 0; dy < h; dy++) {
@@ -528,13 +611,26 @@ public class CuboidBuilder {
         c.setLocationX(x + dx * scale * 2);
         c.setLocationY(y + dy * scale * 2);
         c.setScale(scale);
-        c.setRotation(0);
         cells.add(c);
       }
     }
     return cells;
   }
 
+  /**
+   * Creates move loops for a front-face turn that affects side layers. Used for F, Fw, 3F, etc.
+   * moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param left   The cells on the left face
+   * @param right  The cells on the right face
+   * @param top    The cells on the top face
+   * @param bottom The cells on the bottom face
+   * @return A list of move loops defining the transformation
+   */
   private List<MoveLoop> frontSideTurn(int layer, int width, int height, int depth, List<Cell> left,
       List<Cell> right, List<Cell> top, List<Cell> bottom) {
     if (width != height) {
@@ -552,6 +648,20 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates move loops for a top-face turn that affects side layers. Used for U, Uw, 3U, etc.
+   * moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param left   The cells on the left face
+   * @param right  The cells on the right face
+   * @param front  The cells on the front face
+   * @param back   The cells on the back face
+   * @return A list of move loops defining the transformation
+   */
   private List<MoveLoop> topSideTurn(int layer, int width, int height, int depth, List<Cell> left,
       List<Cell> right, List<Cell> front, List<Cell> back) {
     if (width != depth) {
@@ -569,6 +679,20 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates move loops for a right-face turn that affects side layers. Used for R, Rw, 3R, etc.
+   * moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param front  The cells on the front face
+   * @param back   The cells on the back face
+   * @param top    The cells on the top face
+   * @param bottom The cells on the bottom face
+   * @return A list of move loops defining the transformation
+   */
   private List<MoveLoop> rightSideTurn(int layer, int width, int height, int depth,
       List<Cell> front, List<Cell> back, List<Cell> top, List<Cell> bottom) {
     if (height != depth) {
@@ -586,6 +710,19 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates reverse move loops for a front-face turn. Used for F', Fw', 3F', etc. moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param left   The cells on the left face
+   * @param right  The cells on the right face
+   * @param top    The cells on the top face
+   * @param bottom The cells on the bottom face
+   * @return A list of move loops defining the reverse transformation
+   */
   private List<MoveLoop> frontSideReverseTurn(int layer, int width, int height, int depth,
       List<Cell> left, List<Cell> right, List<Cell> top, List<Cell> bottom) {
     List<MoveLoop> result = frontSideTurn(layer, width, height, depth, left, right, top, bottom);
@@ -595,6 +732,19 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates reverse move loops for a top-face turn. Used for U', Uw', 3U', etc. moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param left   The cells on the left face
+   * @param right  The cells on the right face
+   * @param front  The cells on the front face
+   * @param back   The cells on the back face
+   * @return A list of move loops defining the reverse transformation
+   */
   private List<MoveLoop> topSideReverseTurn(int layer, int width, int height, int depth,
       List<Cell> left, List<Cell> right, List<Cell> front, List<Cell> back) {
     List<MoveLoop> result = topSideTurn(layer, width, height, depth, left, right, front, back);
@@ -604,6 +754,19 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates reverse move loops for a right-face turn. Used for R', Rw', 3R', etc. moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param front  The cells on the front face
+   * @param back   The cells on the back face
+   * @param top    The cells on the top face
+   * @param bottom The cells on the bottom face
+   * @return A list of move loops defining the reverse transformation
+   */
   private List<MoveLoop> rightSideReverseTurn(int layer, int width, int height, int depth,
       List<Cell> front, List<Cell> back, List<Cell> top, List<Cell> bottom) {
     List<MoveLoop> result = rightSideTurn(layer, width, height, depth, front, back, top, bottom);
@@ -613,15 +776,33 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates move loops for a 180° front-face turn that affects side layers. Used for F2, Fw2, 3F2,
+   * etc. moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param left   The cells on the left face
+   * @param right  The cells on the right face
+   * @param top    The cells on the top face
+   * @param bottom The cells on the bottom face
+   * @return A list of move loops defining the 180° transformation
+   */
   private List<MoveLoop> frontSideDoubleTurn(int layer, int width, int height, int depth,
       List<Cell> left, List<Cell> right, List<Cell> top, List<Cell> bottom) {
     List<MoveLoop> result = new ArrayList<>();
+
+    // Connect opposite cells on top and bottom faces
     for (int i = 0; i < width; i++) {
       MoveLoop l = new MoveLoop();
       l.getCells().add(top.get(i + (depth - layer) * width));
       l.getCells().add(bottom.get(width - i - 1 + (layer - 1) * width));
       result.add(l);
     }
+
+    // Connect opposite cells on left and right faces
     for (int i = 0; i < height; i++) {
       MoveLoop l = new MoveLoop();
       l.getCells().add(right.get(layer - 1 + i * depth));
@@ -631,15 +812,33 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates move loops for a 180° top-face turn that affects side layers. Used for U2, Uw2, 3U2,
+   * etc. moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param right  The cells on the right face
+   * @param left   The cells on the left face
+   * @param front  The cells on the front face
+   * @param back   The cells on the back face
+   * @return A list of move loops defining the 180° transformation
+   */
   private List<MoveLoop> topSideDoubleTurn(int layer, int width, int height, int depth,
       List<Cell> right, List<Cell> left, List<Cell> front, List<Cell> back) {
     List<MoveLoop> result = new ArrayList<>();
+
+    // Connect opposite cells on front and back faces
     for (int i = 0; i < width; i++) {
       MoveLoop l = new MoveLoop();
       l.getCells().add(front.get(i + (layer - 1) * width));
       l.getCells().add(back.get(i + (layer - 1) * width));
       result.add(l);
     }
+
+    // Connect opposite cells on left and right faces
     for (int i = 0; i < depth; i++) {
       MoveLoop l = new MoveLoop();
       l.getCells().add(right.get(i + (layer - 1) * depth));
@@ -649,15 +848,33 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates move loops for a 180° right-face turn that affects side layers. Used for R2, Rw2, 3R2,
+   * etc. moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param front  The cells on the front face
+   * @param back   The cells on the back face
+   * @param top    The cells on the top face
+   * @param bottom The cells on the bottom face
+   * @return A list of move loops defining the 180° transformation
+   */
   private List<MoveLoop> rightSideDoubleTurn(int layer, int width, int height, int depth,
       List<Cell> front, List<Cell> back, List<Cell> top, List<Cell> bottom) {
     List<MoveLoop> result = new ArrayList<>();
+
+    // Connect opposite cells on front and back faces
     for (int i = 0; i < height; i++) {
       MoveLoop l = new MoveLoop();
       l.getCells().add(front.get(i * width + width - layer));
       l.getCells().add(back.get((height - i - 1) * width + layer - 1));
       result.add(l);
     }
+
+    // Connect opposite cells on top and bottom faces
     for (int i = 0; i < depth; i++) {
       MoveLoop l = new MoveLoop();
       l.getCells().add(top.get(i * width + width - layer));
@@ -667,11 +884,23 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates move loops for a 90° rotation of a face. Implements clockwise rotation of the entire
+   * face.
+   *
+   * @param face   The list of cells on the face to rotate
+   * @param width  The width of the face
+   * @param height The height of the face
+   * @return A list of move loops defining the face rotation
+   */
   private List<MoveLoop> faceTurn(List<Cell> face, int width, int height) {
     List<MoveLoop> result = new ArrayList<>();
+
+    // Process each ring from outer to inner
     for (int dx = 0; dx < divRoundUp(width, 2); dx++) {
       for (int dy = 0; dy < height / 2; dy++) {
         MoveLoop loop = new MoveLoop();
+        // Add cells in clockwise order
         loop.getCells().add(face.get(dx + dy * width));
         loop.getCells().add(face.get((width - dy - 1) + width * dx));
         loop.getCells().add(face.get(width - dx - 1 + width * (height - dy - 1)));
@@ -682,6 +911,15 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates move loops for a 90° counter-clockwise rotation of a face. Reverses the loops created
+   * by faceTurn.
+   *
+   * @param face   The list of cells on the face to rotate
+   * @param width  The width of the face
+   * @param height The height of the face
+   * @return A list of move loops defining the reverse face rotation
+   */
   private List<MoveLoop> faceReverseTurn(List<Cell> face, int width, int height) {
     List<MoveLoop> result = faceTurn(face, width, height);
     for (MoveLoop loop : result) {
@@ -690,8 +928,18 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Creates move loops for a 180° rotation of a face. Connects opposite cells in the face.
+   *
+   * @param face   The list of cells on the face to rotate
+   * @param width  The width of the face
+   * @param height The height of the face
+   * @return A list of move loops defining the 180° face rotation
+   */
   private List<MoveLoop> faceDoubleTurn(List<Cell> face, int width, int height) {
     List<MoveLoop> result = new ArrayList<>();
+
+    // Connect opposite cells in each row and column
     for (int dx = 0; dx < width; dx++) {
       for (int dy = 0; dy < height / 2; dy++) {
         MoveLoop loop = new MoveLoop();
@@ -700,7 +948,8 @@ public class CuboidBuilder {
         result.add(loop);
       }
     }
-    // special case for odd numbered heights
+
+    // Special case for odd-numbered heights - connect cells in middle row
     if (height % 2 == 1) {
       int dy = divRoundUp(height, 2) - 1;
       for (int dx = 0; dx < width / 2; dx++) {
@@ -713,9 +962,15 @@ public class CuboidBuilder {
     return result;
   }
 
+  /**
+   * Calculates the ceiling division of two integers. Used for determining loop bounds in face
+   * rotation algorithms.
+   *
+   * @param num     The numerator
+   * @param divisor The divisor
+   * @return The ceiling of num/divisor
+   */
   public static int divRoundUp(int num, int divisor) {
     return (num + divisor - 1) / divisor;
   }
-
-
 }
