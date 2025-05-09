@@ -2,7 +2,7 @@ package dev.aisandbox.server.simulation.twisty.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -15,42 +15,50 @@ public class MoveCompilerTest {
   @Test
   @DisplayName("Check warning on empty move")
   public void blankMoveTest() {
-    TwistyPuzzle puzzle = new TwistyPuzzle();
-    Cell c1 = new Cell();
-    Cell c2 = new Cell();
-    Cell c3 = new Cell();
-    puzzle.getCells().add(c1);
-    puzzle.getCells().add(c2);
-    puzzle.getCells().add(c3);
-    Move m1 = new Move();
-    m1.setName("Null Move");
-    puzzle.getMoves().add(m1);
-    // compile moves should return a warning as there is an empty move
-    Optional<String> result = puzzle.compileMoves();
-    assertTrue(result.isPresent());
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      TwistyPuzzle puzzle = new TwistyPuzzle();
+      Cell c1 = new Cell();
+      Cell c2 = new Cell();
+      Cell c3 = new Cell();
+      puzzle.getCells().add(c1);
+      puzzle.getCells().add(c2);
+      puzzle.getCells().add(c3);
+      Move m1 = new Move();
+      m1.setName("Null Move");
+      // compile moves should return a warning as there is an empty move
+      puzzle.addMove(m1);
+    });
   }
 
   @Test
   @DisplayName("Duplicate move name detection")
   public void duplicateMoveTest() {
-    TwistyPuzzle puzzle = new TwistyPuzzle();
-    Cell c1 = new Cell();
-    Cell c2 = new Cell();
-    Cell c3 = new Cell();
-    puzzle.getCells().add(c1);
-    puzzle.getCells().add(c2);
-    puzzle.getCells().add(c3);
-    // add move
-    Move m1 = new Move();
-    m1.setName("Move1");
-    puzzle.getMoves().add(m1);
-    // add duplicate move
-    Move m2 = new Move();
-    m2.setName("Move1");
-    puzzle.getMoves().add(m2);
-    // compile moves should return a warning as there is an empty move
-    Optional<String> result = puzzle.compileMoves();
-    assertTrue(result.get().contains("Duplicate move name"));
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      TwistyPuzzle puzzle = new TwistyPuzzle();
+      Cell c1 = new Cell();
+      Cell c2 = new Cell();
+      Cell c3 = new Cell();
+      puzzle.getCells().add(c1);
+      puzzle.getCells().add(c2);
+      puzzle.getCells().add(c3);
+      // add move
+      Move m1 = new Move();
+      m1.setName("Move1");
+      MoveLoop loop1 = new MoveLoop();
+      loop1.getCells().add(c2);
+      loop1.getCells().add(c3);
+      m1.getLoops().add(loop1);
+      puzzle.addMove(m1);
+      // add duplicate move
+      Move m2 = new Move();
+      m2.setName("Move1");
+      MoveLoop loop2 = new MoveLoop();
+      loop2.getCells().add(c2);
+      loop2.getCells().add(c3);
+      m2.getLoops().add(loop2);
+      puzzle.addMove(m2);
+      // compile moves should return an exception as there is already a move with this name
+    });
   }
 
   @Test
@@ -77,13 +85,7 @@ public class MoveCompilerTest {
     loop1.getCells().add(c3);
     loop1.getCells().add(c4);
     m1.getLoops().add(loop1);
-    puzzle.getMoves().add(m1);
-    // compile moves - no warnings
-    Optional<String> result = puzzle.compileMoves();
-    if (result.isPresent()) {
-      log.warn(result.get());
-    }
-    assertFalse(result.isPresent());
+    puzzle.addMove(m1);
     // perform the move on a state
     String state = "ABCDE";
     String state2 = puzzle.getCompiledMoves().get("Move1").applyMove(state);
@@ -116,10 +118,7 @@ public class MoveCompilerTest {
     loop1.getCells().add(c4);
     loop1.getCells().add(c5);
     m1.getLoops().add(loop1);
-    puzzle.getMoves().add(m1);
-    // compile moves - no warnings
-    Optional<String> result = puzzle.compileMoves();
-    assertFalse(result.isPresent());
+    puzzle.addMove(m1);
     // perform the move on a state
     String state = "ABCDE";
     String state2 = puzzle.getCompiledMoves().get("Move1").applyMove(state);
