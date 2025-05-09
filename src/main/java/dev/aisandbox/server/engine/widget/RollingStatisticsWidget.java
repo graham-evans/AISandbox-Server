@@ -1,9 +1,9 @@
 package dev.aisandbox.server.engine.widget;
 
 import static dev.aisandbox.server.engine.output.OutputConstants.STATISTICS_FONT;
+import static dev.aisandbox.server.engine.output.OutputConstants.STATISTICS_HEIGHT;
 
 import dev.aisandbox.server.engine.Theme;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -17,38 +17,29 @@ import org.apache.commons.statistics.descriptive.DoubleStatistics;
 import org.apache.commons.statistics.descriptive.Statistic;
 
 /**
- * Widget that shows statistics (mean/std/var) of a moving window o values.
+ * Widget that shows statistics (mean/std/var) of a moving window of values.
  */
 @Slf4j
 public class RollingStatisticsWidget {
 
   private static final String DOUBLE_FORMAT = "%.2f";
-  private static final int MARGIN = 5;
   private final int width;
   private final int height;
   private final int padding;
-  private final int fontHeight;
-  private final int titleFontSize;
   private final int windowSize;
   private final Theme theme;
   private final boolean opaque;
-  private final Font font;
-  private final Font titleFont;
   private final List<Double> values = new ArrayList<>();
   private final String STD = "\u03C3";
   private final String SQR = "\u00B2";
 
   private BufferedImage cachedImage = null;
 
-  public RollingStatisticsWidget(int width, int height, int padding, Font font, Font titleFont,
-      int windowSize, Theme theme, boolean opaque) {
+  public RollingStatisticsWidget(int width, int height, int padding, int windowSize, Theme theme,
+      boolean opaque) {
     this.width = width;
     this.height = height;
     this.padding = padding;
-    this.font = font;
-    this.titleFont = titleFont;
-    this.fontHeight = font.getSize();
-    this.titleFontSize = titleFont.getSize();
     this.windowSize = windowSize;
     this.theme = theme;
     this.opaque = opaque;
@@ -83,7 +74,7 @@ public class RollingStatisticsWidget {
     if (!values.isEmpty()) {
       Graphics2D g = image.createGraphics();
       GraphicsUtils.setupRenderingHints(g);
-      g.setFont(font);
+      g.setFont(STATISTICS_FONT);
       g.setColor(theme.getText());
       FontMetrics fm = g.getFontMetrics();
       // generate statistics
@@ -91,25 +82,27 @@ public class RollingStatisticsWidget {
           EnumSet.of(Statistic.MIN, Statistic.MAX, Statistic.MEAN, Statistic.VARIANCE,
               Statistic.STANDARD_DEVIATION), values.stream().mapToDouble(d -> d).toArray());
       // draw statistics
-      drawStringCentered("Statistics", g, fm, 0, font.getSize() + padding, width);
-      int cursorY = fontHeight + (height - fontHeight * 5) / 2;
-      drawStringCentered(
-          "Minimum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MIN)), g, fm, 0,
-          cursorY, width);
-      cursorY += fontHeight;
-      drawStringCentered(
-          "Maximum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MAX)), g, fm, 0,
-          cursorY, width);
-      cursorY += fontHeight;
-      drawStringCentered("Mean: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MEAN)),
-          g, fm, 0, cursorY, width);
-      cursorY += fontHeight;
-      drawStringCentered(STD + ": " + String.format(DOUBLE_FORMAT,
-          stats.getAsDouble(Statistic.STANDARD_DEVIATION)), g, fm, 0, cursorY, width);
-      cursorY += fontHeight;
-      drawStringCentered(
-          STD + SQR + ": " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.VARIANCE)), g,
-          fm, 0, cursorY, width);
+      drawStringCentered("Statistics", g, fm, 0, STATISTICS_HEIGHT + padding, width);
+      int cursorY = STATISTICS_HEIGHT + (height - STATISTICS_HEIGHT * 5) / 2;
+      GraphicsUtils.drawCenteredText(g, 0, cursorY, width, STATISTICS_HEIGHT,
+          "Minimum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MIN)),
+          STATISTICS_FONT, theme.getText());
+      cursorY += STATISTICS_HEIGHT;
+      GraphicsUtils.drawCenteredText(g, 0, cursorY, width, STATISTICS_HEIGHT,
+          "Maximum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MAX)),
+          STATISTICS_FONT, theme.getText());
+      cursorY += STATISTICS_HEIGHT;
+      GraphicsUtils.drawCenteredText(g, 0, cursorY, width, STATISTICS_HEIGHT,
+          "Mean: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MEAN)),
+          STATISTICS_FONT, theme.getText());
+      cursorY += STATISTICS_HEIGHT;
+      GraphicsUtils.drawCenteredText(g, 0, cursorY, width, STATISTICS_HEIGHT,
+          STD + ": " + String.format(DOUBLE_FORMAT,
+              stats.getAsDouble(Statistic.STANDARD_DEVIATION)), STATISTICS_FONT, theme.getText());
+      cursorY += STATISTICS_HEIGHT;
+      GraphicsUtils.drawCenteredText(g, 0, cursorY, width, STATISTICS_HEIGHT,
+          STD + SQR + ": " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.VARIANCE)),
+          STATISTICS_FONT, theme.getText());
     }
     // return image
     return image;
@@ -130,13 +123,10 @@ public class RollingStatisticsWidget {
     private int padding = 40;
     private int windowSize = 200;
     private boolean opaque = true;
-    private Font font = STATISTICS_FONT;
-    private Font titleFont = STATISTICS_FONT;
     private Theme theme = Theme.LIGHT;
 
     public RollingStatisticsWidget build() {
-      return new RollingStatisticsWidget(width, height, padding, font, titleFont, windowSize, theme,
-          opaque);
+      return new RollingStatisticsWidget(width, height, padding, windowSize, theme, opaque);
     }
   }
 }
