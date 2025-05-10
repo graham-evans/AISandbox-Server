@@ -8,8 +8,9 @@ message TwistyState {
   string sessionID = 1; // the ID for this simulation run
   string episodeID = 2; // the ID for the episode
   string state = 3;
-  int32 moves = 4;
-  repeated string validMoves = 5;
+  int32 steps = 4;
+  int32 obtmMoves = 5;
+  repeated string validMoves = 6;
 }
 
 message TwistyAction {
