@@ -28,8 +28,6 @@ import dev.aisandbox.server.simulation.twisty.proto.TwistyResult;
 import dev.aisandbox.server.simulation.twisty.proto.TwistySignal;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyState;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -53,14 +51,13 @@ public final class TwistySimulation implements Simulation {
   // puzzle elements
   private final Random random;
   private final String sessionID = UUID.randomUUID().toString();
-  private final int MAX_MOVES = 1000;
+  private final int MAX_STEPS = 1000;
   // UI elements
   private final TitleWidget titleWidget;
   private final RollingIconWidget moveHistoryWidget;
   private final RollingSuccessStatisticsWidget statsWidget;
-  String savedState;
-  List<String> actions = new ArrayList<>();
   int moves;
+  int obtmMoves;
 
   private String episodeID;
 
@@ -77,7 +74,8 @@ public final class TwistySimulation implements Simulation {
     titleWidget = TitleWidget.builder().title("Twisty Puzzle - " + puzzle.getPuzzleName())
         .theme(theme).build();
     moveHistoryWidget = RollingIconWidget.builder().width(WIDGET_WIDTH).height(WIDGET_HEIGHT)
-        .iconWidth(Move.MOVE_ICON_WIDTH).iconHeight(Move.MOVE_ICON_HEIGHT).title("Moves").theme(theme).build();
+        .iconWidth(Move.MOVE_ICON_WIDTH).iconHeight(Move.MOVE_ICON_HEIGHT).title("Moves")
+        .theme(theme).build();
     statsWidget = RollingSuccessStatisticsWidget.builder().width(WIDGET_WIDTH).height(WIDGET_HEIGHT)
         .theme(theme).build();
     // setup puzzle
@@ -90,6 +88,7 @@ public final class TwistySimulation implements Simulation {
       scramblePuzzle();
     }
     moves = 0;
+    obtmMoves=0;
     moveHistoryWidget.clearIcons();
     episodeID = UUID.randomUUID().toString();
   }
@@ -102,7 +101,8 @@ public final class TwistySimulation implements Simulation {
     }
     // generate the current state
     TwistyState.Builder builder = TwistyState.newBuilder();
-    builder.setMoves(moves);
+    builder.setSteps(moves);
+    builder.setObtmMoves(obtmMoves);
     builder.setEpisodeID(episodeID);
     builder.setSessionID(sessionID);
     builder.setState(puzzle.getState());
@@ -122,15 +122,16 @@ public final class TwistySimulation implements Simulation {
       MoveResult result = puzzle.applyMove(action.getMove());
       moveHistoryWidget.addIcon(result.icon());
       moves++;
+      obtmMoves+=result.cost();
       if (puzzle.isSolved()) {
         log.info("solved");
         // puzzle solved
         agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN)
             .build());
-        statsWidget.addSuccess(1.0);
+        statsWidget.addSuccess(obtmMoves);
         output.display();
         initialisePuzzle();
-      } else if (moves == MAX_MOVES) {
+      } else if (moves == MAX_STEPS) {
         log.info("max moves");
         // ran out of moves
         agent.send(
@@ -174,7 +175,8 @@ public final class TwistySimulation implements Simulation {
     graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
     // draw stats
-    graphics2D.drawImage(statsWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - WIDGET_WIDTH, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING, null);
+    graphics2D.drawImage(statsWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - WIDGET_WIDTH,
+        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
     // draw history
     graphics2D.drawImage(moveHistoryWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - WIDGET_WIDTH,
         HD_HEIGHT - BOTTOM_MARGIN - WIDGET_HEIGHT, null);
