@@ -74,15 +74,12 @@ public class RollingStatisticsWidget {
     if (!values.isEmpty()) {
       Graphics2D g = image.createGraphics();
       GraphicsUtils.setupRenderingHints(g);
-      g.setFont(STATISTICS_FONT);
-      g.setColor(theme.getText());
-      FontMetrics fm = g.getFontMetrics();
       // generate statistics
       DoubleStatistics stats = DoubleStatistics.of(
           EnumSet.of(Statistic.MIN, Statistic.MAX, Statistic.MEAN, Statistic.VARIANCE,
               Statistic.STANDARD_DEVIATION), values.stream().mapToDouble(d -> d).toArray());
       // draw statistics
-      drawStringCentered("Statistics", g, fm, 0, STATISTICS_HEIGHT + padding, width);
+      GraphicsUtils.drawCenteredText(g,0,padding,width,STATISTICS_HEIGHT,"Statistics",STATISTICS_FONT,theme.getText());
       int cursorY = STATISTICS_HEIGHT + (height - STATISTICS_HEIGHT * 5) / 2;
       GraphicsUtils.drawCenteredText(g, 0, cursorY, width, STATISTICS_HEIGHT,
           "Minimum: " + String.format(DOUBLE_FORMAT, stats.getAsDouble(Statistic.MIN)),
@@ -106,12 +103,6 @@ public class RollingStatisticsWidget {
     }
     // return image
     return image;
-  }
-
-  private void drawStringCentered(String text, Graphics2D g, FontMetrics fm, int x, int y,
-      int width) {
-    int dx = (width - fm.stringWidth(text)) / 2;
-    g.drawString(text, x + dx, y);
   }
 
   @Setter
