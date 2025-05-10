@@ -18,6 +18,7 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
+import dev.aisandbox.server.engine.widget.RollingSuccessStatisticsWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.twisty.model.Move;
 import dev.aisandbox.server.simulation.twisty.model.MoveResult;
@@ -56,9 +57,11 @@ public final class TwistySimulation implements Simulation {
   // UI elements
   private final TitleWidget titleWidget;
   private final RollingIconWidget moveHistoryWidget;
+  private final RollingSuccessStatisticsWidget statsWidget;
   String savedState;
   List<String> actions = new ArrayList<>();
   int moves;
+
   private String episodeID;
 
 
@@ -74,16 +77,12 @@ public final class TwistySimulation implements Simulation {
     titleWidget = TitleWidget.builder().title("Twisty Puzzle - " + puzzle.getPuzzleName())
         .theme(theme).build();
     moveHistoryWidget = RollingIconWidget.builder().width(WIDGET_WIDTH).height(WIDGET_HEIGHT)
-        .iconWidth(Move.MOVE_ICON_WIDTH).iconHeight(Move.MOVE_ICON_HEIGHT).theme(theme).build();
-    /*frequencyGraph.setTitle("# Moves to solve");
-    frequencyGraph.setXaxisHeader("# Moves");
-    frequencyGraph.setYaxisHeader("Frequency");
-    frequencyGraph.setGraphWidth(HISTORY_WIDTH * Move.MOVE_ICON_WIDTH);
-    frequencyGraph.setGraphHeight(350);*/
+        .iconWidth(Move.MOVE_ICON_WIDTH).iconHeight(Move.MOVE_ICON_HEIGHT).title("Moves").theme(theme).build();
+    statsWidget = RollingSuccessStatisticsWidget.builder().width(WIDGET_WIDTH).height(WIDGET_HEIGHT)
+        .theme(theme).build();
     // setup puzzle
     initialisePuzzle();
   }
-
 
   public void initialisePuzzle() {
     puzzle.resetPuzzle();
@@ -116,6 +115,7 @@ public final class TwistySimulation implements Simulation {
       // reset the puzzle
       agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
           .build());
+      statsWidget.addFailure();
       initialisePuzzle();
     } else {
       // apply the move
@@ -127,6 +127,7 @@ public final class TwistySimulation implements Simulation {
         // puzzle solved
         agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN)
             .build());
+        statsWidget.addSuccess(1.0);
         output.display();
         initialisePuzzle();
       } else if (moves == MAX_MOVES) {
@@ -135,6 +136,7 @@ public final class TwistySimulation implements Simulation {
         agent.send(
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
                 .build());
+        statsWidget.addFailure();
         output.display();
         initialisePuzzle();
       } else {
@@ -171,28 +173,11 @@ public final class TwistySimulation implements Simulation {
     // add logo
     graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
+    // draw stats
+    graphics2D.drawImage(statsWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - WIDGET_WIDTH, TOP_MARGIN+TITLE_HEIGHT+WIDGET_SPACING, null);
     // draw history
-    graphics2D.drawImage(moveHistoryWidget.getImage(), HD_WIDTH-RIGHT_MARGIN-WIDGET_WIDTH, HD_HEIGHT-BOTTOM_MARGIN-WIDGET_HEIGHT, null);
-/*    for (int i = 0; i < moveHistory.size(); i++) {
-      BufferedImage moveImage = puzzle.getMoveImage(moveHistory.get(i));
-      if (moveImage != null) {
-        graphics2D.drawImage(moveImage, (i % HISTORY_WIDTH) * Move.MOVE_ICON_WIDTH + 1350,
-            (i / HISTORY_WIDTH) * Move.MOVE_ICON_HEIGHT + 550, null);
-      }
-    }*/
-    //draw graphs
-/*    g.setColor(Color.BLACK);
-    if (frequencyGraphImage != null) {
-      g.drawImage(frequencyGraphImage, 1350, 100, null);
-      g.drawString(
-          "Mean : " + BaseAWTGraph.toSignificantDigitString(frequencyGraph.getMean(), 5),
-          1400,
-          480);
-      g.drawString(
-          "\u03C3\u00B2 : "
-              + BaseAWTGraph.toSignificantDigitString(frequencyGraph.getStandardDeviation(), 5),
-          1400,
-          480 + 24);
-    }*/
+    graphics2D.drawImage(moveHistoryWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - WIDGET_WIDTH,
+        HD_HEIGHT - BOTTOM_MARGIN - WIDGET_HEIGHT, null);
+
   }
 }
