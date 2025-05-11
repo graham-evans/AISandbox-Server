@@ -47,7 +47,7 @@ public class TestRunMine {
       List<Agent> agents = Arrays.stream(builder.getAgentNames(1))
           .map(s -> (Agent) new MockMineAgent(s)).toList();
       // create simulation
-      Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
+      Simulation sim = builder.build(agents, theme, new Random());
       // create output
       File targetDir = new File(outputDirectory,
           mineSize.name() + "-" + theme.name().toLowerCase());

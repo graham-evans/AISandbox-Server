@@ -49,7 +49,7 @@ public class TestRunTwisty {
       List<Agent> agents = Arrays.stream(builder.getAgentNames(1))
           .map(s -> (Agent) new MockTwistyAgent(s)).toList();
       // create simulation
-      Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
+      Simulation sim = builder.build(agents, theme, new Random());
       assertNotNull(sim);
       // create output
       File targetDir = new File(outputDirectory,
