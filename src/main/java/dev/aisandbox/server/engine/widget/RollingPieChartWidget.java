@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+@SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 @RequiredArgsConstructor
 public class RollingPieChartWidget {
 
@@ -23,7 +24,7 @@ public class RollingPieChartWidget {
   private final String title;
   private final Theme theme;
   private final List<String> values = new ArrayList<>();
-  private final Map<String,Color> sliceColours = new HashMap<>();
+  private final Map<String, Color> sliceColours = new HashMap<>();
   private BufferedImage image = null;
 
   public static RollingPieChartWidgetBuilder builder() {
@@ -32,7 +33,7 @@ public class RollingPieChartWidget {
 
   public void addValue(String value, Color valueColour) {
     values.add(value);
-    sliceColours.put(value,valueColour);
+    sliceColours.put(value, valueColour);
     while (values.size() > window) {
       values.removeFirst();
     }
@@ -43,10 +44,11 @@ public class RollingPieChartWidget {
     if (image == null) {
       PieChartWidget pie = new PieChartWidget(width, height, title, theme);
       // calculate slices
-      TreeMap<String,Double> counts = new TreeMap<>();
-      values.forEach(value -> counts.put(value,counts.compute(value,(k,v)->(v==null)?1.0:v+1.0)));
+      TreeMap<String, Double> counts = new TreeMap<>();
+      values.forEach(
+          value -> counts.put(value, counts.compute(value, (k, v) -> (v == null) ? 1.0 : v + 1.0)));
       List<PieChartWidget.Slice> slices = new ArrayList<>();
-      for(Entry<String,Double> entry : counts.entrySet()) {
+      for (Entry<String, Double> entry : counts.entrySet()) {
         slices.add(new Slice(entry.getKey(), entry.getValue(), sliceColours.get(entry.getKey())));
       }
       pie.setPie(slices);

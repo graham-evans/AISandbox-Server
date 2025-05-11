@@ -26,6 +26,7 @@ import org.apache.commons.statistics.descriptive.Statistic;
  * implements caching to avoid unnecessary re-rendering of unchanged statistics.
  */
 @Slf4j
+@SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingStatisticsWidget {
 
   /**

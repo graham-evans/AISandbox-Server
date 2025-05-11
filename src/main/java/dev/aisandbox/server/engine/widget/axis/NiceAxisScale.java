@@ -13,9 +13,6 @@ import lombok.Getter;
 
 public class NiceAxisScale implements AxisScale {
 
-  private static final int CONST = 5;
-
-  private final double range;
   private final double tickSpacing;
   @Getter
   private final double minimum;
@@ -23,7 +20,7 @@ public class NiceAxisScale implements AxisScale {
   private final double maximum;
 
   /**
-   * Create a nice scale with a maximul of 5 ticks and loose labels
+   * Create a nice scale with a maximum of 5 ticks and loose labels
    *
    * @param minimumValue the minimum value to include
    * @param maximumValue the maximum value to include
@@ -45,7 +42,7 @@ public class NiceAxisScale implements AxisScale {
       minimumValue -= 0.5;
       maximumValue += 0.5;
     }
-    range = nice(maximumValue - minimumValue, false);
+    double range = nice(maximumValue - minimumValue, false);
     tickSpacing = nice(range / (maxTicks - 1), true);
     minimum = Math.floor(minimumValue / tickSpacing) * tickSpacing;
     maximum = Math.ceil(maximumValue / tickSpacing) * tickSpacing;
@@ -58,6 +55,8 @@ public class NiceAxisScale implements AxisScale {
    * @param round round the number down (true) or up (false)
    * @return a 'nice' number near <i>value</i>
    */
+  // This will suppress all the PMD warnings in this class as it has many literals
+  @SuppressWarnings("PMD")
   protected static double nice(double value, boolean round) {
     double exponent; // exponent of range
     double fraction; // fractional part of range
@@ -102,7 +101,7 @@ public class NiceAxisScale implements AxisScale {
 
   @Override
   public List<Double> getTicks() {
-    List<Double> ticks = new ArrayList<Double>();
+    List<Double> ticks = new ArrayList<>();
     double currentTick = minimum;
     while (currentTick <= maximum) {
       ticks.add(currentTick);

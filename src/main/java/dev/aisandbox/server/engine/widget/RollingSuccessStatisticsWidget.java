@@ -24,6 +24,7 @@ import org.apache.commons.statistics.descriptive.Statistic;
  * The widget supports custom sizing, padding, window size, and theming through its builder. It
  * implements caching to avoid unnecessary re-rendering of unchanged statistics.
  */
+@SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingSuccessStatisticsWidget {
 
   /**

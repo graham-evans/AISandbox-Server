@@ -43,7 +43,7 @@ public class RollingIconWidget {
     this.maxXCount = (width-PADDING*2) / iconWidth;
     int maxYCount = (height - WIDGET_TITLE_HEIGHT-PADDING*3) / iconHeight;
     this.maxMemory = maxXCount * maxYCount;
-    log.debug("Setting up wulling icon widget with max number of icons = {}", maxMemory);
+    log.debug("Setting up rolling icon widget with max number of icons = {}", maxMemory);
     iconOriginX = (width -PADDING*2- iconWidth * maxXCount) / 2+PADDING;
     iconOriginY = (height - WIDGET_TITLE_HEIGHT -PADDING*3- iconHeight * maxYCount) / 2 + WIDGET_TITLE_HEIGHT+PADDING*2;
   }
