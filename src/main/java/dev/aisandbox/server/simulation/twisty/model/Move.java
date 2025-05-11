@@ -66,8 +66,7 @@ public class Move {
    */
   @Override
   public String toString() {
-    String sb = name + " (" + loops.size() + ")";
-    return sb;
+    return name + " (" + loops.size() + ")";
   }
 
   /**
@@ -103,8 +102,8 @@ public class Move {
           cmove.setMatrixElement(cells.indexOf(loop.getCells().get(j + 1)),
               cells.indexOf(loop.getCells().get(j)));
         }
-        cmove.setMatrixElement(cells.indexOf(loop.getCells().get(0)),
-            cells.indexOf(loop.getCells().get(loop.getCells().size() - 1)));
+        cmove.setMatrixElement(cells.indexOf(loop.getCells().getFirst()),
+            cells.indexOf(loop.getCells().getLast()));
       }
     }
     return cmove;

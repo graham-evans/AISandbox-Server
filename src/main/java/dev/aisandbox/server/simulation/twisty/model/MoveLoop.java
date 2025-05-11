@@ -9,23 +9,14 @@ import lombok.Getter;
  * A move loop is used to track cells that move together when a specific 
  * rotation or manipulation is performed on the puzzle.
  */
+@Getter
 public class MoveLoop {
 
   /**
    * The list of cells that are part of this move loop.
    * Cells within a move loop will be transformed together during puzzle manipulations.
    */
-  @Getter
   List<Cell> cells = new ArrayList<>();
-
-  /**
-   * Removes a specific cell from the move loop.
-   *
-   * @param c The cell to be removed from the loop
-   */
-  public void removeCell(Cell c) {
-    cells.remove(c);
-  }
 
   /**
    * Returns a string representation of this move loop.

@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,8 +51,7 @@ public class TwistyPuzzle {
    * values.
    */
   private final Map<Character, Color> colorMap = Arrays.stream(ColourEnum.values()).collect(
-      Collectors.toMap(colourEnum -> colourEnum.getCharacter(),
-          colourEnum -> colourEnum.getAwtColour()));
+      Collectors.toMap(ColourEnum::getCharacter, ColourEnum::getAwtColour));
   /**
    * The list of cells that make up the puzzle's structure.
    */
@@ -93,7 +91,7 @@ public class TwistyPuzzle {
    * Maps move names to their compiled representations for efficient application.
    */
   @Getter
-  private Map<String, CompiledMove> compiledMoves = new HashMap<>();
+  private final Map<String, CompiledMove> compiledMoves = new HashMap<>();
 
   /**
    * Compiles and adds a move to the puzzle's available moves. Throws an exception if a move with
@@ -189,11 +187,11 @@ public class TwistyPuzzle {
    * @return true if the puzzle is solved, false otherwise
    */
   public boolean isSolved() {
-    int cursor=0;
+    int cursor = 0;
     for (int faceSize : faceSizes) {
-      char c = ' ';
-      for (int count=0;count<faceSize;count++) {
-        if (' ' == c) {
+      char c = Character.MIN_VALUE;
+      for (int count = 0; count < faceSize; count++) {
+        if (Character.MIN_VALUE == c) {
           c = currentState.charAt(cursor);
         } else if (c != currentState.charAt(cursor)) {
           return false;

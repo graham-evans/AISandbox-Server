@@ -47,6 +47,8 @@ public final class TwistySimulation implements Simulation {
    */
   private static final int SCRAMBLE_MOVES = 200;
 
+  private static final String RESET_MOVE = "reset";
+
   // UI constants
   /**
    * Width of the sidebar widgets based on screen dimensions and puzzle width
@@ -190,7 +192,7 @@ public final class TwistySimulation implements Simulation {
     log.info("action: {}", action.getMove());
 
     // Special case - handle reset action
-    if ("reset".equalsIgnoreCase(action.getMove())) {
+    if (RESET_MOVE.equalsIgnoreCase(action.getMove())) {
       // Reset the puzzle and report failure
       agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
           .build());
