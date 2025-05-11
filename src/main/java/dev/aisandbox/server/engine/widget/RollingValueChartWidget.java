@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingValueChartWidget {
 
   // fields from the builder

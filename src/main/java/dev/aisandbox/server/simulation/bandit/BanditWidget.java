@@ -19,6 +19,7 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang3.tuple.Pair;
 
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class BanditWidget {
 
   private final int width;
