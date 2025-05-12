@@ -89,8 +89,9 @@ public final class CoinGame implements Simulation {
     COIN_ROW_INDENT = (BAIZE_WIDTH - 290 * scenario.getRows().length) / 2;
     // generate the images
     try {
-      rowImages = CoinIcons.getRowImages(scenario.getRows().length);
-      coinImages = CoinIcons.getCoinImages(Arrays.stream(scenario.getRows()).max().getAsInt());
+      rowImages = CoinIcons.getRowImages(scenario.getRows().length, theme);
+      coinImages = CoinIcons.getCoinImages(Arrays.stream(scenario.getRows()).max().getAsInt(),
+          theme);
     } catch (IOException e) {
       log.error("Error loading images", e);
     }
@@ -207,9 +208,6 @@ public final class CoinGame implements Simulation {
 
     graphics2D.setColor(theme.getText());
     for (int i = 0; i < coins.length; i++) {
-//      graphics2D.drawRect(LEFT_MARGIN + i * CoinIcons.PILE_WIDTH + COIN_ROW_INDENT,
-//          TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING , CoinIcons.PILE_WIDTH,
-//          BAIZE_HEIGHT);
       graphics2D.drawImage(rowImages[i], LEFT_MARGIN + i * CoinIcons.PILE_WIDTH + COIN_ROW_INDENT,
           TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + COIN_COLUMN_INDENT, null);
       graphics2D.drawImage(coinImages[coins[i]],

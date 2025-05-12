@@ -1,5 +1,6 @@
 package dev.aisandbox.server.simulation.coingame;
 
+import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import java.awt.Color;
@@ -22,7 +23,7 @@ public class CoinIcons {
   private static final int COIN_IMAGE_HEIGHT = 91;
   public static final int COINS_HEIGHT = 20 * COIN_SPACE + COIN_IMAGE_HEIGHT;
 
-  public static BufferedImage[] getRowImages(int rowCount) {
+  public static BufferedImage[] getRowImages(int rowCount, Theme theme) {
     BufferedImage[] images = new BufferedImage[rowCount];
     for (int i = 0; i < rowCount; i++) {
       images[i] = new BufferedImage(PILE_WIDTH, ROW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -30,12 +31,12 @@ public class CoinIcons {
       GraphicsUtils.setupRenderingHints(g);
       g.setColor(Color.BLACK);
       GraphicsUtils.drawCenteredText(g, 0, 0, PILE_WIDTH, ROW_HEIGHT - 4, "Row " + i,
-          OutputConstants.HEADER_FONT, Color.BLACK);
+          OutputConstants.HEADER_FONT, theme.getText());
     }
     return images;
   }
 
-  public static BufferedImage[] getCoinImages(int cointCount) throws IOException {
+  public static BufferedImage[] getCoinImages(int cointCount, Theme theme) throws IOException {
     BufferedImage[] images = new BufferedImage[cointCount + 1];
     // load coin image
     BufferedImage coinImage = ImageIO.read(
@@ -60,7 +61,7 @@ public class CoinIcons {
       g.setColor(Color.DARK_GRAY);
       g.fillRect(PILE_WIDTH / 2 - 40, COINS_HEIGHT - 40, 80, 40);
       GraphicsUtils.drawCenteredText(g, PILE_WIDTH / 2 - 40, COINS_HEIGHT - 40 - 6, 80, 40,
-          Integer.toString(i), OutputConstants.HEADER_FONT, Color.WHITE);
+          Integer.toString(i), OutputConstants.HEADER_FONT, theme.getText());
     }
     return images;
   }
