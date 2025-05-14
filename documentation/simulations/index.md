@@ -4,7 +4,7 @@
 
 Repeatedly select from a series of One-Armed Bandits, to achieve the best return over time.
 
-![](Bandit/thumb.png)
+[![](Bandit/thumb.png)](Bandit/index.md)
 
 ## [The Coin Game](CoinGame/index.md)
 
