@@ -8,7 +8,7 @@ AI Sandbox is written in Java, with the source code hosted on GitHub (using the 
     * [Oracle Java](https://www.oracle.com/java/technologies/downloads)
     * [Microsoft OpenJDK build](https://learn.microsoft.com/en-us/java/openjdk/download)
 
-2. Download the latest version of the source code from [GitHub](https://github.com/graham-evans/AISandbox-Server); use the “code” button to download.
+2. Download (or checkout) the latest version of the source code from [GitHub](https://github.com/graham-evans/AISandbox-Server); use the “code” button to download.
 3. Extract the directory structure to your hard drive.
 4. Open a terminal / command prompt, change to the directory where you extracted the source, and type
 
