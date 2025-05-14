@@ -7,13 +7,9 @@
     Checkstyle configuration that checks the Google coding conventions from Google Java Style
     that can be found at https://google.github.io/styleguide/javaguide.html
 
-    Checkstyle is very configurable. Be sure to read the documentation at
-    http://checkstyle.org (or in your downloaded distribution).
-
-    To completely disable a check, just comment it out or delete it from the file.
-    To suppress certain violations please review suppression filters.
-
     Authors: Max Vetrenko, Mauryan Kansara, Ruslan Diachenko, Roman Ivanov.
+
+    Additions made to check each source file references the GPL
  -->
 
 <module name="Checker">
@@ -27,6 +23,12 @@
   <!-- See https://checkstyle.org/filefilters/index.html -->
   <module name="BeforeExecutionExclusionFileFilter">
     <property name="fileNamePattern" value="module\-info\.java$"/>
+  </module>
+
+  <!-- check for licences in each source file -->
+  <module name="Header">
+    <property name="header" value="/*\n * AI Sandbox - This program is free software: you can redistribute it and/or modify it under the\n * terms of version 3 of the GNU General Public License. See the README and LICENCE files for\n * more information."/>
+    <property name="severity" value="error"/>
   </module>
 
   <module name="SuppressWarningsFilter"/>
@@ -436,5 +438,7 @@
       <!-- The check is suppressed in the next line of code after the comment -->
       <property name="influenceFormat" value="1"/>
     </module>
+
+
   </module>
 </module>
