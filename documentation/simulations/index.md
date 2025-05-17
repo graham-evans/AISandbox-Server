@@ -24,7 +24,7 @@ Explore a maze to find the exit then exploit the biases in the generator.
 
 ## [Mine Hunter](Mine/index.md)
 
-Use logic to defuse a minfield.
+Use logic to defuse a minefield.
 
 ## [Twisty Puzzles](Twisty/index.md)
 
