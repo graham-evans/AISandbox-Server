@@ -16,7 +16,6 @@ message MazeState {
 
 message MazeAction {
   Direction direction = 1;
-  optional string debugNote = 2;
 }
 
 message MazeResult {

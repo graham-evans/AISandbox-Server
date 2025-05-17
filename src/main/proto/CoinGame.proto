@@ -22,5 +22,4 @@ enum Signal {
 message CoinGameAction {
   int32 selectedRow = 1;
   int32 removeCount = 2;
-  optional string debugNote = 3;
 }

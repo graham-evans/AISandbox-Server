@@ -14,7 +14,6 @@ message BanditState {
 
 message BanditAction {
   int32 arm = 1;
-  optional string debugNote = 2;
 }
 
 message BanditResult {
