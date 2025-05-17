@@ -1,32 +1,57 @@
 syntax = "proto3";
 
+/**
+ * This package contains message definitions for the High-Low Cards game simulation.
+ * In this game, players must predict whether the next card will be higher or lower
+ * than the currently visible card. Points are awarded for correct predictions.
+ */
 package highlowcards;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.highlowcards.proto";
 
+/**
+ * HighLowCardsState represents the current state of a High-Low Cards game.
+ * It includes information about the visible cards, game progress, and current score.
+ */
 message HighLowCardsState {
-  string sessionID = 1; // the ID for this simulation run
-  string episodeID = 2; // the ID for the episode
-  int32 cardCount = 3; // the total number of cards on the board (face up + face down)
-  repeated string dealtCard = 4; // the face up cards (the latest card is the last record)
-  int32 score = 5; // the current score
+  string sessionID = 1; // Unique identifier for this simulation run
+  string episodeID = 2; // Unique identifier for the current episode
+  int32 cardCount = 3; // The total number of cards on the board (face up + face down)
+  repeated string dealtCard = 4; // The face up cards (the latest card is the last record)
+  int32 score = 5; // The current score accumulated by the player
 }
 
+/**
+ * HighLowCardsAction represents the player's prediction for the next card.
+ * The player must decide whether the next card will be higher or lower than the current visible card.
+ */
 message HighLowCardsAction {
-  HighLowChoice action = 1; // the agents prediction (higher or lower)
+  HighLowChoice action = 1; // The agent's prediction (higher or lower)
 }
 
+/**
+ * HighLowCardsReward provides feedback after a prediction is made.
+ * It includes the updated score and indicates whether the game should continue.
+ */
 message HighLowCardsReward {
-  int32 score = 3; // the score after the prediction
-  Signal signal = 1; // will the episode continue or reset
+  int32 score = 3; // The score after the prediction (increased for correct prediction)
+  Signal signal = 1; // Indication of whether to continue the game or reset
 }
 
+/**
+ * HighLowChoice enum represents the possible predictions a player can make.
+ * The player must predict if the next card will be higher or lower than the current one.
+ */
 enum HighLowChoice {
-  HIGH = 0;
-  LOW = 1;
+  HIGH = 0; // Predict that the next card will be higher than the current card
+  LOW = 1;  // Predict that the next card will be lower than the current card
 }
 
+/**
+ * Signal enum indicates the next step after a prediction.
+ * Used to control game flow and termination.
+ */
 enum Signal {
-  CONTINUE = 0;
-  RESET = 1;
+  CONTINUE = 0; // Continue the current game with the next card
+  RESET = 1;    // End the current game and start a new one
 }

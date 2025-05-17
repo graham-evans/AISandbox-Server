@@ -30,8 +30,6 @@ public enum PuzzleType {
       "Cuboid 2x2x6", "Cuboid 2x2x6 (OBTM)"), CUBE332("Cuboid 3x3x2",
       "Cuboid 3x3x2 (OBTM)"), CUBE334("Cuboid 3x3x4", "Cuboid 3x3x4 (OBTM)"), CUBE335(
       "Cuboid 3x3x5", "Cuboid 3x3x5 (OBTM)");
-//  PYRAMID3("Pyramid 3", "Pyramid 3");
-
 
   private final String name;
   private final String id;

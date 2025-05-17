@@ -1,39 +1,65 @@
 syntax = "proto3";
 
+/**
+ * This package contains message definitions for the mine hunter simulation.
+ * In mine hunter, an agent must uncover cells on a grid while avoiding hidden mines,
+ * using numerical clues to deduce the locations of the mines.
+ */
 package mine;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.mine.proto";
 
+/**
+ * MineState represents the current state of the mine hunter game.
+ * It includes the board configuration, game progress, and remaining flags.
+ */
 message MineState {
-  string sessionID = 1; // the ID for this simulation run
-  string episodeID = 2; // the ID for the episode
-  int32 width = 3;
-  int32 height = 4;
-  int32 flagsLeft = 5;
-  repeated string row = 6;
+  string sessionID = 1; // Unique identifier for this simulation run
+  string episodeID = 2; // Unique identifier for the current episode
+  int32 width = 3;      // The width of the game board (number of cells horizontally)
+  int32 height = 4;     // The height of the game board (number of cells vertically)
+  int32 flagsLeft = 5;  // The number of flags the player has remaining to place
+  repeated string row = 6; // The current visible state of each row on the board
+                           // (may contain hidden cells, numbers, flags)
 }
 
+/**
+ * MineAction represents the player's action on a specific cell.
+ * The player can choose to either dig at a location or place a flag.
+ */
 message MineAction {
-  int32 x = 1;
-  int32 y = 2;
-  FlagAction action = 3;
+  int32 x = 1;          // The x-coordinate of the target cell (horizontal position)
+  int32 y = 2;          // The y-coordinate of the target cell (vertical position)
+  FlagAction action = 3; // The type of action to perform (dig or place flag)
 }
 
+/**
+ * MineResult contains the outcome of the player's action.
+ * It indicates whether the game continues, is won, or is lost.
+ */
 message MineResult {
-  int32 x = 1;
-  int32 y = 2;
-  FlagAction action = 3;
-  MazeSignal signal = 4;
+  int32 x = 1;           // The x-coordinate of the cell where the action was taken
+  int32 y = 2;           // The y-coordinate of the cell where the action was taken
+  FlagAction action = 3; // The action that was performed
+  MazeSignal signal = 4; // The game state after the action (continue, win, or lose)
 }
 
+/**
+ * FlagAction enum represents the possible actions a player can take on a cell.
+ * The player must decide whether to dig (uncover) a cell or place a flag on it.
+ */
 enum FlagAction {
-  PLACE_FLAG = 0;
-  DIG = 1;
+  PLACE_FLAG = 0; // Place a flag on the cell to mark a suspected mine
+  DIG = 1;        // Dig at the cell to reveal what's underneath
 }
 
+/**
+ * MazeSignal enum indicates the game state after an action.
+ * This controls whether the game continues or ends.
+ */
 enum MazeSignal {
-  CONTINUE = 0;
-  WIN = 1;
-  LOSE = 2;
+  CONTINUE = 0; // The game continues, player should make another move
+  WIN = 1;      // The player has won the game by correctly identifying all mines
+  LOSE = 2;     // The player has lost by digging at a location containing a mine
 }
 

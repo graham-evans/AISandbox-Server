@@ -1,37 +1,60 @@
 syntax = "proto3";
 
+/**
+ * This package contains message definitions for the maze navigation simulation.
+ * An agent must navigate through a maze, making decisions about movement direction
+ * to maximize score while operating within a limited number of moves.
+ */
 package maze;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.maze.proto";
 
+/**
+ * MazeState represents the current state of the maze simulation.
+ * It provides information about the agent's position, remaining moves,
+ * and the dimensions of the maze environment.
+ */
 message MazeState {
-  string sessionID = 1; // the ID for this simulation run
-  string episodeID = 2; // the ID for the episode
-  int32 startX = 3; // the x position of the agent
-  int32 startY = 4; // the y position of the agent
-  int32 movesLeft = 5; // the number of moves before the end of the episode
-  int32 width = 6; // the width of the maze
-  int32 height = 7; // the height of the maze
+  string sessionID = 1; // Unique identifier for this simulation run
+  string episodeID = 2; // Unique identifier for the current episode
+  int32 startX = 3; // The x position of the agent (horizontal coordinate)
+  int32 startY = 4; // The y position of the agent (vertical coordinate)
+  int32 movesLeft = 5; // The number of moves remaining before the end of the episode
+  int32 width = 6; // The width of the maze (number of cells horizontally)
+  int32 height = 7; // The height of the maze (number of cells vertically)
 }
 
+/**
+ * MazeAction represents the agent's decision to move in a specific direction.
+ * This is the action taken by the agent in response to the current state.
+ */
 message MazeAction {
-  Direction direction = 1;
+  Direction direction = 1; // The direction in which the agent chooses to move
 }
 
+/**
+ * MazeResult contains the outcome of an agent's movement action.
+ * It tracks the agent's previous position, movement direction, new position,
+ * and the resulting score changes.
+ */
 message MazeResult {
-  int32 startX = 1;
-  int32 startY = 2;
-  Direction direction = 3;
-  int32 endX = 4;
-  int32 endY = 5;
-  double stepScore = 6;
-  double accumulatedScore = 7;
+  int32 startX = 1; // The x position before movement
+  int32 startY = 2; // The y position before movement
+  Direction direction = 3; // The direction the agent moved
+  int32 endX = 4; // The x position after movement
+  int32 endY = 5; // The y position after movement
+  double stepScore = 6; // The score received for this specific move
+  double accumulatedScore = 7; // The total score accumulated so far in this episode
 }
 
+/**
+ * Direction enum represents the four cardinal directions in which the agent can move.
+ * The agent must choose one of these directions for each movement action.
+ */
 enum Direction {
-  NORTH = 0;
-  SOUTH = 1;
-  EAST = 2;
-  WEST = 3;
+  NORTH = 0; // Move upward in the maze
+  SOUTH = 1; // Move downward in the maze
+  EAST = 2;  // Move right in the maze
+  WEST = 3;  // Move left in the maze
 }
 

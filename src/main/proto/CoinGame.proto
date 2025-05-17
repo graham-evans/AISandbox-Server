@@ -1,25 +1,42 @@
 syntax = "proto3";
 
+/**
+ * This package contains message definitions for the coin game simulation.
+ * Coin game is a turn-based game where players take turns removing coins from rows.
+ * The player who takes the last coin wins or loses depending on the game variation.
+ */
 package coingame;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.coingame.proto";
 
+/**
+ * CoinGameState represents the current state of a coin game simulation.
+ * It includes the board configuration, game constraints, and current game status.
+ */
 message CoinGameState {
-  string sessionID = 1; // the ID for this simulation run
-  string episodeID = 2; // the ID for the episode
-  int32 rowCount = 3; // the number of rows
-  repeated int32 coinCount = 4; // the number of coins in each row
-  int32 maxPick = 5; // the number maximum number of coins that can be taken from a row.
-  Signal signal = 6;
+  string sessionID = 1; // Unique identifier for this simulation run
+  string episodeID = 2; // Unique identifier for the current episode
+  int32 rowCount = 3; // The number of rows on the game board
+  repeated int32 coinCount = 4; // The number of coins in each row (array length equals rowCount)
+  int32 maxPick = 5; // The maximum number of coins that can be taken from a row in a single turn
+  Signal signal = 6; // The current game status indicator
 }
 
+/**
+ * Signal enum indicates the current game state.
+ * Used to communicate the outcome of the game or prompt for the next move.
+ */
 enum Signal {
-  WIN = 0;
-  PLAY = 1;
-  LOSE = 2;
+  WIN = 0;  // The player has won the game
+  PLAY = 1; // The game is in progress, player should make a move
+  LOSE = 2; // The player has lost the game
 }
 
+/**
+ * CoinGameAction represents a player's move in the coin game.
+ * The player selects a row and specifies how many coins to remove.
+ */
 message CoinGameAction {
-  int32 selectedRow = 1;
-  int32 removeCount = 2;
+  int32 selectedRow = 1; // The row from which to remove coins (0-based index)
+  int32 removeCount = 2; // The number of coins to remove from the selected row (must be ≤ maxPick)
 }

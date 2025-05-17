@@ -1,29 +1,50 @@
 syntax = "proto3";
 
+/**
+ * This package contains message definitions for the multi-armed bandit simulation.
+ * A multi-armed bandit is a classic reinforcement learning problem where an agent
+ * must choose between multiple actions (arms) to maximize cumulative reward.
+ */
 package bandit;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.bandit.proto";
 
+/**
+ * BanditState represents the current state of a multi-armed bandit simulation.
+ * It tracks session information, episode progress, and available options.
+ */
 message BanditState {
-  string sessionID = 1; // the ID for this simulation run
-  string episodeID = 2; // the ID for the episode
-  int32 banditCount = 3; // the number of bandits available
-  int32 pullCount = 4; // the total number of pulls this episode
-  int32 pull = 5; // the number of the next pull
+  string sessionID = 1; // Unique identifier for this simulation run
+  string episodeID = 2; // Unique identifier for the current episode
+  int32 banditCount = 3; // Number of bandit arms (choices) available to the agent
+  int32 pullCount = 4; // Total number of arm pulls allowed in this episode
+  int32 pull = 5; // Current pull number (1-based index of the current decision)
 }
 
+/**
+ * BanditAction represents the agent's decision to pull a specific bandit arm.
+ * This is the action taken by the agent in response to the current state.
+ */
 message BanditAction {
-  int32 arm = 1;
+  int32 arm = 1; // The selected arm number (0-based index)
 }
 
+/**
+ * BanditResult contains the outcome of pulling a bandit arm.
+ * It provides the reward value and indicates whether to continue or reset the episode.
+ */
 message BanditResult {
-  int32 arm = 1;
-  double score = 2;
-  Signal signal = 3;
+  int32 arm = 1; // The arm that was pulled (0-based index)
+  double score = 2; // The reward value received from pulling this arm
+  Signal signal = 3; // Indication of whether to continue the episode or reset
 }
 
+/**
+ * Signal enum indicates the next step after an arm pull.
+ * Used to control episode flow and termination.
+ */
 enum Signal {
-  CONTINUE = 0;
-  RESET = 1;
+  CONTINUE = 0; // Continue the current episode with the next arm pull
+  RESET = 1; // End the current episode and start a new one
 }
 
