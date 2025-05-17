@@ -1,30 +1,52 @@
 syntax = "proto3";
 
+/**
+ * This package contains message definitions for the Twisty puzzle simulation.
+ * Twisty puzzles are a class of mechanical puzzles like Rubik's Cube where pieces are rearranged
+ * by rotating sections of the puzzle. The goal is to restore the puzzle to its solved state.
+ */
 package twisty;
 option java_multiple_files = true;
 option java_package = "dev.aisandbox.server.simulation.twisty.proto";
 
+/**
+ * TwistyState represents the current state of a twisty puzzle.
+ * It includes information about the puzzle configuration, move count,
+ * and available valid moves at this state.
+ */
 message TwistyState {
-  string sessionID = 1; // the ID for this simulation run
-  string episodeID = 2; // the ID for the episode
-  string state = 3;
-  int32 steps = 4;
-  int32 obtmMoves = 5;
-  repeated string validMoves = 6;
+  string sessionID = 1; // Unique identifier for this simulation run
+  string episodeID = 2; // Unique identifier for this episode
+  string state = 3;     // String representation of the current puzzle state
+  int32 steps = 4;      // Number of moves made so far in this episode
+  int32 obtmMoves = 5;  // Number of OBTM moves so far in thie episode
+  repeated string validMoves = 6; // List of valid moves that can be made from the current state
 }
 
+/**
+ * TwistyAction represents a move chosen by the agent to apply to the puzzle.
+ * Each move corresponds to a specific rotation of a puzzle face or section.
+ */
 message TwistyAction {
-  string move = 1;
+  string move = 1; // The move notation (must be one of the valid moves from TwistyState)
 }
 
+/**
+ * TwistyResult contains the outcome after applying a move to the puzzle.
+ * It provides the new state and indicates whether the puzzle is solved or should continue.
+ */
 message TwistyResult {
-  string state = 1;
-  TwistySignal signal = 2;
+  string state = 1;        // String representation of the puzzle state after the move
+  TwistySignal signal = 2; // Indication of whether the puzzle is solved, failed, or continuing
 }
 
+/**
+ * TwistySignal enum indicates the game state after a move.
+ * It determines whether the puzzle is solved, failed, or should continue.
+ */
 enum TwistySignal {
-  CONTINUE = 0;
-  WIN = 1;
-  LOSE = 2;
+  CONTINUE = 0; // The puzzle is not yet solved, continue making moves
+  WIN = 1;      // The puzzle has been solved successfully
+  LOSE = 2;     // The episode has failed (e.g., exceeded move limit)
 }
 
