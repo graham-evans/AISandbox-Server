@@ -27,32 +27,6 @@ import org.apache.commons.lang3.EnumUtils;
 @UtilityClass
 public class RuntimeUtils {
 
-  /***
-   * Get the options available for the CLI.
-   *
-   * @return the populated Options class from Apache Commons CLI
-   */
-  public static Options getOptions() {
-    final Options options = new Options();
-    // add help option
-    options.addOption("h", "help", false, "Print an overview");
-    // add simulation selector
-    options.addOption("s", "simulation", true, "Simulation to run");
-    // add list option
-    options.addOption("l", "list", false,
-        "List the simulations, or the options available for a selected simulation");
-    // add output
-    options.addOption("o", "output", true, "Output format [NONE(Default),SCREEN,PNG]");
-    options.addOption("d", "dir", true, "Output directory");
-    // Agent Count
-    options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
-    // simulation options
-    options.addOption("p", "parameter", true,
-        "Simulation specific parameter in the format key:value, use the list options to show all "
-            + "available parameters");
-    return options;
-  }
-
   /**
    * Parse a set of strings from the command line and populate a RuntimeOptions POJO.
    *
@@ -108,6 +82,32 @@ public class RuntimeUtils {
       System.err.println("Error parsing command line arguments: " + e.getMessage());
       System.exit(-1);
     }
+    return options;
+  }
+
+  /***
+   * Get the options available for the CLI.
+   *
+   * @return the populated Options class from Apache Commons CLI
+   */
+  public static Options getOptions() {
+    final Options options = new Options();
+    // add help option
+    options.addOption("h", "help", false, "Print an overview");
+    // add simulation selector
+    options.addOption("s", "simulation", true, "Simulation to run");
+    // add list option
+    options.addOption("l", "list", false,
+        "List the simulations, or the options available for a selected simulation");
+    // add output
+    options.addOption("o", "output", true, "Output format [NONE(Default),SCREEN,PNG]");
+    options.addOption("d", "dir", true, "Output directory");
+    // Agent Count
+    options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
+    // simulation options
+    options.addOption("p", "parameter", true,
+        "Simulation specific parameter in the format key:value, use the list options to show all "
+            + "available parameters");
     return options;
   }
 

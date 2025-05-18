@@ -56,21 +56,24 @@ public class TwistyPuzzle {
    * Maps color characters to their corresponding AWT Color objects. Generated from the ColourEnum
    * values.
    */
-  private final Map<Character, Color> colorMap = Arrays.stream(ColourEnum.values()).collect(
-      Collectors.toMap(ColourEnum::getCharacter, ColourEnum::getAwtColour));
+  private final Map<Character, Color> colorMap = Arrays.stream(ColourEnum.values())
+      .collect(Collectors.toMap(ColourEnum::getCharacter, ColourEnum::getAwtColour));
   /**
    * The list of cells that make up the puzzle's structure.
    */
   @Getter
   private final List<Cell> cells = new ArrayList<>();
-
+  /**
+   * Maps move names to their compiled representations for efficient application.
+   */
+  @Getter
+  private final Map<String, CompiledMove> compiledMoves = new HashMap<>();
   /**
    * The number of cells on each side. As cells are added in order we can test that each set of
    * <i>faceSize</i> cells are the same colour.
    */
   @Getter
   List<Integer> faceSizes = new ArrayList<>();
-
   /**
    * The base (solved) state of the puzzle represented as a string of color characters. Each
    * character corresponds to the color of a cell in the solved position.
@@ -78,26 +81,18 @@ public class TwistyPuzzle {
   @Getter
   @Setter
   private String baseState;
-
   /**
    * The name of this puzzle type (e.g., "Rubik's Cube", "Pyraminx", etc.).
    */
   @Getter
   @Setter
   private String puzzleName;
-
   /**
    * The current state of the puzzle represented as a string of color characters. Each character
    * corresponds to the current color of a cell.
    */
   @Getter
   private String currentState;
-
-  /**
-   * Maps move names to their compiled representations for efficient application.
-   */
-  @Getter
-  private final Map<String, CompiledMove> compiledMoves = new HashMap<>();
 
   /**
    * Compiles and adds a move to the puzzle's available moves. Throws an exception if a move with

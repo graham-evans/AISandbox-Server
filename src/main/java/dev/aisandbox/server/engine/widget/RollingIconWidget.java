@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingIconWidget {
+
   private final static int PADDING = 16;
   private final int width;
   private final int height;
@@ -47,12 +48,13 @@ public class RollingIconWidget {
     this.useCache = useCache;
     this.title = title;
     this.theme = theme;
-    this.maxXCount = (width-PADDING*2) / iconWidth;
-    int maxYCount = (height - WIDGET_TITLE_HEIGHT-PADDING*3) / iconHeight;
+    this.maxXCount = (width - PADDING * 2) / iconWidth;
+    int maxYCount = (height - WIDGET_TITLE_HEIGHT - PADDING * 3) / iconHeight;
     this.maxMemory = maxXCount * maxYCount;
     log.debug("Setting up rolling icon widget with max number of icons = {}", maxMemory);
-    iconOriginX = (width -PADDING*2- iconWidth * maxXCount) / 2+PADDING;
-    iconOriginY = (height - WIDGET_TITLE_HEIGHT -PADDING*3- iconHeight * maxYCount) / 2 + WIDGET_TITLE_HEIGHT+PADDING*2;
+    iconOriginX = (width - PADDING * 2 - iconWidth * maxXCount) / 2 + PADDING;
+    iconOriginY = (height - WIDGET_TITLE_HEIGHT - PADDING * 3 - iconHeight * maxYCount) / 2
+        + WIDGET_TITLE_HEIGHT + PADDING * 2;
   }
 
   public static RollingIconWidgetBuilder builder() {
@@ -98,7 +100,8 @@ public class RollingIconWidget {
         int dx = i % maxXCount;
         int dy = i / maxXCount;
         // draw the image
-        graphics2D.drawImage(icon, iconOriginX + dx * iconWidth, iconOriginY + dy * iconHeight, null);
+        graphics2D.drawImage(icon, iconOriginX + dx * iconWidth, iconOriginY + dy * iconHeight,
+            null);
       }
       if (useCache) {
         cachedImage = image;

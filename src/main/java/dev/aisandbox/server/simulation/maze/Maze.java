@@ -88,7 +88,7 @@ public final class Maze {
   /**
    * Prepares the 2D grid of cells for further processing and linking.
    */
-  protected void prepareGrid() {
+  private void prepareGrid() {
     // Iterate over all positions in the grid to create individual cell objects
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
@@ -103,7 +103,7 @@ public final class Maze {
   /**
    * Links adjacent cells together to form the maze structure.
    */
-  protected void joinGrid() {
+  private void joinGrid() {
     // Iterate over all cells, linking neighboring cells by their positions
     for (Cell c : cellList) {
       if (c.getPositionY() > 0) { // Link northward

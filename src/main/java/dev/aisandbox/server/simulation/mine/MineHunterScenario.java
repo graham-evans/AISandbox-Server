@@ -19,9 +19,9 @@ import lombok.Setter;
 /**
  * A simulation builder for the Mine Hunter scenario.
  * <p>
- * This class implements the {@link SimulationBuilder} interface to create
- * instances of the Mine Hunter simulation. Mine Hunter is a game where an AI agent
- * must locate mines hidden in a grid using numerical clues, similar to the classic Minesweeper game.
+ * This class implements the {@link SimulationBuilder} interface to create instances of the Mine
+ * Hunter simulation. Mine Hunter is a game where an AI agent must locate mines hidden in a grid
+ * using numerical clues, similar to the classic Minesweeper game.
  * </p>
  * <p>
  * The simulation can be configured with different board sizes, affecting difficulty.
@@ -32,8 +32,8 @@ public final class MineHunterScenario implements SimulationBuilder {
   /**
    * The size configuration for the mine field.
    * <p>
-   * This property determines the dimensions of the board and number of mines.
-   * Defaults to MEDIUM size (16x16 with 40 mines).
+   * This property determines the dimensions of the board and number of mines. Defaults to MEDIUM
+   * size (16x16 with 40 mines).
    * </p>
    */
   @Getter
@@ -42,7 +42,7 @@ public final class MineHunterScenario implements SimulationBuilder {
 
   /**
    * Returns the name of the simulation.
-   * 
+   *
    * @return The string "MineHunter" as the name of this simulation
    */
   @Override
@@ -52,7 +52,7 @@ public final class MineHunterScenario implements SimulationBuilder {
 
   /**
    * Provides a detailed description of the Mine Hunter simulation.
-   * 
+   *
    * @return A string describing the objectives and mechanics of the Mine Hunter game
    */
   @Override
@@ -68,7 +68,7 @@ public final class MineHunterScenario implements SimulationBuilder {
    * <p>
    * For Mine Hunter, the only configurable parameter is the mine field size.
    * </p>
-   * 
+   *
    * @return A list containing the mine size parameter
    */
   @Override
@@ -79,7 +79,7 @@ public final class MineHunterScenario implements SimulationBuilder {
 
   /**
    * Returns the minimum number of agents required for this simulation.
-   * 
+   *
    * @return 1, as this simulation requires exactly one agent
    */
   @Override
@@ -89,7 +89,7 @@ public final class MineHunterScenario implements SimulationBuilder {
 
   /**
    * Returns the maximum number of agents supported by this simulation.
-   * 
+   *
    * @return 1, as this simulation supports exactly one agent
    */
   @Override
@@ -102,7 +102,7 @@ public final class MineHunterScenario implements SimulationBuilder {
    * <p>
    * Since this simulation only supports one agent, it returns a single name.
    * </p>
-   * 
+   *
    * @param agentCount The number of agents (will always be 1 for this simulation)
    * @return An array containing the name for the single agent
    */
@@ -114,12 +114,12 @@ public final class MineHunterScenario implements SimulationBuilder {
   /**
    * Creates a new instance of the Mine Hunter simulation.
    * <p>
-   * This method builds a runtime instance of the simulation with the provided agent, 
-   * theme, and a random number generator for game state generation.
+   * This method builds a runtime instance of the simulation with the provided agent, theme, and a
+   * random number generator for game state generation.
    * </p>
-   * 
+   *
    * @param agents The list of agents participating in the simulation (only the first one is used)
-   * @param theme The visual theme to use for the simulation
+   * @param theme  The visual theme to use for the simulation
    * @param random A random number generator for creating the mine field
    * @return A new {@link MineHunterRuntime} instance
    */

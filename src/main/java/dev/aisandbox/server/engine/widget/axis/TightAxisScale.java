@@ -31,13 +31,13 @@ public class TightAxisScale implements AxisScale {
   }
 
   @Override
-  public String getValueString(double value) {
-    return String.format("%.1f", value);
+  public double getScaledValue(double value) {
+    return (value - minimum) / (maximum - minimum);
   }
 
   @Override
-  public double getScaledValue(double value) {
-    return (value - minimum) / (maximum - minimum);
+  public String getValueString(double value) {
+    return String.format("%.1f", value);
   }
 
 }

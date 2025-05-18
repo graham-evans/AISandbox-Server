@@ -16,7 +16,6 @@ import java.awt.Shape;
 import java.awt.geom.Arc2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -42,15 +41,6 @@ public class PieChartWidget {
     this.height = height;
     this.title = title;
     this.theme = theme;
-    image = drawGraph();
-  }
-
-  public static PieChartWidgetBuilder builder() {
-    return new PieChartWidgetBuilder();
-  }
-
-  public void setPie(List<Slice> segments) {
-    this.segments = segments;
     image = drawGraph();
   }
 
@@ -102,11 +92,20 @@ public class PieChartWidget {
       int textY = (int) (startY + pieDiameter / 2 + Math.sin(midAngle) * pieDiameter / 3);
 
       //     g.fillOval(textX-3,textY-3,6,6);
-      GraphicsUtils.drawCenteredText(g, textX - 20, textY - 10, 40, 20, slice.title, OutputConstants.LOG_FONT
-          , Color.WHITE);
+      GraphicsUtils.drawCenteredText(g, textX - 20, textY - 10, 40, 20, slice.title,
+          OutputConstants.LOG_FONT, Color.WHITE);
       startAngle += angle;
     }
     return image;
+  }
+
+  public static PieChartWidgetBuilder builder() {
+    return new PieChartWidgetBuilder();
+  }
+
+  public void setPie(List<Slice> segments) {
+    this.segments = segments;
+    image = drawGraph();
   }
 
   @Setter

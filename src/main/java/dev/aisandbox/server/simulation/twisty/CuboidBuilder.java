@@ -544,6 +544,33 @@ public class CuboidBuilder {
   }
 
   /**
+   * Creates a grid of cells at the specified position with the given color and scale.
+   *
+   * @param x      The x-coordinate of the top-left corner of the grid
+   * @param y      The y-coordinate of the top-left corner of the grid
+   * @param w      The width of the grid in cells
+   * @param h      The height of the grid in cells
+   * @param colour The color to assign to all cells in the grid
+   * @param scale  The scale factor for the cells
+   * @return A list of Cell objects forming the grid
+   */
+  private List<Cell> createGrid(int x, int y, int w, int h, ColourEnum colour, int scale) {
+    List<Cell> cells = new ArrayList<>();
+    for (int dy = 0; dy < h; dy++) {
+      for (int dx = 0; dx < w; dx++) {
+        Cell c = new Cell();
+        c.setShape(ShapeEnum.SQUARE);
+        c.setColour(colour);
+        c.setLocationX(x + dx * scale * 2);
+        c.setLocationY(y + dy * scale * 2);
+        c.setScale(scale);
+        cells.add(c);
+      }
+    }
+    return cells;
+  }
+
+  /**
    * Generates a move name based on the depth, face, and number of quarter turns. Handles special
    * cases for cube rotations when depth is 0.
    *
@@ -598,30 +625,30 @@ public class CuboidBuilder {
   }
 
   /**
-   * Creates a grid of cells at the specified position with the given color and scale.
+   * Creates move loops for a 90° rotation of a face. Implements clockwise rotation of the entire
+   * face.
    *
-   * @param x      The x-coordinate of the top-left corner of the grid
-   * @param y      The y-coordinate of the top-left corner of the grid
-   * @param w      The width of the grid in cells
-   * @param h      The height of the grid in cells
-   * @param colour The color to assign to all cells in the grid
-   * @param scale  The scale factor for the cells
-   * @return A list of Cell objects forming the grid
+   * @param face   The list of cells on the face to rotate
+   * @param width  The width of the face
+   * @param height The height of the face
+   * @return A list of move loops defining the face rotation
    */
-  private List<Cell> createGrid(int x, int y, int w, int h, ColourEnum colour, int scale) {
-    List<Cell> cells = new ArrayList<>();
-    for (int dy = 0; dy < h; dy++) {
-      for (int dx = 0; dx < w; dx++) {
-        Cell c = new Cell();
-        c.setShape(ShapeEnum.SQUARE);
-        c.setColour(colour);
-        c.setLocationX(x + dx * scale * 2);
-        c.setLocationY(y + dy * scale * 2);
-        c.setScale(scale);
-        cells.add(c);
+  private List<MoveLoop> faceTurn(List<Cell> face, int width, int height) {
+    List<MoveLoop> result = new ArrayList<>();
+
+    // Process each ring from outer to inner
+    for (int dx = 0; dx < divRoundUp(width, 2); dx++) {
+      for (int dy = 0; dy < height / 2; dy++) {
+        MoveLoop loop = new MoveLoop();
+        // Add cells in clockwise order
+        loop.getCells().add(face.get(dx + dy * width));
+        loop.getCells().add(face.get((width - dy - 1) + width * dx));
+        loop.getCells().add(face.get(width - dx - 1 + width * (height - dy - 1)));
+        loop.getCells().add(face.get(dy + width * (height - dx - 1)));
+        result.add(loop);
       }
     }
-    return cells;
+    return result;
   }
 
   /**
@@ -651,6 +678,45 @@ public class CuboidBuilder {
       loop.getCells().add(bottom.get(width - i - 1 + width * (layer - 1)));
       loop.getCells().add(left.get(depth - layer + (height - i - 1) * depth));
       result.add(loop);
+    }
+    return result;
+  }
+
+  /**
+   * Creates move loops for a 90° counter-clockwise rotation of a face. Reverses the loops created
+   * by faceTurn.
+   *
+   * @param face   The list of cells on the face to rotate
+   * @param width  The width of the face
+   * @param height The height of the face
+   * @return A list of move loops defining the reverse face rotation
+   */
+  private List<MoveLoop> faceReverseTurn(List<Cell> face, int width, int height) {
+    List<MoveLoop> result = faceTurn(face, width, height);
+    for (MoveLoop loop : result) {
+      Collections.reverse(loop.getCells());
+    }
+    return result;
+  }
+
+  /**
+   * Creates reverse move loops for a front-face turn. Used for F', Fw', 3F', etc. moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param left   The cells on the left face
+   * @param right  The cells on the right face
+   * @param top    The cells on the top face
+   * @param bottom The cells on the bottom face
+   * @return A list of move loops defining the reverse transformation
+   */
+  private List<MoveLoop> frontSideReverseTurn(int layer, int width, int height, int depth,
+      List<Cell> left, List<Cell> right, List<Cell> top, List<Cell> bottom) {
+    List<MoveLoop> result = frontSideTurn(layer, width, height, depth, left, right, top, bottom);
+    for (MoveLoop loop : result) {
+      Collections.reverse(loop.getCells());
     }
     return result;
   }
@@ -687,6 +753,28 @@ public class CuboidBuilder {
   }
 
   /**
+   * Creates reverse move loops for a top-face turn. Used for U', Uw', 3U', etc. moves.
+   *
+   * @param layer  The layer depth from the face (1-based)
+   * @param width  The width of the puzzle
+   * @param height The height of the puzzle
+   * @param depth  The depth of the puzzle
+   * @param left   The cells on the left face
+   * @param right  The cells on the right face
+   * @param front  The cells on the front face
+   * @param back   The cells on the back face
+   * @return A list of move loops defining the reverse transformation
+   */
+  private List<MoveLoop> topSideReverseTurn(int layer, int width, int height, int depth,
+      List<Cell> left, List<Cell> right, List<Cell> front, List<Cell> back) {
+    List<MoveLoop> result = topSideTurn(layer, width, height, depth, left, right, front, back);
+    for (MoveLoop loop : result) {
+      Collections.reverse(loop.getCells());
+    }
+    return result;
+  }
+
+  /**
    * Creates move loops for a right-face turn that affects side layers. Used for R, Rw, 3R, etc.
    * moves.
    *
@@ -718,50 +806,6 @@ public class CuboidBuilder {
   }
 
   /**
-   * Creates reverse move loops for a front-face turn. Used for F', Fw', 3F', etc. moves.
-   *
-   * @param layer  The layer depth from the face (1-based)
-   * @param width  The width of the puzzle
-   * @param height The height of the puzzle
-   * @param depth  The depth of the puzzle
-   * @param left   The cells on the left face
-   * @param right  The cells on the right face
-   * @param top    The cells on the top face
-   * @param bottom The cells on the bottom face
-   * @return A list of move loops defining the reverse transformation
-   */
-  private List<MoveLoop> frontSideReverseTurn(int layer, int width, int height, int depth,
-      List<Cell> left, List<Cell> right, List<Cell> top, List<Cell> bottom) {
-    List<MoveLoop> result = frontSideTurn(layer, width, height, depth, left, right, top, bottom);
-    for (MoveLoop loop : result) {
-      Collections.reverse(loop.getCells());
-    }
-    return result;
-  }
-
-  /**
-   * Creates reverse move loops for a top-face turn. Used for U', Uw', 3U', etc. moves.
-   *
-   * @param layer  The layer depth from the face (1-based)
-   * @param width  The width of the puzzle
-   * @param height The height of the puzzle
-   * @param depth  The depth of the puzzle
-   * @param left   The cells on the left face
-   * @param right  The cells on the right face
-   * @param front  The cells on the front face
-   * @param back   The cells on the back face
-   * @return A list of move loops defining the reverse transformation
-   */
-  private List<MoveLoop> topSideReverseTurn(int layer, int width, int height, int depth,
-      List<Cell> left, List<Cell> right, List<Cell> front, List<Cell> back) {
-    List<MoveLoop> result = topSideTurn(layer, width, height, depth, left, right, front, back);
-    for (MoveLoop loop : result) {
-      Collections.reverse(loop.getCells());
-    }
-    return result;
-  }
-
-  /**
    * Creates reverse move loops for a right-face turn. Used for R', Rw', 3R', etc. moves.
    *
    * @param layer  The layer depth from the face (1-based)
@@ -779,6 +823,40 @@ public class CuboidBuilder {
     List<MoveLoop> result = rightSideTurn(layer, width, height, depth, front, back, top, bottom);
     for (MoveLoop loop : result) {
       Collections.reverse(loop.getCells());
+    }
+    return result;
+  }
+
+  /**
+   * Creates move loops for a 180° rotation of a face. Connects opposite cells in the face.
+   *
+   * @param face   The list of cells on the face to rotate
+   * @param width  The width of the face
+   * @param height The height of the face
+   * @return A list of move loops defining the 180° face rotation
+   */
+  private List<MoveLoop> faceDoubleTurn(List<Cell> face, int width, int height) {
+    List<MoveLoop> result = new ArrayList<>();
+
+    // Connect opposite cells in each row and column
+    for (int dx = 0; dx < width; dx++) {
+      for (int dy = 0; dy < height / 2; dy++) {
+        MoveLoop loop = new MoveLoop();
+        loop.getCells().add(face.get(dx + dy * width));
+        loop.getCells().add(face.get(width - dx - 1 + width * (height - dy - 1)));
+        result.add(loop);
+      }
+    }
+
+    // Special case for odd-numbered heights - connect cells in middle row
+    if (height % 2 == 1) {
+      int dy = divRoundUp(height, 2) - 1;
+      for (int dx = 0; dx < width / 2; dx++) {
+        MoveLoop loop = new MoveLoop();
+        loop.getCells().add(face.get(dx + dy * width));
+        loop.getCells().add(face.get(width - dx - 1 + dy * width));
+        result.add(loop);
+      }
     }
     return result;
   }
@@ -887,84 +965,6 @@ public class CuboidBuilder {
       l.getCells().add(top.get(i * width + width - layer));
       l.getCells().add(bottom.get(i * width + width - layer));
       result.add(l);
-    }
-    return result;
-  }
-
-  /**
-   * Creates move loops for a 90° rotation of a face. Implements clockwise rotation of the entire
-   * face.
-   *
-   * @param face   The list of cells on the face to rotate
-   * @param width  The width of the face
-   * @param height The height of the face
-   * @return A list of move loops defining the face rotation
-   */
-  private List<MoveLoop> faceTurn(List<Cell> face, int width, int height) {
-    List<MoveLoop> result = new ArrayList<>();
-
-    // Process each ring from outer to inner
-    for (int dx = 0; dx < divRoundUp(width, 2); dx++) {
-      for (int dy = 0; dy < height / 2; dy++) {
-        MoveLoop loop = new MoveLoop();
-        // Add cells in clockwise order
-        loop.getCells().add(face.get(dx + dy * width));
-        loop.getCells().add(face.get((width - dy - 1) + width * dx));
-        loop.getCells().add(face.get(width - dx - 1 + width * (height - dy - 1)));
-        loop.getCells().add(face.get(dy + width * (height - dx - 1)));
-        result.add(loop);
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Creates move loops for a 90° counter-clockwise rotation of a face. Reverses the loops created
-   * by faceTurn.
-   *
-   * @param face   The list of cells on the face to rotate
-   * @param width  The width of the face
-   * @param height The height of the face
-   * @return A list of move loops defining the reverse face rotation
-   */
-  private List<MoveLoop> faceReverseTurn(List<Cell> face, int width, int height) {
-    List<MoveLoop> result = faceTurn(face, width, height);
-    for (MoveLoop loop : result) {
-      Collections.reverse(loop.getCells());
-    }
-    return result;
-  }
-
-  /**
-   * Creates move loops for a 180° rotation of a face. Connects opposite cells in the face.
-   *
-   * @param face   The list of cells on the face to rotate
-   * @param width  The width of the face
-   * @param height The height of the face
-   * @return A list of move loops defining the 180° face rotation
-   */
-  private List<MoveLoop> faceDoubleTurn(List<Cell> face, int width, int height) {
-    List<MoveLoop> result = new ArrayList<>();
-
-    // Connect opposite cells in each row and column
-    for (int dx = 0; dx < width; dx++) {
-      for (int dy = 0; dy < height / 2; dy++) {
-        MoveLoop loop = new MoveLoop();
-        loop.getCells().add(face.get(dx + dy * width));
-        loop.getCells().add(face.get(width - dx - 1 + width * (height - dy - 1)));
-        result.add(loop);
-      }
-    }
-
-    // Special case for odd-numbered heights - connect cells in middle row
-    if (height % 2 == 1) {
-      int dy = divRoundUp(height, 2) - 1;
-      for (int dx = 0; dx < width / 2; dx++) {
-        MoveLoop loop = new MoveLoop();
-        loop.getCells().add(face.get(dx + dy * width));
-        loop.getCells().add(face.get(width - dx - 1 + dy * width));
-        result.add(loop);
-      }
     }
     return result;
   }

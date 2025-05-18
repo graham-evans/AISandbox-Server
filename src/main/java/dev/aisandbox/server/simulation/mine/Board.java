@@ -80,6 +80,19 @@ public class Board {
   }
 
   /**
+   * Convert the board into an array of strings.
+   *
+   * @return an array of {@link java.lang.String} Strings, one for each row.
+   */
+  public String[] getBoardToString() {
+    String[] result = new String[grid[0].length];
+    for (int y = 0; y < height; y++) {
+      result[y] = getRowToString(y);
+    }
+    return result;
+  }
+
+  /**
    * Convert a row of cells as a string.
    *
    * @param y the row number (starts at zero).
@@ -94,32 +107,17 @@ public class Board {
   }
 
   /**
-   * Convert the board into an array of strings.
+   * Count the number of neighbours each cell has.
    *
-   * @return an array of {@link java.lang.String} Strings, one for each row.
+   * <p>The result is stored in the cell object.
    */
-  public String[] getBoardToString() {
-    String[] result = new String[grid[0].length];
-    for (int y = 0; y < height; y++) {
-      result[y] = getRowToString(y);
+  public void countNeighbours() {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        grid[x][y].setNeighbours(countNeighbours(x, y));
+      }
     }
-    return result;
-  }
-
-  /**
-   * look at the cell @ x,y and return 1 if it is mined. If it doesn't have a mine or is lies
-   * outside the grid, return 0.
-   *
-   * @param x the X position.
-   * @param y The Y position.
-   * @return 0 or 1
-   */
-  private int getMineBounds(int x, int y) {
-    try {
-      return grid[x][y].isMine() ? 1 : 0;
-    } catch (IndexOutOfBoundsException e) {
-      return 0;
-    }
+    state = GameState.PLAYING;
   }
 
   /**
@@ -145,17 +143,19 @@ public class Board {
   }
 
   /**
-   * Count the number of neighbours each cell has.
+   * look at the cell @ x,y and return 1 if it is mined. If it doesn't have a mine or is lies
+   * outside the grid, return 0.
    *
-   * <p>The result is stored in the cell object.
+   * @param x the X position.
+   * @param y The Y position.
+   * @return 0 or 1
    */
-  public void countNeighbours() {
-    for (int x = 0; x < width; x++) {
-      for (int y = 0; y < height; y++) {
-        grid[x][y].setNeighbours(countNeighbours(x, y));
-      }
+  private int getMineBounds(int x, int y) {
+    try {
+      return grid[x][y].isMine() ? 1 : 0;
+    } catch (IndexOutOfBoundsException e) {
+      return 0;
     }
-    state = GameState.PLAYING;
   }
 
   /**

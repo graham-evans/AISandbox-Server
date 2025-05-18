@@ -127,15 +127,6 @@ public class RollingSuccessStatisticsWidget {
   }
 
   /**
-   * Adds a success result with a specific value to the rolling window of statistics.
-   *
-   * @param value The value associated with the success
-   */
-  public void addSuccess(double value) {
-    addResult(true, value);
-  }
-
-  /**
    * Adds a result to the rolling window of statistics.
    * <p>
    * If the window is full (i.e., the number of values equals windowSize), the oldest result is
@@ -153,6 +144,15 @@ public class RollingSuccessStatisticsWidget {
     }
     // Invalidate cached image
     cachedImage = null;
+  }
+
+  /**
+   * Adds a success result with a specific value to the rolling window of statistics.
+   *
+   * @param value The value associated with the success
+   */
+  public void addSuccess(double value) {
+    addResult(true, value);
   }
 
   /**

@@ -19,32 +19,42 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Utility class for generating graphical representations of coins and game rows
- * for the Coin Game simulation. This class provides methods to create images of
- * game rows and stacked coin piles with varying quantities.
+ * Utility class for generating graphical representations of coins and game rows for the Coin Game
+ * simulation. This class provides methods to create images of game rows and stacked coin piles with
+ * varying quantities.
  */
 @Slf4j
 @UtilityClass
 public class CoinIcons {
 
-  /** The width of a coin pile image in pixels */
+  /**
+   * The width of a coin pile image in pixels
+   */
   public static final int PILE_WIDTH = 290;
-  
-  /** The height of a row label image in pixels */
+
+  /**
+   * The height of a row label image in pixels
+   */
   public static final int ROW_HEIGHT = 80;
-  
-  /** The vertical spacing between coins in a stack in pixels */
+
+  /**
+   * The vertical spacing between coins in a stack in pixels
+   */
   private static final int COIN_SPACE = 20;
-  
-  /** The width of an individual coin image in pixels */
+
+  /**
+   * The width of an individual coin image in pixels
+   */
   private static final int COIN_IMAGE_WIDTH = 241;
-  
-  /** The height of an individual coin image in pixels */
+
+  /**
+   * The height of an individual coin image in pixels
+   */
   private static final int COIN_IMAGE_HEIGHT = 91;
-  
-  /** 
-   * The total height of an area that can display up to 20 stacked coins.
-   * Calculated as 20 spacing intervals plus the height of a single coin.
+
+  /**
+   * The total height of an area that can display up to 20 stacked coins. Calculated as 20 spacing
+   * intervals plus the height of a single coin.
    */
   public static final int COINS_HEIGHT = 20 * COIN_SPACE + COIN_IMAGE_HEIGHT;
 
@@ -52,7 +62,7 @@ public class CoinIcons {
    * Generates an array of images representing row labels for the coin game.
    *
    * @param rowCount The number of rows to generate labels for
-   * @param theme The visual theme to apply to the text
+   * @param theme    The visual theme to apply to the text
    * @return An array of BufferedImage objects, each containing a row label
    */
   public static BufferedImage[] getRowImages(int rowCount, Theme theme) {
@@ -72,23 +82,23 @@ public class CoinIcons {
   }
 
   /**
-   * Generates an array of images representing different quantities of coins.
-   * Each image shows a stack of n coins where n is the index of the image in the array.
+   * Generates an array of images representing different quantities of coins. Each image shows a
+   * stack of n coins where n is the index of the image in the array.
    *
    * @param cointCount The maximum number of coins to generate images for
-   * @param theme The visual theme to apply to the text
+   * @param theme      The visual theme to apply to the text
    * @return An array of BufferedImage objects showing different quantities of stacked coins
    * @throws IOException If the coin image resource cannot be loaded
    */
   public static BufferedImage[] getCoinImages(int cointCount, Theme theme) throws IOException {
     BufferedImage[] images = new BufferedImage[cointCount + 1];
-    
+
     // Load the coin image from resources
     BufferedImage coinImage = ImageIO.read(
         CoinIcons.class.getResourceAsStream("/images/coins/gold.png"));
     log.debug("loaded coins image of width {} and height {}", coinImage.getWidth(),
         coinImage.getHeight());
-    
+
     // Create the font for numeric labels
     Font font = new Font("Arial", Font.BOLD, 20);
 
@@ -98,16 +108,16 @@ public class CoinIcons {
       images[i] = new BufferedImage(PILE_WIDTH, COINS_HEIGHT, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = images[i].createGraphics();
       GraphicsUtils.setupRenderingHints(g);
-      
+
       // Center the coins horizontally
       int xPadding = (PILE_WIDTH - coinImage.getWidth()) / 2;
-      
+
       // Draw the stack of coins from bottom to top
       for (int j = 1; j <= i; j++) {
-        g.drawImage(coinImage, xPadding, COINS_HEIGHT - coinImage.getHeight() - (j-1) * COIN_SPACE,
-            null);
+        g.drawImage(coinImage, xPadding,
+            COINS_HEIGHT - coinImage.getHeight() - (j - 1) * COIN_SPACE, null);
       }
-      
+
       // Draw a label showing the number of coins
       g.setColor(Color.DARK_GRAY);
       g.fillRect(PILE_WIDTH / 2 - 40, COINS_HEIGHT - 40, 80, 40);

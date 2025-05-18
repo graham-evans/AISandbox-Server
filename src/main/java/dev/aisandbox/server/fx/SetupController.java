@@ -64,70 +64,23 @@ public class SetupController {
   @FXML
   private ListView<SimulationBuilder> simulationList;
 
-  public static Node createParameterEditor(SimulationBuilder builder,
-      SimulationParameter parameter) {
-    BorderPane node = new BorderPane();
-    // add label
-    Label label = new Label(parameter.name());
-    label.setMaxWidth(Double.MAX_VALUE);
-    label.setAlignment(Pos.CENTER_LEFT);
-    node.setCenter(label);
-
-    // TODO - this assumes that all params are enums
-    if (parameter.parameterType().isEnum()) {
-      // create map of values and their string representation
-      Map<String, String> enumMap = new TreeMap<>();
-      List<String> enumList = new ArrayList<>();
-      Arrays.stream(parameter.parameterType().getEnumConstants()).forEach(o -> {
-        enumMap.put(o.toString(), ((Enum<?>) o).name());
-        enumList.add(o.toString());
-      });
-      // add editor
-      ComboBox<String> editor = new ComboBox<>();
-      editor.setItems(FXCollections.observableList(enumList));
-      editor.getSelectionModel().select(RuntimeUtils.getParameterValue(builder, parameter));
-      editor.valueProperty().addListener((observable, oldValue, newValue) -> {
-        RuntimeUtils.setParameterValue(builder, parameter, enumMap.get(newValue));
-      });
-      node.setRight(editor);
-    } else if (parameter.parameterType() == Boolean.class) {
-      CheckBox editor = new CheckBox();
-      editor.setSelected(
-          RuntimeUtils.getParameterValue(builder, parameter).equalsIgnoreCase("true"));
-      editor.selectedProperty().addListener((observable, oldValue, newValue) -> {
-        RuntimeUtils.setParameterValue(builder, parameter, newValue ? "true" : "false");
-      });
-      node.setRight(editor);
-    } else {
-      log.error("Dont know how to build an editor for {}", parameter.parameterType().getName());
-    }
-    // install tooltip
-    Tooltip tooltip = new Tooltip(parameter.description());
-    Tooltip.install(node, tooltip);
-    return node;
-  }
-
   @FXML
   void initialize() {
     // FX assertions
-    assert agentCounter
-        != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
-    assert outputImageChoice
-        != null : "fx:id=\"outputImageChoice\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
-    assert outputScreenChoice
-        != null : "fx:id=\"outputScreenChoice\" was not injected: check your FXML file "
-        + "'simulation.fxml'.";
-    assert parameterBox
-        != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
-    assert simDescription
-        != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
-    assert simulationList
-        != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
+    assert agentCounter != null :
+        "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation" + ".fxml'.";
+    assert outputImageChoice != null :
+        "fx:id=\"outputImageChoice\" was not injected: check your FXML file 'simulation"
+            + ".fxml'.";
+    assert outputScreenChoice != null :
+        "fx:id=\"outputScreenChoice\" was not injected: check your FXML file "
+            + "'simulation.fxml'.";
+    assert parameterBox != null :
+        "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation" + ".fxml'.";
+    assert simDescription != null :
+        "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation" + ".fxml'.";
+    assert simulationList != null :
+        "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation" + ".fxml'.";
     // bind simulation list to model
     simulationList.setItems(model.getSimulations());
     simulationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -173,6 +126,61 @@ public class SetupController {
     simulationList.getSelectionModel().select(0);
   }
 
+  /**
+   * Return a value, adapted to fit within an existing range.
+   *
+   * @param value the original value
+   * @param min   the minimum new value
+   * @param max   the maximum new value
+   * @return the adapted value.
+   */
+  private int getValueInRange(int value, int min, int max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  public static Node createParameterEditor(SimulationBuilder builder,
+      SimulationParameter parameter) {
+    BorderPane node = new BorderPane();
+    // add label
+    Label label = new Label(parameter.name());
+    label.setMaxWidth(Double.MAX_VALUE);
+    label.setAlignment(Pos.CENTER_LEFT);
+    node.setCenter(label);
+
+    // TODO - this assumes that all params are enums
+    if (parameter.parameterType().isEnum()) {
+      // create map of values and their string representation
+      Map<String, String> enumMap = new TreeMap<>();
+      List<String> enumList = new ArrayList<>();
+      Arrays.stream(parameter.parameterType().getEnumConstants()).forEach(o -> {
+        enumMap.put(o.toString(), ((Enum<?>) o).name());
+        enumList.add(o.toString());
+      });
+      // add editor
+      ComboBox<String> editor = new ComboBox<>();
+      editor.setItems(FXCollections.observableList(enumList));
+      editor.getSelectionModel().select(RuntimeUtils.getParameterValue(builder, parameter));
+      editor.valueProperty().addListener((observable, oldValue, newValue) -> {
+        RuntimeUtils.setParameterValue(builder, parameter, enumMap.get(newValue));
+      });
+      node.setRight(editor);
+    } else if (parameter.parameterType() == Boolean.class) {
+      CheckBox editor = new CheckBox();
+      editor.setSelected(
+          RuntimeUtils.getParameterValue(builder, parameter).equalsIgnoreCase("true"));
+      editor.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        RuntimeUtils.setParameterValue(builder, parameter, newValue ? "true" : "false");
+      });
+      node.setRight(editor);
+    } else {
+      log.error("Dont know how to build an editor for {}", parameter.parameterType().getName());
+    }
+    // install tooltip
+    Tooltip tooltip = new Tooltip(parameter.description());
+    Tooltip.install(node, tooltip);
+    return node;
+  }
+
   @FXML
   void startSimulation(ActionEvent event) {
     if (model.getSelectedSimulationBuilder().get() != null) {
@@ -196,18 +204,6 @@ public class SetupController {
         log.error("Error switching Javafx scenes", e);
       }
     }
-  }
-
-  /**
-   * Return a value, adapted to fit within an existing range.
-   *
-   * @param value the original value
-   * @param min   the minimum new value
-   * @param max   the maximum new value
-   * @return the adapted value.
-   */
-  private int getValueInRange(int value, int min, int max) {
-    return Math.min(max, Math.max(min, value));
   }
 
 }

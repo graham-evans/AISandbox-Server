@@ -92,16 +92,6 @@ public class Cell {
   }
 
   /**
-   * addPath.
-   *
-   * @param direction a {@link Direction} object.
-   */
-  public void addPath(Direction direction) {
-    paths.add(direction);
-    getNeighbours().get(direction).getPaths().add(direction.opposite());
-  }
-
-  /**
    * isPath.
    *
    * @param direction a {@link Direction} object.
@@ -127,6 +117,24 @@ public class Cell {
   }
 
   /**
+   * addPath.
+   *
+   * @param direction a {@link Direction} object.
+   */
+  public void addPath(Direction direction) {
+    paths.add(direction);
+    getNeighbours().get(direction).getPaths().add(direction.opposite());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(positionX, positionY);
+  }
+
+  /**
    * {@inheritDoc}
    */
   @Override
@@ -139,14 +147,6 @@ public class Cell {
     }
     Cell cell = (Cell) o;
     return positionX == cell.positionX && positionY == cell.positionY;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hash(positionX, positionY);
   }
 
   /**

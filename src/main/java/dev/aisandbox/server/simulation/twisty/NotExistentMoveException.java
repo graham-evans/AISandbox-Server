@@ -46,8 +46,8 @@ public class NotExistentMoveException extends SimulationException {
   /**
    * Constructs a new NotExistentMoveException with the specified error message and cause.
    *
-   * <p>This constructor should be used when both an error message and the underlying exception that
-   * caused this exception are needed.
+   * <p>This constructor should be used when both an error message and the underlying exception
+   * that caused this exception are needed.
    * </p>
    *
    * @param message a {@link java.lang.String} containing the description of the error

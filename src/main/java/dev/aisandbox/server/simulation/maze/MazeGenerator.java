@@ -43,6 +43,33 @@ public class MazeGenerator {
   }
 
   /**
+   * Applies the Binary Tree algorithm to a given maze.
+   * <p>
+   * The Binary Tree algorithm is a simple method for generating mazes. It works by selecting a
+   * random cell and then creating paths from that cell to its unvisited neighbors, repeating this
+   * process until all cells have been visited.
+   *
+   * @param rand A random number generator used for generating the maze.
+   * @param maze The maze to apply the Binary Tree algorithm to.
+   */
+  public static void applyBinaryTree(Random rand, Maze maze) {
+    log.debug("Applying binary tree to maze");
+    for (Cell c : maze.getCellList()) {
+      List<Cell> targets = new ArrayList<>();
+      if (c.getNeighbours().get(Direction.EAST) != null) {
+        targets.add(c.getNeighbours().get(Direction.EAST));
+      }
+      if (c.getNeighbours().get(Direction.NORTH) != null) {
+        targets.add(c.getNeighbours().get(Direction.NORTH));
+      }
+      if (!targets.isEmpty()) {
+        c.addPath(targets.get(rand.nextInt(targets.size())));
+      }
+    }
+    log.info("finished binary tree");
+  }
+
+  /**
    * Applies the Sidewinder algorithm to a given maze.
    * <p>
    * The Sidewinder algorithm is a simple method for generating mazes. It works by starting at the
@@ -77,33 +104,6 @@ public class MazeGenerator {
       }
     }
     log.debug("Finished sidewinder");
-  }
-
-  /**
-   * Applies the Binary Tree algorithm to a given maze.
-   * <p>
-   * The Binary Tree algorithm is a simple method for generating mazes. It works by selecting a
-   * random cell and then creating paths from that cell to its unvisited neighbors, repeating this
-   * process until all cells have been visited.
-   *
-   * @param rand A random number generator used for generating the maze.
-   * @param maze The maze to apply the Binary Tree algorithm to.
-   */
-  public static void applyBinaryTree(Random rand, Maze maze) {
-    log.debug("Applying binary tree to maze");
-    for (Cell c : maze.getCellList()) {
-      List<Cell> targets = new ArrayList<>();
-      if (c.getNeighbours().get(Direction.EAST) != null) {
-        targets.add(c.getNeighbours().get(Direction.EAST));
-      }
-      if (c.getNeighbours().get(Direction.NORTH) != null) {
-        targets.add(c.getNeighbours().get(Direction.NORTH));
-      }
-      if (!targets.isEmpty()) {
-        c.addPath(targets.get(rand.nextInt(targets.size())));
-      }
-    }
-    log.info("finished binary tree");
   }
 
   /**
@@ -209,6 +209,27 @@ public class MazeGenerator {
   }
 
   /**
+   * Finds the cell with the highest value in a given maze.
+   * <p>
+   * This method works by iterating over each cell in the maze and returning the one with the
+   * highest value.
+   *
+   * @param maze The maze to find the furthest point in.
+   * @return A Cell object representing the furthest point from the start.
+   */
+  public static Cell getHighestVelueCell(Maze maze) {
+    Cell result = null;
+    float v = Float.MIN_VALUE;
+    for (Cell c : maze.getCellList()) {
+      if (c.getValue() > v) {
+        v = c.getValue();
+        result = c;
+      }
+    }
+    return result;
+  }
+
+  /**
    * Applies the Dijkstra algorithm to a given maze.
    * <p>
    * The Dijkstra algorithm is a method for finding the shortest path between two points in a graph.
@@ -250,27 +271,6 @@ public class MazeGenerator {
       nextList = new ArrayList<>();
       step++;
     }
-  }
-
-  /**
-   * Finds the cell with the highest value in a given maze.
-   * <p>
-   * This method works by iterating over each cell in the maze and returning the one with the
-   * highest value.
-   *
-   * @param maze The maze to find the furthest point in.
-   * @return A Cell object representing the furthest point from the start.
-   */
-  public static Cell getHighestVelueCell(Maze maze) {
-    Cell result = null;
-    float v = Float.MIN_VALUE;
-    for (Cell c : maze.getCellList()) {
-      if (c.getValue() > v) {
-        v = c.getValue();
-        result = c;
-      }
-    }
-    return result;
   }
 
   /**

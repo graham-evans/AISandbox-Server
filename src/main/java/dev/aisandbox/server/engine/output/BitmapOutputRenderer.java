@@ -28,18 +28,13 @@ public class BitmapOutputRenderer implements OutputRenderer {
   private int skipframes = -1;
 
   @Override
-  public void setup(Simulation simulation) {
-    this.simulation = simulation;
-  }
-
-  @Override
   public String getName() {
     return "PNG file";
   }
 
   @Override
-  public void setOutputDirectory(File outputDirectory) {
-    this.outputDirectory = outputDirectory;
+  public void setup(Simulation simulation) {
+    this.simulation = simulation;
   }
 
   @Override
@@ -47,6 +42,11 @@ public class BitmapOutputRenderer implements OutputRenderer {
     if (framesToSkip > 0) {
       this.skipframes = framesToSkip;
     }
+  }
+
+  @Override
+  public void setOutputDirectory(File outputDirectory) {
+    this.outputDirectory = outputDirectory;
   }
 
   @Override

@@ -56,15 +56,6 @@ public class GraphicsUtils {
         RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
   }
 
-  public static void drawCenteredText(Graphics2D graphics, int x, int y, int width, int height,
-      String text, Font font, Color colour) {
-    graphics.setFont(font);
-    graphics.setColor(colour);
-    FontMetrics metrics = graphics.getFontMetrics(font);
-    int dx = (width - metrics.stringWidth(text)) / 2;
-    graphics.drawString(text, x + dx, y + height);
-  }
-
   public static void drawVerticalCenteredText(Graphics2D graphics, int x, int y, int width,
       int height, String title, Font font, Color colour) {
     // store original transformation
@@ -76,6 +67,15 @@ public class GraphicsUtils {
     drawCenteredText(graphics, 0, 0, height, width, title, font, colour);
     // restore original transformation
     graphics.setTransform(origTransform);
+  }
+
+  public static void drawCenteredText(Graphics2D graphics, int x, int y, int width, int height,
+      String text, Font font, Color colour) {
+    graphics.setFont(font);
+    graphics.setColor(colour);
+    FontMetrics metrics = graphics.getFontMetrics(font);
+    int dx = (width - metrics.stringWidth(text)) / 2;
+    graphics.drawString(text, x + dx, y + height);
   }
 
 }

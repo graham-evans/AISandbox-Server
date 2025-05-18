@@ -110,6 +110,21 @@ public final class BanditRuntime implements Simulation {
     initialise();
   }
 
+  /**
+   * initialise or reset the bandit state, creating new bandits as needed.
+   */
+  public void initialise() {
+    // clear the bandits
+    bandits.clear();
+    for (int i = 0; i < banditCount; i++) {
+      bandits.add(new Bandit(normal.getNormalValue(random), std.getValue()));
+    }
+    sessionStep = 0;
+    episodeID = UUID.randomUUID().toString();
+    episodeScore = 0;
+    episodeBestMoveCount = 0;
+  }
+
   @Override
   public void step(OutputRenderer output) throws SimulationException {
     sessionStep++;
@@ -189,37 +204,12 @@ public final class BanditRuntime implements Simulation {
   }
 
   /**
-   * initialise or reset the bandit state, creating new bandits as needed.
-   */
-  public void initialise() {
-    // clear the bandits
-    bandits.clear();
-    for (int i = 0; i < banditCount; i++) {
-      bandits.add(new Bandit(normal.getNormalValue(random), std.getValue()));
-    }
-    sessionStep = 0;
-    episodeID = UUID.randomUUID().toString();
-    episodeScore = 0;
-    episodeBestMoveCount = 0;
-  }
-
-  /**
    * Update the bandits by moving each mean N(0,0.1)
    */
   public void updateRandom() {
     for (Bandit b : bandits) {
       b.setMean(b.getMean() + random.nextGaussian() * 0.001);
     }
-  }
-
-  /**
-   * Update the bandits by moving the chosen bandit by -0.001
-   *
-   * @param chosen the index of the chosen bandit
-   */
-  public void updateFade(int chosen) {
-    Bandit target = bandits.get(chosen);
-    target.setMean(target.getMean() - 0.001);
   }
 
   /**
@@ -238,6 +228,16 @@ public final class BanditRuntime implements Simulation {
         b.setMean(b.getMean() + reward);
       }
     }
+  }
+
+  /**
+   * Update the bandits by moving the chosen bandit by -0.001
+   *
+   * @param chosen the index of the chosen bandit
+   */
+  public void updateFade(int chosen) {
+    Bandit target = bandits.get(chosen);
+    target.setMean(target.getMean() - 0.001);
   }
 
   @Override

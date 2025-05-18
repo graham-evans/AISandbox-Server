@@ -90,91 +90,10 @@ public final class MazeRunner implements Simulation {
     titleWidget = TitleWidget.builder().title("Maze - " + mazeType.name()).theme(theme).build();
     logWidget = TextWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).font(LOG_FONT).theme(theme)
         .build();
-    episodeScoreWidget = RollingValueChartWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT).theme(theme).window(200).build();
+    episodeScoreWidget = RollingValueChartWidget.builder().width(LOG_WIDTH).height(LOG_HEIGHT)
+        .theme(theme).window(200).build();
     // create a new maze
     initialiseMaze();
-  }
-
-  @Override
-  public void step(OutputRenderer output) {
-    // draw the current position
-    output.display();
-    // save the starting positions
-    int startX = currentCell.getPositionX();
-    int startY = currentCell.getPositionY();
-    // ask for a direction to move in
-    MazeState state = MazeState.newBuilder().setSessionID(sessionID).setEpisodeID(episodeID)
-        .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).setWidth(maze.getWidth()).setHeight(maze.getHeight()).build();
-    MazeAction action = agent.receive(state, MazeAction.class);
-    Direction direction = Direction.fromProto(action.getDirection());
-    log.info("{} moves {}", agent.getAgentName(), direction);
-    // try and make this move
-    double score;
-    stepsLeft--;
-    if (currentCell.getPaths().contains(direction)) {
-      // move cell
-      currentCell = currentCell.getNeighbours().get(direction);
-      // is this the finish
-      if (currentCell.equals(maze.getEndCell())) {
-        score = REWARD_GOAL;
-      } else {
-        score = REWARD_STEP;
-      }
-    } else {
-      // hit wall - dont move
-      score = REWARD_HIT_WALL;
-
-    }
-    // report result
-    logWidget.addText("Move "+direction.name()+" ("+score+")");
-    episodeScore += score;
-    agent.send(MazeResult.newBuilder().setStartX(startX).setStartY(startY)
-        .setEndX(currentCell.getPositionX()).setEndY(currentCell.getPositionY())
-        .setDirection(action.getDirection()).setStepScore(score).setAccumulatedScore(episodeScore)
-        .build());
-    // SPECIAL CASE 1 - found end point of maze
-    if (currentCell.equals(maze.getEndCell())) {
-      // draw the screen an extra time
-      output.display();
-      currentCell = maze.getStartCell();
-    }
-    // SPECIAL CASE  - end of the episode?
-    if (stepsLeft == 0) {
-      logWidget.addText("Episode finished, resetting maze");
-      episodeScoreWidget.addValue(episodeScore);
-      initialiseMaze();
-    }
-
-  }
-
-  @Override
-  public void visualise(Graphics2D graphics2D) {
-    graphics2D.setColor(theme.getBackground());
-    graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
-    // draw title
-    graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
-    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
-        (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
-    // draw baize
-    graphics2D.setColor(theme.getBaize());
-    graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
-        BAIZE_HEIGHT);
-    // draw maze
-    graphics2D.drawImage(mazeImage, MAZE_START_X, MAZE_START_Y,
-        maze.getWidth() * SPRITE_SIZE * maze.getZoomLevel(),
-        maze.getHeight() * SPRITE_SIZE * maze.getZoomLevel(), null);
-    // draw the player
-    graphics2D.setColor(theme.getAgent1Main());
-    graphics2D.fillOval(
-        currentCell.getPositionX() * mazeSize.getZoomLevel() * SPRITE_SIZE + MAZE_START_X,
-        MAZE_START_Y + currentCell.getPositionY() * mazeSize.getZoomLevel() * SPRITE_SIZE,
-        mazeSize.getZoomLevel() * SPRITE_SIZE, mazeSize.getZoomLevel() * SPRITE_SIZE);
-    // draw log
-    graphics2D.drawImage(logWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
-        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + LOG_HEIGHT + WIDGET_SPACING, null);
-    // draw episode scores
-    graphics2D.drawImage(episodeScoreWidget.getImage(),HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
-        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING,null);
   }
 
   private void initialiseMaze() {
@@ -227,6 +146,89 @@ public final class MazeRunner implements Simulation {
           finish.getPositionY() * SPRITE_SIZE, null);
     }
     return image;
+  }
+
+  @Override
+  public void step(OutputRenderer output) {
+    // draw the current position
+    output.display();
+    // save the starting positions
+    int startX = currentCell.getPositionX();
+    int startY = currentCell.getPositionY();
+    // ask for a direction to move in
+    MazeState state = MazeState.newBuilder().setSessionID(sessionID).setEpisodeID(episodeID)
+        .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).setWidth(maze.getWidth())
+        .setHeight(maze.getHeight()).build();
+    MazeAction action = agent.receive(state, MazeAction.class);
+    Direction direction = Direction.fromProto(action.getDirection());
+    log.info("{} moves {}", agent.getAgentName(), direction);
+    // try and make this move
+    double score;
+    stepsLeft--;
+    if (currentCell.getPaths().contains(direction)) {
+      // move cell
+      currentCell = currentCell.getNeighbours().get(direction);
+      // is this the finish
+      if (currentCell.equals(maze.getEndCell())) {
+        score = REWARD_GOAL;
+      } else {
+        score = REWARD_STEP;
+      }
+    } else {
+      // hit wall - dont move
+      score = REWARD_HIT_WALL;
+
+    }
+    // report result
+    logWidget.addText("Move " + direction.name() + " (" + score + ")");
+    episodeScore += score;
+    agent.send(MazeResult.newBuilder().setStartX(startX).setStartY(startY)
+        .setEndX(currentCell.getPositionX()).setEndY(currentCell.getPositionY())
+        .setDirection(action.getDirection()).setStepScore(score).setAccumulatedScore(episodeScore)
+        .build());
+    // SPECIAL CASE 1 - found end point of maze
+    if (currentCell.equals(maze.getEndCell())) {
+      // draw the screen an extra time
+      output.display();
+      currentCell = maze.getStartCell();
+    }
+    // SPECIAL CASE  - end of the episode?
+    if (stepsLeft == 0) {
+      logWidget.addText("Episode finished, resetting maze");
+      episodeScoreWidget.addValue(episodeScore);
+      initialiseMaze();
+    }
+
+  }
+
+  @Override
+  public void visualise(Graphics2D graphics2D) {
+    graphics2D.setColor(theme.getBackground());
+    graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
+    // draw title
+    graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
+    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
+        (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
+    // draw baize
+    graphics2D.setColor(theme.getBaize());
+    graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
+        BAIZE_HEIGHT);
+    // draw maze
+    graphics2D.drawImage(mazeImage, MAZE_START_X, MAZE_START_Y,
+        maze.getWidth() * SPRITE_SIZE * maze.getZoomLevel(),
+        maze.getHeight() * SPRITE_SIZE * maze.getZoomLevel(), null);
+    // draw the player
+    graphics2D.setColor(theme.getAgent1Main());
+    graphics2D.fillOval(
+        currentCell.getPositionX() * mazeSize.getZoomLevel() * SPRITE_SIZE + MAZE_START_X,
+        MAZE_START_Y + currentCell.getPositionY() * mazeSize.getZoomLevel() * SPRITE_SIZE,
+        mazeSize.getZoomLevel() * SPRITE_SIZE, mazeSize.getZoomLevel() * SPRITE_SIZE);
+    // draw log
+    graphics2D.drawImage(logWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
+        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + LOG_HEIGHT + WIDGET_SPACING, null);
+    // draw episode scores
+    graphics2D.drawImage(episodeScoreWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
+        TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
   }
 
 }

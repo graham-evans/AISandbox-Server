@@ -12,18 +12,26 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Represents a deck of playing cards.
- * The deck can be created with a variable number of suits and contains
- * all possible card values for each suit.
+ * Represents a deck of playing cards. The deck can be created with a variable number of suits and
+ * contains all possible card values for each suit.
  */
 public class Deck {
 
-  /** The collection of cards currently in the deck */
+  /**
+   * The collection of cards currently in the deck
+   */
   private final List<Card> cards = new ArrayList<>();
 
   /**
-   * Creates a deck with the specified number of suits.
-   * Each suit will contain all possible card values.
+   * Creates a standard deck with 4 suits.
+   */
+  public Deck() {
+    this(4);
+  }
+
+  /**
+   * Creates a deck with the specified number of suits. Each suit will contain all possible card
+   * values.
    *
    * @param suits The number of suits to include in the deck
    */
@@ -36,13 +44,6 @@ public class Deck {
         cards.add(new Card(value, suite));
       }
     }
-  }
-
-  /**
-   * Creates a standard deck with 4 suits.
-   */
-  public Deck() {
-    this(4);
   }
 
   /**

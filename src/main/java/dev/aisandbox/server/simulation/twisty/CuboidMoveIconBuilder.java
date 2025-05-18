@@ -147,32 +147,6 @@ public class CuboidMoveIconBuilder {
   }
 
   /**
-   * Static factory method to create a new CuboidMoveIconBuilder. Note: The method name has a typo
-   * (builer), but it's preserved for compatibility.
-   *
-   * @param width  The width of the cuboid face in cells
-   * @param height The height of the cuboid face in cells
-   * @param name   The name of the move to display on the icon
-   * @return A new CuboidMoveIconBuilder instance
-   */
-  public static CuboidMoveIconBuilder builer(int width, int height, String name) {
-    return new CuboidMoveIconBuilder(width, height, name);
-  }
-
-  /**
-   * Draws the move name centered at the bottom of the icon.
-   *
-   * @param g    The graphics context to draw on
-   * @param name The name of the move to display
-   */
-  private static void drawName(Graphics2D g, String name) {
-    GraphicsUtils.drawCenteredText(g, 0,
-        Move.MOVE_ICON_HEIGHT - OutputConstants.LOG_FONT_HEIGHT - marginBottom,
-        Move.MOVE_ICON_WIDTH, OutputConstants.LOG_FONT_HEIGHT, name, OutputConstants.LOG_FONT,
-        Color.BLACK);
-  }
-
-  /**
    * Draws the basic cuboid grid structure with empty cells and grid lines.
    *
    * @param originX The x-coordinate where drawing begins
@@ -189,14 +163,40 @@ public class CuboidMoveIconBuilder {
     foregroundGraphics.setColor(LINES);
     // draw front vertical lines
     for (int i = 0; i <= width; i++) {
-      foregroundGraphics.drawLine((int) (originX + i * scale), (int) originY,
-          (int) (originX + i * scale), (int) (originY + height * scale));
+      foregroundGraphics.drawLine((int) (originX + i * scale), originY, (int) (originX + i * scale),
+          (int) (originY + height * scale));
     }
     // draw front horizontal lines
     for (int i = 0; i <= height; i++) {
       foregroundGraphics.drawLine(originX, originY + (int) (i * scale),
           originX + (int) (width * scale), originY + (int) (i * scale));
     }
+  }
+
+  /**
+   * Draws the move name centered at the bottom of the icon.
+   *
+   * @param g    The graphics context to draw on
+   * @param name The name of the move to display
+   */
+  private static void drawName(Graphics2D g, String name) {
+    GraphicsUtils.drawCenteredText(g, 0,
+        Move.MOVE_ICON_HEIGHT - OutputConstants.LOG_FONT_HEIGHT - marginBottom,
+        Move.MOVE_ICON_WIDTH, OutputConstants.LOG_FONT_HEIGHT, name, OutputConstants.LOG_FONT,
+        Color.BLACK);
+  }
+
+  /**
+   * Static factory method to create a new CuboidMoveIconBuilder. Note: The method name has a typo
+   * (builer), but it's preserved for compatibility.
+   *
+   * @param width  The width of the cuboid face in cells
+   * @param height The height of the cuboid face in cells
+   * @param name   The name of the move to display on the icon
+   * @return A new CuboidMoveIconBuilder instance
+   */
+  public static CuboidMoveIconBuilder builer(int width, int height, String name) {
+    return new CuboidMoveIconBuilder(width, height, name);
   }
 
   /**

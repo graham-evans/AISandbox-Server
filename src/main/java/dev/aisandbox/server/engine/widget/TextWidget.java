@@ -55,17 +55,6 @@ public class TextWidget {
     return new TextWidgetBuilder();
   }
 
-  private void addTextLine(final String text) {
-    // move image one line up
-    BufferedImage scrollImage = image.getSubimage(PADDING, PADDING + lineHeight, width - PADDING,
-        height - PADDING * 2 - lineHeight);
-    graphics.drawImage(scrollImage, PADDING, PADDING, null);
-    // blank the bottom line
-    graphics.drawImage(blankLine, PADDING, height - PADDING - lineHeight, null);
-    // draw the text line
-    graphics.drawString(text, PADDING, height - PADDING - DESCENDER);
-  }
-
   public void addText(final String text) {
     // is this a simple line of text
     if (fontMetrics.stringWidth(text) <= width - PADDING * 2) {
@@ -95,6 +84,17 @@ public class TextWidget {
       }
     }
 
+  }
+
+  private void addTextLine(final String text) {
+    // move image one line up
+    BufferedImage scrollImage = image.getSubimage(PADDING, PADDING + lineHeight, width - PADDING,
+        height - PADDING * 2 - lineHeight);
+    graphics.drawImage(scrollImage, PADDING, PADDING, null);
+    // blank the bottom line
+    graphics.drawImage(blankLine, PADDING, height - PADDING - lineHeight, null);
+    // draw the text line
+    graphics.drawString(text, PADDING, height - PADDING - DESCENDER);
   }
 
   public void reset() {

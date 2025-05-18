@@ -69,6 +69,10 @@ public final class TwistySimulation implements Simulation {
 
   // Core simulation components
   /**
+   * Maximum number of steps allowed before failing the episode.
+   */
+  private static final int MAX_STEPS = 1000;
+  /**
    * The AI agent that will interact with the puzzle.
    */
   private final Agent agent;
@@ -92,10 +96,6 @@ public final class TwistySimulation implements Simulation {
    * Unique identifier for this simulation session.
    */
   private final String sessionID = UUID.randomUUID().toString();
-  /**
-   * Maximum number of steps allowed before failing the episode.
-   */
-  private static final int MAX_STEPS = 1000;
 
   // UI elements
   /**
@@ -170,6 +170,23 @@ public final class TwistySimulation implements Simulation {
   }
 
   /**
+   * Scrambles the puzzle by applying a sequence of random moves. The number of random moves is
+   * defined by SCRAMBLE_MOVES.
+   */
+  private void scramblePuzzle() {
+    for (int i = 0; i < SCRAMBLE_MOVES; i++) {
+      try {
+        // Select a random move from the valid move list
+        String randomMove = puzzle.getMoveList().get(random.nextInt(puzzle.getMoveList().size()));
+        puzzle.applyMove(randomMove);
+      } catch (NotExistentMoveException e) {
+        // This should never happen since we're selecting from valid moves
+        log.error("Non existent move when trying a move defined in the class", e);
+      }
+    }
+  }
+
+  /**
    * Executes a single step of the simulation. This involves sending the current state to the agent,
    * receiving a move action, applying that move to the puzzle, and handling any resulting state
    * changes.
@@ -234,23 +251,6 @@ public final class TwistySimulation implements Simulation {
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.CONTINUE)
                 .build());
         output.display();
-      }
-    }
-  }
-
-  /**
-   * Scrambles the puzzle by applying a sequence of random moves. The number of random moves is
-   * defined by SCRAMBLE_MOVES.
-   */
-  private void scramblePuzzle() {
-    for (int i = 0; i < SCRAMBLE_MOVES; i++) {
-      try {
-        // Select a random move from the valid move list
-        String randomMove = puzzle.getMoveList().get(random.nextInt(puzzle.getMoveList().size()));
-        puzzle.applyMove(randomMove);
-      } catch (NotExistentMoveException e) {
-        // This should never happen since we're selecting from valid moves
-        log.error("Non existent move when trying a move defined in the class", e);
       }
     }
   }
