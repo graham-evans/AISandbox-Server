@@ -159,6 +159,19 @@ public final class CoinGame implements Simulation {
     pieChartWidget.addValue(agents.get(winner).getAgentName(), theme.getAgentMain(winner));
   }
 
+  /**
+   * Attempts to make a move in the game by removing coins from a selected row.
+   * <p>
+   * The method checks if the move is legal according to the game rules:
+   * - The number of coins to remove must be between 1 and the maximum allowed.
+   * - The selected row must be valid and contain enough coins.
+   * - The move must not exceed the maximum number of coins that can be taken in one turn.
+   *
+   * @param row    The row from which coins will be removed
+   * @param amount The number of coins to remove
+   * @return The updated coin distribution after the move
+   * @throws IllegalCoinAction if the move is illegal
+   */
   private int[] makeMove(int row, int amount) throws IllegalCoinAction {
     // is the amount out of the allowed range
     if (amount < 1 || amount > scenario.getMax()) {
@@ -182,47 +195,96 @@ public final class CoinGame implements Simulation {
     return newCoins;
   }
 
+  /**
+   * Checks if the game has reached a terminal state.
+   * <p>
+   * The game is finished when all rows have zero coins left.
+   * According to the rules, the player who takes the last coin loses.
+   *
+   * @return true if all piles are empty, false otherwise
+   */
   private boolean isGameFinished() {
+    // Check each row for remaining coins
     for (int row = 0; row < scenario.getRows().length; row++) {
+      // If any row has coins, game is not finished
       if (coins[row] > 0) {
         return false;
       }
     }
+    // All rows are empty, game is finished
     return true;
   }
 
+  /**
+   * Creates a protocol buffer message representing the current state of the game.
+   * <p>
+   * This state contains all information needed by an agent to make a decision,
+   * including the current coin counts, maximum allowed move, and game signals.
+   *
+   * @param signal The game signal to send (PLAY, WIN, LOSE)
+   * @return A new CoinGameState protobuf message
+   */
   private CoinGameState generateCurrentState(Signal signal) {
-    return CoinGameState.newBuilder().addAllCoinCount(Arrays.stream(coins).boxed().toList())
-        .setRowCount(coins.length).setMaxPick(maxPic).setSignal(signal).setSessionID(session)
-        .setEpisodeID(episode).build();
+    // Create and return a protocol buffer message containing the game state
+    return CoinGameState.newBuilder()
+        // Convert int array of coin counts to a List<Integer>
+        .addAllCoinCount(Arrays.stream(coins).boxed().toList())
+        // Set the number of rows
+        .setRowCount(coins.length)
+        // Set the maximum number of coins a player can remove in one turn
+        .setMaxPick(maxPic)
+        // Set the signal type (PLAY, WIN, LOSE)
+        .setSignal(signal)
+        // Include session ID for tracking the entire simulation
+        .setSessionID(session)
+        // Include episode ID for tracking the current game
+        .setEpisodeID(episode)
+        .build();
   }
 
+  /**
+   * Renders the visual representation of the game.
+   * <p>
+   * This method is called by the output renderer to draw the game state,
+   * including the coin piles, UI widgets, and game information.
+   *
+   * @param graphics2D The graphics context to draw on
+   */
   @Override
   public void visualise(Graphics2D graphics2D) {
+    // Fill background with theme color
     graphics2D.setColor(theme.getBackground());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
-    // draw widgets
+    
+    // Draw UI widgets in their respective positions
     graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
     graphics2D.drawImage(pieChartWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
         TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
     graphics2D.drawImage(logWidget.getImage(), HD_WIDTH - RIGHT_MARGIN - LOG_WIDTH,
         TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + LOG_HEIGHT + WIDGET_SPACING, null);
-    // draw baize
+    
+    // Draw the baize (green felt) background for the game area
     graphics2D.setColor(theme.getBaize());
     graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
         BAIZE_HEIGHT);
 
+    // Set color for text elements
     graphics2D.setColor(theme.getText());
+    
+    // Draw each row number and its corresponding coin pile
     for (int i = 0; i < coins.length; i++) {
+      // Draw row number image
       graphics2D.drawImage(rowImages[i], LEFT_MARGIN + i * CoinIcons.PILE_WIDTH + COIN_ROW_INDENT,
           TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + COIN_COLUMN_INDENT, null);
+      
+      // Draw coin pile image based on the number of coins in this row
       graphics2D.drawImage(coinImages[coins[i]],
           LEFT_MARGIN + i * CoinIcons.PILE_WIDTH + COIN_ROW_INDENT,
           TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + CoinIcons.ROW_HEIGHT + COIN_COLUMN_INDENT,
           null);
     }
 
-    // draw logo
+    // Draw the AI Sandbox logo in the top right corner
     graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
 
