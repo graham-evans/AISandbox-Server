@@ -17,90 +17,116 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A builder class that creates visual icons to represent moves in a cuboid puzzle.
- * These icons show which parts of the puzzle are affected by a move and indicate
- * rotation direction with arrows.
+ * A builder class that creates visual icons to represent moves in a cuboid puzzle. These icons show
+ * which parts of the puzzle are affected by a move and indicate rotation direction with arrows.
  */
 @Slf4j
 public class CuboidMoveIconBuilder {
 
-  /** Left margin for the move icon layout in pixels. */
-  final static int marginLeft = 10;
-  
-  /** Right margin for the move icon layout in pixels. */
-  final static int marginRight = 10;
-  
-  /** Top margin for the move icon layout in pixels. */
-  final static int marginTop = 10;
-  
-  /** Bottom margin for the move icon layout in pixels. */
-  final static int marginBottom = 10;
-  
-  /** Color used for unfilled cells in the icon. */
-  final static Color UNFILLED = Color.lightGray;
-  
-  /** Color used for filled cells that are affected by the move. */
-  final static Color FILLED = Color.darkGray;
-  
-  /** Color used for grid lines separating cells. */
-  final static Color LINES = Color.BLACK;
-  
-  /** 
-   * Preloaded arrow sprite images used to indicate rotation direction.
-   * Loaded from a sprite sheet with multiple arrow directions.
+  /**
+   * Left margin for the move icon layout in pixels.
    */
-  final static List<BufferedImage> arrows = SpriteLoader.loadSpritesFromResources(
+  static final int marginLeft = 10;
+
+  /**
+   * Right margin for the move icon layout in pixels.
+   */
+  static final int marginRight = 10;
+
+  /**
+   * Top margin for the move icon layout in pixels.
+   */
+  static final int marginTop = 10;
+
+  /**
+   * Bottom margin for the move icon layout in pixels.
+   */
+  static final int marginBottom = 10;
+
+  /**
+   * Color used for unfilled cells in the icon.
+   */
+  static final Color UNFILLED = Color.lightGray;
+
+  /**
+   * Color used for filled cells that are affected by the move.
+   */
+  static final Color FILLED = Color.darkGray;
+
+  /**
+   * Color used for grid lines separating cells.
+   */
+  static final Color LINES = Color.BLACK;
+
+  /**
+   * Preloaded arrow sprite images used to indicate rotation direction. Loaded from a sprite sheet
+   * with multiple arrow directions.
+   */
+  static final List<BufferedImage> arrows = SpriteLoader.loadSpritesFromResources(
       "/images/twisty/CuboidArrows.png", Move.MOVE_ICON_WIDTH, Move.MOVE_ICON_WIDTH);
 
-  /** The width of the cuboid face in cells. */
+  /**
+   * The width of the cuboid face in cells.
+   */
   final int width;
-  
-  /** The height of the cuboid face in cells. */
+
+  /**
+   * The height of the cuboid face in cells.
+   */
   final int height;
-  
-  /** The x-coordinate where drawing of the cuboid face begins. */
+
+  /**
+   * The x-coordinate where drawing of the cuboid face begins.
+   */
   final int originX;
-  
-  /** The scale factor used to size each cell in the icon. */
+
+  /**
+   * The scale factor used to size each cell in the icon.
+   */
   final double scale;
-  
-  /** 
-   * The background layer of the icon, drawn first.
-   * Contains elements that appear behind the cuboid face.
+
+  /**
+   * The background layer of the icon, drawn first. Contains elements that appear behind the cuboid
+   * face.
    */
   BufferedImage backgroundImage = GraphicsUtils.createBlankImage(Move.MOVE_ICON_WIDTH,
       Move.MOVE_ICON_HEIGHT, Color.WHITE);
-      
-  /** 
-   * The middle layer of the icon.
-   * Contains the filled and unfilled cells of the cuboid face.
+
+  /**
+   * The middle layer of the icon. Contains the filled and unfilled cells of the cuboid face.
    */
   BufferedImage middleImage = GraphicsUtils.createClearImage(Move.MOVE_ICON_WIDTH,
       Move.MOVE_ICON_HEIGHT);
-      
-  /** 
-   * The foreground layer of the icon, drawn last.
-   * Contains cell grid lines, arrows, and the move name.
+
+  /**
+   * The foreground layer of the icon, drawn last. Contains cell grid lines, arrows, and the move
+   * name.
    */
   BufferedImage foregroundImage = GraphicsUtils.createClearImage(Move.MOVE_ICON_WIDTH,
       Move.MOVE_ICON_HEIGHT);
-      
-  /** Graphics context for drawing on the background layer. */
+
+  /**
+   * Graphics context for drawing on the background layer.
+   */
   Graphics2D backgroundGraphics = backgroundImage.createGraphics();
-  
-  /** Graphics context for drawing on the middle layer. */
+
+  /**
+   * Graphics context for drawing on the middle layer.
+   */
   Graphics2D middleGraphics = middleImage.createGraphics();
-  
-  /** Graphics context for drawing on the foreground layer. */
+
+  /**
+   * Graphics context for drawing on the foreground layer.
+   */
   Graphics2D foregroundGraphics = foregroundImage.createGraphics();
 
   /**
-   * Constructs a new CuboidMoveIconBuilder with the specified dimensions and move name.
-   * Initializes the icon with a grid representing the cuboid face.
+   * Constructs a new CuboidMoveIconBuilder with the specified dimensions and move name. Initializes
+   * the icon with a grid representing the cuboid face.
    *
-   * @param width The width of the cuboid face in cells
+   * @param width  The width of the cuboid face in cells
    * @param height The height of the cuboid face in cells
-   * @param name The name of the move to display on the icon
+   * @param name   The name of the move to display on the icon
    */
   public CuboidMoveIconBuilder(int width, int height, String name) {
     this.width = width;
@@ -108,9 +134,9 @@ public class CuboidMoveIconBuilder {
     // setup image
     GraphicsUtils.setupRenderingHints(foregroundGraphics);
     // work out scale of each small square
-    double hScale = (Move.MOVE_ICON_WIDTH - marginLeft - marginRight) / (1.0 * width);
-    double vScale = (Move.MOVE_ICON_HEIGHT - marginTop - marginBottom) / (1.0 * height);
-    scale = Math.min(hScale, vScale);
+    double horizontalScale = (Move.MOVE_ICON_WIDTH - marginLeft - marginRight) / (1.0 * width);
+    double verticalScale = (Move.MOVE_ICON_HEIGHT - marginTop - marginBottom) / (1.0 * height);
+    scale = Math.min(horizontalScale, verticalScale);
     // center the grid
     originX = marginLeft + (int) ((Move.MOVE_ICON_WIDTH - marginLeft - marginRight - width * scale)
         / 2.0);
@@ -121,12 +147,12 @@ public class CuboidMoveIconBuilder {
   }
 
   /**
-   * Static factory method to create a new CuboidMoveIconBuilder.
-   * Note: The method name has a typo (builer), but it's preserved for compatibility.
+   * Static factory method to create a new CuboidMoveIconBuilder. Note: The method name has a typo
+   * (builer), but it's preserved for compatibility.
    *
-   * @param width The width of the cuboid face in cells
+   * @param width  The width of the cuboid face in cells
    * @param height The height of the cuboid face in cells
-   * @param name The name of the move to display on the icon
+   * @param name   The name of the move to display on the icon
    * @return A new CuboidMoveIconBuilder instance
    */
   public static CuboidMoveIconBuilder builer(int width, int height, String name) {
@@ -136,7 +162,7 @@ public class CuboidMoveIconBuilder {
   /**
    * Draws the move name centered at the bottom of the icon.
    *
-   * @param g The graphics context to draw on
+   * @param g    The graphics context to draw on
    * @param name The name of the move to display
    */
   private static void drawName(Graphics2D g, String name) {
@@ -151,15 +177,15 @@ public class CuboidMoveIconBuilder {
    *
    * @param originX The x-coordinate where drawing begins
    * @param originY The y-coordinate where drawing begins
-   * @param width The width of the cuboid face in cells
-   * @param height The height of the cuboid face in cells
-   * @param scale The scale factor for each cell
+   * @param width   The width of the cuboid face in cells
+   * @param height  The height of the cuboid face in cells
+   * @param scale   The scale factor for each cell
    */
   private void drawCuboid(int originX, int originY, int width, int height, double scale) {
     // Fill the entire face with unfilled color
     middleGraphics.setColor(UNFILLED);
     middleGraphics.fillRect(originX, originY, (int) (width * scale), (int) (height * scale));
-    
+
     foregroundGraphics.setColor(LINES);
     // draw front vertical lines
     for (int i = 0; i <= width; i++) {
@@ -185,6 +211,29 @@ public class CuboidMoveIconBuilder {
       }
     }
     return this;
+  }
+
+  /**
+   * Fills a specific cell on the front face with the default fill color.
+   *
+   * @param x The x-coordinate of the cell to fill (0-based)
+   * @param y The y-coordinate of the cell to fill (0-based)
+   */
+  private void fillFrontFace(int x, int y) {
+    fillFrontFace(x, y, FILLED);
+  }
+
+  /**
+   * Fills a specific cell on the front face with a specified color.
+   *
+   * @param x     The x-coordinate of the cell to fill (0-based)
+   * @param y     The y-coordinate of the cell to fill (0-based)
+   * @param color The color to fill the cell with
+   */
+  private void fillFrontFace(int x, int y, Color color) {
+    middleGraphics.setColor(color);
+    middleGraphics.fillRect((int) (originX + x * scale), (int) (marginTop + scale * y),
+        (int) scale + 1, (int) scale + 1);
   }
 
   /**
@@ -247,33 +296,11 @@ public class CuboidMoveIconBuilder {
     return this;
   }
 
-  /**
-   * Fills a specific cell on the front face with the default fill color.
-   *
-   * @param x The x-coordinate of the cell to fill (0-based)
-   * @param y The y-coordinate of the cell to fill (0-based)
-   */
-  private void fillFrontFace(int x, int y) {
-    fillFrontFace(x, y, FILLED);
-  }
-
-  /**
-   * Fills a specific cell on the front face with a specified color.
-   *
-   * @param x The x-coordinate of the cell to fill (0-based)
-   * @param y The y-coordinate of the cell to fill (0-based)
-   * @param color The color to fill the cell with
-   */
-  private void fillFrontFace(int x, int y, Color color) {
-    middleGraphics.setColor(color);
-    middleGraphics.fillRect((int) (originX + x * scale), (int) (marginTop + scale * y),
-        (int) scale + 1, (int) scale + 1);
-  }
 
   /**
    * Adds a rotation arrow to indicate the direction of the move.
    *
-   * @param face The face being rotated ('F', 'B', 'U', 'D', 'L', 'R')
+   * @param face    The face being rotated ('F', 'B', 'U', 'D', 'L', 'R')
    * @param inverse Whether the rotation is counterclockwise (true) or clockwise (false)
    * @return This builder instance for method chaining
    */
@@ -297,6 +324,8 @@ public class CuboidMoveIconBuilder {
       case 'L':
         foregroundGraphics.drawImage(arrows.get(inverse ? 9 : 4), 0, 0, null);
         break;
+      default:
+        log.warn("Unknown face: {}", face);
     }
     return this;
   }

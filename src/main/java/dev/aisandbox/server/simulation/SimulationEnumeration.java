@@ -17,9 +17,9 @@ import lombok.Getter;
 
 /**
  * Enum class representing different types of simulations that can be run.
- * <p>
- * Each simulation type is associated with a {@link SimulationBuilder} instance, which provides the
- * necessary configuration and setup for running the simulation.
+ *
+ * <p>Each simulation type is associated with a {@link SimulationBuilder} instance, which provides
+ * the necessary configuration and setup for running the simulation.
  */
 public enum SimulationEnumeration {
   /**
@@ -45,7 +45,7 @@ public enum SimulationEnumeration {
    */
   MINE(new MineHunterScenario()),
   /**
-   * Twisty puzzles, like cubes and pyramids
+   * Twisty puzzles, like cubes and pyramids.
    */
   TWISTY(new TwistyBuilder());
   /**

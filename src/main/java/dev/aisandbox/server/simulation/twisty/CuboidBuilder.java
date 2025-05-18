@@ -110,93 +110,93 @@ public class CuboidBuilder {
       for (int deep = 1; deep < depth; deep++) {
         // Create F moves (clockwise front face rotation)
         log.info("Generating F at depth {}", deep);
-        Move fMove = new Move();
-        fMove.setName(getMoveName(deep, 'F', 1));
-        fMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, fMove.getName()).fillFrontFace()
+        Move frontMove = new Move();
+        frontMove.setName(getMoveName(deep, 'F', 1));
+        frontMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, frontMove.getName()).fillFrontFace()
                 .setRotation('F', false).getImage());
-        fMove.getLoops().addAll(faceTurn(front, width, height));
+        frontMove.getLoops().addAll(faceTurn(front, width, height));
         for (int layer = 1; layer <= deep; layer++) {
-          fMove.getLoops()
+          frontMove.getLoops()
               .addAll(frontSideTurn(layer, width, height, depth, left, right, top, bottom));
         }
-        puzzle.addMove(fMove);
+        puzzle.addMove(frontMove);
 
         // Create F' moves (counterclockwise front face rotation)
         log.info("Generating F' at depth {}", deep);
-        Move fPrimeMove = new Move();
-        fPrimeMove.setName(getMoveName(deep, 'F', -1));
-        fPrimeMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, fPrimeMove.getName()).fillFrontFace()
+        Move frontPrimeMove = new Move();
+        frontPrimeMove.setName(getMoveName(deep, 'F', -1));
+        frontPrimeMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, frontPrimeMove.getName()).fillFrontFace()
                 .setRotation('F', true).getImage());
-        fPrimeMove.getLoops().addAll(faceReverseTurn(front, width, height));
+        frontPrimeMove.getLoops().addAll(faceReverseTurn(front, width, height));
         for (int layer = 1; layer <= deep; layer++) {
-          fPrimeMove.getLoops()
+          frontPrimeMove.getLoops()
               .addAll(frontSideReverseTurn(layer, width, height, depth, left, right, top, bottom));
         }
-        puzzle.addMove(fPrimeMove);
+        puzzle.addMove(frontPrimeMove);
 
         // Create B moves (clockwise back face rotation)
         log.info("Generating B at depth {}", deep);
-        Move bMove = new Move();
-        bMove.setName(getMoveName(deep, 'B', 1));
-        bMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, bMove.getName()).setRotation('B', false)
+        Move backMove = new Move();
+        backMove.setName(getMoveName(deep, 'B', 1));
+        backMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, backMove.getName()).setRotation('B', false)
                 .getImage());
-        bMove.getLoops().addAll(faceTurn(back, width, height));
+        backMove.getLoops().addAll(faceTurn(back, width, height));
         for (int layer = 1; layer <= deep; layer++) {
-          bMove.getLoops().addAll(
+          backMove.getLoops().addAll(
               frontSideReverseTurn(depth - layer + 1, width, height, depth, left, right, top,
                   bottom));
         }
-        puzzle.addMove(bMove);
+        puzzle.addMove(backMove);
 
         // Create B' moves (counterclockwise back face rotation)
         log.info("Generating B' at depth {}", deep);
-        Move bPrimeMove = new Move();
-        bPrimeMove.setName(getMoveName(deep, 'B', -1));
-        bPrimeMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, bPrimeMove.getName()).setRotation('B', true)
-                .getImage());
-        bPrimeMove.getLoops().addAll(faceReverseTurn(back, width, height));
+        Move backPrimeMove = new Move();
+        backPrimeMove.setName(getMoveName(deep, 'B', -1));
+        backPrimeMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, backPrimeMove.getName())
+                .setRotation('B', true).getImage());
+        backPrimeMove.getLoops().addAll(faceReverseTurn(back, width, height));
         for (int layer = 1; layer <= deep; layer++) {
-          bPrimeMove.getLoops().addAll(
+          backPrimeMove.getLoops().addAll(
               frontSideTurn(depth - layer + 1, width, height, depth, left, right, top, bottom));
         }
-        puzzle.addMove(bPrimeMove);
+        puzzle.addMove(backPrimeMove);
       }
 
       // Create z move (whole puzzle rotation around front-back axis, no cost)
       log.info("Generating Z");
-      Move zMove = new Move();
-      zMove.setName(getMoveName(0, 'F', 1));
-      zMove.setImageIcon(
-          CuboidMoveIconBuilder.builer(width, height, zMove.getName()).fillFrontFace()
+      Move frontRotationMove = new Move();
+      frontRotationMove.setName(getMoveName(0, 'F', 1));
+      frontRotationMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, frontRotationMove.getName()).fillFrontFace()
               .setRotation('F', false).getImage());
-      zMove.getLoops().addAll(faceTurn(front, width, height));
-      zMove.getLoops().addAll(faceReverseTurn(back, width, height));
+      frontRotationMove.getLoops().addAll(faceTurn(front, width, height));
+      frontRotationMove.getLoops().addAll(faceReverseTurn(back, width, height));
       for (int layer = 1; layer <= depth; layer++) {
-        zMove.getLoops()
+        frontRotationMove.getLoops()
             .addAll(frontSideTurn(layer, width, height, depth, left, right, top, bottom));
       }
-      zMove.setCost(0); // Free move since it's a whole puzzle rotation
-      puzzle.addMove(zMove);
+      frontRotationMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(frontRotationMove);
 
       // Create z' move (inverse whole puzzle rotation, no cost)
       log.info("Generating Z'");
-      Move zPrimeMove = new Move();
-      zPrimeMove.setName(getMoveName(0, 'F', -1));
-      zPrimeMove.setImageIcon(
-          CuboidMoveIconBuilder.builer(width, height, zPrimeMove.getName()).fillFrontFace()
-              .setRotation('F', true).getImage());
-      zPrimeMove.getLoops().addAll(faceReverseTurn(front, width, height));
-      zPrimeMove.getLoops().addAll(faceTurn(back, width, height));
+      Move frontRotationPrimeMove = new Move();
+      frontRotationPrimeMove.setName(getMoveName(0, 'F', -1));
+      frontRotationPrimeMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, frontRotationPrimeMove.getName())
+              .fillFrontFace().setRotation('F', true).getImage());
+      frontRotationPrimeMove.getLoops().addAll(faceReverseTurn(front, width, height));
+      frontRotationPrimeMove.getLoops().addAll(faceTurn(back, width, height));
       for (int layer = 1; layer <= depth; layer++) {
-        zPrimeMove.getLoops()
+        frontRotationPrimeMove.getLoops()
             .addAll(frontSideReverseTurn(layer, width, height, depth, left, right, top, bottom));
       }
-      zPrimeMove.setCost(0); // Free move since it's a whole puzzle rotation
-      puzzle.addMove(zPrimeMove);
+      frontRotationPrimeMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(frontRotationPrimeMove);
     }
 
     // Top face moves (if width equals depth, we can do 90° rotations)
@@ -205,92 +205,93 @@ public class CuboidBuilder {
       for (int deep = 1; deep < height; deep++) {
         // Create U move (clockwise top face rotation)
         log.info("Generating U to depth {}", deep);
-        Move uMove = new Move();
-        uMove.setName(getMoveName(deep, 'U', 1));
-        uMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, uMove.getName()).fillFromTop(deep)
+        Move upMove = new Move();
+        upMove.setName(getMoveName(deep, 'U', 1));
+        upMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, upMove.getName()).fillFromTop(deep)
                 .setRotation('U', false).getImage());
-        uMove.getLoops().addAll(faceTurn(top, width, depth));
+        upMove.getLoops().addAll(faceTurn(top, width, depth));
         for (int layer = 1; layer <= deep; layer++) {
-          uMove.getLoops()
+          upMove.getLoops()
               .addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
         }
-        puzzle.addMove(uMove);
+        puzzle.addMove(upMove);
 
         // Create U' move (counterclockwise top face rotation)
         log.info("Generating U' to depth {}", deep);
-        Move uPrimeMove = new Move();
-        uPrimeMove.setName(getMoveName(deep, 'U', -1));
-        uPrimeMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, uPrimeMove.getName()).fillFromTop(deep)
+        Move upPrimeMove = new Move();
+        upPrimeMove.setName(getMoveName(deep, 'U', -1));
+        upPrimeMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, upPrimeMove.getName()).fillFromTop(deep)
                 .setRotation('U', true).getImage());
-        uPrimeMove.getLoops().addAll(faceReverseTurn(top, width, depth));
+        upPrimeMove.getLoops().addAll(faceReverseTurn(top, width, depth));
         for (int layer = 1; layer <= deep; layer++) {
-          uPrimeMove.getLoops()
+          upPrimeMove.getLoops()
               .addAll(topSideReverseTurn(layer, width, height, depth, left, right, front, back));
         }
-        puzzle.addMove(uPrimeMove);
+        puzzle.addMove(upPrimeMove);
 
         // Create D move (clockwise bottom face rotation)
         log.info("Generating D to depth {}", deep);
-        Move dMove = new Move();
-        dMove.setName(getMoveName(deep, 'D', 1));
-        dMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, dMove.getName()).fillFromBottom(deep)
+        Move downMove = new Move();
+        downMove.setName(getMoveName(deep, 'D', 1));
+        downMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, downMove.getName()).fillFromBottom(deep)
                 .setRotation('D', false).getImage());
-        dMove.getLoops().addAll(faceTurn(bottom, width, depth));
+        downMove.getLoops().addAll(faceTurn(bottom, width, depth));
         for (int layer = 1; layer <= deep; layer++) {
-          dMove.getLoops().addAll(
+          downMove.getLoops().addAll(
               topSideReverseTurn(height - layer + 1, width, height, depth, left, right, front,
                   back));
         }
-        puzzle.addMove(dMove);
+        puzzle.addMove(downMove);
 
         // Create D' move (counterclockwise bottom face rotation)
         log.info("Generating D' to depth {}", deep);
-        Move dPrimeMove = new Move();
-        dPrimeMove.setName(getMoveName(deep, 'D', -1));
-        dPrimeMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, dPrimeMove.getName()).fillFromBottom(deep)
-                .setRotation('D', true).getImage());
-        dPrimeMove.getLoops().addAll(faceReverseTurn(bottom, width, depth));
+        Move downPrimeMove = new Move();
+        downPrimeMove.setName(getMoveName(deep, 'D', -1));
+        downPrimeMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, downPrimeMove.getName())
+                .fillFromBottom(deep).setRotation('D', true).getImage());
+        downPrimeMove.getLoops().addAll(faceReverseTurn(bottom, width, depth));
         for (int layer = 1; layer <= deep; layer++) {
-          dPrimeMove.getLoops().addAll(
+          downPrimeMove.getLoops().addAll(
               topSideTurn(height - layer + 1, width, height, depth, left, right, front, back));
         }
-        puzzle.addMove(dPrimeMove);
+        puzzle.addMove(downPrimeMove);
       }
 
       // Create y move (whole puzzle rotation around top-bottom axis, no cost)
-      Move yMove = new Move();
+      Move topRotationMove = new Move();
       log.info("Generating y");
-      yMove.setName(getMoveName(0, 'U', 1));
-      yMove.setImageIcon(
-          CuboidMoveIconBuilder.builer(width, height, yMove.getName()).fillFrontFace()
+      topRotationMove.setName(getMoveName(0, 'U', 1));
+      topRotationMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, topRotationMove.getName()).fillFrontFace()
               .setRotation('U', false).getImage());
-      yMove.getLoops().addAll(faceTurn(top, width, depth));
-      yMove.getLoops().addAll(faceReverseTurn(bottom, width, depth));
+      topRotationMove.getLoops().addAll(faceTurn(top, width, depth));
+      topRotationMove.getLoops().addAll(faceReverseTurn(bottom, width, depth));
       for (int layer = 1; layer <= height; layer++) {
-        yMove.getLoops().addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
+        topRotationMove.getLoops()
+            .addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
       }
-      yMove.setCost(0); // Free move since it's a whole puzzle rotation
-      puzzle.addMove(yMove);
+      topRotationMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(topRotationMove);
 
       // Create y' move (inverse whole puzzle rotation, no cost)
       log.info("Generating y'");
-      Move yPrimeMove = new Move();
-      yPrimeMove.setName(getMoveName(0, 'U', -1));
-      yPrimeMove.setImageIcon(
-          CuboidMoveIconBuilder.builer(width, height, yPrimeMove.getName()).fillFrontFace()
-              .setRotation('U', true).getImage());
-      yPrimeMove.getLoops().addAll(faceReverseTurn(top, width, depth));
-      yPrimeMove.getLoops().addAll(faceTurn(bottom, width, depth));
+      Move topRotationPriveMove = new Move();
+      topRotationPriveMove.setName(getMoveName(0, 'U', -1));
+      topRotationPriveMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, topRotationPriveMove.getName())
+              .fillFrontFace().setRotation('U', true).getImage());
+      topRotationPriveMove.getLoops().addAll(faceReverseTurn(top, width, depth));
+      topRotationPriveMove.getLoops().addAll(faceTurn(bottom, width, depth));
       for (int layer = 1; layer <= height; layer++) {
-        yPrimeMove.getLoops()
+        topRotationPriveMove.getLoops()
             .addAll(topSideReverseTurn(layer, width, height, depth, left, right, front, back));
       }
-      yPrimeMove.setCost(0); // Free move since it's a whole puzzle rotation
-      puzzle.addMove(yPrimeMove);
+      topRotationPriveMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(topRotationPriveMove);
     }
 
     // Right face moves (if depth equals height, we can do 90° rotations)
@@ -299,93 +300,93 @@ public class CuboidBuilder {
       for (int deep = 1; deep < width; deep++) {
         // Create R move (clockwise right face rotation)
         log.info("Generating R to depth {}", deep);
-        Move rMove = new Move();
-        rMove.setName(getMoveName(deep, 'R', 1));
-        rMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, rMove.getName()).fillFromRight(deep)
+        Move rightMove = new Move();
+        rightMove.setName(getMoveName(deep, 'R', 1));
+        rightMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, rightMove.getName()).fillFromRight(deep)
                 .setRotation('R', false).getImage());
-        rMove.getLoops().addAll(faceTurn(right, depth, height));
+        rightMove.getLoops().addAll(faceTurn(right, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
-          rMove.getLoops()
+          rightMove.getLoops()
               .addAll(rightSideTurn(layer, width, height, depth, front, back, top, bottom));
         }
-        puzzle.addMove(rMove);
+        puzzle.addMove(rightMove);
 
         // Create R' move (counterclockwise right face rotation)
         log.info("Generating R' to depth {}", deep);
-        Move rPrimeMove = new Move();
-        rPrimeMove.setName(getMoveName(deep, 'R', -1));
-        rPrimeMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, rPrimeMove.getName()).fillFromRight(deep)
-                .setRotation('R', true).getImage());
-        rPrimeMove.getLoops().addAll(faceReverseTurn(right, depth, height));
+        Move rightPrimeMove = new Move();
+        rightPrimeMove.setName(getMoveName(deep, 'R', -1));
+        rightPrimeMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, rightPrimeMove.getName())
+                .fillFromRight(deep).setRotation('R', true).getImage());
+        rightPrimeMove.getLoops().addAll(faceReverseTurn(right, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
-          rPrimeMove.getLoops()
+          rightPrimeMove.getLoops()
               .addAll(rightSideReverseTurn(layer, width, height, depth, front, back, top, bottom));
         }
-        puzzle.addMove(rPrimeMove);
+        puzzle.addMove(rightPrimeMove);
 
         // Create L move (clockwise left face rotation)
         log.info("Generating L to depth {}", deep);
-        Move lMove = new Move();
-        lMove.setName(getMoveName(deep, 'L', 1));
-        lMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, lMove.getName()).fillFromLeft(deep)
+        Move leftMove = new Move();
+        leftMove.setName(getMoveName(deep, 'L', 1));
+        leftMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, leftMove.getName()).fillFromLeft(deep)
                 .setRotation('L', false).getImage());
-        lMove.getLoops().addAll(faceTurn(left, depth, height));
+        leftMove.getLoops().addAll(faceTurn(left, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
-          lMove.getLoops().addAll(
+          leftMove.getLoops().addAll(
               rightSideReverseTurn(width - layer + 1, width, height, depth, front, back, top,
                   bottom));
         }
-        puzzle.addMove(lMove);
+        puzzle.addMove(leftMove);
 
         // Create L' move (counterclockwise left face rotation)
         log.info("Generating L' to depth {}", deep);
-        Move lPrimeMove = new Move();
-        lPrimeMove.setName(getMoveName(deep, 'L', -1));
-        lPrimeMove.setImageIcon(
-            CuboidMoveIconBuilder.builer(width, height, lPrimeMove.getName()).fillFromLeft(deep)
+        Move leftPrimeMove = new Move();
+        leftPrimeMove.setName(getMoveName(deep, 'L', -1));
+        leftPrimeMove.setImageIcon(
+            CuboidMoveIconBuilder.builer(width, height, leftPrimeMove.getName()).fillFromLeft(deep)
                 .setRotation('L', true).getImage());
-        lPrimeMove.getLoops().addAll(faceReverseTurn(left, depth, height));
+        leftPrimeMove.getLoops().addAll(faceReverseTurn(left, depth, height));
         for (int layer = 1; layer <= deep; layer++) {
-          lPrimeMove.getLoops().addAll(
+          leftPrimeMove.getLoops().addAll(
               rightSideTurn(width - layer + 1, width, height, depth, front, back, top, bottom));
         }
-        puzzle.addMove(lPrimeMove);
+        puzzle.addMove(leftPrimeMove);
       }
 
       // Create x move (whole puzzle rotation around left-right axis, no cost)
       log.info("Generating x");
-      Move xMove = new Move();
-      xMove.setName(getMoveName(0, 'R', 1));
-      xMove.setImageIcon(
-          CuboidMoveIconBuilder.builer(width, height, xMove.getName()).fillFrontFace()
+      Move rightRotationMove = new Move();
+      rightRotationMove.setName(getMoveName(0, 'R', 1));
+      rightRotationMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, rightRotationMove.getName()).fillFrontFace()
               .setRotation('R', false).getImage());
-      xMove.getLoops().addAll(faceTurn(right, depth, height));
-      xMove.getLoops().addAll(faceReverseTurn(left, depth, height));
+      rightRotationMove.getLoops().addAll(faceTurn(right, depth, height));
+      rightRotationMove.getLoops().addAll(faceReverseTurn(left, depth, height));
       for (int layer = 1; layer <= width; layer++) {
-        xMove.getLoops()
+        rightRotationMove.getLoops()
             .addAll(rightSideTurn(layer, width, height, depth, front, back, top, bottom));
       }
-      xMove.setCost(0); // Free move since it's a whole puzzle rotation
-      puzzle.addMove(xMove);
+      rightRotationMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(rightRotationMove);
 
       // Create x' move (inverse whole puzzle rotation, no cost)
       log.info("Generating x'");
-      Move xPrimeMove = new Move();
-      xPrimeMove.setName(getMoveName(0, 'R', -1));
-      xPrimeMove.setImageIcon(
-          CuboidMoveIconBuilder.builer(width, height, xPrimeMove.getName()).fillFrontFace()
-              .setRotation('R', true).getImage());
-      xPrimeMove.getLoops().addAll(faceReverseTurn(right, depth, height));
-      xPrimeMove.getLoops().addAll(faceTurn(left, depth, height));
+      Move rightRotationPriveMove = new Move();
+      rightRotationPriveMove.setName(getMoveName(0, 'R', -1));
+      rightRotationPriveMove.setImageIcon(
+          CuboidMoveIconBuilder.builer(width, height, rightRotationPriveMove.getName())
+              .fillFrontFace().setRotation('R', true).getImage());
+      rightRotationPriveMove.getLoops().addAll(faceReverseTurn(right, depth, height));
+      rightRotationPriveMove.getLoops().addAll(faceTurn(left, depth, height));
       for (int layer = 1; layer <= width; layer++) {
-        xPrimeMove.getLoops()
+        rightRotationPriveMove.getLoops()
             .addAll(rightSideReverseTurn(layer, width, height, depth, front, back, top, bottom));
       }
-      xPrimeMove.setCost(0); // Free move since it's a whole puzzle rotation
-      puzzle.addMove(xPrimeMove);
+      rightRotationPriveMove.setCost(0); // Free move since it's a whole puzzle rotation
+      puzzle.addMove(rightRotationPriveMove);
     }
 
     // Double turns (180° rotations) - these are always possible regardless of dimensions

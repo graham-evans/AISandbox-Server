@@ -49,7 +49,7 @@ public final class TwistySimulation implements Simulation {
 
   // Simulation constants
   /**
-   * Number of random moves to apply when scrambling the puzzle
+   * Number of random moves to apply when scrambling the puzzle.
    */
   private static final int SCRAMBLE_MOVES = 200;
 
@@ -57,70 +57,70 @@ public final class TwistySimulation implements Simulation {
 
   // UI constants
   /**
-   * Width of the sidebar widgets based on screen dimensions and puzzle width
+   * Width of the sidebar widgets based on screen dimensions and puzzle width.
    */
   private static final int WIDGET_WIDTH =
       HD_WIDTH - LEFT_MARGIN - TwistyPuzzle.WIDTH - RIGHT_MARGIN - WIDGET_SPACING;
   /**
-   * Height of each sidebar widget, calculated to fit evenly on screen
+   * Height of each sidebar widget, calculated to fit evenly on screen.
    */
   private static final int WIDGET_HEIGHT =
       (HD_HEIGHT - TOP_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2 - BOTTOM_MARGIN) / 2;
 
   // Core simulation components
   /**
-   * The AI agent that will interact with the puzzle
+   * The AI agent that will interact with the puzzle.
    */
   private final Agent agent;
   /**
-   * The twisty puzzle being simulated
+   * The twisty puzzle being simulated.
    */
   private final TwistyPuzzle puzzle;
   /**
-   * Whether to start with a solved puzzle or a scrambled one
+   * Whether to start with a solved puzzle or a scrambled one.
    */
   private final boolean startSolved;
   /**
-   * Visual theme for rendering
+   * Visual theme for rendering.
    */
   private final Theme theme;
   /**
-   * Random number generator for puzzle scrambling
+   * Random number generator for puzzle scrambling.
    */
   private final Random random;
   /**
-   * Unique identifier for this simulation session
+   * Unique identifier for this simulation session.
    */
   private final String sessionID = UUID.randomUUID().toString();
   /**
-   * Maximum number of steps allowed before failing the episode
+   * Maximum number of steps allowed before failing the episode.
    */
-  private final int MAX_STEPS = 1000;
+  private static final int MAX_STEPS = 1000;
 
   // UI elements
   /**
-   * Widget for displaying the simulation title
+   * Widget for displaying the simulation title.
    */
   private final TitleWidget titleWidget;
   /**
-   * Widget for displaying the history of moves made
+   * Widget for displaying the history of moves made.
    */
   private final RollingIconWidget moveHistoryWidget;
   /**
-   * Widget for displaying success/failure statistics
+   * Widget for displaying success/failure statistics.
    */
   private final RollingSuccessStatisticsWidget statsWidget;
 
   /**
-   * Number of moves made in the current episode
+   * Number of moves made in the current episode.
    */
   int moves;
   /**
-   * Number of OBTM (Outer Block Turn Metric) moves made in the current episode
+   * Number of OBTM (Outer Block Turn Metric) moves made in the current episode.
    */
   int obtmMoves;
   /**
-   * Unique identifier for the current episode
+   * Unique identifier for the current episode.
    */
   private String episodeID;
 
