@@ -160,7 +160,8 @@ public final class MazeRunner implements Simulation {
     MazeState state = MazeState.newBuilder().setSessionID(sessionID).setEpisodeID(episodeID)
         .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).setWidth(maze.getWidth())
         .setHeight(maze.getHeight()).build();
-    MazeAction action = agent.sendAndReceive(state, MazeAction.class);
+    agent.send(state);
+    MazeAction action = agent.receive(MazeAction.class);
     Direction direction = Direction.fromProto(action.getDirection());
     log.info("{} moves {}", agent.getAgentName(), direction);
     // try and make this move

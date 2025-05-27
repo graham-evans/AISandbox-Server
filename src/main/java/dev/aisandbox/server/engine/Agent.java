@@ -36,19 +36,5 @@ public interface Agent {
      */
     <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationException;
 
-    /**
-     * Combines the send and receive function.
-     *
-     * @param state        The message to send
-     * @param responseType The class of the message to be received.
-     * @param <T>          The message type to be returned
-     * @return The response back from the agent.
-     */
-    @Deprecated
-    default <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) throws SimulationException {
-        send(state);
-        return receive(responseType);
-    }
-
     void close();
 }

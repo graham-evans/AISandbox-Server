@@ -212,7 +212,8 @@ public final class TwistySimulation implements Simulation {
     builder.addAllValidMoves(puzzle.getMoveList());
 
     // Get the next move from the agent
-    TwistyAction action = agent.sendAndReceive(builder.build(), TwistyAction.class);
+    agent.send(builder.build());
+    TwistyAction action = agent.receive(TwistyAction.class);
     log.info("action: {}", action.getMove());
 
     // Special case - handle reset action

@@ -120,8 +120,8 @@ public final class CoinGame implements Simulation {
     // draw the current state
     output.display();
     log.debug("ask client {} to move", currentPlayer);
-    CoinGameState currentState = generateCurrentState(Signal.PLAY);
-    CoinGameAction action = agents.get(currentPlayer).sendAndReceive(currentState, CoinGameAction.class);
+    agents.get(currentPlayer).send(generateCurrentState(Signal.PLAY));
+    CoinGameAction action = agents.get(currentPlayer).receive(CoinGameAction.class);
     // try and make the move
     try {
       coins = makeMove(action.getSelectedRow(), action.getRemoveCount());

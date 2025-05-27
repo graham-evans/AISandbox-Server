@@ -276,10 +276,10 @@ public final class HighLowCards implements Simulation {
     output.display();
 
     // send the current state and request an action from the agent
-    HighLowCardsAction action = agent.sendAndReceive(HighLowCardsState.newBuilder().setCardCount(cardCount)
-            .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
-            .setScore(score).setSessionID(sessionID).setEpisodeID(episodeID).build(),
-        HighLowCardsAction.class);
+    agent.send(HighLowCardsState.newBuilder().setCardCount(cardCount)
+        .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
+        .setScore(score).setSessionID(sessionID).setEpisodeID(episodeID).build());
+    HighLowCardsAction action = agent.receive(HighLowCardsAction.class);
     log.debug("Client action: {}", action.getAction().name());
 
     // turn over the next card

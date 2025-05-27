@@ -218,7 +218,8 @@ public final class MineHunterRuntime implements Simulation {
   @Override
   public void step(OutputRenderer output) throws SimulationException {
     // Get action from agent
-    MineAction action = agent.sendAndReceive(getState(), MineAction.class);
+    agent.send(getState());
+    MineAction action = agent.receive(MineAction.class);
 
     // Process the action (place flag or dig)
     if (action.getAction().equals(FlagAction.PLACE_FLAG)) {
