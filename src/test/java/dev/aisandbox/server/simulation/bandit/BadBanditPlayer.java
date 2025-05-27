@@ -8,6 +8,7 @@ package dev.aisandbox.server.simulation.bandit;
 
 import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.Agent;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.simulation.bandit.proto.BanditAction;
 import dev.aisandbox.server.simulation.bandit.proto.BanditState;
 import java.util.Random;
@@ -32,7 +33,12 @@ public class BadBanditPlayer implements Agent {
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
+  public <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationException {
+    return null;
+  }
+
+  @Override
+  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
     BanditState banditState = (BanditState) state;
     if (responseType != BanditAction.class) {
       log.error("Asking for {} but I can only respond with BanditAction", responseType.getName());

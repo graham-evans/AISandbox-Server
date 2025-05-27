@@ -24,6 +24,7 @@ import static dev.aisandbox.server.simulation.common.Card.CARD_WIDTH;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.maths.bins.IntegerBinner;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
@@ -264,7 +265,7 @@ public final class HighLowCards implements Simulation {
    * @param output The renderer for displaying the simulation state
    */
   @Override
-  public void step(OutputRenderer output) {
+  public void step(OutputRenderer output) throws SimulationException {
     // get the previous and next cards
     Card previousCard = faceUpCards.getLast();
     Card nextCard = faceDownCards.getFirst();
@@ -275,7 +276,7 @@ public final class HighLowCards implements Simulation {
     output.display();
 
     // send the current state and request an action from the agent
-    HighLowCardsAction action = agent.receive(HighLowCardsState.newBuilder().setCardCount(cardCount)
+    HighLowCardsAction action = agent.sendAndReceive(HighLowCardsState.newBuilder().setCardCount(cardCount)
             .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
             .setScore(score).setSessionID(sessionID).setEpisodeID(episodeID).build(),
         HighLowCardsAction.class);

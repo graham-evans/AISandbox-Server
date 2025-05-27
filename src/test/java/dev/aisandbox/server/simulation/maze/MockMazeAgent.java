@@ -29,7 +29,7 @@ public class MockMazeAgent implements Agent {
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
+  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
     MazeState mazeState = (MazeState) state;
     if (responseType != MazeAction.class) {
       log.error("Asking for {} but I can only respond with MazeAction", responseType.getName());

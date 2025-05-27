@@ -30,7 +30,7 @@ public class MockMineAgent implements Agent {
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
+  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
     MineState mineState = (MineState) state;
     if (responseType != MineAction.class) {
       log.error("Asking for {} but I can only respond with MineAction", responseType.getName());

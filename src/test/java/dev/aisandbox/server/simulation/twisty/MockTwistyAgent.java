@@ -29,7 +29,7 @@ public class MockTwistyAgent implements Agent {
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
+  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
     TwistyState twistyState = (TwistyState) state;
     if (responseType != TwistyAction.class) {
       log.error("Asking for {} but I can only respond with TwistyAction", responseType.getName());

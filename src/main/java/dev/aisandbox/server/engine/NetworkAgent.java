@@ -7,6 +7,7 @@
 package dev.aisandbox.server.engine;
 
 import com.google.protobuf.GeneratedMessage;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,8 +30,15 @@ public class NetworkAgent implements Agent {
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
-    return (T) agentThread.sendMessageGetResponse(state);
+  public <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationException {
+    GeneratedMessage message = agentThread.receiveMessage();
+    T response;
+    try {
+      response = (T) message;
+    } catch (ClassCastException e) {
+      throw new SimulationException("received message is not of type " + responseType, e);
+    }
+    return response;
   }
 
   @Override

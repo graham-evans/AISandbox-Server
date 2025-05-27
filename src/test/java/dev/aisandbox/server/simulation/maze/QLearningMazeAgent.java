@@ -42,7 +42,7 @@ public class QLearningMazeAgent implements Agent {
     }
   
     @Override
-    public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
+    public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
       MazeState mazeState = (MazeState) state;
       if (!mazeState.getEpisodeID().equals(episodeID)) {
         // initialize Q-learning table for the new episode

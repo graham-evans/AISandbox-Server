@@ -35,7 +35,7 @@ public class MockPlayer implements Agent {
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
+  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
     if (responseType != CoinGameAction.class) {
       log.error("Asking for {} but I can only respond with CoinGameAction", responseType.getName());
       return null;

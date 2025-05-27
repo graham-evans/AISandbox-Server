@@ -23,6 +23,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
@@ -215,9 +216,9 @@ public final class MineHunterRuntime implements Simulation {
    * @param output The renderer for displaying the game state
    */
   @Override
-  public void step(OutputRenderer output) {
+  public void step(OutputRenderer output) throws SimulationException {
     // Get action from agent
-    MineAction action = agent.receive(getState(), MineAction.class);
+    MineAction action = agent.sendAndReceive(getState(), MineAction.class);
 
     // Process the action (place flag or dig)
     if (action.getAction().equals(FlagAction.PLACE_FLAG)) {

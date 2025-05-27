@@ -22,6 +22,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
 import dev.aisandbox.server.engine.widget.RollingSuccessStatisticsWidget;
@@ -195,7 +196,7 @@ public final class TwistySimulation implements Simulation {
    * @throws NotExistentMoveException If the agent attempts an invalid move
    */
   @Override
-  public void step(OutputRenderer output) throws NotExistentMoveException {
+  public void step(OutputRenderer output) throws SimulationException {
     // Special case - call display if this is the start of an episode
     if (moves == 0) {
       output.display();
@@ -211,7 +212,7 @@ public final class TwistySimulation implements Simulation {
     builder.addAllValidMoves(puzzle.getMoveList());
 
     // Get the next move from the agent
-    TwistyAction action = agent.receive(builder.build(), TwistyAction.class);
+    TwistyAction action = agent.sendAndReceive(builder.build(), TwistyAction.class);
     log.info("action: {}", action.getMove());
 
     // Special case - handle reset action

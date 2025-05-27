@@ -30,7 +30,7 @@ public class MockBanditPlayer implements Agent {
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
+  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
     BanditState banditState = (BanditState) state;
     if (responseType != BanditAction.class) {
       log.error("Asking for {} but I can only respond with BanditAction", responseType.getName());

@@ -133,7 +133,7 @@ public final class BanditRuntime implements Simulation {
     int bestPull = IntStream.range(0, bandits.size()).boxed()
         .max(Comparator.comparingDouble(i -> bandits.get(i).getStd())).orElse(-1);
     // ask user which bandit to pull
-    BanditAction action = agent.receive(getState(), BanditAction.class);
+    BanditAction action = agent.sendAndReceive(getState(), BanditAction.class);
     int arm = action.getArm();
     log.debug("Received request to pull arm {}", arm);
     // test for invalid request
