@@ -8,6 +8,7 @@ package dev.aisandbox.server.engine;
 
 import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.simulation.highlowcards.proto.HighLowCardsAction;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Optional;
 import java.util.concurrent.SynchronousQueue;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -44,13 +46,12 @@ public class AgentThread extends Thread {
     }
   }
 
-  public synchronized GeneratedMessage sendMessageGetResponse(GeneratedMessage message) {
+  public synchronized GeneratedMessage receiveMessage() {
     GeneratedMessage response = null;
     try {
-      outputQueue.put(new NetworkAgentMessage(message, Optional.of(HighLowCardsAction.class)));
       response = inputQueue.take();
     } catch (InterruptedException e) {
-      log.error("send/recieve interrupted", e);
+      log.error("receive interrupted", e);
     }
     return response;
   }

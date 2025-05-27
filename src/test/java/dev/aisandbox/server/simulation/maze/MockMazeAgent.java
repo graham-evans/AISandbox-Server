@@ -7,7 +7,7 @@
 package dev.aisandbox.server.simulation.maze;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.engine.Agent;
+import dev.aisandbox.server.engine.MockAgent;
 import dev.aisandbox.server.simulation.maze.proto.MazeAction;
 import dev.aisandbox.server.simulation.maze.proto.MazeState;
 import java.util.Random;
@@ -17,32 +17,19 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class MockMazeAgent implements Agent {
+public class MockMazeAgent extends MockAgent {
 
   @Getter
   private final String agentName;
+
   Random random = new Random();
 
   @Override
   public void send(GeneratedMessage o) {
-
-  }
-
-  @Override
-  public <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType) {
-    MazeState mazeState = (MazeState) state;
-    if (responseType != MazeAction.class) {
-      log.error("Asking for {} but I can only respond with MazeAction", responseType.getName());
-      return null;
-    } else {
-      return (T) MazeAction.newBuilder()
+    if (o instanceof MazeState state) {
+      getOutputQueue().add(MazeAction.newBuilder()
           .setDirectionValue(random.nextInt(4)) // we can do this as NSEW are 0,1,2,3
-          .build();
+          .build());
     }
-  }
-
-  @Override
-  public void close() {
-
   }
 }

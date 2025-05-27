@@ -22,6 +22,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
@@ -149,7 +150,7 @@ public final class MazeRunner implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) {
+  public void step(OutputRenderer output) throws SimulationException {
     // draw the current position
     output.display();
     // save the starting positions
@@ -159,7 +160,8 @@ public final class MazeRunner implements Simulation {
     MazeState state = MazeState.newBuilder().setSessionID(sessionID).setEpisodeID(episodeID)
         .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).setWidth(maze.getWidth())
         .setHeight(maze.getHeight()).build();
-    MazeAction action = agent.receive(state, MazeAction.class);
+    agent.send(state);
+    MazeAction action = agent.receive(MazeAction.class);
     Direction direction = Direction.fromProto(action.getDirection());
     log.info("{} moves {}", agent.getAgentName(), direction);
     // try and make this move

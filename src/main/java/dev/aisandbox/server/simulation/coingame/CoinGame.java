@@ -22,6 +22,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -115,12 +116,12 @@ public final class CoinGame implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) {
+  public void step(OutputRenderer output) throws SimulationException {
     // draw the current state
     output.display();
     log.debug("ask client {} to move", currentPlayer);
-    CoinGameState currentState = generateCurrentState(Signal.PLAY);
-    CoinGameAction action = agents.get(currentPlayer).receive(currentState, CoinGameAction.class);
+    agents.get(currentPlayer).send(generateCurrentState(Signal.PLAY));
+    CoinGameAction action = agents.get(currentPlayer).receive(CoinGameAction.class);
     // try and make the move
     try {
       coins = makeMove(action.getSelectedRow(), action.getRemoveCount());
@@ -231,7 +232,7 @@ public final class CoinGame implements Simulation {
     return true;
   }
 
-  private void informResult(int winner) {
+  private void informResult(int winner) throws SimulationException {
     Agent winAgent = agents.get(winner);
     Agent loseAgent = agents.get((winner + 1) % 2);
     winAgent.send(generateCurrentState(Signal.WIN));

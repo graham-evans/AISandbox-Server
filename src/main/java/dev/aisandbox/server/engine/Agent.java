@@ -7,15 +7,34 @@
 package dev.aisandbox.server.engine;
 
 import com.google.protobuf.GeneratedMessage;
+import dev.aisandbox.server.engine.exception.SimulationException;
 
 public interface Agent {
 
-  String getAgentName();
+    /**
+     * Get the agents name (usually assigned by the SimulationBuilder.
+     *
+     * @return The name of the agent.
+     */
+    String getAgentName();
 
-  void send(GeneratedMessage o);
+    /**
+     * Send a message to the agent.
+     *
+     * @param msg The Message to send
+     * @throws SimulationException Can be thrown on IO error.
+     */
+    void send(GeneratedMessage msg) throws SimulationException;
 
-  //   GeneratedMessage receive(GeneratedMessage state);
-  <T extends GeneratedMessage> T receive(GeneratedMessage state, Class<T> responseType);
+    /**
+     * Wait (block) until the agent responds with the expected object.
+     *
+     * @param responseType The class of the message to be returned (must extend GeneratedMessage).
+     * @param <T>          The message type to be returned.
+     * @return The agents message.
+     * @throws SimulationException Can be thrown if the wrong object is returned or if they disconnect.
+     */
+    <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationException;
 
-  void close();
+    void close();
 }
