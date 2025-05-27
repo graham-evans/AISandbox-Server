@@ -87,7 +87,6 @@ public class SetupController {
     model.getSelectedSimulationBuilder()
         .bind(simulationList.getSelectionModel().selectedItemProperty());
     // disable agent counter until builder is selected
-//        model.getAgentCount().bind(agentCounter.valueProperty());
     agentCounter.setDisable(true);
     agentCounter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
 

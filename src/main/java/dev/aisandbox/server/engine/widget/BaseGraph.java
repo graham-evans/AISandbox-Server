@@ -138,9 +138,6 @@ public class BaseGraph {
         AXIS_FONT_SIZE,
         height - PADDING * 2 - TITLE_FONT_SIZE - AXIS_FONT_SIZE - MARGIN - TITLE_FONT_SIZE,
         yAxisTitle, AXIS_FONT, theme.getText());
-//    GraphicsUtils.drawVerticalCenteredText(graphics, PADDING, height - PADDING, height -
-//    PADDING * 2,
-//        AXIS_FONT_SIZE, yAxisTitle, AXIS_FONT, theme.getText());
     // draw graph border
     graphics.setColor(theme.getGraphOutlineColor());
     graphics.drawRect(xBoxStart, yBoxStart, boxWidth, boxHeight);

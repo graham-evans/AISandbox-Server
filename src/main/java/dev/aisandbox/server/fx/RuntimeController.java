@@ -44,8 +44,7 @@ public class RuntimeController {
   }
 
   @FXML
-    // This method is called by the FXMLLoader when initialization is complete
-  void initialize() {
+  void initialize() { // This method is called by the FXMLLoader when initialization is complete
     log.debug("Initializing RuntimeController");
     assert logArea
         != null : "fx:id=\"logArea\" was not injected: check your FXML file 'runtime.fxml'.";

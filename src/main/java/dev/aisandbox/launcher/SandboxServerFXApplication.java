@@ -23,16 +23,6 @@ public class SandboxServerFXApplication extends Application {
   @Override
   public void init() throws Exception {
     log.info("Initialising application - FX");
- /*       SpringApplicationBuilder builder = new SpringApplicationBuilder
- (SandboxServerFXApplication.class);
-        builder.headless(false);
-        context = builder.run(getParameters().getRaw().toArray(new String[0]));
-        // load the root FXML screen, using spring to create the controller
-        FXMLLoader loader =
-                new FXMLLoader(getClass().getResource("/fx/simulation.fxml"));
-   //     loader.setResources(ResourceBundle.getBundle("dev.aisandbox.client.fx.UI"));
-        loader.setControllerFactory(context::getBean);
-        rootNode = loader.load();*/
   }
 
   @Override
@@ -52,13 +42,5 @@ public class SandboxServerFXApplication extends Application {
   @Override
   public void stop() throws Exception {
     log.info("Stopping application");
-  /*      ApplicationModel model = context.getBean(ApplicationModel.class);
-        try {
-            model.resetRuntime();
-        } catch (Exception e) {
-            log.debug("Error when closing runtime", e);
-        }*/
-    //      context.close();
-    //   System.exit(0);
   }
 }

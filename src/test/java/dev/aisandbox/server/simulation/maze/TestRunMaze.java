@@ -63,7 +63,7 @@ public class TestRunMaze {
           mazeType.name() + "-" + mazeSize.name() + "-" + theme.name().toLowerCase());
       targetDir.mkdirs();
       OutputRenderer out = new BitmapOutputRenderer();
-        out.setSkipFrames(1000);
+      out.setSkipFrames(1000);
       out.setOutputDirectory(targetDir);
       out.setup(sim);
       // start simulation
