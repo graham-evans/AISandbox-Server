@@ -7,7 +7,7 @@
 package dev.aisandbox.server.simulation.coingame;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.engine.Agent;
+import dev.aisandbox.server.engine.MockAgent;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-public class MockPlayer implements Agent {
+public class MockPlayer extends MockAgent {
 
   @Getter
   private final String agentName;
@@ -31,22 +31,13 @@ public class MockPlayer implements Agent {
 
   @Override
   public void send(GeneratedMessage o) {
-    // ignore send messages
-  }
-
-  @Override
-  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
-    if (responseType != CoinGameAction.class) {
-      log.error("Asking for {} but I can only respond with CoinGameAction", responseType.getName());
-      return null;
-    } else {
+    if (o instanceof CoinGameState state) { // ignore all but the state object
       // decode the state
-      CoinGameState cState = (CoinGameState) state;
-      log.info("Creating random move from state {}", cState.getCoinCountList());
+      log.info("Creating random move from state {}", state.getCoinCountList());
       Map<Integer, Integer> rowMap = new HashMap<Integer, Integer>();
-      for (int row = 0; row < cState.getCoinCountCount(); row++) {
-        if (cState.getCoinCount(row) > 0) {
-          rowMap.put(row, cState.getCoinCount(row));
+      for (int row = 0; row < state.getCoinCountCount(); row++) {
+        if (state.getCoinCount(row) > 0) {
+          rowMap.put(row, state.getCoinCount(row));
         }
       }
       // pick a random row with some coins
@@ -55,14 +46,11 @@ public class MockPlayer implements Agent {
       log.info("Filtered rows with items {}", entryList);
       Collections.shuffle(entryList, rand);
       Map.Entry<Integer, Integer> rowEntry = entryList.get(0);
-      int takeCoins = Math.min(rand.nextInt(rowEntry.getValue()) + 1, cState.getMaxPick());
-      return (T) CoinGameAction.newBuilder().setSelectedRow(rowEntry.getKey())
-          .setRemoveCount(takeCoins).build();
+      int takeCoins = Math.min(rand.nextInt(rowEntry.getValue()) + 1, state.getMaxPick());
+      getOutputQueue().add(
+          CoinGameAction.newBuilder().setSelectedRow(rowEntry.getKey()).setRemoveCount(takeCoins)
+              .build());
     }
   }
 
-  @Override
-  public void close() {
-
-  }
 }

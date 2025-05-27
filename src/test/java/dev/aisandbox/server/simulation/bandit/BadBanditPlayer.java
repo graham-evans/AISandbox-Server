@@ -7,55 +7,39 @@
 package dev.aisandbox.server.simulation.bandit;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.engine.Agent;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.MockAgent;
+import dev.aisandbox.server.engine.MockAgentException;
 import dev.aisandbox.server.simulation.bandit.proto.BanditAction;
+import dev.aisandbox.server.simulation.bandit.proto.BanditResult;
 import dev.aisandbox.server.simulation.bandit.proto.BanditState;
-import java.util.Random;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * BadBandit Player - Responds with out-of-range bandits to pull.
+ */
 @Slf4j
 @RequiredArgsConstructor
-public class BadBanditPlayer implements Agent {
+public class BadBanditPlayer extends MockAgent {
 
-  private final Random random = new Random();
-
-  @Getter
-  private final String agentName;
-
+  private final String banditName;
   private final boolean high;
 
   @Override
-  public void send(GeneratedMessage o) {
-    // do nothing
-  }
-
-  @Override
-  public <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationException {
-    return null;
-  }
-
-  @Override
-  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
-    BanditState banditState = (BanditState) state;
-    if (responseType != BanditAction.class) {
-      log.error("Asking for {} but I can only respond with BanditAction", responseType.getName());
-      return null;
-    } else {
+  public void send(GeneratedMessage o) throws MockAgentException {
+    if (o instanceof BanditResult) {
+      // do nothing - we ignore the results.
+    } else if (o instanceof BanditState state) {
       if (high) {
-        return (T) BanditAction.newBuilder().setArm(Integer.MAX_VALUE).build();
+        getOutputQueue().add(BanditAction.newBuilder().setArm(Integer.MAX_VALUE).build());
       } else {
-        return (T) BanditAction.newBuilder().setArm(Integer.MIN_VALUE).build();
+        getOutputQueue().add(BanditAction.newBuilder().setArm(Integer.MIN_VALUE).build());
       }
-
+    } else {
+      log.error("Unexpected message received: " + o);
+      throw new MockAgentException("Unexpected message received: " + o);
     }
   }
 
-  @Override
-  public void close() {
-
-  }
 }
 

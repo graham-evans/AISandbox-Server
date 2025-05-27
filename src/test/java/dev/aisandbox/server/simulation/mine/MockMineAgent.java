@@ -7,7 +7,7 @@
 package dev.aisandbox.server.simulation.mine;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.engine.Agent;
+import dev.aisandbox.server.engine.MockAgent;
 import dev.aisandbox.server.simulation.mine.proto.FlagAction;
 import dev.aisandbox.server.simulation.mine.proto.MineAction;
 import dev.aisandbox.server.simulation.mine.proto.MineState;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class MockMineAgent implements Agent {
+public class MockMineAgent extends MockAgent {
 
   @Getter
   private final String agentName;
@@ -26,26 +26,11 @@ public class MockMineAgent implements Agent {
 
   @Override
   public void send(GeneratedMessage o) {
-
-  }
-
-  @Override
-  public <T extends GeneratedMessage> T sendAndReceive(GeneratedMessage state, Class<T> responseType) {
-    MineState mineState = (MineState) state;
-    if (responseType != MineAction.class) {
-      log.error("Asking for {} but I can only respond with MineAction", responseType.getName());
-      return null;
-    } else {
-      return (T) MineAction.newBuilder()
-          .setX(random.nextInt(mineState.getWidth()))
+    if (o instanceof MineState mineState) {
+      getOutputQueue().add(MineAction.newBuilder().setX(random.nextInt(mineState.getWidth()))
           .setY(random.nextInt(mineState.getHeight()))
-          .setAction(random.nextBoolean() ? FlagAction.DIG : FlagAction.PLACE_FLAG)
-          .build();
+          .setAction(random.nextBoolean() ? FlagAction.DIG : FlagAction.PLACE_FLAG).build());
     }
   }
 
-  @Override
-  public void close() {
-
-  }
 }

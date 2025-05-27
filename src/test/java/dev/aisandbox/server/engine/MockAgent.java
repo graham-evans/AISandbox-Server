@@ -4,9 +4,12 @@ import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.exception.SimulationException;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 public class MockAgent implements Agent {
 
+  @Getter(AccessLevel.PROTECTED)
   List<GeneratedMessage> outputQueue = new ArrayList<>();
 
   @Override
@@ -34,7 +37,8 @@ public class MockAgent implements Agent {
     }
     GeneratedMessage message = outputQueue.getFirst();
     if (message.getClass() != responseType) {
-      throw new SimulationException("Expected " + responseType + " but received " + message.getClass());
+      throw new SimulationException(
+          "Expected " + responseType + " but received " + message.getClass());
     } else {
       return (T) message;
     }
