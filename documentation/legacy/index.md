@@ -1,6 +1,6 @@
 # Legacy code - version 1.2.1
 
-The original version of the AI Sandbox featured a REST based protocol and a client application. The
+The original AI Sandbox featured a REST based protocol and a "client" application. The
 sandbox app called out to a REST server API (which you developed), this made it easy for developers
 who were used to server-side programming and Swagger specifications, to start their AI journey.
 
@@ -104,14 +104,16 @@ The following options are available when setting up the scenario:
 
 ### API Interface
 
-The Swagger specification for this API can be downloaded [here](https://files.aisandbox.dev/swagger/bandit.yaml).
+The Swagger specification for this API can be
+downloaded [here](https://files.aisandbox.dev/swagger/bandit.yaml).
 
 In each step the Sandbox Client will send the following to the AI server:
 
-- history – the result of the last step (except for the first step of the first round), this consists of:
-  - sessionID –  the session identifier for the previous step
-  - chosenBandit – the index of the bandit selected by the AI
-  - reward – the reward from the chosen bandit.
+- history – the result of the last step (except for the first step of the first round), this
+  consists of:
+    - sessionID – the session identifier for the previous step
+    - chosenBandit – the index of the bandit selected by the AI
+    - reward – the reward from the chosen bandit.
 - sessionID – a session identifier, this will stay constant for the entire round.
 - banditCount – the number of bandits available (numbered 0..n-1)
 - pullCount – the number of times the bandits arm can be pulled in a round
@@ -123,15 +125,15 @@ Note: If the number of pulls in a round is 100, then the pull parameter will ran
 
 ```JSON
 {
-"history": {
-"sessionID": "DEF-5435",
-"chosenBandit": 4,
-"reward": 1.42
-},
-"sessionID": "ABC-23542342",
-"banditCount": 10,
-"pullCount": 10000,
-"pull": 0
+  "history": {
+    "sessionID": "DEF-5435",
+    "chosenBandit": 4,
+    "reward": 1.42
+  },
+  "sessionID": "ABC-23542342",
+  "banditCount": 10,
+  "pullCount": 10000,
+  "pull": 0
 }
 ```
 
@@ -139,23 +141,24 @@ Note: If the number of pulls in a round is 100, then the pull parameter will ran
 
 ```json
 {
-"arm": 3
+  "arm": 3
 }
 ```
 
 ### XML Example Request
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <BanditRequest>
-	<history>
-		<sessionID>DEF-5435</sessionID>
-		<chosenBandit>4</chosenBandit>
-		<reward>1.42</reward>
-	</history>
-	<sessionID>ABC-23542342</sessionID>
-	<banditCount>10</banditCount>
-	<pullCount>10000</pullCount>
-	<pull>0</pull>
+  <history>
+    <sessionID>DEF-5435</sessionID>
+    <chosenBandit>4</chosenBandit>
+    <reward>1.42</reward>
+  </history>
+  <sessionID>ABC-23542342</sessionID>
+  <banditCount>10</banditCount>
+  <pullCount>10000</pullCount>
+  <pull>0</pull>
 </BanditRequest>
 ```
 
@@ -164,7 +167,7 @@ Note: If the number of pulls in a round is 100, then the pull parameter will ran
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <BanditResponse>
-	<arm>3</arm>
+  <arm>3</arm>
 </BanditResponse>
 ```
 
@@ -176,16 +179,187 @@ The graphical output shows three charts:
 
 Average reward – the reward from each step of the round, averaged over all rounds.
 
-Optimal action – the average percentage that the AI picks the best bandit (the bandit with the highest mean value) at each step in the round.
+Optimal action – the average percentage that the AI picks the best bandit (the bandit with the
+highest mean value) at each step in the round.
 
-The current mean (centre of each diamond) and standard deviation (top and bottom of each diamond) of each of the bandits.
+The current mean (centre of each diamond) and standard deviation (top and bottom of each diamond) of
+each of the bandits.
 
 ### Statistics Output
 
-The statistics file will show the average reward and the amount of times each step has chosen the best answer, averaged over all rounds.
+The statistics file will show the average reward and the amount of times each step has chosen the
+best answer, averaged over all rounds.
 
 | Step | Ave Reward           | % Optimal Action  |
 |------|----------------------|-------------------|
 | 0    | 0.11180486767982283  | 8.0               |
 | 1    | -0.16001485097160476 | 6.000000000000003 |
 | 2    | 0.01309801032724169  | 6.000000000000001 |
+
+## Mazes
+
+The Maze scenario places the AI agent inside a randomly generated maze. The agent can move about the
+maze, bumping into walls and exploring the paths, until it finds the finish square. Once at the
+finish square, the agent is returned to the beginning to repeat the process. The goal is to explore
+the maze and find the shortest path from start to finish. Unlike in a physical maze the start and
+finish are not always placed at the edges.
+
+Mazes can be generated in several different styles and sizes.
+
+**Binary Tree**
+
+![Binary Tree](MazeBinaryTree.png)
+
+A binary tree maze is the simplest of the mazes implemented but contains a heavy diagonal bias.
+
+**Sidewinder**
+
+![Sidewinder](MazeSidewinder.png)
+
+While still biased (the top row will always be a single run of open squares) this looks more like a
+typical maze than the Binary Tree.
+
+**Recursive Backtracker**
+
+![Recursive Backtracker](MazeRecursiveBacktracker.png)
+
+This is the maze that most people will recognise, it has many long twisting passages which makes for
+long solutions.
+
+**Braided**
+
+![Braded](MazeBraided.png)
+
+The braided maze is similar to the recursive backtracker, but with all dead-ends removed. Because of
+this the maze may feature loops and open areas. This can create challenges for some AIs as there may
+be multiple routes to the same point.
+
+### Algorithms and Hints
+
+- This scenario is designed to be used as an introduction into Q-Learning, and the small mazes can
+  be solved and optimised very quickly.
+- Because the maze is discrete and unchanging you could also use a search algorithm (such as depth
+  first) to explore and find the quickest route.
+
+### Further Challenges
+
+- Two of the algorithms create biased mazes (Binary Tree and Sidewinder) can you use knowledge of
+  this bias to speed your solver up?
+- On mazes generated by the sidewinder algorithm, the start position is usually on the bottom row
+  and the AI can easily navigate to the top row. This effectively bisects the maze, given that the
+  finish position is placed as far as possible from the start, can you use this information to
+  prioritise the search?
+- Can you navigate the maze without memorising where you have been?
+
+### API Interface
+
+The Swagger specification for this API can be downloaded (
+here)[https://files.aisandbox.dev/swagger/maze.yaml].
+
+The API is implemented as a single POST action which contains:
+
+- The configuration of the board, consisting of:
+    - Board ID – this is unique to the maze that is being played.
+    - Valid Moves – the possible directions to move in, normally “North”, “South”, ”East” and
+      “West”.
+    - Width – the width of the board
+    - Height – the height of the board
+- (Optional) The result of the last move
+    - The previous position
+    - The action that was taken
+    - A numerical reward (hitting a wall=-1000, taking a step=-1, finding the exit=+1000) for the
+      last action.
+    - The resulting position.
+- The current position
+
+The result is always a move command followed by one of the valid directions.
+
+Notes:
+
+1. Positions are represented in X, Y coordinates with (0,0) at the top left.
+2. Agents are automatically reset to the start position after finding the exit. Because of this the
+
+### JSON Example Request
+
+```json
+{
+  "config": {
+    "boardID": "2e2e83e5-9ca4-48f3-a6b4-ba1e0061fdfa",
+    "validMoves": [
+      [
+        "North",
+        "South",
+        "East",
+        "West"
+      ]
+    ],
+    "width": 10,
+    "height": 20
+  },
+  "history": {
+    "lastPosition": {
+      "x": 3,
+      "y": 4
+    },
+    "action": "East",
+    "reward": -10.5,
+    "newPosition": {
+      "x": 3,
+      "y": 4
+    }
+  },
+  "currentPosition": {
+    "x": 3,
+    "y": 4
+  }
+}
+```
+
+### JSON Example Response
+
+```json
+{
+  "move": "North"
+}
+```
+
+### XML Example Request
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<MazeRequest>
+    <config>
+        <boardID>2e2e83e5-9ca4-48f3-a6b4-ba1e0061fdfa</boardID>
+        <validMoves>
+            <0>North</0>
+        </validMoves>
+        <width>10</width>
+        <height>20</height>
+    </config>
+    <history>
+        <lastPosition>
+            <x>3</x>
+            <y>4</y>
+        </lastPosition>
+        <action>East</action>
+        <reward>-10.5</reward>
+        <newPosition>
+            <x>3</x>
+            <y>4</y>
+        </newPosition>
+    </history>
+    <currentPosition>
+        <x>3</x>
+        <y>4</y>
+    </currentPosition>
+</MazeRequest>
+```
+
+### XML Example Response
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<MazeResponse>
+    <move>North</move>
+</MazeResponse>
+```
