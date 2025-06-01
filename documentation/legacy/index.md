@@ -328,31 +328,32 @@ Notes:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <MazeRequest>
-    <config>
-        <boardID>2e2e83e5-9ca4-48f3-a6b4-ba1e0061fdfa</boardID>
-        <validMoves>
-            <0>North</0>
-        </validMoves>
-        <width>10</width>
-        <height>20</height>
-    </config>
-    <history>
-        <lastPosition>
-            <x>3</x>
-            <y>4</y>
-        </lastPosition>
-        <action>East</action>
-        <reward>-10.5</reward>
-        <newPosition>
-            <x>3</x>
-            <y>4</y>
-        </newPosition>
-    </history>
-    <currentPosition>
-        <x>3</x>
-        <y>4</y>
-    </currentPosition>
-</MazeRequest>
+  <config>
+    <boardID>2e2e83e5-9ca4-48f3-a6b4-ba1e0061fdfa</boardID>
+    <validMoves>
+      <0>North
+    </0>
+  </validMoves>
+  <width>10</width>
+  <height>20</height>
+</config>
+<history>
+<lastPosition>
+  <x>3</x>
+  <y>4</y>
+</lastPosition>
+<action>East</action>
+<reward>-10.5</reward>
+<newPosition>
+  <x>3</x>
+  <y>4</y>
+</newPosition>
+</history>
+<currentPosition>
+<x>3</x>
+<y>4</y>
+</currentPosition>
+  </MazeRequest>
 ```
 
 ### XML Example Response
@@ -360,6 +361,161 @@ Notes:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <MazeResponse>
-    <move>North</move>
+  <move>North</move>
 </MazeResponse>
+```
+
+## Mine Hunter
+
+Mine Hunter pits the AI against a minefield! A known quantity of mines has been distributed across a
+grid of squares and the AI agent must work out where they are. To help, each uncovered square will
+show how many mines are in the surrounding squares.
+
+The grid is represented as an array of characters:
+
+| Character | Description                                    |
+|-----------|------------------------------------------------|
+| F         | A flagged mine                                 |
+| f         | An incorrectly flagged empty space (game over) |
+| #         | A covered square                               |
+| X         | An exploded mine (game over)                   |
+| .         | An uncovered square with no neighbouring mines |
+| 1-8       | An uncovered square with n neighbouring mines  |
+
+and organised in a two-dimensional array (with 0,0 at the top left).
+
+### Example Board
+
+![Sample Board](MineHunter-Small.png)
+
+JSON Representation
+
+```json
+"board": [
+"#1",
+"#1",
+"11"
+]
+```
+
+XML Representation
+
+```xml
+
+<board>#1</board>
+<board>#1</board>
+<board>11</board>
+```
+
+Note: in this example the correct response would be to place a flag at 0,1.
+
+### Goal
+
+Write an AI agent that can solve as many boards as possible, this can be measured by a moving
+average which is shown on the output.
+
+### Algorithms and Hints
+
+There are quite a few algorithms that can be used to solve this scenario:
+
+- Rules based solutions – These rely on recognising predefined (hand coded) patterns that occur in
+  most games examples of these can be found on
+  the [minesweeper wiki](http://www.minesweeper.info/wiki/Strategy).
+- Constraints based solutions – A board can be considered as a series of constraint based problems,
+  with each square being a mine (value 1) or not (value 0). Each numbered square is a constraint
+  which needs to be met for a solution to be valid.
+- Monti Carlo simulations – Rather than trying to deduce where the mines are, you may like to try to
+  generate lots of random boards based on the number of remaining undiscovered mines. Filtering
+  these solutions if they don’t match the available knowledge. Then estimating the probability of
+  each
+  uncovered square being a mine.
+- Guessing – If all else fails, don’t be afraid to just guess!
+
+### API Interface
+
+The Swagger specification for this API can be
+downloaded [here](https://files.aisandbox.dev/swagger/mine.yaml).
+
+In each step, the Sandbox Client will send the following information to the AI server:
+
+- (Optional) the result of the last step, this consists of:
+    - The boardID (unique identifyer) of the board being played.
+    - The result at the end of the last move, either “PLAYING”, “WON”, “LOST”. If the result is
+      PLAYING that means the previous moves were successful, but there are still uncovered or
+      unflaged squares remaining. The new board will be a continuation of the last game. If the
+      result is “WON” or “LOST” then a new board will have been generated.
+- The boardID of the current board.
+- The board represented as a series of character strings (see example above).
+- The number of flags still to be placed.
+
+The AI agent should respond with one or more moves, each move consists of:
+
+- The location (x,y) of the move, with (0,0) being the top left square.
+- Should this move place a flag (flag=true) or uncover a square (flag=false).
+
+Note: there is no limit to the number of moves that can be included in each response. However, if a
+move results in the game ending, subsequent guesses will be ignored rather than carried over to the
+next game.
+
+### JSON Example Request
+```json
+{
+"lastMove": {
+"boardID": "1233-5678-90abc-2435",
+"result": "LOST"
+},
+"boardID": "1234-1234-1234-1234",
+"board": [
+"##1..",
+"##1..",
+"221..",
+"#1..."
+],
+"flagsRemaining": 3
+}
+```
+
+### JSON Example Response
+
+```json
+{
+"moves": [
+{
+"x": 1,
+"y": 1,
+"flag": true
+}
+]
+}
+```
+
+### XML Example Request
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<MineRequest>
+   <lastMove>
+      <boardID>1233-5678-90abc</boardID>
+      <result>LOST</result>
+   </lastMove>
+   <boardID>1234-1234-1234-1234</boardID>
+   <board>##1..</board>
+   <board>##1..</board>
+   <board>221..</board>
+   <board>#1...</board>
+   <flagsRemaining>3</flagsRemaining>
+</MineRequest>
+```
+
+### XML Example Response
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<MineResponse>
+    <moves>
+        <x>1</x>
+        <y>1</y>
+        <flag>true</flag>
+    </moves>
+</MineResponse>
 ```
