@@ -50,7 +50,7 @@ public class TwistyPuzzle {
    * The width of the puzzle rendering area in pixels. Set to maintain a 4:3 aspect ratio with the
    * height.
    */
-  public static final int WIDTH = HEIGHT * 4 / 3;// 800
+  public static final int WIDTH = HEIGHT * 4 / 3; // 800
 
   /**
    * Maps color characters to their corresponding AWT Color objects. Generated from the ColourEnum

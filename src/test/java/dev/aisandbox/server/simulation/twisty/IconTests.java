@@ -45,7 +45,7 @@ public class IconTests {
       cursor += Move.MOVE_ICON_WIDTH;
       cursor++;
     }
-    ImageIO.write(image, "png", new File(outputDirectory,ptype.name().toLowerCase() + ".png"));
+    ImageIO.write(image, "png", new File(outputDirectory, ptype.name().toLowerCase() + ".png"));
   }
 
 }
