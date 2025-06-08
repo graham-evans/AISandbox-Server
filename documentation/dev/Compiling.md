@@ -38,5 +38,6 @@ where the following platforms are recognised:
 - win
 - linux
 - linux-aarch64
+- mac
 - osx
 - osx-aarch64
