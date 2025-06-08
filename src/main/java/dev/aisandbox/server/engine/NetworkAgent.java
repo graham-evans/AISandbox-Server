@@ -34,7 +34,7 @@ public class NetworkAgent implements Agent {
     GeneratedMessage message = agentThread.receiveMessage();
     T response;
     try {
-      response = (T) message;
+      response = responseType.cast(message);
     } catch (ClassCastException e) {
       throw new SimulationException("received message is not of type " + responseType, e);
     }
