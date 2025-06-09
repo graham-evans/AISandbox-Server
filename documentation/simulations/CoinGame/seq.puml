@@ -1,0 +1,16 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+participant "Client 1" as c1
+participant "AI Sandbox" as server
+participant "Client 2" as c2
+
+c1 <- server : Simulation State
+c1 -> server : Action
+
+server -> c2 : Simulation State
+c2 -> server : Action
+
+server -> c1 : Result
+
+@enduml
