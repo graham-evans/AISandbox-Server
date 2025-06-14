@@ -23,6 +23,8 @@ import dev.aisandbox.server.engine.exception.SimulationException;
  */
 public class InvalidCoinAction extends SimulationException {
 
+  private static final long serialVersionUID = -7413257692226972217L;
+
   public InvalidCoinAction(String message) {
     super(message);
   }
