@@ -1,16 +1,25 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-participant "Client 1" as c1
+participant "Current Agent" as c1
 participant "AI Sandbox" as server
-participant "Client 2" as c2
+participant "Other Agent" as c2
 
 c1 <- server : Simulation State
 c1 -> server : Action
 
-server -> c2 : Simulation State
-c2 -> server : Action
+alt first move?
+  server ->x c2 : Result
+  note right: no result notification after first move
+else episode ending move?
+    server -> c1 : Result
+    server -> c2 : Result
+else normal move
+    server -> c2 : Result
+end
 
-server -> c1 : Result
+
+
+
 
 @enduml
