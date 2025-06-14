@@ -28,8 +28,9 @@ import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
+import dev.aisandbox.server.simulation.coingame.proto.CoinGameResult;
+import dev.aisandbox.server.simulation.coingame.proto.CoinGameSignal;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
-import dev.aisandbox.server.simulation.coingame.proto.Signal;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -50,29 +51,30 @@ public final class CoinGame implements Simulation {
   private static final int BAIZE_HEIGHT =
       HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING; // 1173
   private static final int BAIZE_WIDTH = BAIZE_HEIGHT * 4 / 3; // 880
-
   private static final int LOG_WIDTH =
       HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - BAIZE_WIDTH - WIDGET_SPACING;
   private static final int LOG_HEIGHT = (BAIZE_HEIGHT - WIDGET_SPACING) / 2;
-
   private final int COIN_ROW_INDENT;
   private final int COIN_COLUMN_INDENT =
       (BAIZE_HEIGHT - CoinIcons.COINS_HEIGHT - CoinIcons.ROW_HEIGHT) / 2;
-
-  private final List<Agent> agents;
-  private final CoinScenario scenario;
+  // UI elements
   private final Theme theme;
   private final TitleWidget titleWidget;
   private final TextWidget logWidget;
   private final RollingPieChartWidget pieChartWidget;
-  private final String session = UUID.randomUUID().toString();
-  private final int maxPic = 2;
+  // Agent & Game elements
+  private final String sessionId = UUID.randomUUID().toString();
   private final List<Double> agentScores = new ArrayList<>();
-  private int[] coins;
-  private int currentPlayer = 0;
+  private final List<Agent> agents;
+  private final CoinScenario scenario;
+  // UI Images
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;
-  private String episode;
+  private String episodeId;
+  private int[] coins;
+  private int firstPlayer = 0;
+  private int currentPlayer = 0;
+  private boolean firstMove = true;
 
   /**
    * Simulation constructor.
@@ -112,7 +114,9 @@ public final class CoinGame implements Simulation {
     // reset the number of coins in each pile
     System.arraycopy(scenario.getRows(), 0, coins, 0, scenario.getRows().length);
     // change the episode ID
-    episode = UUID.randomUUID().toString();
+    episodeId = UUID.randomUUID().toString();
+    // mark first move
+    firstMove = true;
   }
 
   @Override
@@ -120,7 +124,7 @@ public final class CoinGame implements Simulation {
     // draw the current state
     output.display();
     log.debug("ask client {} to move", currentPlayer);
-    agents.get(currentPlayer).send(generateCurrentState(Signal.PLAY));
+    agents.get(currentPlayer).send(generateCurrentState());
     CoinGameAction action = agents.get(currentPlayer).receive(CoinGameAction.class);
     // try and make the move
     try {
@@ -132,34 +136,38 @@ public final class CoinGame implements Simulation {
       if (isGameFinished()) {
         // current player lost
         logWidget.addText(agents.get(currentPlayer).getAgentName() + " lost");
-        informResult((currentPlayer + 1) % 2);
+        informResult((currentPlayer + 1) % 2, firstMove);
         output.display();
         reset();
+      } else {
+        // play continues
+        if (!firstMove) {
+          // send continue to the other player
+          agents.get((currentPlayer + 1) % 2)
+              .send(CoinGameResult.newBuilder().setStatus(CoinGameSignal.PLAY).build());
+        }
       }
-    } catch (IllegalCoinAction e) {
+    } catch (InvalidCoinAction e) {
       log.error(e.getMessage());
-      logWidget.addText(agents.get(currentPlayer).getAgentName() + " makes an illegal move.");
+      logWidget.addText(agents.get(currentPlayer).getAgentName() + " makes an invalid move.");
       // player has tried an illegal move - end the game
-      informResult((currentPlayer + 1) % 2);
+      informResult((currentPlayer + 1) % 2, firstMove);
       output.display();
       reset();
     }
-    currentPlayer++;
-    if (currentPlayer >= agents.size()) {
-      currentPlayer = 0;
-    }
+    currentPlayer = (currentPlayer + 1) % 2;
+    firstMove = false;
   }
 
   /**
    * Creates a protocol buffer message representing the current state of the game.
    * <p>
    * This state contains all information needed by an agent to make a decision, including the
-   * current coin counts, maximum allowed move, and game signals.
+   * current coin counts, maximum allowed move, and game ID's.
    *
-   * @param signal The game signal to send (PLAY, WIN, LOSE)
    * @return A new CoinGameState protobuf message
    */
-  private CoinGameState generateCurrentState(Signal signal) {
+  private CoinGameState generateCurrentState() {
     // Create and return a protocol buffer message containing the game state
     return CoinGameState.newBuilder()
         // Convert int array of coin counts to a List<Integer>
@@ -167,13 +175,11 @@ public final class CoinGame implements Simulation {
         // Set the number of rows
         .setRowCount(coins.length)
         // Set the maximum number of coins a player can remove in one turn
-        .setMaxPick(maxPic)
-        // Set the signal type (PLAY, WIN, LOSE)
-        .setSignal(signal)
+        .setMaxPick(scenario.getMaximumTake())
         // Include session ID for tracking the entire simulation
-        .setSessionID(session)
-        // Include episode ID for tracking the current game
-        .setEpisodeID(episode).build();
+        .setSessionID(sessionId)
+        // Include episode ID for tracking the current episode
+        .setEpisodeID(episodeId).build();
   }
 
   /**
@@ -187,24 +193,22 @@ public final class CoinGame implements Simulation {
    * @param row    The row from which coins will be removed
    * @param amount The number of coins to remove
    * @return The updated coin distribution after the move
-   * @throws IllegalCoinAction if the move is illegal
+   * @throws IllegalCoinAction if the move is illegal (always wrong)
+   * @throws InvalidCoinAction if the move is invalid (wrong for this state)
    */
-  private int[] makeMove(int row, int amount) throws IllegalCoinAction {
+  private int[] makeMove(int row, int amount) throws SimulationException {
     // is the amount out of the allowed range
-    if (amount < 1 || amount > scenario.getMax()) {
-      throw new IllegalCoinAction("Must remove between 1 and " + scenario.getMax() + " coins.");
+    if (amount < 1 || amount > scenario.getMaximumTake()) {
+      throw new IllegalCoinAction(
+          "Must remove between 1 and " + scenario.getMaximumTake() + " coins.");
     }
     // is the row out of the allowed indexing range
     if (row < 0 || row >= coins.length) {
       throw new IllegalCoinAction("Must select row from 0 to " + (coins.length - 1) + ".");
     }
-    // does the selected row have enough coins
+    // does the selected row have enough coins (this can be caught and turned into a loss)
     if (coins[row] < amount) {
-      throw new IllegalCoinAction("Not enough coins in the selected row.");
-    }
-    // is the agent taking too many coins
-    if (amount > maxPic) {
-      throw new IllegalCoinAction("Taking more than the maximum amount of coins.");
+      throw new InvalidCoinAction("Not enough coins in the selected row.");
     }
     // make the move
     int[] newCoins = Arrays.copyOf(coins, coins.length);
@@ -213,7 +217,7 @@ public final class CoinGame implements Simulation {
   }
 
   /**
-   * Checks if the game has reached a terminal state.
+   * Checks if the game has reached a terminal state, throwing an exception if this is the case
    * <p>
    * The game is finished when all rows have zero coins left. According to the rules, the player who
    * takes the last coin loses.
@@ -232,12 +236,24 @@ public final class CoinGame implements Simulation {
     return true;
   }
 
-  private void informResult(int winner) throws SimulationException {
+  /**
+   * Inform both players that the episode has finished.
+   *
+   * @param winner
+   * @throws SimulationException
+   */
+  private void informResult(int winner, boolean firstMove) throws SimulationException {
     Agent winAgent = agents.get(winner);
     Agent loseAgent = agents.get((winner + 1) % 2);
-    winAgent.send(generateCurrentState(Signal.WIN));
-    loseAgent.send(generateCurrentState(Signal.LOSE));
-    logWidget.addText(agents.get(winner).getAgentName() + " wins");
+    // special case - if this is the first move then only tell the first player
+    if (firstMove) {
+      agents.get(firstPlayer).send(CoinGameResult.newBuilder()
+          .setStatus(firstPlayer == winner ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());
+    } else {
+      winAgent.send(CoinGameResult.newBuilder().setStatus(CoinGameSignal.WIN).build());
+      loseAgent.send(CoinGameResult.newBuilder().setStatus(CoinGameSignal.LOSE).build());
+    }
+    logWidget.addText(winAgent.getAgentName() + " wins");
     agentScores.set(winner, agentScores.get(winner) + 1);
     pieChartWidget.addValue(agents.get(winner).getAgentName(), theme.getAgentMain(winner));
   }
