@@ -21,3 +21,10 @@ The full source code, which you can examine and compile yourself.
 
 See the [compiling](../dev/Compiling.md) for instructions on how to build and launch the application.
 
+# Legacy Versions
+
+The first version of the Sandbox relied on a REST based interface (documented [here](../legacy/index.md)) although depreciated, you can still download binaries.
+
+- [AISandbox_windows-x64_1_2_1.exe](https://files.aisandbox.dev/AISandbox_windows-x64_1_2_1.exe) Windows executable installer (includes JDK)
+- [AISandbox_unix_1_2_1.sh](https://files.aisandbox.dev/AISandbox_unix_1_2_1.sh) - Linux executable installer (includes JDK)
+- [AISandbox-Client-1.2.1.jar](https://files.aisandbox.dev/AISandbox-Client-1.2.1.jar) - Cross platform java package (requires JDK)
