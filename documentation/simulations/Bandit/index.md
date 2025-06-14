@@ -31,7 +31,7 @@ The following options are available when setting up the scenario:
 
 # Protocol
 
-The protocol is detailed in [Bandit.proto](../../../src/main/proto/Bandit.proto). And follows a standard State -> Action -> Reward pattern.
+The protocol is detailed in [Bandit.proto](https://github.com/graham-evans/AISandbox-Server/blob/main/src/main/proto/Bandit.proto). And follows a standard State -> Action -> Reward pattern.
 
 ![sequence](seq.png)
 
