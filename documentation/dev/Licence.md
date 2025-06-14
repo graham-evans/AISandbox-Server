@@ -20,12 +20,10 @@ But if you do, we’d love to hear about it.
 
 It simply wouldn't be possible to maintain the application code without the work of other teams who licence their work and make it possible for others to build upon it. AISandbox server relies on, includes and links to, the following works.
 
-| Work                                         | Licence                | Original Source                        |
-|----------------------------------------------|------------------------|----------------------------------------|
-| Protocol Buffers (Protobuf)                  | BSD                    | https://protobuf.dev/                  |
-| Apache Commons (CLI, Statistics, Math, Lang) | Apache version 2.0     | https://commons.apache.org/            |
-| Lombok *                                     | MIT Licence            | https://projectlombok.org/             |
-| JUnit *                                      | Eclipse Public License | https://junit.org/                     |
-| Gradle *                                     | Apache version 2.0     | https://gradle.org/                    |
-
-Note: * These libraries are used to compile the application but are not included in any compiled artifacts.
+| Work                                         | Licence                | Original Source             |
+|----------------------------------------------|------------------------|-----------------------------|
+| Protocol Buffers (Protobuf)                  | BSD                    | https://protobuf.dev/       |
+| Apache Commons (CLI, Statistics, Math, Lang) | Apache version 2.0     | https://commons.apache.org/ |
+| Lombok                                       | MIT Licence            | https://projectlombok.org/  |
+| JUnit                                        | Eclipse Public License | https://junit.org/          |
+| Gradle                                       | Apache version 2.0     | https://gradle.org/         |
