@@ -50,25 +50,25 @@ And follows a standard State -> Action -> Reward pattern.
 
 ## Bandit State
 
-| Component   | Data Type                                                        | Description                                                             |
-|-------------|------------------------------------------------------------------|-------------------------------------------------------------------------|
-| sessionID   | string                                                           | Unique identifier for this simulation run                               |
-| episodeID   | string                                                           | Unique identifier for the current episode                               |
-| banditCount | int32                                                            | Number of bandit arms (choices) available to the agent (numbered 0…n-1) |
-| pullCount   | int32                                                            | Total number of arm pulls allowed in this episode                       |
-| pull        | int32Current pull number (1-based index of the current decision) |
+| Component   | Data Type | Description                                                             |
+|-------------|-----------|-------------------------------------------------------------------------|
+| sessionID   | string    | Unique identifier for this simulation run                               |
+| episodeID   | string    | Unique identifier for the current episode                               |
+| banditCount | int32     | Number of bandit arms (choices) available to the agent (numbered 0…n-1) |
+| pullCount   | int32     | Total number of arm pulls allowed in this episode                       |
+| pull        | int32     | Current pull number (1-based index of the current decision)             |
 
 ## Bandit Action
 
 | Component | Data Type | Description                             |
-|-----------|-----------|-----------------------------------------|
-| arm       | intr32    | The selected arm number (0-based index) |
+|-----------|----------|-----------------------------------------|
+| arm       | int32    | The selected arm number (0-based index) |
 
 ## Bandit Result
 
 | Component | Data Type | Description                                                                       |
 |-----------|-----------|-----------------------------------------------------------------------------------|
-| arm       | intr32    | The selected arm number (0-based index)                                           |
+| arm       | int32    | The selected arm number (0-based index)                                           |
 | score     | double    | The reward value received from pulling this arm                                   |
 | signal    | Signal    | Indication of whether to continue the episode or reset.<br/>[ CONTINUE \| RESET ] |
 
