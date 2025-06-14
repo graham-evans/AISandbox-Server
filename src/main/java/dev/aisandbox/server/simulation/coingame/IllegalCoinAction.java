@@ -10,15 +10,13 @@ import dev.aisandbox.server.engine.exception.SimulationException;
 import java.io.Serial;
 
 /**
- * Exception thrown when an invalid or illegal action is attempted in the coin game.
+ * Exception thrown when an illegal action is attempted in the coin game.
  * <p>
- * This exception extends SimulationException and is thrown when a player attempts an action that
- * violates the rules of the coin game, such as:
+ * These actions are always illegal, regardless of the state of the game and will result in the
+ * simulation being stopped. Such as:
  * <ul>
- *   <li>Taking a coin from an empty pile</li>
- *   <li>Attempting to take an invalid number of coins</li>
- *   <li>Making a move out of turn</li>
- *   <li>Any other action that breaks the established game rules</li>
+ *   <li>Attempting to take a negative, zero, or more than <i>MAX</i> number of coins.</li>
+ *   <li>Trying to take coins from a pile that doesn't exist.</li>
  * </ul>
  * </p>
  */
