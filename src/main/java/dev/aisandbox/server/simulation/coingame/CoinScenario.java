@@ -23,5 +23,5 @@ public enum CoinScenario {
   @Getter
   private final int[] rows;
   @Getter
-  private final int max;
+  private final int maximumTake;
 }
