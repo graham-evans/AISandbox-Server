@@ -68,7 +68,7 @@ And follows a standard State -> Action -> Reward pattern.
 
 | Component | Data Type | Description                                                                       |
 |-----------|-----------|-----------------------------------------------------------------------------------|
-| arm       | int32    | The selected arm number (0-based index)                                           |
+| arm       | int32     | The selected arm number (0-based index)                                           |
 | score     | double    | The reward value received from pulling this arm                                   |
 | signal    | Signal    | Indication of whether to continue the episode or reset.<br/>[ CONTINUE \| RESET ] |
 
