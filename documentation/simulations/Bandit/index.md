@@ -46,7 +46,7 @@ The protocol is detailed
 in [Bandit.proto](https://github.com/graham-evans/AISandbox-Server/blob/main/src/main/proto/Bandit.proto).
 And follows a standard State -> Action -> Reward pattern.
 
-![sequence](seq.png)
+![Sequence diagram of Bandit protocol](seq.png)
 
 ## Bandit State
 
