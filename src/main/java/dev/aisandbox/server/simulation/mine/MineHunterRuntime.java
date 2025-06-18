@@ -32,9 +32,9 @@ import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.mine.proto.FlagAction;
-import dev.aisandbox.server.simulation.mine.proto.MazeSignal;
 import dev.aisandbox.server.simulation.mine.proto.MineAction;
 import dev.aisandbox.server.simulation.mine.proto.MineResult;
+import dev.aisandbox.server.simulation.mine.proto.MineSignal;
 import dev.aisandbox.server.simulation.mine.proto.MineState;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -241,9 +241,9 @@ public final class MineHunterRuntime implements Simulation {
 
     // Set appropriate signal based on game state
     rBuilder.setSignal(switch (board.getState()) {
-      case GameState.LOST -> MazeSignal.LOSE;
-      case GameState.WON -> MazeSignal.WIN;
-      default -> MazeSignal.CONTINUE;
+      case GameState.LOST -> MineSignal.LOSE;
+      case GameState.WON -> MineSignal.WIN;
+      default -> MineSignal.CONTINUE;
     });
     agent.send(rBuilder.build());
 

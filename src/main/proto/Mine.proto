@@ -41,7 +41,7 @@ message MineResult {
   int32 x = 1;           // The x-coordinate of the cell where the action was taken
   int32 y = 2;           // The y-coordinate of the cell where the action was taken
   FlagAction action = 3; // The action that was performed
-  MazeSignal signal = 4; // The game state after the action (continue, win, or lose)
+  MineSignal signal = 4; // The game state after the action (continue, win, or lose)
 }
 
 /**
@@ -57,7 +57,7 @@ enum FlagAction {
  * MazeSignal enum indicates the game state after an action.
  * This controls whether the game continues or ends.
  */
-enum MazeSignal {
+enum MineSignal {
   CONTINUE = 0; // The game continues, player should make another move
   WIN = 1;      // The player has won the game by correctly identifying all mines
   LOSE = 2;     // The player has lost by digging at a location containing a mine
