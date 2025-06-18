@@ -25,7 +25,7 @@ public enum MineSize {
    * Small board configuration: 9x9 grid with 10 mines. This is suitable for beginners or quick
    * games.
    */
-  SMALL("Small (8x6 10 Mines)", 9, 9, 10),
+  SMALL("Small (9x9 10 Mines)", 9, 9, 10),
 
   /**
    * Medium board configuration: 16x16 grid with 40 mines. This is the standard difficulty level for
