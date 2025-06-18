@@ -5,17 +5,17 @@ participant "Current Agent" as c1
 participant "AI Sandbox" as server
 participant "Other Agent" as c2
 
-c1 <- server : Simulation State
-c1 -> server : Action
+c1 <- server : Coin Game State
+c1 -> server : Coin Game Action
 
 alt first move?
-  server ->x c2 : Result
+  server ->x c2 : Coin Game Result
   note right: no result notification after first move
 else episode ending move?
-    server -> c1 : Result
-    server -> c2 : Result
+    server -> c1 : Coin Game Result
+    server -> c2 : Coin Game Result
 else normal move
-    server -> c2 : Result
+    server -> c2 : Coin Game Result
 end
 
 
