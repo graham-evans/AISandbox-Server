@@ -40,3 +40,28 @@ The protocol is defined
 in [CoinGame.proto](https://github.com/graham-evans/AISandbox-Server/blob/main/src/main/proto/CoinGame.proto);
 while it follows the standard State -> Action -> Reward pattern, the reward is dependent not only on
 the agents move, but also the result of the other agents move.
+
+![Sequence Diagram of Coin Game protocol](seq.png)
+
+## CoinGameState
+
+| Component | Data Type      | Description                                                               |
+|-----------|----------------|---------------------------------------------------------------------------|
+| sessionID | string         | Unique identifier for this simulation run                                 |
+| episodeID | string         | Unique identifier for the current episode                                 |
+| rowCount  | int32          | The number of rows on the game board                                      |
+| coinCount | repeated int32 | The number of coins in each row (array length equals rowCount)            |
+| maxPick   | int32          | The maximum number of coins that can be taken from a row in a single turn |
+
+## CoinGameAction
+
+| Component   | Data Type | Description                                                             |
+|-------------|-----------|-------------------------------------------------------------------------|
+| selectedRow | int32     | The row from which to remove coins (0-based index)                      |
+| removeCount | int32     | The number of coins to remove from the selected row (must be ≤ maxPick) |
+
+## CoinGameResult
+
+| Component | Data Type      | Description                                                                |                                                                
+|-----------|----------------|----------------------------------------------------------------------------|
+| status    | CoinGameSignal | Continue the game or register a win or loss.<br/>\[ WIN \| PLAY \| LOSE \] |
