@@ -22,10 +22,16 @@ Choose weather the next card will be 'Higher' or 'Lower' than the last.
 
 Explore a maze to find the exit then exploit the biases in the generator.
 
+[![Maze](Maze/thumb.png)](Maze/index.md)
+
 ## [Mine Hunter](Mine/index.md)
 
 Use logic to defuse a minefield.
 
+[![Mine Hunter](Mine/thumb.png)](Mine/index.md)
+
 ## [Twisty Puzzles](Twisty/index.md)
 
 Traditional logic puzzles of various sizes.
+
+[![Twisty Puzzles](Twisty/thumb.png)](Twisty/index.md)
