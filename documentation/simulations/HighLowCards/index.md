@@ -8,19 +8,19 @@ all cards are guessed.
 Note: If the next card is the same rank as the previous one, the result will always be a loss.
 Because of this and agent will never be able to sustain a 100% success rate (over many episodes).
 
-## Goal
+# Goal
 
 Write an AI that successfully predicts whether the next card from the deck will be higher or lower
 than the current visible card.
 
-## Algorithms and Hints
+# Algorithms and Hints
 
 A simple strategy is to predict "higher" when the current card is in the lower half of the deck's
 range, and predict "lower" when the current card is in the upper half. However, more sophisticated
 approaches that track the cards already seen can increase prediction accuracy as the game
 progresses.
 
-## Setup
+# Setup
 
 Each round begins with a shuffled standard deck of 52 playing cards. Cards are ranked from lowest to
 highest as follows: 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A. Suits are ignored for comparison
@@ -28,7 +28,7 @@ purposes.
 
 There are no configurable parameters for this simulation.
 
-## Protocol
+# Protocol
 
 The protocol is defined
 in [HighLowCards.proto](https://github.com/graham-evans/AISandbox-Server/blob/main/src/main/proto/HighLowCards.proto),
