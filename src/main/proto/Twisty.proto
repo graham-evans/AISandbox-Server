@@ -19,7 +19,7 @@ message TwistyState {
   string episodeID = 2; // Unique identifier for this episode
   string state = 3;     // String representation of the current puzzle state
   int32 steps = 4;      // Number of moves made so far in this episode
-  int32 obtmMoves = 5;  // Number of OBTM moves so far in thie episode
+  int32 obtmMoves = 5;  // Number of OBTM moves so far in this episode
   repeated string validMoves = 6; // List of valid moves that can be made from the current state
 }
 
