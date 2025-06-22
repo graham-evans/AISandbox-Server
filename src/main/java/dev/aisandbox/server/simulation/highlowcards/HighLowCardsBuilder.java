@@ -81,11 +81,11 @@ public final class HighLowCardsBuilder implements SimulationBuilder {
    * Provides the names for agents participating in the simulation.
    *
    * @param agentCount the number of agents in the simulation (always 1 for this game)
-   * @return an array of agent names, with a single entry "Player 1"
+   * @return an array of agent names, with a single entry "Agent 1"
    */
   @Override
   public String[] getAgentNames(int agentCount) {
-    return new String[]{"Player 1"};
+    return new String[]{"Agent 1"};
   }
 
   /**
