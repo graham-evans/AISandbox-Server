@@ -12,10 +12,8 @@ import java.util.Random;
 /**
  * Builder class for setting up simulations.
  * <p>
- * Implementations should also use @Component so that Spring picks them up at runtime. It's assumed
- * that any implementation will also expose POJO getters and setters for other parameters (specific
- * to the simulation) that need adjusting before the simulation can be created.
- */
+ * Any parameters that need to be configured fot the simulation should be exposed as POJO getters and setters. In addition, the getParameters method should return their details so they can be exposed via the UI and CLI.
+  */
 public interface SimulationBuilder {
 
   /**
