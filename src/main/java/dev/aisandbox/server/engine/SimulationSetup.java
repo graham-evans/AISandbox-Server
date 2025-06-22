@@ -6,8 +6,10 @@
 
 package dev.aisandbox.server.engine;
 
+import dev.aisandbox.server.engine.exception.SimulationSetupException;
+import dev.aisandbox.server.engine.network.NetworkAgent;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,10 +19,13 @@ import lombok.experimental.UtilityClass;
 public class SimulationSetup {
 
   public static SimulationRunner setupSimulation(SimulationBuilder builder, int agentCount,
-      int defaultPort, OutputRenderer renderer) {
+      int defaultPort, OutputRenderer renderer) throws SimulationSetupException {
     AtomicInteger port = new AtomicInteger(defaultPort);
-    List<Agent> agents = Arrays.stream(builder.getAgentNames(agentCount))
-        .map(s -> (Agent) new NetworkAgent(s, port.getAndIncrement())).toList();
+    String[] agentNames = builder.getAgentNames(agentCount);
+    List<Agent> agents = new ArrayList<>();
+    for (String agentName : agentNames) {
+      agents.add(new NetworkAgent(agentName, port.getAndIncrement()));
+    }
     return setupSimulation(builder, agents, renderer);
   }
 
