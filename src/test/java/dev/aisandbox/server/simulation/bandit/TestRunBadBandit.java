@@ -30,7 +30,8 @@ public class TestRunBadBandit {
    */
   @Test
   public void testRunBadHighBanditGame() {
-    // Verify that attempting to run the simulation with a bad player implementation raises an IllegalActionException.
+    // Verify that attempting to run the simulation with a bad player implementation raises an
+    // IllegalActionException.
     assertThrows(IllegalActionException.class, () -> {
       // Create a new Bandit scenario builder.
       BanditScenario banditBuilder = new BanditScenario();
@@ -67,7 +68,8 @@ public class TestRunBadBandit {
    */
   @Test
   public void testRunBadLowBanditGame() {
-    // Verify that attempting to run the simulation with a bad player implementation raises an IllegalActionException.
+    // Verify that attempting to run the simulation with a bad player implementation raises an
+    // IllegalActionException.
     assertThrows(IllegalActionException.class, () -> {
       // Create a new Bandit scenario builder.
       BanditScenario banditBuilder = new BanditScenario();
