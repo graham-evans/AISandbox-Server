@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.engine;
 
+import dev.aisandbox.server.engine.network.NetworkAgent;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
