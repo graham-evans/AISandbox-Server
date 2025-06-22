@@ -6,18 +6,15 @@
 
 package dev.aisandbox.server.fx;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.SimulationSetup;
+import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 
 
 @Slf4j
@@ -51,7 +48,7 @@ public class RuntimeController {
 
     // setup logging control
 
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+  /*  LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     FXLogbackAppender fxLogbackAppender = new FXLogbackAppender(logArea);
     fxLogbackAppender.setContext(lc);
@@ -60,13 +57,18 @@ public class RuntimeController {
     Logger logger = lc.getLogger("dev.aisandbox.server");
     logger.setLevel(Level.INFO);
     logger.addAppender(fxLogbackAppender);
-
+*/
     // start the simulation
-
-    runner = SimulationSetup.setupSimulation(model.getSelectedSimulationBuilder().get(),
-        model.getAgentCount().get(), model.getDefaultPort().get(), model.getOutputRenderer().get());
-    runner.start();
-    log.debug("Initialized RuntimeController");
+    try {
+      runner = SimulationSetup.setupSimulation(model.getSelectedSimulationBuilder().get(),
+          model.getAgentCount().get(), model.getDefaultPort().get(),
+          model.getOutputRenderer().get());
+      runner.start();
+      log.debug("Initialized RuntimeController");
+    } catch (SimulationSetupException e) {
+      // todo - alert user via UI
+      log.error("Error setting up simulation", e);
+    }
   }
 
 }
