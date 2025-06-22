@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.SynchronousQueue;
 import lombok.Getter;
@@ -38,22 +39,28 @@ public class NetworkAgent implements Agent {
   private NetworkAgentConnectionThread.ConnectionPair connectionPair = null;
 
 
-  public NetworkAgent(String agentName, int defaultPort) throws SimulationSetupException {
+  public NetworkAgent(String agentName, int defaultPort, boolean openExternal)
+      throws SimulationSetupException {
     this.agentName = agentName;
-    serverSocket = getServerSocket(defaultPort);
+    serverSocket = getServerSocket(defaultPort, openExternal);
     NetworkAgentConnectionThread networkAgentConnectionThread = new NetworkAgentConnectionThread(
         agentName, serverSocket, connectionQueue);
     networkAgentConnectionThread.start();
   }
 
-  private ServerSocket getServerSocket(int defaultPort) throws SimulationSetupException {
+  private ServerSocket getServerSocket(int defaultPort, boolean openExternal)
+      throws SimulationSetupException {
     int targetPort = defaultPort;
     int tries = 0;
     ServerSocket socket = null;
     while (socket == null && tries < MAX_PORT_TRIES) {
       try {
         log.info("Trying to create server socket on port {}", targetPort);
-        socket = new ServerSocket(targetPort);
+        if (openExternal) {
+          socket = new ServerSocket(targetPort);
+        } else {
+          socket = new ServerSocket(targetPort, 1, InetAddress.getLocalHost());
+        }
         log.info("Successfully created server socket on port {}", targetPort);
       } catch (IOException e) {
         log.warn("Failed to create server socket with port {}", targetPort, e);

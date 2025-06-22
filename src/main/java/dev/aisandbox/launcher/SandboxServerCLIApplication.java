@@ -131,7 +131,7 @@ public class SandboxServerCLIApplication {
         // setup simulation & runner
         try {
           SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents, 9000,
-              out);
+              false, out);
           // start simulation
           runner.start();
         } catch (SimulationSetupException e) {
