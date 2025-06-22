@@ -276,16 +276,18 @@ public final class HighLowCards implements Simulation {
     output.display();
 
     // send the current state and request an action from the agent
+    log.debug("Sending current state to agent");
     agent.send(HighLowCardsState.newBuilder().setCardCount(cardCount)
         .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
         .setScore(score).setSessionID(sessionID).setEpisodeID(episodeID).build());
+    log.debug("Asking agent for action");
     HighLowCardsAction action = agent.receive(HighLowCardsAction.class);
     log.debug("Client action: {}", action.getAction().name());
 
     // turn over the next card
     faceUpCards.add(faceDownCards.removeFirst());
 
-    // determine if the player guessed correctly
+    // determine if the agent guessed correctly
     boolean correctGuess = (action.getAction() == HighLowChoice.LOW
         && nextCard.cardValue().getValueAceHigh() < previousCard.cardValue().getValueAceHigh()) || (
         action.getAction() == HighLowChoice.HIGH
