@@ -29,8 +29,7 @@ public interface Simulation {
    *
    * <p>Optionally trigger an update to the output (possibly more than once).</p>
    *
-   * @param output the {@link dev.aisandbox.server.engine.output.OutputRenderer} to trigger
-   *               updates.
+   * @param output the {@link OutputRenderer} to trigger updates.
    * @throws SimulationException an exception which denotes the simulation has failed and should be
    *                             shutdown.
    */
