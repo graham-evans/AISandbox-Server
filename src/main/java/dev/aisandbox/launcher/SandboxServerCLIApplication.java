@@ -10,6 +10,7 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.SimulationSetup;
+import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -128,10 +129,14 @@ public class SandboxServerCLIApplication {
           default -> new NullOutputRenderer();
         };
         // setup simulation & runner
-        SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents, 9000,
-            out);
-        // start simulation
-        runner.start();
+        try {
+          SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents, 9000,
+              out);
+          // start simulation
+          runner.start();
+        } catch (SimulationSetupException e) {
+          log.error("Error setting up simulation", e);
+        }
       }
     }
   }
