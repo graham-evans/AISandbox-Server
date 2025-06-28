@@ -55,11 +55,12 @@ public class NetworkAgent implements Agent {
     ServerSocket socket = null;
     while (socket == null && tries < MAX_PORT_TRIES) {
       try {
-        log.info("Trying to create server socket on port {}", targetPort);
         if (openExternal) {
+          log.info("Trying to create server socket on port {}", targetPort);
           socket = new ServerSocket(targetPort);
         } else {
-          socket = new ServerSocket(targetPort, 1, InetAddress.getLocalHost());
+          log.info("Trying to create server socket on loopback port {}", targetPort);
+          socket = new ServerSocket(targetPort, 1, InetAddress.getLoopbackAddress());
         }
         log.info("Successfully created server socket on port {}", targetPort);
       } catch (IOException e) {
