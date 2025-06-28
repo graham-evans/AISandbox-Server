@@ -99,7 +99,8 @@ public class RuntimeUtils {
     options.addOption("h", "help", false, "Print an overview");
     // add simulation selector
     options.addOption("s", "simulation", true,
-        "Simulation to run [" + Arrays.stream(SimulationEnumeration.values()).map(Enum::name)
+        "Simulation to run [" + Arrays.stream(SimulationEnumeration.values())
+            .map(simulationEnumeration -> simulationEnumeration.getBuilder().getSimulationName())
             .collect(Collectors.joining(" | ")) + "]");
     // add output
     options.addOption("i", "png", false, "Write output to PNG files");
