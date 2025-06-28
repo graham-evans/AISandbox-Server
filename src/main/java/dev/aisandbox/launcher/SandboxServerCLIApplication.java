@@ -52,7 +52,8 @@ public class SandboxServerCLIApplication {
     } else {
       // show generic help
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java -jar sandbox-server.jar", RuntimeUtils.getOptions());
+      System.out.println();
+      formatter.printHelp("AISandboxServer", RuntimeUtils.getOptions());
     }
   }
 
@@ -110,6 +111,7 @@ public class SandboxServerCLIApplication {
   }
 
   private void helpSimulation(String simulationName) {
+    log.info("Help for simulation {}", simulationName);
     log.info("Simulation name: {}", simulationName);
     Optional<SimulationBuilder> oSim = findBuilder(simulationName);
     if (oSim.isPresent()) {
@@ -144,7 +146,7 @@ public class SandboxServerCLIApplication {
         return Optional.of(simulationBuilder);
       }
     }
-    log.error("No simulation of that name exists, use the --list option to list all simulations");
+    log.error("No simulation of that name exists, use the --help option to list all simulations");
     return Optional.empty();
   }
 
