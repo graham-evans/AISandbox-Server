@@ -8,9 +8,9 @@ package dev.aisandbox.server.simulation.bandit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
-import dev.aisandbox.server.options.RuntimeUtils;
 import dev.aisandbox.server.simulation.bandit.model.BanditPullEnumeration;
 import java.util.List;
 import org.junit.jupiter.api.Test;

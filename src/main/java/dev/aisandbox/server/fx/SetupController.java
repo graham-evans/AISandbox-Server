@@ -6,12 +6,12 @@
 
 package dev.aisandbox.server.fx;
 
+import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
-import dev.aisandbox.server.options.RuntimeUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

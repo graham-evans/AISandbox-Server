@@ -28,7 +28,7 @@ public class DocumentationTests {
   @Test
   public void testList() {
     SandboxServerCLIApplication app = new SandboxServerCLIApplication();
-    app.run("--list");
+    app.run("--help");
   }
 
 

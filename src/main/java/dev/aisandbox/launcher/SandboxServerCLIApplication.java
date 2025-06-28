@@ -6,6 +6,8 @@
 
 package dev.aisandbox.launcher;
 
+import dev.aisandbox.launcher.options.RuntimeOptions;
+import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.SimulationRunner;
@@ -14,10 +16,8 @@ import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
-import dev.aisandbox.server.options.RuntimeOptions;
-import dev.aisandbox.server.options.RuntimeUtils;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -37,15 +37,11 @@ public class SandboxServerCLIApplication {
   public void run(String... args) {
     // parse the command line
     RuntimeOptions runtimeOptions = RuntimeUtils.parseCommandLine(args);
-    // do we need to force 'head' mode?
-    if (runtimeOptions.output().equals(RuntimeOptions.OutputOptions.SCREEN)) {
-      System.setProperty("java.awt.headless", "false");
-    }
-    // decide which of the main three actions to perform
-    switch (runtimeOptions.command()) {
-      case HELP -> help(runtimeOptions);
-      case RUN -> runSimulation(runtimeOptions);
-      case LIST -> listOptions(runtimeOptions);
+    // are we asking for help or trying to run a simulation
+    if (runtimeOptions.help()) {
+      help(runtimeOptions);
+    } else {
+      runSimulation(runtimeOptions);
     }
   }
 
@@ -57,6 +53,59 @@ public class SandboxServerCLIApplication {
       // show generic help
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar sandbox-server.jar", RuntimeUtils.getOptions());
+    }
+  }
+
+  private void runSimulation(RuntimeOptions options) {
+    // create simulation
+    Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(
+        simulationBuilder -> simulationBuilder.getSimulationName()
+            .equalsIgnoreCase(options.simulation())).findFirst();
+    if (oBuilder.isEmpty()) {
+      log.warn("Can't find simulation with that name, use --help to show all simulations");
+    } else {
+      SimulationBuilder simulationBuilder = oBuilder.get();
+      // apply parameters (if any)
+      for (String parameter : options.parameters()) {
+        String[] keyValue = parameter.split("[=:]");
+        if (keyValue.length != 2) {
+          log.warn("Invalid parameter: '{}', use format key:value ", parameter);
+        } else {
+          String key = keyValue[0];
+          String value = keyValue[1];
+          // map this to a simulation parameter
+          Optional<SimulationParameter> oParam = simulationBuilder.getParameters().stream()
+              .filter(param -> param.name().equalsIgnoreCase(key)).findFirst();
+          if (oParam.isPresent()) {
+            RuntimeUtils.setParameterValue(simulationBuilder, oParam.get(), value);
+          } else {
+            log.warn("Can't set {} to {}", key, value);
+          }
+        }
+      }
+      int agents = simulationBuilder.getMaxAgentCount();
+      if ((options.agents() != null) && (options.agents() >= simulationBuilder.getMinAgentCount())
+          && (options.agents() <= simulationBuilder.getMaxAgentCount())) {
+        agents = options.agents();
+      }
+      // create output
+      OutputRenderer out = new NullOutputRenderer();
+      if (options.outputImage()) {
+        out = new BitmapOutputRenderer();
+        out.setOutputDirectory(new File(options.outputDirectory()));
+      }
+      if (options.skip() != null) {
+        out.setSkipFrames(options.skip());
+      }
+      // setup simulation & runner
+      try {
+        SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents, 9000,
+            options.openExternal(), out);
+        // start simulation
+        runner.start();
+      } catch (SimulationSetupException e) {
+        log.error("Error setting up simulation", e);
+      }
     }
   }
 
@@ -89,56 +138,14 @@ public class SandboxServerCLIApplication {
     }
   }
 
-  private void runSimulation(RuntimeOptions options) {
-    if (options.simulation() == null) {
-      log.info("Simulation name has not been set, use the '-s name' to choose the simulation or "
-          + "'--help' for more information.");
-    } else {
-      // create simulation
-      Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(
-          simulationBuilder -> simulationBuilder.getSimulationName()
-              .equalsIgnoreCase(options.simulation())).findFirst();
-      if (oBuilder.isEmpty()) {
-        log.warn("Can't find simulation with that name, use --list to show all simulations");
-      } else {
-        SimulationBuilder simulationBuilder = oBuilder.get();
-        // apply parameters (if any)
-        for (String parameter : options.parameters()) {
-          String[] keyValue = parameter.split("[=:]");
-          if (keyValue.length != 2) {
-            log.warn("Invalid parameter: '{}', use format key:value ", parameter);
-          } else {
-            String key = keyValue[0];
-            String value = keyValue[1];
-            // map this to a simulation parameter
-            Optional<SimulationParameter> oParam = simulationBuilder.getParameters().stream()
-                .filter(param -> param.name().equalsIgnoreCase(key)).findFirst();
-            if (oParam.isPresent()) {
-              RuntimeUtils.setParameterValue(simulationBuilder, oParam.get(), value);
-            } else {
-              log.warn("Can't set {} to {}", key, value);
-            }
-          }
-        }
-        // TODO : set the number of agents
-        int agents = simulationBuilder.getMaxAgentCount();
-        // create output
-        OutputRenderer out = switch (options.output()) {
-          case IMAGE -> new BitmapOutputRenderer();
-          case SCREEN -> new ScreenOutputRenderer();
-          default -> new NullOutputRenderer();
-        };
-        // setup simulation & runner
-        try {
-          SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents, 9000,
-              false, out);
-          // start simulation
-          runner.start();
-        } catch (SimulationSetupException e) {
-          log.error("Error setting up simulation", e);
-        }
+  private Optional<SimulationBuilder> findBuilder(String name) {
+    for (SimulationBuilder simulationBuilder : simulationBuilders) {
+      if (simulationBuilder.getSimulationName().equalsIgnoreCase(name)) {
+        return Optional.of(simulationBuilder);
       }
     }
+    log.error("No simulation of that name exists, use the --list option to list all simulations");
+    return Optional.empty();
   }
 
   private void listOptions(RuntimeOptions options) {
@@ -159,16 +166,6 @@ public class SandboxServerCLIApplication {
       // show the help for the simulation
       helpSimulation(options.simulation());
     }
-  }
-
-  private Optional<SimulationBuilder> findBuilder(String name) {
-    for (SimulationBuilder simulationBuilder : simulationBuilders) {
-      if (simulationBuilder.getSimulationName().equalsIgnoreCase(name)) {
-        return Optional.of(simulationBuilder);
-      }
-    }
-    log.error("No simulation of that name exists, use the --list option to list all simulations");
-    return Optional.empty();
   }
 
 

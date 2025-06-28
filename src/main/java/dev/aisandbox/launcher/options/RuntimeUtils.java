@@ -4,10 +4,17 @@
  * more information.
  */
 
-package dev.aisandbox.server.options;
+/*
+ * AI Sandbox - This program is free software: you can redistribute it and/or modify it under the
+ * terms of version 3 of the GNU General Public License. See the README and LICENCE files for
+ * more information.
+ */
+
+package dev.aisandbox.launcher.options;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.simulation.SimulationEnumeration;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -40,38 +47,34 @@ public class RuntimeUtils {
       CommandLine cmd = parser.parse(getOptions(), args);
       // build runtime options
       RuntimeOptions.RuntimeOptionsBuilder workBuilder = RuntimeOptions.builder();
-      // assume we should run simulation
-      workBuilder.command(RuntimeOptions.RuntimeCommand.RUN);
-      // help
+      // help ?
       if (cmd.hasOption('h')) {
-        workBuilder.command(RuntimeOptions.RuntimeCommand.HELP);
-      }
-      // list
-      if (cmd.hasOption('l')) {
-        workBuilder.command(RuntimeOptions.RuntimeCommand.LIST);
+        workBuilder.help(true);
       }
       // choose simulation
       if (cmd.hasOption('s')) {
         workBuilder.simulation(cmd.getOptionValue("s"));
       }
-      // assume no output
-      workBuilder.output(RuntimeOptions.OutputOptions.NONE);
-      // show screen
-      if (cmd.hasOption('o') && "screen".equalsIgnoreCase(cmd.getOptionValue('o'))) {
-        workBuilder.output(RuntimeOptions.OutputOptions.SCREEN);
+      // write images to PNG
+      if (cmd.hasOption('i')) {
+        workBuilder.outputImage(true);
       }
-      // write images
-      if (cmd.hasOption('o') && "png".equalsIgnoreCase(cmd.getOptionValue('o'))) {
-        workBuilder.output(RuntimeOptions.OutputOptions.IMAGE);
-      }
-      // choose the output directory
+      // write images to dir
       workBuilder.outputDirectory(".");
       if (cmd.hasOption('d')) {
-        workBuilder.outputDirectory(cmd.getOptionValue('d'));
+        workBuilder.outputDirectory(cmd.getOptionValue("d"));
+      }
+      // skip frames
+      if (cmd.hasOption('k')) {
+        workBuilder.skip(Integer.parseInt(cmd.getOptionValue("k")));
       }
       // choose the number of  agents
       if (cmd.hasOption('a')) {
         workBuilder.agents(Integer.parseInt(cmd.getOptionValue('a')));
+      }
+      // open to network connections
+      if (cmd.hasOption('n')) {
+        workBuilder.openExternal(true);
       }
       // read parameters
       if (cmd.hasOption('p')) {
@@ -95,19 +98,21 @@ public class RuntimeUtils {
     // add help option
     options.addOption("h", "help", false, "Print an overview");
     // add simulation selector
-    options.addOption("s", "simulation", true, "Simulation to run");
-    // add list option
-    options.addOption("l", "list", false,
-        "List the simulations, or the options available for a selected simulation");
+    options.addOption("s", "simulation", true,
+        "Simulation to run [" + Arrays.stream(SimulationEnumeration.values()).map(Enum::name)
+            .collect(Collectors.joining(" | ")) + "]");
     // add output
-    options.addOption("o", "output", true, "Output format [NONE(Default),SCREEN,PNG]");
+    options.addOption("i", "png", false, "Write output to PNG files");
     options.addOption("d", "dir", true, "Output directory");
+    options.addOption("k", "skip", true, "Frames to skip when rendering");
     // Agent Count
     options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
     // simulation options
     options.addOption("p", "parameter", true,
-        "Simulation specific parameter in the format key:value, use the list options to show all "
-            + "available parameters");
+        "Simulation specific parameter in the format key:value");
+    // network options
+    options.addOption("n", "network", false,
+        "Allow connections from the network (default false = localhost only");
     return options;
   }
 

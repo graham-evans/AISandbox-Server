@@ -1,0 +1,31 @@
+/*
+ * AI Sandbox - This program is free software: you can redistribute it and/or modify it under the
+ * terms of version 3 of the GNU General Public License. See the README and LICENCE files for
+ * more information.
+ */
+
+/*
+ * AI Sandbox - This program is free software: you can redistribute it and/or modify it under the
+ * terms of version 3 of the GNU General Public License. See the README and LICENCE files for
+ * more information.
+ */
+
+package dev.aisandbox.launcher.options;
+
+import java.util.List;
+import java.util.Optional;
+import lombok.Builder;
+import lombok.Singular;
+
+@Builder
+public record RuntimeOptions(boolean help, // has the user asked for help
+                             String simulation, // the name of the simulation
+                             boolean outputImage, // output to images
+                             String outputDirectory, // output dir (if images)
+                             Integer skip, // frames to skip when rendering
+                             Integer agents, // number of agents
+                             boolean openExternal, // allow external connections
+                             @Singular List<String> parameters // extra parameters
+) {
+
+}

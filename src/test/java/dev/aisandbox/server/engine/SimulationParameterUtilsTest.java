@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import dev.aisandbox.server.options.RuntimeUtils;
+import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
 import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
