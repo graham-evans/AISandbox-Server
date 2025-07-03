@@ -113,7 +113,7 @@ public class RuntimeUtils {
         "Simulation specific parameter in the format key:value");
     // network options
     options.addOption("n", "network", false,
-        "Allow connections from the network (default false = localhost only");
+        "Allow connections from the network (default localhost only)");
     return options;
   }
 
