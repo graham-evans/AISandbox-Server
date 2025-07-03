@@ -46,6 +46,8 @@ public class SandboxServerCLIApplication {
   }
 
   private void help(RuntimeOptions runtimeOptions) {
+    System.out.println("AISandbox Server CLI Application");
+    System.out.println();
     if (runtimeOptions.simulation() != null) {
       // we are looking for help on a particular simulation?
       helpSimulation(runtimeOptions.simulation());
@@ -63,14 +65,15 @@ public class SandboxServerCLIApplication {
         simulationBuilder -> simulationBuilder.getSimulationName()
             .equalsIgnoreCase(options.simulation())).findFirst();
     if (oBuilder.isEmpty()) {
-      log.warn("Can't find simulation with that name, use --help to show all simulations");
+      System.err.println(
+          "Can't find simulation with that name, use --help to show all simulations");
     } else {
       SimulationBuilder simulationBuilder = oBuilder.get();
       // apply parameters (if any)
       for (String parameter : options.parameters()) {
         String[] keyValue = parameter.split("[=:]");
         if (keyValue.length != 2) {
-          log.warn("Invalid parameter: '{}', use format key:value ", parameter);
+          System.err.printf("Invalid parameter: '%s', use format key:value\n", parameter);
         } else {
           String key = keyValue[0];
           String value = keyValue[1];
@@ -80,7 +83,7 @@ public class SandboxServerCLIApplication {
           if (oParam.isPresent()) {
             RuntimeUtils.setParameterValue(simulationBuilder, oParam.get(), value);
           } else {
-            log.warn("Can't set {} to {}", key, value);
+            System.err.printf("Can't set '%s' to '%s'%n\n", key, value);
           }
         }
       }
@@ -111,25 +114,24 @@ public class SandboxServerCLIApplication {
   }
 
   private void helpSimulation(String simulationName) {
-    log.info("Help for simulation {}", simulationName);
-    log.info("Simulation name: {}", simulationName);
+    System.out.printf("Help for simulation %s\n\n", simulationName);
     Optional<SimulationBuilder> oSim = findBuilder(simulationName);
     if (oSim.isPresent()) {
       SimulationBuilder sim = oSim.get();
-      log.info(" Minimum agents: {}", sim.getMinAgentCount());
-      log.info(" Maximum agents: {}", sim.getMaxAgentCount());
+      System.out.printf(" Minimum agents: %d\n", sim.getMinAgentCount());
+      System.out.printf(" Maximum agents: %d\n", sim.getMaxAgentCount());
       try {
         List<SimulationParameter> parameters = sim.getParameters();
         if (!parameters.isEmpty()) {
-          log.info("Options (use -o key:value to set)");
+          System.out.println("Options (use -o key:value to set)");
           for (SimulationParameter parameter : parameters) {
             // test if this is an enum
             if (parameter.parameterType().isEnum()) {
-              log.info(" {} ({}) - {} {}", parameter.name(),
+              System.out.printf(" %s (%s) - %s %s", parameter.name(),
                   RuntimeUtils.getParameterValue(sim, parameter), parameter.description(),
-                  parameter.parameterType().getEnumConstants());
+                  Arrays.toString(parameter.parameterType().getEnumConstants()));
             } else {
-              log.info(" {} ({}) - {}", parameter.name(),
+              System.out.printf(" %s (%s) - %s", parameter.name(),
                   RuntimeUtils.getParameterValue(sim, parameter), parameter.description());
             }
           }
@@ -137,7 +139,10 @@ public class SandboxServerCLIApplication {
       } catch (Exception e) {
         log.error("Error during describe simulation", e);
       }
+    } else {
+      System.out.println("Can't find simulation with that name");
     }
+    System.out.println();
   }
 
   private Optional<SimulationBuilder> findBuilder(String name) {
@@ -146,20 +151,21 @@ public class SandboxServerCLIApplication {
         return Optional.of(simulationBuilder);
       }
     }
-    log.error("No simulation of that name exists, use the --help option to list all simulations");
+    System.err.println(
+        "No simulation of that name exists, use the --help option to list all simulations");
     return Optional.empty();
   }
 
   private void listOptions(RuntimeOptions options) {
     if (options.simulation() == null) {
       // list the available simulations
-      log.info("Available simulations:");
+      System.out.println("Available simulations:");
       for (SimulationBuilder simulationBuilder : simulationBuilders) {
         if (simulationBuilder.getMinAgentCount() == simulationBuilder.getMaxAgentCount()) {
-          log.info("{} ({} agents, {})", simulationBuilder.getSimulationName(),
+          System.out.printf("%s (%d agents, %s)", simulationBuilder.getSimulationName(),
               simulationBuilder.getMinAgentCount(), simulationBuilder.getDescription());
         } else {
-          log.info("{} ({}-{} agents, {})", simulationBuilder.getSimulationName(),
+          System.out.printf("%s (%d-%d agents, %s)", simulationBuilder.getSimulationName(),
               simulationBuilder.getMinAgentCount(), simulationBuilder.getMaxAgentCount(),
               simulationBuilder.getDescription());
         }
@@ -169,6 +175,5 @@ public class SandboxServerCLIApplication {
       helpSimulation(options.simulation());
     }
   }
-
 
 }
