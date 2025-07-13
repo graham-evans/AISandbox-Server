@@ -88,8 +88,8 @@ public class SandboxServerCLIApplication {
         }
       }
       int agents = simulationBuilder.getMaxAgentCount();
-      if ((options.agents() != null) && (options.agents() >= simulationBuilder.getMinAgentCount())
-          && (options.agents() <= simulationBuilder.getMaxAgentCount())) {
+      if ((options.agents() >= simulationBuilder.getMinAgentCount()) && (options.agents()
+          <= simulationBuilder.getMaxAgentCount())) {
         agents = options.agents();
       }
       // create output
@@ -98,13 +98,13 @@ public class SandboxServerCLIApplication {
         out = new BitmapOutputRenderer();
         out.setOutputDirectory(new File(options.outputDirectory()));
       }
-      if (options.skip() != null) {
+      if (options.skip() > 0) {
         out.setSkipFrames(options.skip());
       }
       // setup simulation & runner
       try {
         SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents, 9000,
-            options.openExternal(), out);
+            options.openExternal(), out, options.endEarly());
         // start simulation
         runner.start();
       } catch (SimulationSetupException e) {

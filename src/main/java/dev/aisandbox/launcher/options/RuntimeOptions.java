@@ -13,7 +13,6 @@
 package dev.aisandbox.launcher.options;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.Builder;
 import lombok.Singular;
 
@@ -22,10 +21,10 @@ public record RuntimeOptions(boolean help, // has the user asked for help
                              String simulation, // the name of the simulation
                              boolean outputImage, // output to images
                              String outputDirectory, // output dir (if images)
-                             Integer skip, // frames to skip when rendering
-                             Integer agents, // number of agents
+                             int skip, // frames to skip when rendering
+                             int agents, // number of agents
                              boolean openExternal, // allow external connections
-                             @Singular List<String> parameters // extra parameters
-) {
+                             @Singular List<String> parameters, // extra parameters
+                             long endEarly) {
 
 }

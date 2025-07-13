@@ -72,6 +72,9 @@ public class RuntimeUtils {
       if (cmd.hasOption('a')) {
         workBuilder.agents(Integer.parseInt(cmd.getOptionValue('a')));
       }
+      if (cmd.hasOption('e')) {
+        workBuilder.endEarly(Long.parseLong(cmd.getOptionValue('e')));
+      }
       // open to network connections
       if (cmd.hasOption('n')) {
         workBuilder.openExternal(true);
@@ -106,6 +109,8 @@ public class RuntimeUtils {
     options.addOption("i", "png", false, "Write output to PNG files");
     options.addOption("d", "dir", true, "Output directory");
     options.addOption("k", "skip", true, "Frames to skip when rendering");
+    // end early
+    options.addOption("e","end",true,"End simulation after n steps");
     // Agent Count
     options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
     // simulation options

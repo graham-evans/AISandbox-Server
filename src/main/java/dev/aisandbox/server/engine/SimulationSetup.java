@@ -35,14 +35,15 @@ public class SimulationSetup {
    * @throws SimulationSetupException If there's an error during simulation setup
    */
   public static SimulationRunner setupSimulation(SimulationBuilder builder, int agentCount,
-      int defaultPort, boolean openExternal, OutputRenderer renderer) throws SimulationSetupException {
+      int defaultPort, boolean openExternal, OutputRenderer renderer, long maxStepCount)
+      throws SimulationSetupException {
     AtomicInteger port = new AtomicInteger(defaultPort);
     String[] agentNames = builder.getAgentNames(agentCount);
     List<Agent> agents = new ArrayList<>();
     for (String agentName : agentNames) {
       agents.add(new NetworkAgent(agentName, port.getAndIncrement(), openExternal));
     }
-    return setupSimulation(builder, agents, renderer);
+    return setupSimulation(builder, agents, renderer, maxStepCount);
   }
 
   /**
@@ -56,13 +57,13 @@ public class SimulationSetup {
    * @return A configured SimulationRunner ready to start
    */
   public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents,
-      OutputRenderer renderer) {
+      OutputRenderer renderer, long maxStepCount) throws SimulationSetupException {
     // create simulation
     Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
     // start output
     renderer.setup(sim);
     // create simulation thread
-    return new SimulationRunner(sim, renderer, agents);
+    return new SimulationRunner(sim, renderer, agents, maxStepCount);
   }
 
 }
