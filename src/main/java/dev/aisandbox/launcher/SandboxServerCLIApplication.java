@@ -35,6 +35,8 @@ public class SandboxServerCLIApplication {
   }
 
   public void run(String... args) {
+    System.out.println("AISandbox Server CLI Application");
+    System.out.println();
     // parse the command line
     RuntimeOptions runtimeOptions = RuntimeUtils.parseCommandLine(args);
     // are we asking for help or trying to run a simulation
@@ -46,8 +48,6 @@ public class SandboxServerCLIApplication {
   }
 
   private void help(RuntimeOptions runtimeOptions) {
-    System.out.println("AISandbox Server CLI Application");
-    System.out.println();
     if (runtimeOptions.simulation() != null) {
       // we are looking for help on a particular simulation?
       helpSimulation(runtimeOptions.simulation());
@@ -101,6 +101,13 @@ public class SandboxServerCLIApplication {
       if (options.skip() > 0) {
         out.setSkipFrames(options.skip());
       }
+      // write summary
+      System.out.println(
+          "Running simulation '" + simulationBuilder.getSimulationName() + "' with " + agents
+              + " agents.");
+      System.out.println("Output sent to " + out.getName());
+      System.out.println("Listening on " + (options.openExternal() ? " all interfaces"
+          : "loopback interface" + " starting on port " + options.startPort()));
       // setup simulation & runner
       try {
         SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents,
