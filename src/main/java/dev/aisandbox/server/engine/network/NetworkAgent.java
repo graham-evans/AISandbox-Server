@@ -65,7 +65,7 @@ public class NetworkAgent implements Agent {
           socket = new ServerSocket(targetPort, 1, InetAddress.getLoopbackAddress());
         }
         log.info("Successfully created server socket on port {}", targetPort);
-        renderer.write("Opened server socket on port " + targetPort);
+        renderer.write("Connect agent to port " + targetPort);
       } catch (IOException e) {
         log.warn("Failed to create server socket with port {}", targetPort, e);
         tries++;
