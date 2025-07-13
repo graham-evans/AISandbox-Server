@@ -25,4 +25,8 @@ public class NullOutputRenderer implements OutputRenderer {
     // do nothing;
   }
 
+  @Override
+  public void write(String text) {
+    System.out.println(text);
+  }
 }

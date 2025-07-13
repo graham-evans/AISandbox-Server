@@ -41,7 +41,7 @@ public class SimulationSetup {
     String[] agentNames = builder.getAgentNames(agentCount);
     List<Agent> agents = new ArrayList<>();
     for (String agentName : agentNames) {
-      agents.add(new NetworkAgent(agentName, port.getAndIncrement(), openExternal));
+      agents.add(new NetworkAgent(agentName, port.getAndIncrement(), openExternal,renderer));
     }
     return setupSimulation(builder, agents, renderer, maxStepCount);
   }

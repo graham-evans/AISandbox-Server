@@ -47,5 +47,9 @@ public class ScreenOutputRenderer implements OutputRenderer {
     screenFrame.dispose();
   }
 
+  @Override
+  public void write(String text) {
+    System.out.println(text);
+  }
 
 }

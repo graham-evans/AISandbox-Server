@@ -65,4 +65,8 @@ public class BitmapOutputRenderer implements OutputRenderer {
     imageCounter++;
   }
 
+  @Override
+  public void write(String text) {
+    System.out.println(text);
+  }
 }

@@ -17,6 +17,7 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.network.NetworkAgentConnectionThread.ConnectionPair;
+import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -35,13 +36,14 @@ public class NetworkAgent implements Agent {
   @Getter
   private final String agentName;
   private final ServerSocket serverSocket;
+  private final OutputRenderer renderer;
   private final SynchronousQueue<ConnectionPair> connectionQueue = new SynchronousQueue<>();
   private NetworkAgentConnectionThread.ConnectionPair connectionPair = null;
 
-
-  public NetworkAgent(String agentName, int defaultPort, boolean openExternal)
-      throws SimulationSetupException {
+  public NetworkAgent(String agentName, int defaultPort, boolean openExternal,
+      OutputRenderer renderer) throws SimulationSetupException {
     this.agentName = agentName;
+    this.renderer = renderer;
     serverSocket = getServerSocket(defaultPort, openExternal);
     NetworkAgentConnectionThread networkAgentConnectionThread = new NetworkAgentConnectionThread(
         agentName, serverSocket, connectionQueue);
@@ -63,6 +65,7 @@ public class NetworkAgent implements Agent {
           socket = new ServerSocket(targetPort, 1, InetAddress.getLoopbackAddress());
         }
         log.info("Successfully created server socket on port {}", targetPort);
+        renderer.write("Opened server socket on port " + targetPort);
       } catch (IOException e) {
         log.warn("Failed to create server socket with port {}", targetPort, e);
         tries++;
@@ -70,6 +73,7 @@ public class NetworkAgent implements Agent {
       }
     }
     if (socket == null) {
+      renderer.write("Failed to create server socket.");
       log.error("Unable to create server socket for {} after {} tries", agentName, MAX_PORT_TRIES);
       throw new SimulationSetupException("Unable to create server socket for " + agentName);
     }
