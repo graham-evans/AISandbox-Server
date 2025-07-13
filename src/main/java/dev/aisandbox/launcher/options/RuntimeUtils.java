@@ -79,6 +79,12 @@ public class RuntimeUtils {
       if (cmd.hasOption('n')) {
         workBuilder.openExternal(true);
       }
+      // choose default port
+      if (cmd.hasOption('t')) {
+        workBuilder.startPort(Integer.parseInt(cmd.getOptionValue('t')));
+      } else {
+        workBuilder.startPort(9000);
+      }
       // read parameters
       if (cmd.hasOption('p')) {
         Arrays.stream(cmd.getOptionValues('p')).forEach(workBuilder::parameter);
@@ -119,6 +125,7 @@ public class RuntimeUtils {
     // network options
     options.addOption("n", "network", false,
         "Allow connections from the network (default localhost only)");
+    options.addOption("t","port",true,"Starting port (default 9000)");
     return options;
   }
 
