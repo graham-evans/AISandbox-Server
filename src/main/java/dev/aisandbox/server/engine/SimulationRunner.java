@@ -60,6 +60,9 @@ public class SimulationRunner extends Thread {
   public void run() {
     log.info("Writing output to {}", outputRenderer.getName());
     log.info("Starting simulation...");
+    if (maxStepCount > -1) {
+      log.info("Max step count {}", maxStepCount);
+    }
 
     // Main simulation loop - continuously steps through the simulation
     // until explicitly stopped or an exception occurs
