@@ -25,6 +25,6 @@ public record RuntimeOptions(boolean help, // has the user asked for help
                              int agents, // number of agents
                              boolean openExternal, // allow external connections
                              @Singular List<String> parameters, // extra parameters
-                             long endEarly, int startPort) {
+                             long maxStepCount, int startPort) {
 
 }
