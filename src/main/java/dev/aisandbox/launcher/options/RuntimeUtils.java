@@ -73,7 +73,9 @@ public class RuntimeUtils {
         workBuilder.agents(Integer.parseInt(cmd.getOptionValue('a')));
       }
       if (cmd.hasOption('e')) {
-        workBuilder.endEarly(Long.parseLong(cmd.getOptionValue('e')));
+        workBuilder.maxStepCount(Long.parseLong(cmd.getOptionValue('e')));
+      } else {
+        workBuilder.maxStepCount(-1);
       }
       // open to network connections
       if (cmd.hasOption('n')) {
@@ -116,7 +118,7 @@ public class RuntimeUtils {
     options.addOption("d", "dir", true, "Output directory");
     options.addOption("k", "skip", true, "Frames to skip when rendering");
     // end early
-    options.addOption("e","end",true,"End simulation after n steps");
+    options.addOption("e", "end", true, "End simulation after n steps");
     // Agent Count
     options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
     // simulation options
@@ -125,7 +127,7 @@ public class RuntimeUtils {
     // network options
     options.addOption("n", "network", false,
         "Allow connections from the network (default localhost only)");
-    options.addOption("t","port",true,"Starting port (default 9000)");
+    options.addOption("t", "port", true, "Starting port (default 9000)");
     return options;
   }
 
