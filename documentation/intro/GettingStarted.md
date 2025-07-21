@@ -34,7 +34,7 @@ Configure the simulation and press "start Simulation" to start.
 
 ## Step 3 - Write an agent to explore the simulation.
 
-When running, the simulation will a network port for each of the agents in use. You can use any
+When running, the simulation will open a network port for each of the agents in use. You can use any
 programming language that supports the [Protobuf](https://protobuf.dev/) protocol to connect to this
 port and communicate with the server.
 
