@@ -67,7 +67,7 @@ public class SimulationRunner extends Thread {
     // Main simulation loop - continuously steps through the simulation
     // until explicitly stopped or an exception occurs
     long stepCount = 0;
-    while (stepCount != maxStepCount) {
+    while (stepCount != maxStepCount && running) {
       stepCount++;
       try {
         simulation.step(outputRenderer);
@@ -76,7 +76,9 @@ public class SimulationRunner extends Thread {
         running = false;
       }
     }
-
+    if (stepCount == maxStepCount) {
+      outputRenderer.write("Max step count reached, stopping...");
+    }
     // Cleanup phase - close the simulation and all agent connections
     // to ensure proper resource management
     log.info("Simulation ended, cleaning up resources");
