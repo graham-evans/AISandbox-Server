@@ -29,6 +29,6 @@ replay_pid*
 .gradle
 /.gradle/
 /build/
-aisandbox.log*
+AISandox-server.log*
 .vscode
 bin
