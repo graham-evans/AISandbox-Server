@@ -65,7 +65,7 @@ public class NetworkAgent implements Agent {
           socket = new ServerSocket(targetPort, 1, InetAddress.getLoopbackAddress());
         }
         log.info("Successfully created server socket on port {}", targetPort);
-        renderer.write("Connect "+agentName+" to port " + targetPort);
+        renderer.write("Connect " + agentName + " to port " + targetPort);
       } catch (IOException e) {
         log.warn("Failed to create server socket with port {}", targetPort, e);
         tries++;
@@ -91,8 +91,8 @@ public class NetworkAgent implements Agent {
       log.debug("Sending {} to {}", o, agentName);
       o.writeDelimitedTo(connectionPair.output());
     } catch (IOException e) {
-      log.error("IO exception while sending generated message to {}", agentName, e);
-      throw new SimulationException("Error sending to " + agentName);
+      log.error("IO exception while sending message to {}", agentName, e);
+      throw new SimulationException("IO Error sending to " + agentName);
     } catch (InterruptedException e) {
       throw new SimulationException("Sending message while shutting down");
     }
@@ -112,11 +112,14 @@ public class NetworkAgent implements Agent {
           connectionPair.input());
       return responseType.cast(response);
     } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-      log.error("Error receiving generated message from {}, expecting {}", agentName,
-          responseType.getName(), e);
-      throw new SimulationException("Error receiving generated message from " + agentName);
+      log.error("Error decoding message from {}, expecting {}", agentName, responseType.getName(),
+          e);
+      throw new SimulationException("Error decoding generated message from " + agentName);
     } catch (InterruptedException e) {
       throw new SimulationException("Reading message while shutting down");
+    } catch (Exception e) {
+      log.error("Error receiving message from {}", agentName, e);
+      throw new SimulationException("IO Error receiving generated message from " + agentName);
     }
   }
 

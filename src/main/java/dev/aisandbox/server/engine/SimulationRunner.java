@@ -8,6 +8,7 @@ package dev.aisandbox.server.engine;
 
 import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,7 @@ public class SimulationRunner extends Thread {
       } catch (SimulationException e) {
         log.error(e.getMessage());
         running = false;
+        outputRenderer.write(e.getMessage()+" stopping simulation.");
       }
     }
     if (stepCount == maxStepCount) {
