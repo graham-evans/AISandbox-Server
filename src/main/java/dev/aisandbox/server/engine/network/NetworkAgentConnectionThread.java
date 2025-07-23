@@ -18,6 +18,7 @@
 
 package dev.aisandbox.server.engine.network;
 
+import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +35,7 @@ public class NetworkAgentConnectionThread extends Thread {
   private final String agentName;
   private final ServerSocket serverSocket;
   private final SynchronousQueue<ConnectionPair> connectionQueue;
+  private final OutputRenderer renderer;
 
   @Override
   public void run() {
@@ -41,6 +43,7 @@ public class NetworkAgentConnectionThread extends Thread {
     try {
       Socket socket = serverSocket.accept();
       log.info("{} connected from {}", agentName, socket.getRemoteSocketAddress());
+      renderer.write(agentName + " connected from " + socket.getRemoteSocketAddress());
       ConnectionPair connectionPair = new ConnectionPair(socket.getInputStream(),
           socket.getOutputStream());
       connectionQueue.put(connectionPair);
