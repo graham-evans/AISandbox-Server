@@ -46,7 +46,7 @@ public class NetworkAgent implements Agent {
     this.renderer = renderer;
     serverSocket = getServerSocket(defaultPort, openExternal);
     NetworkAgentConnectionThread networkAgentConnectionThread = new NetworkAgentConnectionThread(
-        agentName, serverSocket, connectionQueue);
+        agentName, serverSocket, connectionQueue, renderer);
     networkAgentConnectionThread.start();
   }
 
@@ -110,16 +110,22 @@ public class NetworkAgent implements Agent {
       Method readDelimited = responseType.getMethod("parseDelimitedFrom", InputStream.class);
       GeneratedMessage response = (GeneratedMessage) readDelimited.invoke(null,
           connectionPair.input());
+
+      if (response == null) {
+        // special case response == null means the stream has ended
+        throw new SimulationException("Network connection closed by " + agentName);
+      }
+      // cast and return
       return responseType.cast(response);
-    } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+    } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException |
+             ClassCastException e) {
       log.error("Error decoding message from {}, expecting {}", agentName,
           responseType.getSimpleName(), e);
-      throw new SimulationException("Error decoding generated message from " + agentName);
+      throw new SimulationException(
+          "Error decoding generated message from " + agentName + " expecting "
+              + responseType.getSimpleName());
     } catch (InterruptedException e) {
       throw new SimulationException("Reading message while shutting down");
-    } catch (Exception e) {
-      log.error("Error receiving message from {}", agentName, e);
-      throw new SimulationException("IO Error receiving generated message from " + agentName);
     }
   }
 
