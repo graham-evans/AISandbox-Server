@@ -112,8 +112,8 @@ public class NetworkAgent implements Agent {
           connectionPair.input());
       return responseType.cast(response);
     } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-      log.error("Error decoding message from {}, expecting {}", agentName, responseType.getName(),
-          e);
+      log.error("Error decoding message from {}, expecting {}", agentName,
+          responseType.getSimpleName(), e);
       throw new SimulationException("Error decoding generated message from " + agentName);
     } catch (InterruptedException e) {
       throw new SimulationException("Reading message while shutting down");
