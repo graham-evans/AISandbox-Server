@@ -2,7 +2,7 @@
   <!-- console / syslog appender -->
   <appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT">
     <encoder>
-      <pattern>%msg%n</pattern>
+      <pattern>[%level] %msg%n</pattern>
     </encoder>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>WARN</level>
