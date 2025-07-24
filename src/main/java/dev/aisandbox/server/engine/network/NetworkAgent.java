@@ -88,7 +88,7 @@ public class NetworkAgent implements Agent {
         connectionPair = connectionQueue.take();
       }
       // send the message
-      log.debug("Sending {} to {}", o, agentName);
+      log.debug("Sending '{}' to {}", o.toString().replaceAll("[\\n\\r]", ""), agentName);
       o.writeDelimitedTo(connectionPair.output());
     } catch (IOException e) {
       log.error("IO exception while sending message to {}", agentName, e);
