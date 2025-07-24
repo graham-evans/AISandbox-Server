@@ -82,13 +82,17 @@ public class NetworkAgent implements Agent {
 
   @Override
   public void send(GeneratedMessage o) throws SimulationException {
+    if (o == null) {
+      log.warn("Trying to send a null object to {}", agentName);
+    } else {
+      log.debug("Sending '{}' to {}", o.toString().replaceAll("[\\n\\r]", ""), agentName);
+    }
     try {
       if (connectionPair == null) {
         // wait for a connection
         connectionPair = connectionQueue.take();
       }
       // send the message
-      log.debug("Sending '{}' to {}", o.toString().replaceAll("[\\n\\r]", ""), agentName);
       o.writeDelimitedTo(connectionPair.output());
     } catch (IOException e) {
       log.error("IO exception while sending message to {}", agentName, e);
