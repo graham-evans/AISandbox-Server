@@ -105,7 +105,7 @@ public class NetworkAgent implements Agent {
         // wait for a connection
         connectionPair = connectionQueue.take();
       }
-      log.debug("Asking agent thread for response type {}", responseType);
+      log.debug("Asking {} thread for response type {}", agentName, responseType.getSimpleName());
 
       Method readDelimited = responseType.getMethod("parseDelimitedFrom", InputStream.class);
       GeneratedMessage response = (GeneratedMessage) readDelimited.invoke(null,
@@ -113,6 +113,7 @@ public class NetworkAgent implements Agent {
 
       if (response == null) {
         // special case response == null means the stream has ended
+        log.debug("Received null response from {}", agentName);
         throw new SimulationException("Network connection closed by " + agentName);
       }
       // cast and return
