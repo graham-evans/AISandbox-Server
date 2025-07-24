@@ -217,7 +217,7 @@ public final class CoinGame implements Simulation {
   }
 
   /**
-   * Checks if the game has reached a terminal state, throwing an exception if this is the case
+   * Checks if the game has reached a terminal state, returning true if this is the case.
    * <p>
    * The game is finished when all rows have zero coins left. According to the rules, the player who
    * takes the last coin loses.
