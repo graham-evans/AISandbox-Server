@@ -9,6 +9,7 @@ package dev.aisandbox.server.simulation.coingame;
 import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.MockAgent;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
+import dev.aisandbox.server.simulation.coingame.proto.CoinGameResult;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,12 +29,20 @@ public class MockPlayer extends MockAgent {
   private final String agentName;
 
   Random rand = new Random();
+  long messageCounter = 0;
 
   @Override
   public void send(GeneratedMessage o) {
-    if (o instanceof CoinGameState state) { // ignore all but the state object
+    if (o == null) {
+      log.warn("{} received null object", agentName);
+    } else {
+      log.info("{} received object {}", agentName, o.getClass().getSimpleName());
+    }
+    if (messageCounter % 2 == 0) {
+      // expect a CoinGameState and send an action
+      CoinGameState state = (CoinGameState) o;
       // decode the state
-      log.info("Creating random move from state {}", state.getCoinCountList());
+      log.info("{} Creating random move from state {}", agentName, state.getCoinCountList());
       Map<Integer, Integer> rowMap = new HashMap<Integer, Integer>();
       for (int row = 0; row < state.getCoinCountCount(); row++) {
         if (state.getCoinCount(row) > 0) {
@@ -43,14 +52,21 @@ public class MockPlayer extends MockAgent {
       // pick a random row with some coins
       List<Map.Entry<Integer, Integer>> entryList = new ArrayList<Map.Entry<Integer, Integer>>(
           rowMap.entrySet());
-      log.info("Filtered rows with items {}", entryList);
+      log.info("{} Filtered rows with items {}", agentName, entryList);
       Collections.shuffle(entryList, rand);
       Map.Entry<Integer, Integer> rowEntry = entryList.get(0);
       int takeCoins = Math.min(rand.nextInt(rowEntry.getValue()) + 1, state.getMaxPick());
-      getOutputQueue().add(
-          CoinGameAction.newBuilder().setSelectedRow(rowEntry.getKey()).setRemoveCount(takeCoins)
-              .build());
+      CoinGameAction action = CoinGameAction.newBuilder().setSelectedRow(rowEntry.getKey())
+          .setRemoveCount(takeCoins).build();
+      log.info("{} sending action {}", agentName, action.toString().replaceAll("\n\r", ""));
+      getOutputQueue().add(action);
+    } else {
+      // expect a CoingGameResult
+      CoinGameResult result = (CoinGameResult) o;
+      log.info("{} recieved result {}", agentName, result.getStatus());
     }
+    // advance the count
+    messageCounter++;
   }
 
 }
