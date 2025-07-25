@@ -72,7 +72,7 @@ public final class CoinGame implements Simulation {
   private BufferedImage[] coinImages;
   private String episodeId;
   private int[] coins;
-  private int firstPlayer = 0;
+  private int firstPlayer = 1;
   private int currentPlayer = 0;
   private boolean firstMove = true;
 
@@ -115,15 +115,18 @@ public final class CoinGame implements Simulation {
     System.arraycopy(scenario.getRows(), 0, coins, 0, scenario.getRows().length);
     // change the episode ID
     episodeId = UUID.randomUUID().toString();
-    // mark first move
+    // mark that this is the first move
     firstMove = true;
+    // choose a different starting player from last time
+    firstPlayer = (firstPlayer + 1) % 2;
+    currentPlayer = firstPlayer;
   }
 
   @Override
   public void step(OutputRenderer output) throws SimulationException {
     // draw the current state
     output.display();
-    log.debug("ask client {} to move", currentPlayer);
+    log.debug("ask {} to move from state {}", agents.get(currentPlayer).getAgentName(), coins);
     agents.get(currentPlayer).send(generateCurrentState());
     CoinGameAction action = agents.get(currentPlayer).receive(CoinGameAction.class);
     // try and make the move
@@ -141,7 +144,9 @@ public final class CoinGame implements Simulation {
         reset();
       } else {
         // play continues
-        if (!firstMove) {
+        if (firstMove) {
+          firstMove = false;
+        } else {
           // send continue to the other player
           agents.get((currentPlayer + 1) % 2)
               .send(CoinGameResult.newBuilder().setStatus(CoinGameSignal.PLAY).build());
@@ -156,7 +161,6 @@ public final class CoinGame implements Simulation {
       reset();
     }
     currentPlayer = (currentPlayer + 1) % 2;
-    firstMove = false;
   }
 
   /**
@@ -208,7 +212,9 @@ public final class CoinGame implements Simulation {
     }
     // does the selected row have enough coins (this can be caught and turned into a loss)
     if (coins[row] < amount) {
-      throw new InvalidCoinAction("Not enough coins in the selected row.");
+      throw new InvalidCoinAction(
+          "Not enough coins in the selected row, asked for " + amount + " from row " + row
+              + ", only " + coins[row] + " available");
     }
     // make the move
     int[] newCoins = Arrays.copyOf(coins, coins.length);
