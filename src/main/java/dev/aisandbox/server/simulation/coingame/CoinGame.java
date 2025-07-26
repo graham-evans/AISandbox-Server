@@ -34,7 +34,6 @@ import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -64,17 +63,17 @@ public final class CoinGame implements Simulation {
   private final RollingPieChartWidget pieChartWidget;
   // Agent & Game elements
   private final String sessionId = UUID.randomUUID().toString();
-  private final List<Double> agentScores = new ArrayList<>();
-  private final List<Agent> agents;
+  private final Agent[] agents = new Agent[2];
+  private final boolean[] agentMoved = new boolean[2];
+  private int firstPlayer = 1;
+  private int currentPlayer = 0;
   private final CoinScenario scenario;
   // UI Images
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;
   private String episodeId;
   private int[] coins;
-  private int firstPlayer = 1;
-  private int currentPlayer = 0;
-  private boolean firstMove = true;
+
 
   /**
    * Simulation constructor.
@@ -84,7 +83,9 @@ public final class CoinGame implements Simulation {
    * @param theme    The {@link dev.aisandbox.server.engine.Theme} to use while drawing.
    */
   public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
-    this.agents = agents;
+    assert agents.size() == 2;
+    this.agents[0] = agents.get(0);
+    this.agents[1] = agents.get(1);
     this.scenario = scenario;
     this.theme = theme;
     // build the coin pile
@@ -104,8 +105,6 @@ public final class CoinGame implements Simulation {
     } catch (IOException e) {
       log.error("Error loading images", e);
     }
-    // set the scores to 0
-    agents.forEach(a -> agentScores.add(0.0));
     // reset the game to the initial stage
     reset();
   }
@@ -115,8 +114,9 @@ public final class CoinGame implements Simulation {
     System.arraycopy(scenario.getRows(), 0, coins, 0, scenario.getRows().length);
     // change the episode ID
     episodeId = UUID.randomUUID().toString();
-    // mark that this is the first move
-    firstMove = true;
+    // mark that neither player has moved;
+    agentMoved[0] = false;
+    agentMoved[1] = false;
     // choose a different starting player from last time
     firstPlayer = (firstPlayer + 1) % 2;
     currentPlayer = firstPlayer;
@@ -126,41 +126,49 @@ public final class CoinGame implements Simulation {
   public void step(OutputRenderer output) throws SimulationException {
     // draw the current state
     output.display();
-    log.debug("ask {} to move from state {}", agents.get(currentPlayer).getAgentName(), coins);
-    agents.get(currentPlayer).send(generateCurrentState());
-    CoinGameAction action = agents.get(currentPlayer).receive(CoinGameAction.class);
+    // get the current player
+    Agent currentAgent = agents[currentPlayer];
+    // send state to current player and ask for an action
+    log.debug("ask {} to move from state {}", currentAgent.getAgentName(), coins);
+    currentAgent.send(generateCurrentState());
+    CoinGameAction action = currentAgent.receive(CoinGameAction.class);
+    log.debug("{} asked for {} coins from row {}", currentAgent.getAgentName(),
+        action.getRemoveCount(), action.getSelectedRow());
+    // mark that we have recieved a move from this agent (so we know who to send a win/lose
+    // message if this triggers one)
+    agentMoved[currentPlayer] = true;
     // try and make the move
     try {
       coins = makeMove(action.getSelectedRow(), action.getRemoveCount());
       logWidget.addText(
-          agents.get(currentPlayer).getAgentName() + " takes " + action.getRemoveCount()
-              + " from row " + action.getSelectedRow() + " leaving "
-              + coins[action.getSelectedRow()] + ".");
+          currentAgent.getAgentName() + " takes " + action.getRemoveCount() + " from row "
+              + action.getSelectedRow() + " leaving " + coins[action.getSelectedRow()] + ".");
       if (isGameFinished()) {
         // current player lost
-        logWidget.addText(agents.get(currentPlayer).getAgentName() + " lost");
-        informResult((currentPlayer + 1) % 2, firstMove);
+        logWidget.addText(currentAgent.getAgentName() + " lost");
+        informResult((currentPlayer + 1) % 2);
         output.display();
         reset();
       } else {
-        // play continues
-        if (firstMove) {
-          firstMove = false;
-        } else {
-          // send continue to the other player
-          agents.get((currentPlayer + 1) % 2)
-              .send(CoinGameResult.newBuilder().setStatus(CoinGameSignal.PLAY).build());
+        // play continues - tell the other agent
+        int otherPlayer = (currentPlayer + 1) % 2;
+        if (agentMoved[otherPlayer]) {
+          agents[otherPlayer].send(
+              CoinGameResult.newBuilder().setStatus(CoinGameSignal.PLAY).build());
         }
+        // move to the next player
+        currentPlayer = otherPlayer;
       }
     } catch (InvalidCoinAction e) {
+      // current player has made an illegal move and losses the game
       log.error(e.getMessage());
-      logWidget.addText(agents.get(currentPlayer).getAgentName() + " makes an invalid move.");
+      logWidget.addText(currentAgent.getAgentName() + " makes an invalid move.");
       // player has tried an illegal move - end the game
-      informResult((currentPlayer + 1) % 2, firstMove);
+      informResult((currentPlayer + 1) % 2);
       output.display();
       reset();
     }
-    currentPlayer = (currentPlayer + 1) % 2;
+
   }
 
   /**
@@ -244,24 +252,23 @@ public final class CoinGame implements Simulation {
 
   /**
    * Inform both players that the episode has finished.
+   * <p>
+   * Only send messages to players who have made moves.
    *
-   * @param winner
+   * @param winner the agent index of the winner
    * @throws SimulationException
    */
-  private void informResult(int winner, boolean firstMove) throws SimulationException {
-    Agent winAgent = agents.get(winner);
-    Agent loseAgent = agents.get((winner + 1) % 2);
-    // special case - if this is the first move then only tell the first player
-    if (firstMove) {
-      agents.get(firstPlayer).send(CoinGameResult.newBuilder()
-          .setStatus(firstPlayer == winner ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());
-    } else {
-      winAgent.send(CoinGameResult.newBuilder().setStatus(CoinGameSignal.WIN).build());
-      loseAgent.send(CoinGameResult.newBuilder().setStatus(CoinGameSignal.LOSE).build());
+  private void informResult(int winner) throws SimulationException {
+    if (agentMoved[0]) {
+      agents[0].send(CoinGameResult.newBuilder()
+          .setStatus(winner == 0 ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());
     }
-    logWidget.addText(winAgent.getAgentName() + " wins");
-    agentScores.set(winner, agentScores.get(winner) + 1);
-    pieChartWidget.addValue(agents.get(winner).getAgentName(), theme.getAgentMain(winner));
+    if (agentMoved[1]) {
+      agents[1].send(CoinGameResult.newBuilder()
+          .setStatus(winner == 1 ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());
+    }
+    logWidget.addText(agents[winner].getAgentName() + " wins");
+    pieChartWidget.addValue(agents[winner].getAgentName(), theme.getAgentMain(winner));
   }
 
   /**
