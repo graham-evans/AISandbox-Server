@@ -8,6 +8,7 @@ package dev.aisandbox.server.simulation.coingame;
 
 import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.MockAgent;
+import dev.aisandbox.server.engine.exception.SimulationException;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameResult;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
@@ -32,7 +33,7 @@ public class MockPlayer extends MockAgent {
   long messageCounter = 0;
 
   @Override
-  public void send(GeneratedMessage o) {
+  public void send(GeneratedMessage o) throws SimulationException {
     if (o == null) {
       log.warn("{} received null object", agentName);
     } else {
@@ -58,8 +59,14 @@ public class MockPlayer extends MockAgent {
       int takeCoins = Math.min(rand.nextInt(rowEntry.getValue()) + 1, state.getMaxPick());
       CoinGameAction action = CoinGameAction.newBuilder().setSelectedRow(rowEntry.getKey())
           .setRemoveCount(takeCoins).build();
-      log.info("{} sending action {}", agentName, action.toString().replaceAll("\n\r", ""));
-      getOutputQueue().add(action);
+      // make sure the queue is empty
+      if (!getOutputQueue().isEmpty()) {
+        log.error("Writing to non empty output queue");
+        throw new SimulationException("Writing to non empty queue.");
+      } else {
+        log.info("{} sending action {}", agentName, action.toString().replaceAll("\n\r", ""));
+        getOutputQueue().add(action);
+      }
     } else {
       // expect a CoingGameResult
       CoinGameResult result = (CoinGameResult) o;
