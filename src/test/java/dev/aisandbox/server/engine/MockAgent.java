@@ -41,7 +41,7 @@ public class MockAgent implements Agent {
     if (outputQueue.isEmpty()) {
       throw new SimulationException("No response available");
     }
-    GeneratedMessage message = outputQueue.getFirst();
+    GeneratedMessage message = outputQueue.removeFirst();
     if (message.getClass() != responseType) {
       throw new SimulationException(
           "Expected " + responseType + " but received " + message.getClass());
