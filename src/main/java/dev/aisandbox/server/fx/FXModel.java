@@ -33,8 +33,6 @@ public enum FXModel {
   private final IntegerProperty agentCount = new SimpleIntegerProperty(1);
   @Getter
   private final IntegerProperty defaultPort = new SimpleIntegerProperty(9000);
-  @Getter
-  private final ObjectProperty<OutputRenderer> outputRenderer = new SimpleObjectProperty<>();
 
   FXModel() {
     // populate simulation list
