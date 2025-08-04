@@ -10,6 +10,7 @@ import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
+import dev.aisandbox.server.engine.output.FXRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
 import java.io.IOException;
@@ -184,6 +185,7 @@ public class SetupController {
   void startSimulation(ActionEvent event) {
     if (model.getSelectedSimulationBuilder().get() != null) {
       // store output in model
+      /*
       if (outputScreenChoice.isSelected()) {
         model.getOutputRenderer().set(new ScreenOutputRenderer());
       } else if (outputImageChoice.isSelected()) {
@@ -191,6 +193,7 @@ public class SetupController {
       } else {
         model.getOutputRenderer().set(new NullOutputRenderer());
       }
+       */
       // flip to runtime screen
       try {
         FXMLLoader loader = new FXMLLoader(SetupController.class.getResource("/fx/runtime.fxml"));
