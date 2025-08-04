@@ -4,11 +4,10 @@ module AISandbox.Server.main {
   requires com.google.protobuf;
   requires javafx.controls;
   requires javafx.fxml;
-  requires javafx.graphics;
   requires static lombok;
   requires org.apache.commons.cli;
   requires org.apache.commons.lang3;
   requires org.apache.commons.statistics.descriptive;
   requires org.slf4j;
-  requires java.desktop;
+  requires javafx.swing;
 }
