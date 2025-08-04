@@ -38,6 +38,7 @@ public class NetworkAgentConnectionThread extends Thread {
   private final OutputRenderer renderer;
 
   @Override
+  @SuppressWarnings("PMD.CloseResource")
   public void run() {
     log.info("Opening network agent for {}", agentName);
     try {
