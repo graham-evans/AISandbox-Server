@@ -6,6 +6,8 @@
 
 package dev.aisandbox.launcher;
 
+import dev.aisandbox.server.engine.SimulationRunner;
+import dev.aisandbox.server.fx.FXModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -42,5 +44,9 @@ public class SandboxServerFXApplication extends Application {
   @Override
   public void stop() throws Exception {
     log.info("Stopping application");
+    SimulationRunner runner = FXModel.INSTANCE.getRunner();
+    if (runner != null) {
+      runner.stopSimulation();
+    }
   }
 }
