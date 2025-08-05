@@ -17,10 +17,12 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -37,6 +39,8 @@ public class RuntimeController {
   private TextArea logArea; // Value injected by FXMLLoader
   @FXML
   private BorderPane borderPane;
+  @FXML
+  private Button stopSimulationButton;
 
   private SimulationRunner runner;
 
@@ -44,7 +48,9 @@ public class RuntimeController {
 
   @FXML
   void stopSimulationAction(ActionEvent event) {
-
+    runner.stopSimulation();
+    Stage stage = (Stage) stopSimulationButton.getScene().getWindow();
+    stage.close();
   }
 
   public void updateOutput(String line) {
