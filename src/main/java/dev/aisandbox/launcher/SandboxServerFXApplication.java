@@ -8,6 +8,7 @@ package dev.aisandbox.launcher;
 
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.fx.FXModel;
+import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -30,8 +31,9 @@ public class SandboxServerFXApplication extends Application {
   @Override
   public void start(Stage stage) throws Exception {
     log.info("Starting application - FX");
-
-    Parent root = FXMLLoader.load(getClass().getResource("/fx/simulation.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fx/simulation.fxml"));
+    loader.setResources(ResourceBundle.getBundle("fx.simulation"));
+    Parent root = loader.load();
     Scene scene = new Scene(root, 800, 600);
     stage.setScene(scene);
     stage.centerOnScreen();

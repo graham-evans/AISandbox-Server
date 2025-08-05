@@ -45,10 +45,6 @@ public class RuntimeController {
 
   @FXML
   void stopSimulationAction(ActionEvent event) {
-    //   SimulationRunner runner = model.getRunner();
-    //   if (runner != null) {
-    //     runner.stopSimulation();
-    //   }
     Stage stage = (Stage) stopSimulationButton.getScene().getWindow();
     stage.close();
   }

@@ -9,15 +9,12 @@ package dev.aisandbox.server.fx;
 import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
-import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
-import dev.aisandbox.server.engine.output.FXRenderer;
-import dev.aisandbox.server.engine.output.NullOutputRenderer;
-import dev.aisandbox.server.engine.output.ScreenOutputRenderer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.TreeMap;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -184,21 +181,10 @@ public class SetupController {
   @FXML
   void startSimulation(ActionEvent event) {
     if (model.getSelectedSimulationBuilder().get() != null) {
-      // store output in model
-      /*
-      if (outputScreenChoice.isSelected()) {
-        model.getOutputRenderer().set(new ScreenOutputRenderer());
-      } else if (outputImageChoice.isSelected()) {
-        model.getOutputRenderer().set(new BitmapOutputRenderer());
-      } else {
-        model.getOutputRenderer().set(new NullOutputRenderer());
-      }
-       */
       // flip to runtime screen
       try {
         FXMLLoader loader = new FXMLLoader(SetupController.class.getResource("/fx/runtime.fxml"));
-        //      loader.setResources(ResourceBundle.getBundle("dev.aisandbox.client.fx.UI"));
-        //        loader.setControllerFactory(appContext::getBean);
+        loader.setResources(ResourceBundle.getBundle("fx.runtime"));
         Parent root = loader.load();
         Window window = ((Button) event.getSource()).getScene().getWindow();
         window.getScene().setRoot(root);
