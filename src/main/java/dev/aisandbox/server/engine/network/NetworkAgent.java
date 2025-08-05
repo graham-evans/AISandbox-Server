@@ -28,18 +28,71 @@ import java.util.concurrent.SynchronousQueue;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Network-based implementation of the Agent interface.
+ * <p>
+ * This class provides a network communication channel for external AI agents to connect
+ * and participate in simulations. It creates a server socket that external agents can
+ * connect to, and handles the Protocol Buffer message exchange required for simulation
+ * interaction.
+ * </p>
+ * <p>
+ * The NetworkAgent operates by:
+ * </p>
+ * <ul>
+ *   <li>Creating a server socket on a configurable port</li>
+ *   <li>Waiting for an external agent to connect</li>
+ *   <li>Exchanging Protocol Buffer messages over the socket connection</li>
+ *   <li>Handling connection management and error recovery</li>
+ * </ul>
+ * <p>
+ * External agents can be implemented in any language that supports:
+ * </p>
+ * <ul>
+ *   <li>TCP socket connections</li>
+ *   <li>Protocol Buffer serialization/deserialization</li>
+ *   <li>The specific message protocol for the target simulation</li>
+ * </ul>
+ *
+ * @see Agent
+ * @see NetworkAgentConnectionThread
+ */
 @Slf4j
 public class NetworkAgent implements Agent {
 
-
+  /** Maximum number of attempts to find an available port */
   private static final int MAX_PORT_TRIES = 10;
+  
+  /** Human-readable name for this agent */
   @Getter
   private final String agentName;
+  
+  /** Server socket for accepting agent connections */
   private final ServerSocket serverSocket;
+  
+  /** Output renderer for displaying connection status and messages */
   private final OutputRenderer renderer;
+  
+  /** Queue for thread-safe communication with the connection handler */
   private final SynchronousQueue<ConnectionPair> connectionQueue = new SynchronousQueue<>();
+  
+  /** Current active connection to the external agent */
   private NetworkAgentConnectionThread.ConnectionPair connectionPair = null;
 
+  /**
+   * Creates a new NetworkAgent with the specified configuration.
+   * <p>
+   * This constructor sets up a server socket and starts a background thread to handle
+   * incoming connections from external agents. If the default port is unavailable,
+   * it will try nearby ports automatically.
+   * </p>
+   *
+   * @param agentName    human-readable name for this agent
+   * @param defaultPort  preferred port number for the server socket
+   * @param openExternal if true, bind to all network interfaces; if false, bind only to localhost
+   * @param renderer     output renderer for displaying status messages
+   * @throws SimulationSetupException if unable to create a server socket after multiple attempts
+   */
   public NetworkAgent(String agentName, int defaultPort, boolean openExternal,
       OutputRenderer renderer) throws SimulationSetupException {
     this.agentName = agentName;

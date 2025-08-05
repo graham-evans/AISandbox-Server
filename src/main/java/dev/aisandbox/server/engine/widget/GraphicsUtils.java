@@ -15,14 +15,52 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import lombok.experimental.UtilityClass;
 
+/**
+ * Utility class providing common graphics operations and helper methods.
+ * <p>
+ * This class contains static methods for common graphics tasks such as creating images,
+ * setting up rendering hints for high quality output, and drawing centered text.
+ * These utilities are used throughout the simulation framework to ensure consistent
+ * visual quality and reduce code duplication.
+ * </p>
+ * <p>
+ * All methods are static and the class cannot be instantiated due to the {@code @UtilityClass}
+ * annotation from Lombok.
+ * </p>
+ */
 @UtilityClass
 public class GraphicsUtils {
 
+  /**
+   * Creates a transparent image with the specified dimensions.
+   * <p>
+   * This method creates a BufferedImage with an alpha channel (ARGB) that is initially
+   * completely transparent. This is useful for creating overlay images or images that
+   * will be composited over other content.
+   * </p>
+   *
+   * @param width  the width of the image in pixels
+   * @param height the height of the image in pixels
+   * @return a new transparent BufferedImage
+   */
   public static BufferedImage createClearImage(int width, int height) {
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     return image;
   }
 
+  /**
+   * Creates an image filled with a solid color.
+   * <p>
+   * This method creates a BufferedImage with an alpha channel and fills it entirely
+   * with the specified color. This is commonly used for creating background images
+   * or solid color widgets.
+   * </p>
+   *
+   * @param width  the width of the image in pixels
+   * @param height the height of the image in pixels
+   * @param color  the color to fill the image with
+   * @return a new BufferedImage filled with the specified color
+   */
   public static BufferedImage createBlankImage(int width, int height, Color color) {
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = image.createGraphics();
@@ -31,6 +69,20 @@ public class GraphicsUtils {
     return image;
   }
 
+  /**
+   * Configures a Graphics2D context with high-quality rendering hints.
+   * <p>
+   * This method sets up various rendering hints to improve the visual quality of
+   * drawn content. It enables antialiasing for smooth edges, configures text
+   * rendering for clarity, and sets interpolation methods for better image scaling.
+   * </p>
+   * <p>
+   * This should be called on any Graphics2D context used for simulation visualization
+   * to ensure consistent, high-quality output across all simulations.
+   * </p>
+   *
+   * @param g the Graphics2D context to configure
+   */
   public static void setupRenderingHints(Graphics2D g) {
     // antialiasing
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -56,6 +108,26 @@ public class GraphicsUtils {
         RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
   }
 
+  /**
+   * Draws text vertically centered within a specified rectangle.
+   * <p>
+   * This method rotates the graphics context by 90 degrees counterclockwise and draws
+   * the text centered within the rotated coordinate space. This is particularly useful
+   * for Y-axis labels that need to be rotated.
+   * </p>
+   * <p>
+   * The original graphics transformation is preserved and restored after drawing.
+   * </p>
+   *
+   * @param graphics the Graphics2D context to draw on
+   * @param x        the X coordinate of the rectangle's left edge
+   * @param y        the Y coordinate of the rectangle's top edge
+   * @param width    the width of the rectangle
+   * @param height   the height of the rectangle
+   * @param title    the text to draw
+   * @param font     the font to use for the text
+   * @param colour   the color to use for the text
+   */
   public static void drawVerticalCenteredText(Graphics2D graphics, int x, int y, int width,
       int height, String title, Font font, Color colour) {
     // store original transformation

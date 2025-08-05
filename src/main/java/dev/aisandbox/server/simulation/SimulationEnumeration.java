@@ -16,36 +16,87 @@ import dev.aisandbox.server.simulation.twisty.TwistyBuilder;
 import lombok.Getter;
 
 /**
- * Enum class representing different types of simulations that can be run.
+ * Enumeration of all available simulations in the AI Sandbox.
+ * <p>
+ * This enumeration serves as a central registry of all simulation types that can be executed
+ * within the AI Sandbox framework. Each enumeration value is associated with a specific
+ * {@link SimulationBuilder} that provides the configuration and factory methods for creating
+ * instances of that simulation.
+ * </p>
+ * <p>
+ * The available simulations cover a variety of AI problem domains including:
+ * </p>
+ * <ul>
+ *   <li><strong>Reinforcement Learning:</strong> Multi-armed bandits, maze navigation</li>
+ *   <li><strong>Game Playing:</strong> Card games, puzzle solving</li>
+ *   <li><strong>Search and Optimization:</strong> Pathfinding, constraint satisfaction</li>
+ *   <li><strong>Sequential Decision Making:</strong> Resource allocation, strategic planning</li>
+ * </ul>
+ * <p>
+ * Each simulation provides a unique environment for testing and evaluating AI agents,
+ * with configurable parameters and real-time visualization capabilities.
+ * </p>
  *
- * <p>Each simulation type is associated with a {@link SimulationBuilder} instance, which provides
- * the necessary configuration and setup for running the simulation.
+ * @see SimulationBuilder
  */
 public enum SimulationEnumeration {
   /**
-   * The Coin Game simulation, where a player must collect coins in a grid while avoiding
-   * obstacles.
+   * The Coin Game simulation - strategic coin removal game.
+   * <p>
+   * Players take turns removing coins from piles, with the objective being to force
+   * the opponent to take the last coin. Features multiple game variants with different
+   * pile configurations and move restrictions.
+   * </p>
    */
   COIN_GAME(new CoinGameBuilder()),
+  
   /**
-   * The High-Low Cards game, where a player tries to guess the value of a card.
+   * High-Low Cards game - sequential card prediction.
+   * <p>
+   * Agent must predict whether the next card in a deck will be higher or lower
+   * than the current card. Tests decision-making under uncertainty with observable
+   * information about remaining cards.
+   * </p>
    */
   HIGH_LOW_CARDS(new HighLowCardsBuilder()),
+  
   /**
-   * A variation of the Bandit problem, where a player must make decisions based on rewards and
-   * penalties.
+   * Multi-armed Bandit problem - exploration vs exploitation.
+   * <p>
+   * Classic reinforcement learning scenario where an agent must choose between
+   * multiple slot machines (bandits) to maximize reward over time. Tests the
+   * fundamental explore-exploit tradeoff in sequential decision making.
+   * </p>
    */
   MULTI_BANDIT(new BanditScenario()),
+  
   /**
-   * The Maze simulation, where a player must navigate through a grid to reach the goal.
+   * Maze navigation - pathfinding and spatial reasoning.
+   * <p>
+   * Agent must navigate through a maze from start to goal position while dealing
+   * with obstacles and potentially limited visibility. Tests search algorithms
+   * and spatial planning capabilities.
+   * </p>
    */
   MAZE(new MazeBuilder()),
+  
   /**
-   * Minehunter - find mines in a grid and place flags.
+   * Mine Hunter - logical deduction and risk assessment.
+   * <p>
+   * Agent must identify hidden mines in a grid using numerical clues, similar to
+   * the classic Minesweeper game. Tests logical reasoning and constraint satisfaction
+   * under uncertainty.
+   * </p>
    */
   MINE(new MineHunterScenario()),
+  
   /**
-   * Twisty puzzles, like cubes and pyramids.
+   * Twisty Puzzles - 3D spatial manipulation.
+   * <p>
+   * Agent must solve 3D puzzles like Rubik's cubes through sequence of moves.
+   * Tests complex state space navigation and goal-oriented planning in
+   * high-dimensional spaces.
+   * </p>
    */
   TWISTY(new TwistyBuilder());
   /**
