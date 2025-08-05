@@ -16,15 +16,27 @@ import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for HistogramWidget functionality.
+ * Tests histogram rendering with various data scenarios.
+ */
 public class HistogramWidgetTest {
 
   private static final File outputDir = new File("build/test/widgets/histogram");
 
+  /**
+   * Sets up the output directory for test artifacts.
+   */
   @BeforeAll
   public static void setupDir() {
     outputDir.mkdirs();
   }
 
+  /**
+   * Tests histogram widget behavior with no data.
+   *
+   * @throws IOException if there is an error writing test output files
+   */
   @Test
   public void noDataTest() throws IOException {
     RollingValueHistogramWidget widget = RollingValueHistogramWidget.builder().height(300)

@@ -45,9 +45,9 @@ class SimulationParameterUtilsTest {
   }
 
   /**
-   * Test that all parameters in each simulation work
+   * Test that all parameters in each simulation work.
    *
-   * @param simulation
+   * @param simulation the simulation enumeration to test
    */
   @ParameterizedTest
   @EnumSource(SimulationEnumeration.class)

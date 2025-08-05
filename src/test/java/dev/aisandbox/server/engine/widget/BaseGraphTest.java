@@ -17,15 +17,27 @@ import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for BaseGraph widget functionality.
+ * Tests graph rendering, title handling, and axis scaling.
+ */
 public class BaseGraphTest {
 
   private static final File outputDir = new File("build/test/widgets/graph");
 
+  /**
+   * Sets up the output directory for test artifacts.
+   */
   @BeforeAll
   public static void setupDir() {
     outputDir.mkdirs();
   }
 
+  /**
+   * Tests graph title rendering functionality.
+   *
+   * @throws IOException if there is an error writing test output files
+   */
   @Test
   public void testTitles() throws IOException {
     BaseGraph graph = new BaseGraph(500, 300, "Main Title", "X Title", "Y Title", Theme.LIGHT,

@@ -16,17 +16,29 @@ import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for PieChart widget functionality.
+ * Tests pie chart rendering with various data scenarios.
+ */
 public class PieChartTest {
 
   private static final File outputDir = new File("build/test/widgets/piechart");
   private static final Random rand = new Random();
 
+  /**
+   * Sets up the output directory for test artifacts.
+   */
   @BeforeAll
   public static void setupDir() {
     outputDir.mkdirs();
   }
 
 
+  /**
+   * Tests basic pie chart functionality.
+   *
+   * @throws IOException if there is an error writing test output files
+   */
   @Test
   public void testNoData() throws IOException {
     PieChartWidget pieChart = PieChartWidget.builder().width(500).height(500)

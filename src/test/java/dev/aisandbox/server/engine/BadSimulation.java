@@ -9,6 +9,10 @@ package dev.aisandbox.server.engine;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Test simulation builder that provides invalid parameters for negative testing.
+ * This class is used to test parameter validation and error handling.
+ */
 public class BadSimulation implements SimulationBuilder {
 
   @Override

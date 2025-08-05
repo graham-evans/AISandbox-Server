@@ -13,6 +13,10 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+/**
+ * Mock implementation of the Agent interface for testing purposes.
+ * This agent can be programmed to send and receive specific messages during tests.
+ */
 public class MockAgent implements Agent {
 
   @Getter(AccessLevel.PROTECTED)
@@ -28,8 +32,8 @@ public class MockAgent implements Agent {
    *
    * <p>This is the method that needs overriding!
    *
-   * @param msg The Message to send
-   * @throws SimulationException
+   * @param msg The Message to send to the mock agent
+   * @throws SimulationException if there is an error processing the message
    */
   @Override
   public void send(GeneratedMessage msg) throws SimulationException {

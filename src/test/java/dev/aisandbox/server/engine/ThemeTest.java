@@ -16,6 +16,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for Theme functionality and color handling.
+ * Tests theme color definitions and documentation generation.
+ */
 public class ThemeTest {
 
   static String splitCamelCase(String s) {
