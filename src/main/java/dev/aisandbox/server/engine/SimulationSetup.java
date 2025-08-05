@@ -31,11 +31,12 @@ public class SimulationSetup {
    * @param defaultPort  The starting port number for network agents
    * @param openExternal
    * @param renderer     The output renderer to use
+   * @param theme
    * @return A configured SimulationRunner ready to start
    * @throws SimulationSetupException If there's an error during simulation setup
    */
   public static SimulationRunner setupSimulation(SimulationBuilder builder, int agentCount,
-      int defaultPort, boolean openExternal, OutputRenderer renderer, long maxStepCount)
+      int defaultPort, boolean openExternal, OutputRenderer renderer, Theme theme, long maxStepCount)
       throws SimulationSetupException {
     AtomicInteger port = new AtomicInteger(defaultPort);
     String[] agentNames = builder.getAgentNames(agentCount);
@@ -43,7 +44,7 @@ public class SimulationSetup {
     for (String agentName : agentNames) {
       agents.add(new NetworkAgent(agentName, port.getAndIncrement(), openExternal,renderer));
     }
-    return setupSimulation(builder, agents, renderer, maxStepCount);
+    return setupSimulation(builder, agents, renderer, theme, maxStepCount);
   }
 
   /**
@@ -54,12 +55,13 @@ public class SimulationSetup {
    * @param builder  The simulation builder to use
    * @param agents   The list of pre-configured agents to include in the simulation
    * @param renderer The output renderer to use
+   * @param theme
    * @return A configured SimulationRunner ready to start
    */
   public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents,
-      OutputRenderer renderer, long maxStepCount) throws SimulationSetupException {
+      OutputRenderer renderer, Theme theme, long maxStepCount) throws SimulationSetupException {
     // create simulation
-    Simulation sim = builder.build(agents, Theme.LIGHT, new Random());
+    Simulation sim = builder.build(agents, theme, new Random());
     // start output
     renderer.setup(sim);
     // create simulation thread

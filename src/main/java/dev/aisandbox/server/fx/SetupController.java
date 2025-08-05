@@ -9,6 +9,7 @@ package dev.aisandbox.server.fx;
 import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.engine.Theme;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +26,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -54,10 +55,7 @@ public class SetupController {
   private Spinner<Integer> agentCounter;
 
   @FXML
-  private RadioButton outputImageChoice;
-
-  @FXML
-  private RadioButton outputScreenChoice;
+  private ChoiceBox<Theme> themeChoice;
 
   @FXML
   private ListView<SimulationBuilder> simulationList;
@@ -67,12 +65,6 @@ public class SetupController {
     // FX assertions
     assert agentCounter != null :
         "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation" + ".fxml'.";
-    assert outputImageChoice != null :
-        "fx:id=\"outputImageChoice\" was not injected: check your FXML file 'simulation"
-            + ".fxml'.";
-    assert outputScreenChoice != null :
-        "fx:id=\"outputScreenChoice\" was not injected: check your FXML file "
-            + "'simulation.fxml'.";
     assert parameterBox != null :
         "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation" + ".fxml'.";
     assert simDescription != null :
@@ -87,9 +79,6 @@ public class SetupController {
     // disable agent counter until builder is selected
     agentCounter.setDisable(true);
     agentCounter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
-
-    // initialise the agent counter
-    /*   */
     // set builder list renderer
     simulationList.setCellFactory(new SimulationBuilderRenderer());
     // update when selecting a new builder
@@ -121,6 +110,10 @@ public class SetupController {
         });
     // select the first simulation in the list
     simulationList.getSelectionModel().select(0);
+    // setup theme chooser
+    themeChoice.getItems().addAll(Theme.values());
+    model.getSelectedTheme().bind(themeChoice.valueProperty());
+    themeChoice.getSelectionModel().select(Theme.LIGHT);
   }
 
   /**

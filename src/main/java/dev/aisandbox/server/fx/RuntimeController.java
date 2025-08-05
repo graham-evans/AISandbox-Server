@@ -77,7 +77,7 @@ public class RuntimeController {
 
       SimulationRunner runner = SimulationSetup.setupSimulation(
           model.getSelectedSimulationBuilder().get(), model.getAgentCount().get(),
-          model.getDefaultPort().get(), false, renderer, -1L);
+          model.getDefaultPort().get(), false, renderer, model.getSelectedTheme().get(), -1L);
       runner.start();
       model.setRunner(runner);
       log.debug("Initialized RuntimeController");
