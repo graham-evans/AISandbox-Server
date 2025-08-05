@@ -31,6 +31,7 @@ public class RuntimeController {
 
   FXModel model = FXModel.INSTANCE.getInstance();
   String outputText = "";
+  ImageView imageView;
   @FXML // ResourceBundle that was given to the FXMLLoader
   private ResourceBundle resources;
   @FXML // URL location of the FXML file that was given to the FXMLLoader
@@ -42,13 +43,12 @@ public class RuntimeController {
   @FXML
   private Button stopSimulationButton;
 
-  private SimulationRunner runner;
-
-  ImageView imageView;
-
   @FXML
   void stopSimulationAction(ActionEvent event) {
-    runner.stopSimulation();
+    //   SimulationRunner runner = model.getRunner();
+    //   if (runner != null) {
+    //     runner.stopSimulation();
+    //   }
     Stage stage = (Stage) stopSimulationButton.getScene().getWindow();
     stage.close();
   }
@@ -79,9 +79,11 @@ public class RuntimeController {
     try {
       FXRenderer renderer = new FXRenderer(this);
 
-      runner = SimulationSetup.setupSimulation(model.getSelectedSimulationBuilder().get(),
-          model.getAgentCount().get(), model.getDefaultPort().get(), false, renderer, -1L);
+      SimulationRunner runner = SimulationSetup.setupSimulation(
+          model.getSelectedSimulationBuilder().get(), model.getAgentCount().get(),
+          model.getDefaultPort().get(), false, renderer, -1L);
       runner.start();
+      model.setRunner(runner);
       log.debug("Initialized RuntimeController");
     } catch (SimulationSetupException e) {
       logArea.setText("Error initialising simulation.");
