@@ -12,7 +12,9 @@ import java.util.Random;
 /**
  * Builder class for setting up simulations.
  * <p>
- * Any parameters that need to be configured for the simulation should be exposed as POJO getters and setters. In addition, the getParameters method should return their details so they can be exposed via the UI and CLI.
+ * Any parameters that need to be configured for the simulation should be exposed as POJO getters
+ * and setters. In addition, the getParameters method should return their details so they can be
+ * exposed via the UI and CLI.
  * </p>
  * <p>
  * SimulationBuilder implementations act as factories and configuration containers for simulations.

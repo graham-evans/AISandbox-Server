@@ -18,10 +18,10 @@ import lombok.experimental.UtilityClass;
 /**
  * Utility class providing common graphics operations and helper methods.
  * <p>
- * This class contains static methods for common graphics tasks such as creating images,
- * setting up rendering hints for high quality output, and drawing centered text.
- * These utilities are used throughout the simulation framework to ensure consistent
- * visual quality and reduce code duplication.
+ * This class contains static methods for common graphics tasks such as creating images, setting up
+ * rendering hints for high quality output, and drawing centered text. These utilities are used
+ * throughout the simulation framework to ensure consistent visual quality and reduce code
+ * duplication.
  * </p>
  * <p>
  * All methods are static and the class cannot be instantiated due to the {@code @UtilityClass}
@@ -34,9 +34,9 @@ public class GraphicsUtils {
   /**
    * Creates a transparent image with the specified dimensions.
    * <p>
-   * This method creates a BufferedImage with an alpha channel (ARGB) that is initially
-   * completely transparent. This is useful for creating overlay images or images that
-   * will be composited over other content.
+   * This method creates a BufferedImage with an alpha channel (ARGB) that is initially completely
+   * transparent. This is useful for creating overlay images or images that will be composited over
+   * other content.
    * </p>
    *
    * @param width  the width of the image in pixels
@@ -51,9 +51,8 @@ public class GraphicsUtils {
   /**
    * Creates an image filled with a solid color.
    * <p>
-   * This method creates a BufferedImage with an alpha channel and fills it entirely
-   * with the specified color. This is commonly used for creating background images
-   * or solid color widgets.
+   * This method creates a BufferedImage with an alpha channel and fills it entirely with the
+   * specified color. This is commonly used for creating background images or solid color widgets.
    * </p>
    *
    * @param width  the width of the image in pixels
@@ -72,13 +71,13 @@ public class GraphicsUtils {
   /**
    * Configures a Graphics2D context with high-quality rendering hints.
    * <p>
-   * This method sets up various rendering hints to improve the visual quality of
-   * drawn content. It enables antialiasing for smooth edges, configures text
-   * rendering for clarity, and sets interpolation methods for better image scaling.
+   * This method sets up various rendering hints to improve the visual quality of drawn content. It
+   * enables antialiasing for smooth edges, configures text rendering for clarity, and sets
+   * interpolation methods for better image scaling.
    * </p>
    * <p>
-   * This should be called on any Graphics2D context used for simulation visualization
-   * to ensure consistent, high-quality output across all simulations.
+   * This should be called on any Graphics2D context used for simulation visualization to ensure
+   * consistent, high-quality output across all simulations.
    * </p>
    *
    * @param g the Graphics2D context to configure
@@ -111,9 +110,9 @@ public class GraphicsUtils {
   /**
    * Draws text vertically centered within a specified rectangle.
    * <p>
-   * This method rotates the graphics context by 90 degrees counterclockwise and draws
-   * the text centered within the rotated coordinate space. This is particularly useful
-   * for Y-axis labels that need to be rotated.
+   * This method rotates the graphics context by 90 degrees counterclockwise and draws the text
+   * centered within the rotated coordinate space. This is particularly useful for Y-axis labels
+   * that need to be rotated.
    * </p>
    * <p>
    * The original graphics transformation is preserved and restored after drawing.

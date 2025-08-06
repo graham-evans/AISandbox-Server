@@ -49,10 +49,10 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Runtime implementation for the Multi-armed Bandit simulation.
  * <p>
- * The Multi-armed Bandit problem is a classic reinforcement learning scenario where an agent
- * must choose between multiple slot machines (bandits), each with unknown reward distributions.
- * The goal is to maximize total reward over a series of pulls by balancing exploration of
- * unknown bandits with exploitation of seemingly good ones.
+ * The Multi-armed Bandit problem is a classic reinforcement learning scenario where an agent must
+ * choose between multiple slot machines (bandits), each with unknown reward distributions. The goal
+ * is to maximize total reward over a series of pulls by balancing exploration of unknown bandits
+ * with exploitation of seemingly good ones.
  * </p>
  * <p>
  * This implementation provides:
@@ -76,67 +76,115 @@ import lombok.extern.slf4j.Slf4j;
 public final class BanditRuntime implements Simulation {
 
   // UI Layout Constants
-  /** Width of the main bandit visualization area */
+  /**
+   * Width of the main bandit visualization area
+   */
   private static final int BANDIT_WIDTH =
       HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING - 400;
-  /** Height of the main bandit visualization area */
+  /**
+   * Height of the main bandit visualization area
+   */
   private static final int BANDIT_HEIGHT =
       (HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2) * 5 / 8;
-  
+
   // Results widget dimensions
-  /** Width of each results widget (episode scores, success rate, logs) */
+  /**
+   * Width of each results widget (episode scores, success rate, logs)
+   */
   private static final int RESULTS_WIDTH =
       (HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING * 2) / 3;
-  /** Height of each results widget */
+  /**
+   * Height of each results widget
+   */
   private static final int RESULTS_HEIGHT =
       HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2 - BANDIT_HEIGHT;
-  
+
   // Simulation parameters
-  /** The agent participating in this bandit simulation */
+  /**
+   * The agent participating in this bandit simulation
+   */
   private final Agent agent;
-  /** Random number generator for bandit reward generation */
+  /**
+   * Random number generator for bandit reward generation
+   */
   private final Random random;
-  /** Number of bandits available for the agent to choose from */
+  /**
+   * Number of bandits available for the agent to choose from
+   */
   private final int banditCount;
-  /** Number of pulls allowed per episode */
+  /**
+   * Number of pulls allowed per episode
+   */
   private final int pullCount;
-  /** Mean value distribution setting for bandit initialization */
+  /**
+   * Mean value distribution setting for bandit initialization
+   */
   private final BanditNormalEnumeration normal;
-  /** Standard deviation setting for bandit reward distributions */
+  /**
+   * Standard deviation setting for bandit reward distributions
+   */
   private final BanditStdEnumeration std;
-  /** Rule for updating bandit estimates (if applicable) */
+  /**
+   * Rule for updating bandit estimates (if applicable)
+   */
   private final BanditUpdateEnumeration updateRule;
-  /** Visual theme for rendering */
+  /**
+   * Visual theme for rendering
+   */
   private final Theme theme;
-  
+
   // Session tracking
-  /** Unique identifier for this simulation session */
+  /**
+   * Unique identifier for this simulation session
+   */
   private final String sessionID = UUID.randomUUID().toString();
-  /** List of all bandits with their reward distributions */
+  /**
+   * List of all bandits with their reward distributions
+   */
   private final List<Bandit> bandits = new ArrayList<>();
-  
+
   // UI Widgets for visualization
-  /** Widget for displaying log messages and agent actions */
+  /**
+   * Widget for displaying log messages and agent actions
+   */
   private final TextWidget logWidget;
-  /** Widget for visualizing the bandits and their pull history */
+  /**
+   * Widget for visualizing the bandits and their pull history
+   */
   private final BanditWidget banditWidget;
-  /** Chart showing episode scores over time */
+  /**
+   * Chart showing episode scores over time
+   */
   private final RollingValueChartWidget episodeScoreWidget;
-  /** Chart showing success rate (optimal action selection) over time */
+  /**
+   * Chart showing success rate (optimal action selection) over time
+   */
   private final RollingValueChartWidget episodeSuccessWidget;
-  /** Widget displaying current episode statistics */
+  /**
+   * Widget displaying current episode statistics
+   */
   private final RollingStatisticsWidget statisticsWidget;
-  /** Widget displaying the simulation title */
+  /**
+   * Widget displaying the simulation title
+   */
   private final TitleWidget titleWidget;
-  
+
   // Episode state tracking
-  /** Current step number within the simulation session */
+  /**
+   * Current step number within the simulation session
+   */
   private int sessionStep = 0;
-  /** Total score accumulated in the current episode */
+  /**
+   * Total score accumulated in the current episode
+   */
   private double episodeScore = 0;
-  /** Number of times the agent selected the optimal bandit in current episode */
+  /**
+   * Number of times the agent selected the optimal bandit in current episode
+   */
   private double episodeBestMoveCount = 0;
-  /** Unique identifier for the current episode */
+  /**
+   * Unique identifier for the current episode
+   */
   private String episodeID = UUID.randomUUID().toString();
 
 

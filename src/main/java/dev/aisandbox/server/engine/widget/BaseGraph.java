@@ -20,31 +20,30 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * A foundational class for creating graphs and charts within simulations.
  * <p>
- * BaseGraph provides the infrastructure for drawing data visualization charts including
- * axes, gridlines, titles, and data plotting methods. It handles the complex calculations
- * for mapping data coordinates to screen coordinates and provides a clean API for adding
- * graphical elements.
+ * BaseGraph provides the infrastructure for drawing data visualization charts including axes,
+ * gridlines, titles, and data plotting methods. It handles the complex calculations for mapping
+ * data coordinates to screen coordinates and provides a clean API for adding graphical elements.
  * </p>
  * <p>
- * The graph automatically scales data to fit within the available drawing area and includes
- * proper margins for axes labels and titles. Both X and Y axes support configurable scaling
- * through the AxisScale interface.
+ * The graph automatically scales data to fit within the available drawing area and includes proper
+ * margins for axes labels and titles. Both X and Y axes support configurable scaling through the
+ * AxisScale interface.
  * </p>
  * <p>
  * Common usage pattern:
  * </p>
  * <pre>
  * // Create a graph with specific dimensions and axis scaling
- * BaseGraph graph = new BaseGraph(400, 300, "Score Over Time", 
- *                                "Episode", "Score", theme, 
+ * BaseGraph graph = new BaseGraph(400, 300, "Score Over Time",
+ *                                "Episode", "Score", theme,
  *                                xAxisScale, yAxisScale);
- * 
+ *
  * // Add data lines
  * graph.addLine(0, 10, 100, 85, Color.BLUE);
- * 
+ *
  * // Add axes and title
  * graph.addAxisAndTitle();
- * 
+ *
  * // Use the rendered image
  * graphics.drawImage(graph.getImage(), x, y, null);
  * </pre>
@@ -53,59 +52,107 @@ import lombok.extern.slf4j.Slf4j;
 public class BaseGraph {
 
   // Layout and styling constants
-  /** Pixel spacing around the outside of the graph */
+  /**
+   * Pixel spacing around the outside of the graph
+   */
   private final static int PADDING = 16;
-  /** Pixel spacing between graph elements */
+  /**
+   * Pixel spacing between graph elements
+   */
   private final static int MARGIN = 3;
-  /** Font size for the main graph title */
+  /**
+   * Font size for the main graph title
+   */
   private final static int TITLE_FONT_SIZE = 18;
-  /** Font used for the main graph title */
+  /**
+   * Font used for the main graph title
+   */
   private final static Font TITLE_FONT = new Font("Arial", Font.BOLD, TITLE_FONT_SIZE);
-  /** Font size for axis labels */
+  /**
+   * Font size for axis labels
+   */
   private final static int AXIS_FONT_SIZE = 12;
-  /** Font used for axis labels */
+  /**
+   * Font used for axis labels
+   */
   private final static Font AXIS_FONT = new Font("Arial", Font.PLAIN, AXIS_FONT_SIZE);
-  /** Font size for tick mark labels */
+  /**
+   * Font size for tick mark labels
+   */
   private final static int TICK_FONT_SIZE = 10;
-  /** Font used for tick mark labels */
+  /**
+   * Font used for tick mark labels
+   */
   private final static Font TICK_FONT = new Font("Arial", Font.PLAIN, TICK_FONT_SIZE);
-  /** Dash pattern for gridlines */
+  /**
+   * Dash pattern for gridlines
+   */
   private final static float[] dash1 = {10.0f};
-  /** Dashed stroke style for gridlines */
+  /**
+   * Dashed stroke style for gridlines
+   */
   private final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
       BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
-  
+
   // Graph configuration
-  /** Total width of the graph widget */
+  /**
+   * Total width of the graph widget
+   */
   private final int width;
-  /** Total height of the graph widget */
+  /**
+   * Total height of the graph widget
+   */
   private final int height;
-  /** Main title displayed at the top of the graph */
+  /**
+   * Main title displayed at the top of the graph
+   */
   private final String title;
-  /** Label for the X-axis */
+  /**
+   * Label for the X-axis
+   */
   private final String xAxisTitle;
-  /** Label for the Y-axis */
+  /**
+   * Label for the Y-axis
+   */
   private final String yAxisTitle;
-  /** Visual theme for colors and styling */
+  /**
+   * Visual theme for colors and styling
+   */
   private final Theme theme;
-  /** Scaling configuration for the X-axis */
+  /**
+   * Scaling configuration for the X-axis
+   */
   private final AxisScale xAxisScale;
-  /** Scaling configuration for the Y-axis */
+  /**
+   * Scaling configuration for the Y-axis
+   */
   private final AxisScale yAxisScale;
-  
+
   // Rendered image and drawing context
-  /** The pre-rendered graph image */
+  /**
+   * The pre-rendered graph image
+   */
   @Getter
   private final BufferedImage image;
-  /** Graphics context for drawing on the image */
+  /**
+   * Graphics context for drawing on the image
+   */
   private final Graphics2D graphics;
-  /** X coordinate where the graph plotting area begins */
+  /**
+   * X coordinate where the graph plotting area begins
+   */
   private final int xBoxStart;
-  /** Width of the graph plotting area */
+  /**
+   * Width of the graph plotting area
+   */
   private final int boxWidth;
-  /** Y coordinate where the graph plotting area begins */
+  /**
+   * Y coordinate where the graph plotting area begins
+   */
   private final int yBoxStart;
-  /** Height of the graph plotting area */
+  /**
+   * Height of the graph plotting area
+   */
   private final int boxHeight;
 
 
@@ -113,8 +160,8 @@ public class BaseGraph {
    * Creates a new BaseGraph with the specified dimensions, labels, and scaling.
    * <p>
    * This constructor initializes the graph with a background, calculates the plotting area
-   * dimensions, and draws the gridlines. The resulting graph is ready for adding data
-   * through the various add methods.
+   * dimensions, and draws the gridlines. The resulting graph is ready for adding data through the
+   * various add methods.
    * </p>
    * <p>
    * The constructor automatically:
@@ -126,14 +173,14 @@ public class BaseGraph {
    *   <li>Sets up the graphics context with proper rendering hints</li>
    * </ul>
    *
-   * @param width       total width of the graph widget in pixels
-   * @param height      total height of the graph widget in pixels
-   * @param title       main title to display at the top of the graph
-   * @param xAxisTitle  label for the X-axis
-   * @param yAxisTitle  label for the Y-axis (will be rotated vertically)
-   * @param theme       visual theme for colors and styling
-   * @param xAxisScale  scaling configuration for the X-axis
-   * @param yAxisScale  scaling configuration for the Y-axis
+   * @param width      total width of the graph widget in pixels
+   * @param height     total height of the graph widget in pixels
+   * @param title      main title to display at the top of the graph
+   * @param xAxisTitle label for the X-axis
+   * @param yAxisTitle label for the Y-axis (will be rotated vertically)
+   * @param theme      visual theme for colors and styling
+   * @param xAxisScale scaling configuration for the X-axis
+   * @param yAxisScale scaling configuration for the Y-axis
    */
   public BaseGraph(int width, int height, String title, String xAxisTitle, String yAxisTitle,
       Theme theme, AxisScale xAxisScale, AxisScale yAxisScale) {

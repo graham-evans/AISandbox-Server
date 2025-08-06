@@ -14,10 +14,10 @@ import org.apache.commons.lang3.tuple.Pair;
 /**
  * Utility class providing mathematical and statistical operations for simulation data analysis.
  * <p>
- * This class contains static methods for common statistical calculations needed throughout
- * the AI Sandbox simulations, including data binning, min/max calculations, and distribution
- * analysis. These utilities are primarily used for generating charts, histograms, and
- * statistical summaries of agent performance.
+ * This class contains static methods for common statistical calculations needed throughout the AI
+ * Sandbox simulations, including data binning, min/max calculations, and distribution analysis.
+ * These utilities are primarily used for generating charts, histograms, and statistical summaries
+ * of agent performance.
  * </p>
  * <p>
  * All methods are static and the class cannot be instantiated due to the {@code @UtilityClass}
@@ -30,8 +30,8 @@ public class StatisticsUtils {
   /**
    * Finds the minimum and maximum values in a list of numbers.
    * <p>
-   * This method efficiently scans through the list once to determine both the minimum
-   * and maximum values. The result is returned as a Pair for convenient access to both values.
+   * This method efficiently scans through the list once to determine both the minimum and maximum
+   * values. The result is returned as a Pair for convenient access to both values.
    * </p>
    *
    * @param values the list of values to analyze (must not be empty)
@@ -51,21 +51,21 @@ public class StatisticsUtils {
   /**
    * Bins a list of values into specified ranges and calculates bin statistics.
    * <p>
-   * This method takes a list of values and distributes them into bins defined by
-   * start and end boundaries. Each value is assigned to the first bin that contains it.
-   * The method calculates both the count and density for each bin.
+   * This method takes a list of values and distributes them into bins defined by start and end
+   * boundaries. Each value is assigned to the first bin that contains it. The method calculates
+   * both the count and density for each bin.
    * </p>
    * <p>
-   * This is commonly used for creating histograms and distribution visualizations
-   * of agent performance data.
+   * This is commonly used for creating histograms and distribution visualizations of agent
+   * performance data.
    * </p>
    *
    * @param values    the list of values to be binned
    * @param binStarts the start boundaries for each bin (inclusive)
    * @param binEnds   the end boundaries for each bin (inclusive)
    * @return a list of BinContents objects containing count and density information for each bin
-   * @throws AssertionError if binStarts and binEnds have different sizes, or if any value
-   *                        falls outside all bin ranges
+   * @throws AssertionError if binStarts and binEnds have different sizes, or if any value falls
+   *                        outside all bin ranges
    */
   public static List<BinContents> getBinnedValues(final List<Double> values,
       final List<Double> binStarts, final List<Double> binEnds) {

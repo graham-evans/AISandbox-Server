@@ -31,10 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Network-based implementation of the Agent interface.
  * <p>
- * This class provides a network communication channel for external AI agents to connect
- * and participate in simulations. It creates a server socket that external agents can
- * connect to, and handles the Protocol Buffer message exchange required for simulation
- * interaction.
+ * This class provides a network communication channel for external AI agents to connect and
+ * participate in simulations. It creates a server socket that external agents can connect to, and
+ * handles the Protocol Buffer message exchange required for simulation interaction.
  * </p>
  * <p>
  * The NetworkAgent operates by:
@@ -60,31 +59,43 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NetworkAgent implements Agent {
 
-  /** Maximum number of attempts to find an available port */
+  /**
+   * Maximum number of attempts to find an available port
+   */
   private static final int MAX_PORT_TRIES = 10;
-  
-  /** Human-readable name for this agent */
+
+  /**
+   * Human-readable name for this agent
+   */
   @Getter
   private final String agentName;
-  
-  /** Server socket for accepting agent connections */
+
+  /**
+   * Server socket for accepting agent connections
+   */
   private final ServerSocket serverSocket;
-  
-  /** Output renderer for displaying connection status and messages */
+
+  /**
+   * Output renderer for displaying connection status and messages
+   */
   private final OutputRenderer renderer;
-  
-  /** Queue for thread-safe communication with the connection handler */
+
+  /**
+   * Queue for thread-safe communication with the connection handler
+   */
   private final SynchronousQueue<ConnectionPair> connectionQueue = new SynchronousQueue<>();
-  
-  /** Current active connection to the external agent */
+
+  /**
+   * Current active connection to the external agent
+   */
   private NetworkAgentConnectionThread.ConnectionPair connectionPair = null;
 
   /**
    * Creates a new NetworkAgent with the specified configuration.
    * <p>
-   * This constructor sets up a server socket and starts a background thread to handle
-   * incoming connections from external agents. If the default port is unavailable,
-   * it will try nearby ports automatically.
+   * This constructor sets up a server socket and starts a background thread to handle incoming
+   * connections from external agents. If the default port is unavailable, it will try nearby ports
+   * automatically.
    * </p>
    *
    * @param agentName    human-readable name for this agent

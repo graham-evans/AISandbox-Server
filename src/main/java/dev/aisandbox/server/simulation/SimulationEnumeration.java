@@ -18,8 +18,8 @@ import lombok.Getter;
 /**
  * Enumeration of all available simulations in the AI Sandbox.
  * <p>
- * This enumeration serves as a central registry of all simulation types that can be executed
- * within the AI Sandbox framework. Each enumeration value is associated with a specific
+ * This enumeration serves as a central registry of all simulation types that can be executed within
+ * the AI Sandbox framework. Each enumeration value is associated with a specific
  * {@link SimulationBuilder} that provides the configuration and factory methods for creating
  * instances of that simulation.
  * </p>
@@ -43,59 +43,56 @@ public enum SimulationEnumeration {
   /**
    * The Coin Game simulation - strategic coin removal game.
    * <p>
-   * Players take turns removing coins from piles, with the objective being to force
-   * the opponent to take the last coin. Features multiple game variants with different
-   * pile configurations and move restrictions.
+   * Players take turns removing coins from piles, with the objective being to force the opponent to
+   * take the last coin. Features multiple game variants with different pile configurations and move
+   * restrictions.
    * </p>
    */
   COIN_GAME(new CoinGameBuilder()),
-  
+
   /**
    * High-Low Cards game - sequential card prediction.
    * <p>
-   * Agent must predict whether the next card in a deck will be higher or lower
-   * than the current card. Tests decision-making under uncertainty with observable
-   * information about remaining cards.
+   * Agent must predict whether the next card in a deck will be higher or lower than the current
+   * card. Tests decision-making under uncertainty with observable information about remaining
+   * cards.
    * </p>
    */
   HIGH_LOW_CARDS(new HighLowCardsBuilder()),
-  
+
   /**
    * Multi-armed Bandit problem - exploration vs exploitation.
    * <p>
-   * Classic reinforcement learning scenario where an agent must choose between
-   * multiple slot machines (bandits) to maximize reward over time. Tests the
-   * fundamental explore-exploit tradeoff in sequential decision making.
+   * Classic reinforcement learning scenario where an agent must choose between multiple slot
+   * machines (bandits) to maximize reward over time. Tests the fundamental explore-exploit tradeoff
+   * in sequential decision making.
    * </p>
    */
   MULTI_BANDIT(new BanditScenario()),
-  
+
   /**
    * Maze navigation - pathfinding and spatial reasoning.
    * <p>
-   * Agent must navigate through a maze from start to goal position while dealing
-   * with obstacles and potentially limited visibility. Tests search algorithms
-   * and spatial planning capabilities.
+   * Agent must navigate through a maze from start to goal position while dealing with obstacles and
+   * potentially limited visibility. Tests search algorithms and spatial planning capabilities.
    * </p>
    */
   MAZE(new MazeBuilder()),
-  
+
   /**
    * Mine Hunter - logical deduction and risk assessment.
    * <p>
-   * Agent must identify hidden mines in a grid using numerical clues, similar to
-   * the classic Minesweeper game. Tests logical reasoning and constraint satisfaction
-   * under uncertainty.
+   * Agent must identify hidden mines in a grid using numerical clues, similar to the classic
+   * Minesweeper game. Tests logical reasoning and constraint satisfaction under uncertainty.
    * </p>
    */
   MINE(new MineHunterScenario()),
-  
+
   /**
    * Twisty Puzzles - 3D spatial manipulation.
    * <p>
-   * Agent must solve 3D puzzles like Rubik's cubes through sequence of moves.
-   * Tests complex state space navigation and goal-oriented planning in
-   * high-dimensional spaces.
+   * Agent must solve 3D puzzles like Rubik's cubes through sequence of moves. Tests complex state
+   * space navigation and goal-oriented planning in high-dimensional spaces.
    * </p>
    */
   TWISTY(new TwistyBuilder());

@@ -13,12 +13,12 @@ import dev.aisandbox.server.engine.exception.SimulationException;
  * Interface representing an agent that can participate in simulations.
  * <p>
  * An agent provides a communication mechanism for sending and receiving Protocol Buffer messages
- * during simulation execution. This allows external AI implementations to interact with
- * simulations through a standardized messaging protocol.
+ * during simulation execution. This allows external AI implementations to interact with simulations
+ * through a standardized messaging protocol.
  * </p>
  * <p>
- * Agents can be implemented as network-based agents that communicate over sockets, or other
- * types of agents depending on the specific needs of the simulation.
+ * Agents can be implemented as network-based agents that communicate over sockets, or other types
+ * of agents depending on the specific needs of the simulation.
  * </p>
  *
  * @see dev.aisandbox.server.engine.network.NetworkAgent
@@ -35,8 +35,8 @@ public interface Agent {
   /**
    * Send a message to the agent.
    * <p>
-   * This method transmits a Protocol Buffer message to the connected agent.
-   * The message format depends on the specific simulation and the current game state.
+   * This method transmits a Protocol Buffer message to the connected agent. The message format
+   * depends on the specific simulation and the current game state.
    * </p>
    *
    * @param msg The Protocol Buffer message to send
@@ -47,9 +47,9 @@ public interface Agent {
   /**
    * Wait (block) until the agent responds with the expected object.
    * <p>
-   * This method blocks the current thread until the agent sends back a response
-   * of the specified type. If the agent sends an unexpected message type or
-   * disconnects, an exception will be thrown.
+   * This method blocks the current thread until the agent sends back a response of the specified
+   * type. If the agent sends an unexpected message type or disconnects, an exception will be
+   * thrown.
    * </p>
    *
    * @param responseType The class of the message to be returned (must extend GeneratedMessage).
@@ -63,9 +63,8 @@ public interface Agent {
   /**
    * Close the agent connection and clean up any resources.
    * <p>
-   * This method should be called when the simulation ends or when the agent
-   * is no longer needed. It ensures proper cleanup of network connections,
-   * threads, and other resources.
+   * This method should be called when the simulation ends or when the agent is no longer needed. It
+   * ensures proper cleanup of network connections, threads, and other resources.
    * </p>
    */
   void close();

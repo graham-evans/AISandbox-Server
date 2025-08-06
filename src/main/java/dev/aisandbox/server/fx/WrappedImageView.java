@@ -11,7 +11,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 
 public class WrappedImageView extends Region {
-  private final ImageView imageView ;
+
+  private final ImageView imageView;
 
   public WrappedImageView(ImageView imageView) {
     this.imageView = imageView;
@@ -30,7 +31,7 @@ public class WrappedImageView extends Region {
     // center image (can also make this more complex and support alignment):
     double x = snappedLeftInset() + (width - imageWidth) / 2;
     double y = snappedTopInset() + (height - imageHeight) / 2;
-    imageView.relocate(x , y);
+    imageView.relocate(x, y);
   }
 
 

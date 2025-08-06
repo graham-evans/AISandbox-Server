@@ -22,14 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * A widget for displaying the title of a simulation.
  * <p>
- * This widget renders a title text centered horizontally across the full width of the display.
- * The title is rendered using the standard title font and is positioned at the top of the
- * visualization area. The widget generates a pre-rendered image that can be drawn efficiently
- * during each frame.
+ * This widget renders a title text centered horizontally across the full width of the display. The
+ * title is rendered using the standard title font and is positioned at the top of the visualization
+ * area. The widget generates a pre-rendered image that can be drawn efficiently during each frame.
  * </p>
  * <p>
- * The title widget uses the theme's background and text colors to ensure proper contrast
- * and consistency with the overall visual design.
+ * The title widget uses the theme's background and text colors to ensure proper contrast and
+ * consistency with the overall visual design.
  * </p>
  * <p>
  * Example usage:
@@ -39,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
  *     .title("Multi-armed Bandit")
  *     .theme(Theme.DARK)
  *     .build();
- * 
+ *
  * // Later, in the visualize method:
  * graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
  * </pre>
@@ -47,20 +46,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TitleWidget {
 
-  /** The title text to display */
+  /**
+   * The title text to display
+   */
   private final String title;
-  /** The theme for color and styling */
+  /**
+   * The theme for color and styling
+   */
   private final Theme theme;
-  /** The pre-rendered image containing the title */
+  /**
+   * The pre-rendered image containing the title
+   */
   @Getter
   private final BufferedImage image;
 
   /**
    * Creates a new title widget with the specified title and theme.
    * <p>
-   * The constructor immediately generates a pre-rendered image with the title
-   * text centered horizontally. The image uses the full HD width and standard
-   * title height defined in OutputConstants.
+   * The constructor immediately generates a pre-rendered image with the title text centered
+   * horizontally. The image uses the full HD width and standard title height defined in
+   * OutputConstants.
    * </p>
    *
    * @param title the text to display as the title
@@ -94,17 +99,21 @@ public class TitleWidget {
   /**
    * Builder class for creating TitleWidget instances with fluent syntax.
    * <p>
-   * Provides default values for title ("Title") and theme (LIGHT), which can be
-   * overridden using the fluent setter methods.
+   * Provides default values for title ("Title") and theme (LIGHT), which can be overridden using
+   * the fluent setter methods.
    * </p>
    */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class TitleWidgetBuilder {
 
-    /** Default title text */
+    /**
+     * Default title text
+     */
     private String title = "Title";
-    /** Default theme */
+    /**
+     * Default theme
+     */
     private Theme theme = Theme.LIGHT;
 
     /**

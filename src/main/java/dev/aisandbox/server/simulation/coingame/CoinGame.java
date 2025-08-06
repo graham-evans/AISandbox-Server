@@ -65,9 +65,9 @@ public final class CoinGame implements Simulation {
   private final String sessionId = UUID.randomUUID().toString();
   private final Agent[] agents = new Agent[2];
   private final boolean[] agentMoved = new boolean[2];
+  private final CoinScenario scenario;
   private int firstPlayer = 1;
   private int currentPlayer = 0;
-  private final CoinScenario scenario;
   // UI Images
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;

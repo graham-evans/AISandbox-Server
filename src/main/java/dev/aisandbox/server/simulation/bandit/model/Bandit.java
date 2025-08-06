@@ -15,13 +15,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * Represents a single bandit (slot machine) in the multi-armed bandit problem.
  * <p>
- * Each bandit has an associated reward distribution defined by a mean and standard deviation.
- * When "pulled" by an agent, the bandit generates a reward value sampled from a normal
- * (Gaussian) distribution with these parameters.
+ * Each bandit has an associated reward distribution defined by a mean and standard deviation. When
+ * "pulled" by an agent, the bandit generates a reward value sampled from a normal (Gaussian)
+ * distribution with these parameters.
  * </p>
  * <p>
- * The bandit's true reward parameters are typically unknown to the agent, who must learn
- * through experience which bandits provide the best rewards on average.
+ * The bandit's true reward parameters are typically unknown to the agent, who must learn through
+ * experience which bandits provide the best rewards on average.
  * </p>
  * <p>
  * Example usage:
@@ -29,7 +29,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * <pre>
  * // Create a bandit with mean reward of 2.5 and standard deviation of 1.0
  * Bandit bandit = new Bandit(2.5, 1.0);
- * 
+ *
  * // Pull the bandit to get a reward
  * Random random = new Random();
  * double reward = bandit.pull(random);
@@ -37,12 +37,16 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class Bandit {
 
-  /** Mean value of the reward distribution */
+  /**
+   * Mean value of the reward distribution
+   */
   @Getter
   @Setter
   private double mean = 0.0;
-  
-  /** Standard deviation of the reward distribution */
+
+  /**
+   * Standard deviation of the reward distribution
+   */
   @Getter
   @Setter
   private double std = 1.0;
@@ -61,8 +65,8 @@ public class Bandit {
   /**
    * Pull this bandit to receive a reward.
    * <p>
-   * Generates a reward value sampled from a normal (Gaussian) distribution
-   * with this bandit's mean and standard deviation parameters.
+   * Generates a reward value sampled from a normal (Gaussian) distribution with this bandit's mean
+   * and standard deviation parameters.
    * </p>
    *
    * @param rand the random number generator to use for sampling
@@ -75,8 +79,8 @@ public class Bandit {
   /**
    * Generates a hash code for this bandit.
    * <p>
-   * The hash code is based on both the mean and standard deviation values,
-   * ensuring that bandits with different distributions have different hash codes.
+   * The hash code is based on both the mean and standard deviation values, ensuring that bandits
+   * with different distributions have different hash codes.
    * </p>
    *
    * @return the hash code for this bandit
@@ -89,8 +93,8 @@ public class Bandit {
   /**
    * Determines equality with another object.
    * <p>
-   * Two bandits are considered equal if they have the same mean and standard deviation
-   * values. This allows for comparing bandit configurations and detecting duplicates.
+   * Two bandits are considered equal if they have the same mean and standard deviation values. This
+   * allows for comparing bandit configurations and detecting duplicates.
    * </p>
    *
    * @param o the object (Bandit) to compare with
