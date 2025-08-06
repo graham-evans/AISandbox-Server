@@ -10,8 +10,7 @@ import java.io.Serial;
 
 /**
  * Exception thrown when an agent requests something that doesn't make sense.
- * <p>
- * Will result in the simulation being aborted.
+ * <p>Will result in the simulation being aborted.
  */
 public class IllegalActionException extends SimulationException {
 

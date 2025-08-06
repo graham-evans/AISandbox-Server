@@ -13,8 +13,7 @@ import lombok.Getter;
 /**
  * This is an implementation of Paul Heckbert's "Nice Numbers for Graph Labels" algorithm that
  * appears in the first Graphics Gems book.
- * <p>
- * Graphics Gems - Andrew Glassner ISBN 978-0-08-050753-8
+ * <p>Graphics Gems - Andrew Glassner ISBN 978-0-08-050753-8
  */
 
 public class NiceAxisScale implements AxisScale {

@@ -19,18 +19,15 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * A foundational class for creating graphs and charts within simulations.
- * <p>
- * BaseGraph provides the infrastructure for drawing data visualization charts including axes,
+ * <p>BaseGraph provides the infrastructure for drawing data visualization charts including axes,
  * gridlines, titles, and data plotting methods. It handles the complex calculations for mapping
  * data coordinates to screen coordinates and provides a clean API for adding graphical elements.
  * </p>
- * <p>
- * The graph automatically scales data to fit within the available drawing area and includes proper
- * margins for axes labels and titles. Both X and Y axes support configurable scaling through the
- * AxisScale interface.
+ * <p>The graph automatically scales data to fit within the available drawing area and includes
+ * proper margins for axes labels and titles. Both X and Y axes support configurable scaling through
+ * the AxisScale interface.
  * </p>
- * <p>
- * Common usage pattern:
+ * <p>Common usage pattern:
  * </p>
  * <pre>
  * // Create a graph with specific dimensions and axis scaling
