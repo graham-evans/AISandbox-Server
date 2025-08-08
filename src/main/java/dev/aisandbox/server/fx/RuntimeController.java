@@ -64,7 +64,7 @@ public class RuntimeController {
     log.debug("Initializing RuntimeController");
     assert logArea
         != null : "fx:id=\"logArea\" was not injected: check your FXML file 'runtime.fxml'.";
-    // setup the image
+    // set up the image
     imageView = new ImageView(
         new Image(RuntimeController.class.getResourceAsStream("/images/backgrounds/testcard.png")));
     imageView.setPreserveRatio(true);

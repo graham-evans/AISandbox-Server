@@ -11,8 +11,41 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Represents a playing card with a value and a suit. This is implemented as a Java record for
- * immutability and automatic implementations of equals, hashCode, and toString methods.
+ * Represents a standard playing card with a value and suit.
+ * <p>
+ * This record encapsulates the immutable properties of a playing card, including its rank
+ * (value) and suit. It provides convenience methods for different card representations and
+ * supports both low-ace and high-ace scoring systems common in different card games.
+ * </p>
+ * <p>
+ * The card system supports:
+ * </p>
+ * <ul>
+ *   <li>All standard card values from Ace through King</li>
+ *   <li>All four suits (Hearts, Diamonds, Clubs, Spades)</li>
+ *   <li>Multiple representation formats (long names, short codes, characters)</li>
+ *   <li>Dual ace values for different game rules (low=1, high=14)</li>
+ *   <li>Image path generation for card visualization</li>
+ * </ul>
+ * <p>
+ * As a record, this class provides automatic implementations of {@code equals()}, 
+ * {@code hashCode()}, and {@code toString()} methods, making it suitable for use in 
+ * collections and as map keys.
+ * </p>
+ * <p>
+ * Example usage:
+ * </p>
+ * <pre>{@code
+ * Card aceOfSpades = new Card(CardValue.ACE, CardSuite.SPADES);
+ * System.out.println(aceOfSpades.getLongDescription()); // "Ace of spades"
+ * System.out.println(aceOfSpades.getShortDrescription()); // "AS"
+ * }</pre>
+ *
+ * @param cardValue the rank/value of the card
+ * @param cardSuite the suit of the card
+ * 
+ * @see CardValue
+ * @see CardSuite
  */
 public record Card(CardValue cardValue, CardSuite cardSuite) {
 
