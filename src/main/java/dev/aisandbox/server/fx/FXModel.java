@@ -11,8 +11,10 @@ import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
 import java.util.Arrays;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -37,6 +39,8 @@ public enum FXModel {
   private final IntegerProperty defaultPort = new SimpleIntegerProperty(9000);
   @Getter
   private final ObjectProperty<Theme> selectedTheme = new SimpleObjectProperty<>(Theme.LIGHT);
+  @Getter
+  private final BooleanProperty externalNetwork = new SimpleBooleanProperty(false);
 
   @Getter
   @Setter

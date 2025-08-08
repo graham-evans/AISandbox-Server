@@ -58,19 +58,32 @@ public class SetupController {
   private ChoiceBox<Theme> themeChoice;
 
   @FXML
+  private CheckBox externalCheckBox;
+
+  @FXML
   private ListView<SimulationBuilder> simulationList;
 
   @FXML
   void initialize() {
     // FX assertions
-    assert agentCounter != null :
-        "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation" + ".fxml'.";
-    assert parameterBox != null :
-        "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation" + ".fxml'.";
-    assert simDescription != null :
-        "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation" + ".fxml'.";
-    assert simulationList != null :
-        "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation" + ".fxml'.";
+    assert agentCounter
+        != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
+    assert externalCheckBox
+        != null : "fx:id=\"externalCheckBox\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
+    assert parameterBox
+        != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
+    assert simDescription
+        != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
+    assert simulationList
+        != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation"
+        + ".fxml'.";
+    assert themeChoice
+        != null : "fx:id=\"themeChoice\" was not injected: check your FXML file 'simulation.fxml'.";
+
     // bind simulation list to model
     simulationList.setItems(model.getSimulations());
     simulationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -114,6 +127,8 @@ public class SetupController {
     themeChoice.getItems().addAll(Theme.values());
     model.getSelectedTheme().bind(themeChoice.valueProperty());
     themeChoice.getSelectionModel().select(Theme.LIGHT);
+    // bind network choice
+    model.getExternalNetwork().bind(externalCheckBox.selectedProperty());
   }
 
   /**
