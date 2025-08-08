@@ -8,6 +8,7 @@ package dev.aisandbox.server.simulation.bandit.model;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum BanditUpdateEnumeration {
@@ -18,4 +19,8 @@ public enum BanditUpdateEnumeration {
 
   private final String name;
 
+  @Override
+  public String toString() {
+    return name;
+  }
 }

@@ -18,4 +18,8 @@ public enum BanditCountEnumeration {
     this.number = number;
   }
 
+  @Override
+  public String toString() {
+    return Integer.toString(number);
+  }
 }

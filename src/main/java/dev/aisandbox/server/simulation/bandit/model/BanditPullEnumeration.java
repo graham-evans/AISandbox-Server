@@ -7,6 +7,7 @@
 package dev.aisandbox.server.simulation.bandit.model;
 
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Getter
 public enum BanditPullEnumeration {
@@ -19,4 +20,8 @@ public enum BanditPullEnumeration {
     this.number = number;
   }
 
+  @Override
+  public String toString() {
+    return Integer.toString(number);
+  }
 }
