@@ -22,10 +22,10 @@ package dev.aisandbox.server.engine;
  *   <li>Configuration file loading</li>
  * </ul>
  *
- * @param name The internal name of the parameter (should match the getter/setter method names)
- * @param description Human-readable description shown in the UI and help text
+ * @param name          The internal name of the parameter (should match the getter/setter method
+ *                      names)
+ * @param description   Human-readable description shown in the UI and help text
  * @param parameterType The Java class type expected for this parameter's value
- *
  * @see SimulationBuilder#getParameters()
  */
 public record SimulationParameter(String name, String description, Class<?> parameterType) {
