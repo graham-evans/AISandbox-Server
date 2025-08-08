@@ -139,7 +139,6 @@ public class RuntimeUtils {
       Method getMethod = bean.getClass().getMethod(methodName);
       Object returnValue = getMethod.invoke(bean);
       if (returnValue.getClass().isEnum()) {
-        StringBuilder stringBuilder = new StringBuilder();
         return Optional.of(
             Arrays.stream(returnValue.getClass().getEnumConstants()).map(Object::toString)
                 .collect(Collectors.joining(",")));
@@ -197,10 +196,15 @@ public class RuntimeUtils {
       } else {
         Method m = oMethod.get();
         if (parameter.parameterType().isEnum()) {
-          // this is an enum
-          if (EnumUtils.isValidEnumIgnoreCase((Class<Enum>) parameter.parameterType(), value)) {
-            m.invoke(simulationBuilder,
-                EnumUtils.getEnumIgnoreCase((Class<Enum>) parameter.parameterType(), value));
+          // this is an enum - we know it's safe because we checked isEnum() above
+          @SuppressWarnings({"unchecked",
+              "rawtypes"}) Class<Enum> enumClass = (Class<Enum>) parameter.parameterType();
+          @SuppressWarnings("unchecked") boolean isValid = EnumUtils.isValidEnumIgnoreCase(
+              enumClass, value);
+          if (isValid) {
+            @SuppressWarnings({"unchecked",
+                "rawtypes"}) Enum enumValue = EnumUtils.getEnumIgnoreCase(enumClass, value);
+            m.invoke(simulationBuilder, enumValue);
           } else {
             log.warn("Can't set enum '{}' to '{}' as it isn't a valid option",
                 parameter.parameterType().getName(), value);
