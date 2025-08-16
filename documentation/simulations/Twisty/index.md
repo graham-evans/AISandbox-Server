@@ -92,3 +92,33 @@ Sent to the agent after applying a move to the puzzle.
 |--------|--------------|-----------------------------------------------------------------------------------------------------|
 | state  | string       | String representation of the puzzle state after the move                                            |
 | signal | TwistySignal | Indication of whether the puzzle is solved, failed, or continuing<br/>\[ CONTINUE \| WIN \| LOSE \] |
+
+# Cell order
+
+The 'state' of the puzzle is represented as a string, with each character representing the current
+colour of a face.
+
+| Character | Colour |
+|-----------|--------|
+| W         | White  |
+| O         | Orange |
+| G         | Green  |
+| R         | Red    |
+| B         | Blue   |
+| Y         | Yellow |
+
+The order of the cells follows the same pattern regardless of the puzzle size, each face in turn (top, left, front, right, back, bottom) from top left to bottom right.
+
+Examples:
+
+![2x2x2 Cube](CUBE2.png)
+
+![3x3x3 Cube](CUBE3.png)
+
+![5x5x5 Cube](CUBE5.png)
+
+![3x3x4 Cuboid](CUBE334.png)
+
+
+Note: A puzzle is considered 'solved' when all faces are a single colour, the orientation of the
+puzzle does not matter.
