@@ -1,0 +1,54 @@
+package dev.aisandbox.server.simulation.twisty;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.output.OutputConstants;
+import dev.aisandbox.server.engine.widget.GraphicsUtils;
+import dev.aisandbox.server.simulation.twisty.model.Cell;
+import dev.aisandbox.server.simulation.twisty.model.TwistyPuzzle;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+@Slf4j
+public class PuzzleCellImageGenerator {
+
+  private final static File outputDirectory = new File("build/test/twisty-start");
+
+  @BeforeAll
+  public static void setupDir() {
+    outputDirectory.mkdirs();
+  }
+
+  private static final int CIRCLE_SIZE = 50;
+
+  @ParameterizedTest
+  @EnumSource(PuzzleType.class)
+  public void generatePuzzleCellImage(PuzzleType puzzleType) throws IOException {
+    log.info("Generating image of {}", puzzleType.name());
+    TwistyPuzzle puzzle = puzzleType.getTwistyPuzzle();
+    BufferedImage image = new BufferedImage(TwistyPuzzle.WIDTH, TwistyPuzzle.HEIGHT,
+        BufferedImage.TYPE_INT_RGB);
+    Graphics2D graphics = image.createGraphics();
+    puzzle.drawPuzzle(graphics, 0, 0, Theme.LIGHT);
+    for (int i=0;i<puzzle.getCells().size();i++) {
+      Cell cell = puzzle.getCells().get(i);
+      graphics.setColor(Color.BLACK);
+      graphics.fillOval(cell.getLocationX()-CIRCLE_SIZE/2,cell.getLocationY()-CIRCLE_SIZE/2,CIRCLE_SIZE,CIRCLE_SIZE);
+      graphics.setColor(Color.WHITE);
+      GraphicsUtils.drawCenteredText(graphics,cell.getLocationX()-CIRCLE_SIZE/2,cell.getLocationY()-OutputConstants.STATISTICS_FONT.getSize()/2-4,CIRCLE_SIZE,OutputConstants.STATISTICS_FONT.getSize(),Integer.toString(i),OutputConstants.STATISTICS_FONT,Color.WHITE);
+    }
+    File outputFile = new File(outputDirectory, puzzleType.name() + ".png");
+    ImageIO.write(image, "png", outputFile);
+    assertTrue(outputFile.isFile());
+  }
+
+}
