@@ -90,18 +90,18 @@ public class CuboidBuilder {
             scale));
 
     // Add all cells to the puzzle (order is important)
-    puzzle.getCells().addAll(left);
-    puzzle.getFaceSizes().add(left.size());
-    puzzle.getCells().addAll(right);
-    puzzle.getFaceSizes().add(right.size());
     puzzle.getCells().addAll(top);
     puzzle.getFaceSizes().add(top.size());
-    puzzle.getCells().addAll(bottom);
-    puzzle.getFaceSizes().add(bottom.size());
+    puzzle.getCells().addAll(left);
+    puzzle.getFaceSizes().add(left.size());
     puzzle.getCells().addAll(front);
     puzzle.getFaceSizes().add(front.size());
+    puzzle.getCells().addAll(right);
+    puzzle.getFaceSizes().add(right.size());
     puzzle.getCells().addAll(back);
     puzzle.getFaceSizes().add(back.size());
+    puzzle.getCells().addAll(bottom);
+    puzzle.getFaceSizes().add(bottom.size());
     // Create moves based on puzzle dimensions
 
     // Front face moves (if width equals height, we can do 90° rotations)
