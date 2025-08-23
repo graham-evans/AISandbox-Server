@@ -1,3 +1,8 @@
+/*
+ * AI Sandbox - This program is free software: you can redistribute it and/or modify it under the
+ * terms of version 3 of the GNU General Public License. See the README and LICENCE files for
+ * more information.
+ */
 package dev.aisandbox.server.simulation.twisty;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,13 +27,12 @@ import org.junit.jupiter.params.provider.EnumSource;
 public class PuzzleCellImageGenerator {
 
   private final static File outputDirectory = new File("build/test/twisty-start");
+  private static final int CIRCLE_SIZE = 50;
 
   @BeforeAll
   public static void setupDir() {
     outputDirectory.mkdirs();
   }
-
-  private static final int CIRCLE_SIZE = 50;
 
   @ParameterizedTest
   @EnumSource(PuzzleType.class)
@@ -39,12 +43,16 @@ public class PuzzleCellImageGenerator {
         BufferedImage.TYPE_INT_RGB);
     Graphics2D graphics = image.createGraphics();
     puzzle.drawPuzzle(graphics, 0, 0, Theme.LIGHT);
-    for (int i=0;i<puzzle.getCells().size();i++) {
+    for (int i = 0; i < puzzle.getCells().size(); i++) {
       Cell cell = puzzle.getCells().get(i);
       graphics.setColor(Color.BLACK);
-      graphics.fillOval(cell.getLocationX()-CIRCLE_SIZE/2,cell.getLocationY()-CIRCLE_SIZE/2,CIRCLE_SIZE,CIRCLE_SIZE);
+      graphics.fillOval(cell.getLocationX() - CIRCLE_SIZE / 2,
+          cell.getLocationY() - CIRCLE_SIZE / 2, CIRCLE_SIZE, CIRCLE_SIZE);
       graphics.setColor(Color.WHITE);
-      GraphicsUtils.drawCenteredText(graphics,cell.getLocationX()-CIRCLE_SIZE/2,cell.getLocationY()-OutputConstants.STATISTICS_FONT.getSize()/2-4,CIRCLE_SIZE,OutputConstants.STATISTICS_FONT.getSize(),Integer.toString(i),OutputConstants.STATISTICS_FONT,Color.WHITE);
+      GraphicsUtils.drawCenteredText(graphics, cell.getLocationX() - CIRCLE_SIZE / 2,
+          cell.getLocationY() - OutputConstants.STATISTICS_FONT.getSize() / 2 - 4, CIRCLE_SIZE,
+          OutputConstants.STATISTICS_FONT.getSize(), Integer.toString(i),
+          OutputConstants.STATISTICS_FONT, Color.WHITE);
     }
     File outputFile = new File(outputDirectory, puzzleType.name() + ".png");
     ImageIO.write(image, "png", outputFile);
