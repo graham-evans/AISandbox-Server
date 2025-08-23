@@ -209,6 +209,7 @@ public final class TwistySimulation implements Simulation {
     builder.setEpisodeID(episodeID);
     builder.setSessionID(sessionID);
     builder.setState(puzzle.getState());
+    builder.setPuzzleName(puzzle.getPuzzleName());
     builder.addAllValidMoves(puzzle.getMoveList());
 
     // Get the next move from the agent

@@ -17,6 +17,7 @@ option java_package = "dev.aisandbox.server.simulation.twisty.proto";
 message TwistyState {
   string sessionID = 1; // Unique identifier for this simulation run
   string episodeID = 2; // Unique identifier for this episode
+  string puzzleName = 7; // the name of the puzzle
   string state = 3;     // String representation of the current puzzle state
   int32 steps = 4;      // Number of moves made so far in this episode
   int32 obtmMoves = 5;  // Number of OBTM moves so far in this episode
