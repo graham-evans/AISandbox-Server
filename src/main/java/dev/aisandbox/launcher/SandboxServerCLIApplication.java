@@ -25,16 +25,58 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.HelpFormatter;
 
+/**
+ * Command-line interface application for running AI Sandbox simulations.
+ * <p>
+ * This class provides a command-line interface for configuring and running simulations
+ * without requiring a graphical user interface. It supports:
+ * </p>
+ * <ul>
+ *   <li>Listing available simulations and their parameters</li>
+ *   <li>Configuring simulation parameters via command-line arguments</li>
+ *   <li>Setting up network agents and port configuration</li>
+ *   <li>Running simulations with various output options (bitmap, null)</li>
+ *   <li>Providing help and documentation for each simulation</li>
+ * </ul>
+ * <p>
+ * The CLI application is ideal for:
+ * </p>
+ * <ul>
+ *   <li>Server deployments without GUI support</li>
+ *   <li>Automated testing and batch processing</li>
+ *   <li>Integration with CI/CD pipelines</li>
+ *   <li>Remote execution scenarios</li>
+ * </ul>
+ *
+ * @see SandboxServerLauncher
+ * @see RuntimeOptions
+ * @see SimulationBuilder
+ */
 @Slf4j
 public class SandboxServerCLIApplication {
 
+  /**
+   * List of all available simulation builders loaded from the enumeration.
+   */
   private final List<SimulationBuilder> simulationBuilders;
 
+  /**
+   * Constructs a new CLI application instance and initializes the available simulations.
+   */
   public SandboxServerCLIApplication() {
     simulationBuilders = Arrays.stream(SimulationEnumeration.values())
         .map(SimulationEnumeration::getBuilder).toList();
   }
 
+  /**
+   * Main execution method for the CLI application.
+   * <p>
+   * Parses command-line arguments and determines whether to display help information
+   * or execute a simulation based on the provided options.
+   * </p>
+   *
+   * @param args command-line arguments passed from the launcher
+   */
   public void run(String... args) {
     System.out.println("AISandbox Server CLI Application");
     System.out.println();
@@ -48,6 +90,15 @@ public class SandboxServerCLIApplication {
     }
   }
 
+  /**
+   * Displays help information based on the runtime options provided.
+   * <p>
+   * If a specific simulation is specified, shows detailed help for that simulation
+   * including parameters and options. Otherwise, displays general application help.
+   * </p>
+   *
+   * @param runtimeOptions the parsed runtime options containing help request details
+   */
   private void help(RuntimeOptions runtimeOptions) {
     if (runtimeOptions.simulation() != null) {
       // we are looking for help on a particular simulation?
@@ -60,6 +111,21 @@ public class SandboxServerCLIApplication {
     }
   }
 
+  /**
+   * Executes a simulation based on the provided runtime options.
+   * <p>
+   * This method handles the complete simulation lifecycle including:
+   * </p>
+   * <ul>
+   *   <li>Finding and configuring the specified simulation builder</li>
+   *   <li>Applying command-line parameters to the simulation</li>
+   *   <li>Setting up output renderers (bitmap, null)</li>
+   *   <li>Configuring network agents and ports</li>
+   *   <li>Starting the simulation execution</li>
+   * </ul>
+   *
+   * @param options the parsed runtime options containing simulation configuration
+   */
   private void runSimulation(RuntimeOptions options) {
     // create simulation
     Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(

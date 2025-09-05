@@ -30,15 +30,40 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.EnumUtils;
 
+/**
+ * Utility class providing command-line parsing and parameter handling for the AI Sandbox CLI.
+ * <p>
+ * This utility class handles all aspects of command-line argument processing, parameter validation,
+ * and runtime option management for the AI Sandbox CLI application. It provides methods for:
+ * </p>
+ * <ul>
+ *   <li>Parsing command-line arguments into structured options</li>
+ *   <li>Validating and applying simulation parameters</li>
+ *   <li>Dynamic parameter value setting using reflection</li>
+ *   <li>Help text generation and formatting</li>
+ * </ul>
+ * <p>
+ * The utility supports complex parameter types including enumerations, primitive types,
+ * and custom parameter validation. It uses Apache Commons CLI for robust argument parsing
+ * and provides comprehensive error handling and user feedback.
+ * </p>
+ *
+ * @see RuntimeOptions
+ * @see SimulationParameter
+ */
 @Slf4j
 @UtilityClass
 public class RuntimeUtils {
 
   /**
    * Parse a set of strings from the command line and populate a RuntimeOptions POJO.
+   * <p>
+   * Converts raw command-line arguments into a structured {@link RuntimeOptions} object
+   * with validated parameters, default values, and error handling for invalid arguments.
+   * </p>
    *
    * @param args the strings from the command line
-   * @return the RuntimeOptions POJO
+   * @return the RuntimeOptions POJO containing parsed command-line options
    */
   public static RuntimeOptions parseCommandLine(String[] args) {
     RuntimeOptions options = null;

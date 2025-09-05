@@ -17,7 +17,31 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A builder for creating a simulation of a maze.
+ * Builder class for creating maze navigation simulations.
+ * <p>
+ * The MazeBuilder creates simulations where AI agents must navigate through a maze
+ * to find the exit. Once the exit is reached, the agent receives a reward and is
+ * teleported to a random position to continue exploration. This creates an ongoing
+ * learning environment where agents can optimize their pathfinding strategies.
+ * </p>
+ * <p>
+ * Key features of maze simulations:
+ * </p>
+ * <ul>
+ *   <li>Configurable maze sizes (SMALL, MEDIUM, LARGE, XLARGE)</li>
+ *   <li>Multiple maze generation algorithms (BINARYTREE, SIDEWINDER, etc.)</li>
+ *   <li>Single-agent pathfinding challenges</li>
+ *   <li>Reward-based learning with teleportation mechanics</li>
+ *   <li>Real-time visualization of agent movement and progress</li>
+ * </ul>
+ * <p>
+ * The simulation provides comprehensive state information to agents including maze
+ * dimensions, valid movement directions, reward feedback, and current position data.
+ * </p>
+ *
+ * @see MazeSize
+ * @see MazeType
+ * @see MazeRunner
  */
 public final class MazeBuilder implements SimulationBuilder {
 
