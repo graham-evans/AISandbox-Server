@@ -8,13 +8,13 @@ package dev.aisandbox.server.engine;
 
 /**
  * Represents a configurable parameter for a simulation.
- * <p>
- * This record encapsulates the metadata for a single simulation parameter, including its name,
+ *
+ * <p>This record encapsulates the metadata for a single simulation parameter, including its name,
  * human-readable description, and expected data type. These parameters are used by the UI and CLI
  * to dynamically generate configuration interfaces and validate user input.
  * </p>
- * <p>
- * Parameters defined through this class can be automatically exposed in:
+ *
+ * <p>Parameters defined through this class can be automatically exposed in:
  * </p>
  * <ul>
  *   <li>JavaFX UI parameter forms</li>

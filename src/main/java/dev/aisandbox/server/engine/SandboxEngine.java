@@ -12,21 +12,21 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Core engine class that coordinates simulation execution with connected AI agents.
- * <p>
- * The SandboxEngine acts as the central coordinator between a simulation and its participating
+ *
+ * <p>The SandboxEngine acts as the central coordinator between a simulation and its participating
  * AI agents. It manages the simulation lifecycle, handles agent communication, and orchestrates
  * the interaction between the simulation logic and external AI implementations.
  * </p>
- * <p>
- * This class encapsulates:
+ *
+ * <p>This class encapsulates:
  * </p>
  * <ul>
  *   <li>The simulation configuration and builder</li>
  *   <li>The list of connected network agents</li>
  *   <li>Coordination of simulation execution flow</li>
  * </ul>
- * <p>
- * The engine is designed to work with any simulation that implements the {@link Simulation}
+ *
+ * <p>The engine is designed to work with any simulation that implements the {@link Simulation}
  * interface and can communicate with AI agents through the standardized protobuf protocol.
  * </p>
  *

@@ -11,18 +11,20 @@ import java.util.Random;
 
 /**
  * Builder class for setting up simulations.
- * <p>
- * Any parameters that need to be configured for the simulation should be exposed as POJO getters
+ *
+ * <p>Any parameters that need to be configured for the simulation should be exposed as POJO
+ * getters
  * and setters. In addition, the getParameters method should return their details so they can be
  * exposed via the UI and CLI.
  * </p>
- * <p>
- * SimulationBuilder implementations act as factories and configuration containers for simulations.
+ *
+ * <p>SimulationBuilder implementations act as factories and configuration containers for
+ * simulations.
  * They define the metadata about a simulation (name, description, parameter definitions) and
  * provide the logic to construct configured Simulation instances.
  * </p>
- * <p>
- * The builder pattern allows for flexible configuration of simulations through:
+ *
+ * <p>The builder pattern allows for flexible configuration of simulations through:
  * </p>
  * <ul>
  *   <li>Parameter validation and type safety</li>
@@ -44,7 +46,7 @@ public interface SimulationBuilder {
   String getSimulationName();
 
   /**
-   * A text description of the simulation
+   * A text description of the simulation.
    *
    * @return Descriptive text
    */
@@ -74,8 +76,8 @@ public interface SimulationBuilder {
 
   /**
    * Create default agent names based on the number of players.
-   * <p>
-   * Generally these will just be "Agent 1", "Agent 2", "Agent 3"... but for simulations where
+   *
+   * <p>Generally these will just be "Agent 1", "Agent 2", "Agent 3"... but for simulations where
    * different agents perform different roles this can be used to differentiate between them and
    * make is obvious to the user which agent should be connected to which port. For example
    * "Dispatcher Agent", "Delivery Agent" etc.

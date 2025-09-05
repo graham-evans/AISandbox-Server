@@ -13,12 +13,12 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Represents the available visual themes for the AI Sandbox application UI.
- * <p>
- * Each theme defines a complete color palette including background colors, text colors, widget
+ *
+ * <p>Each theme defines a complete color palette including background colors, text colors, widget
  * styling, graph and visualization colors, and agent-specific colors. The themes are designed to
  * provide consistent visual styling across the entire application interface.
- * <p>
- * Available themes:
+ *
+ * <p>Available themes:
  * <ul>
  *   <li>LIGHT - A light theme with subtle blue accents and high contrast</li>
  *   <li>WARM - A warm color palette with beige/cream backgrounds</li>
