@@ -101,7 +101,7 @@ public class Move {
     // add each loop
     for (MoveLoop loop : loops) {
       // check we have at least two cells
-      if (loop.getCells().size() < 2) {
+      if (loop.getCells().size() < 2) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
         log.warn("Loop {} has less than two cells", loop);
       } else {
         for (int j = 0; j < loop.getCells().size() - 1; j++) {

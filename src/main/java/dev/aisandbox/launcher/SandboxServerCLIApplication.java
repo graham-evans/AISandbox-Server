@@ -28,8 +28,8 @@ import org.apache.commons.cli.HelpFormatter;
 /**
  * Command-line interface application for running AI Sandbox simulations.
  * <p>
- * This class provides a command-line interface for configuring and running simulations
- * without requiring a graphical user interface. It supports:
+ * This class provides a command-line interface for configuring and running simulations without
+ * requiring a graphical user interface. It supports:
  * </p>
  * <ul>
  *   <li>Listing available simulations and their parameters</li>
@@ -71,8 +71,8 @@ public class SandboxServerCLIApplication {
   /**
    * Main execution method for the CLI application.
    * <p>
-   * Parses command-line arguments and determines whether to display help information
-   * or execute a simulation based on the provided options.
+   * Parses command-line arguments and determines whether to display help information or execute a
+   * simulation based on the provided options.
    * </p>
    *
    * @param args command-line arguments passed from the launcher
@@ -93,8 +93,8 @@ public class SandboxServerCLIApplication {
   /**
    * Displays help information based on the runtime options provided.
    * <p>
-   * If a specific simulation is specified, shows detailed help for that simulation
-   * including parameters and options. Otherwise, displays general application help.
+   * If a specific simulation is specified, shows detailed help for that simulation including
+   * parameters and options. Otherwise, displays general application help.
    * </p>
    *
    * @param runtimeOptions the parsed runtime options containing help request details
@@ -139,7 +139,7 @@ public class SandboxServerCLIApplication {
       // apply parameters (if any)
       for (String parameter : options.parameters()) {
         String[] keyValue = parameter.split("[=:]");
-        if (keyValue.length != 2) {
+        if (keyValue.length != 2) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
           System.err.printf("Invalid parameter: '%s', use format key:value\n", parameter);
         } else {
           String key = keyValue[0];

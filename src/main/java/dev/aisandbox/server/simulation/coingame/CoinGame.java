@@ -263,7 +263,7 @@ public final class CoinGame implements Simulation {
       agents[0].send(CoinGameResult.newBuilder()
           .setStatus(winner == 0 ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());
     }
-    if (agentMoved[1]) {
+    if (agentMoved[1]) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
       agents[1].send(CoinGameResult.newBuilder()
           .setStatus(winner == 1 ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());
     }

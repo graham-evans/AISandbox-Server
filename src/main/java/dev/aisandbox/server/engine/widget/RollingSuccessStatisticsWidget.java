@@ -202,7 +202,7 @@ public class RollingSuccessStatisticsWidget {
       lines.add("Success rate: " + successRate + "%");
 
       // If there are any successful results, calculate and add their statistics
-      if (successRate > 0.0) {
+      if (successRate > 0.0) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
         // Generate statistics from successful values only
         DoubleStatistics stats = DoubleStatistics.of(
             EnumSet.of(Statistic.MIN, Statistic.MAX, Statistic.MEAN, Statistic.VARIANCE,
