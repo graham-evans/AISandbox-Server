@@ -583,7 +583,7 @@ public class CuboidBuilder {
     StringBuilder result = new StringBuilder();
 
     // For moves deeper than 2 layers, prefix with depth number
-    if (depth > 2) {
+    if (depth > 2) { // NOPMD - AvoidLiteralsInIfCondition: literal value 2 is clear in context
       result.append(depth);
     }
 
@@ -609,14 +609,14 @@ public class CuboidBuilder {
     }
 
     // For moves with multiple layers but not the whole puzzle, add 'w' for wide
-    if (depth > 1) {
+    if (depth > 1) { // NOPMD - AvoidLiteralsInIfCondition: literal value 1 is clear in context
       result.append("w");
     }
 
     // Rotation indicator
-    if (quarterTurns == 2) {
+    if (quarterTurns == 2) { // NOPMD - AvoidLiteralsInIfCondition: literal values are meaningful for cube notation
       result.append("2"); // 180° turn
-    } else if (quarterTurns == -1) {
+    } else if (quarterTurns == -1) { // NOPMD - AvoidLiteralsInIfCondition: literal values are meaningful for cube notation
       result.append("'"); // Counterclockwise turn
     }
     // Default clockwise has no suffix
@@ -849,7 +849,7 @@ public class CuboidBuilder {
     }
 
     // Special case for odd-numbered heights - connect cells in middle row
-    if (height % 2 == 1) {
+    if (height % 2 == 1) { // NOPMD - AvoidLiteralsInIfCondition: literal values are clear for modulo arithmetic
       int dy = divRoundUp(height, 2) - 1;
       for (int dx = 0; dx < width / 2; dx++) {
         MoveLoop loop = new MoveLoop();
