@@ -159,7 +159,7 @@ public class MazeGenerator {
     // check each cell
     for (Cell current : maze.getCellList()) {
       // work out how many paths if less than two, add a new one
-      if (current.getPaths().size() < 2) {
+      if (current.getPaths().size() < 2) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
         List<Cell> target = new ArrayList<>();
         for (Direction d : current.getNeighbours().keySet()) {
           if (!current.isPath(d)) {
