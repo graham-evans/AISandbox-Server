@@ -120,6 +120,7 @@ public class CuboidBuilder {
           frontMove.getLoops()
               .addAll(frontSideTurn(layer, width, height, depth, left, right, top, bottom));
         }
+        frontMove.setCost(1);
         puzzle.addMove(frontMove);
 
         // Create F' moves (counterclockwise front face rotation)
@@ -134,6 +135,7 @@ public class CuboidBuilder {
           frontPrimeMove.getLoops()
               .addAll(frontSideReverseTurn(layer, width, height, depth, left, right, top, bottom));
         }
+        frontPrimeMove.setCost(1);
         puzzle.addMove(frontPrimeMove);
 
         // Create B moves (clockwise back face rotation)
@@ -149,6 +151,7 @@ public class CuboidBuilder {
               frontSideReverseTurn(depth - layer + 1, width, height, depth, left, right, top,
                   bottom));
         }
+        backMove.setCost(1);
         puzzle.addMove(backMove);
 
         // Create B' moves (counterclockwise back face rotation)
@@ -163,6 +166,7 @@ public class CuboidBuilder {
           backPrimeMove.getLoops().addAll(
               frontSideTurn(depth - layer + 1, width, height, depth, left, right, top, bottom));
         }
+        backPrimeMove.setCost(1);
         puzzle.addMove(backPrimeMove);
       }
 
@@ -215,6 +219,7 @@ public class CuboidBuilder {
           upMove.getLoops()
               .addAll(topSideTurn(layer, width, height, depth, left, right, front, back));
         }
+        upMove.setCost(1);
         puzzle.addMove(upMove);
 
         // Create U' move (counterclockwise top face rotation)
@@ -229,6 +234,7 @@ public class CuboidBuilder {
           upPrimeMove.getLoops()
               .addAll(topSideReverseTurn(layer, width, height, depth, left, right, front, back));
         }
+        upPrimeMove.setCost(0);
         puzzle.addMove(upPrimeMove);
 
         // Create D move (clockwise bottom face rotation)
@@ -244,6 +250,7 @@ public class CuboidBuilder {
               topSideReverseTurn(height - layer + 1, width, height, depth, left, right, front,
                   back));
         }
+        downMove.setCost(1);
         puzzle.addMove(downMove);
 
         // Create D' move (counterclockwise bottom face rotation)
@@ -258,6 +265,7 @@ public class CuboidBuilder {
           downPrimeMove.getLoops().addAll(
               topSideTurn(height - layer + 1, width, height, depth, left, right, front, back));
         }
+        downPrimeMove.setCost(1);
         puzzle.addMove(downPrimeMove);
       }
 
@@ -310,6 +318,7 @@ public class CuboidBuilder {
           rightMove.getLoops()
               .addAll(rightSideTurn(layer, width, height, depth, front, back, top, bottom));
         }
+        rightMove.setCost(1);
         puzzle.addMove(rightMove);
 
         // Create R' move (counterclockwise right face rotation)
@@ -324,6 +333,7 @@ public class CuboidBuilder {
           rightPrimeMove.getLoops()
               .addAll(rightSideReverseTurn(layer, width, height, depth, front, back, top, bottom));
         }
+        rightPrimeMove.setCost(1);
         puzzle.addMove(rightPrimeMove);
 
         // Create L move (clockwise left face rotation)
@@ -339,6 +349,7 @@ public class CuboidBuilder {
               rightSideReverseTurn(width - layer + 1, width, height, depth, front, back, top,
                   bottom));
         }
+        leftMove.setCost(1);
         puzzle.addMove(leftMove);
 
         // Create L' move (counterclockwise left face rotation)
@@ -353,6 +364,7 @@ public class CuboidBuilder {
           leftPrimeMove.getLoops().addAll(
               rightSideTurn(width - layer + 1, width, height, depth, front, back, top, bottom));
         }
+        leftPrimeMove.setCost(1);
         puzzle.addMove(leftPrimeMove);
       }
 
@@ -405,6 +417,7 @@ public class CuboidBuilder {
         f2Move.getLoops()
             .addAll(frontSideDoubleTurn(layer, width, height, depth, left, right, top, bottom));
       }
+      f2Move.setCost(1); // 180° rotation counts as 1 move in OBTM
       puzzle.addMove(f2Move);
 
       // B2 moves (180° back face rotation)
@@ -419,6 +432,7 @@ public class CuboidBuilder {
         b2Move.getLoops().addAll(
             frontSideDoubleTurn(depth - layer + 1, width, height, depth, left, right, top, bottom));
       }
+      b2Move.setCost(1);
       puzzle.addMove(b2Move);
     }
 
@@ -452,6 +466,7 @@ public class CuboidBuilder {
         u2Move.getLoops()
             .addAll(topSideDoubleTurn(layer, width, height, depth, right, left, front, back));
       }
+      u2Move.setCost(1);
       puzzle.addMove(u2Move);
 
       // D2 moves (180° bottom face rotation)
@@ -466,6 +481,7 @@ public class CuboidBuilder {
         d2Move.getLoops().addAll(
             topSideDoubleTurn(height - layer + 1, width, height, depth, right, left, front, back));
       }
+      d2Move.setCost(1);
       puzzle.addMove(d2Move);
     }
 
@@ -499,6 +515,7 @@ public class CuboidBuilder {
         r2Move.getLoops()
             .addAll(rightSideDoubleTurn(layer, width, height, depth, front, back, top, bottom));
       }
+      r2Move.setCost(1);
       puzzle.addMove(r2Move);
 
       // L2 moves (180° left face rotation)
@@ -513,6 +530,7 @@ public class CuboidBuilder {
         l2Move.getLoops().addAll(
             rightSideDoubleTurn(width - layer + 1, width, height, depth, front, back, top, bottom));
       }
+      l2Move.setCost(1);
       puzzle.addMove(l2Move);
     }
 
@@ -614,9 +632,13 @@ public class CuboidBuilder {
     }
 
     // Rotation indicator
-    if (quarterTurns == 2) { // NOPMD - AvoidLiteralsInIfCondition: literal values are meaningful for cube notation
+    if (quarterTurns
+        == 2) { // NOPMD - AvoidLiteralsInIfCondition: literal values are meaningful for cube
+      // notation
       result.append("2"); // 180° turn
-    } else if (quarterTurns == -1) { // NOPMD - AvoidLiteralsInIfCondition: literal values are meaningful for cube notation
+    } else if (quarterTurns
+        == -1) { // NOPMD - AvoidLiteralsInIfCondition: literal values are meaningful for cube
+      // notation
       result.append("'"); // Counterclockwise turn
     }
     // Default clockwise has no suffix
@@ -849,7 +871,9 @@ public class CuboidBuilder {
     }
 
     // Special case for odd-numbered heights - connect cells in middle row
-    if (height % 2 == 1) { // NOPMD - AvoidLiteralsInIfCondition: literal values are clear for modulo arithmetic
+    if (height % 2
+        == 1) { // NOPMD - AvoidLiteralsInIfCondition: literal values are clear for modulo
+      // arithmetic
       int dy = divRoundUp(height, 2) - 1;
       for (int dx = 0; dx < width / 2; dx++) {
         MoveLoop loop = new MoveLoop();
