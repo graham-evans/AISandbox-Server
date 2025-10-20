@@ -250,10 +250,10 @@ public final class MineHunterRuntime implements Simulation {
     // Update statistics if game ended
     if (board.getState() == GameState.WON) {
       logWidget.addText(agent.getAgentName() + ": won");
-      pieChartWidget.addValue("win", theme.getAgent1Main());
+      pieChartWidget.addValue("win", theme.getPrimary());
     } else if (board.getState() == GameState.LOST) {
       logWidget.addText(agent.getAgentName() + ": lost");
-      pieChartWidget.addValue("loss", theme.getAgent2Main());
+      pieChartWidget.addValue("loss", theme.getSecondary());
     }
 
     // Render the current state
@@ -292,7 +292,7 @@ public final class MineHunterRuntime implements Simulation {
   public void visualise(Graphics2D graphics2D) {
     // Set up rendering quality and background
     GraphicsUtils.setupRenderingHints(graphics2D);
-    graphics2D.setColor(theme.getBackground());
+    graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
 
     // Draw title area and logo
@@ -309,8 +309,11 @@ public final class MineHunterRuntime implements Simulation {
         TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
 
     // Draw game area background
-    graphics2D.setColor(theme.getBaize());
+    graphics2D.setColor(theme.getBackground());
     graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
+        BAIZE_HEIGHT);
+    graphics2D.setColor(theme.getBorder());
+    graphics2D.drawRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
         BAIZE_HEIGHT);
 
     // Draw remaining mines counter

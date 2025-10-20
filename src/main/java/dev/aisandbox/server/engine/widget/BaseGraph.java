@@ -189,19 +189,22 @@ public class BaseGraph {
     this.theme = theme;
     this.xAxisScale = xAxisScale;
     this.yAxisScale = yAxisScale;
-    this.image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
+    this.image = GraphicsUtils.createBlankImage(width, height, theme.getBackground());
     this.graphics = image.createGraphics();
     GraphicsUtils.setupRenderingHints(graphics);
+    // draw border
+    graphics.setColor(theme.getBorder());
+    graphics.drawRect(0, 0, width - 1, height - 1);
     // calculate graph space
     xBoxStart = PADDING + AXIS_FONT_SIZE + TICK_FONT_SIZE + MARGIN * 4;
     boxWidth = width - xBoxStart - PADDING;
     yBoxStart = PADDING + TITLE_FONT_SIZE + MARGIN;
     boxHeight = height - yBoxStart - PADDING - AXIS_FONT_SIZE - MARGIN * 3 - TICK_FONT_SIZE;
     // draw graph background
-    graphics.setColor(theme.getGraphBackground());
+    graphics.setColor(theme.getBackground());
     graphics.fillRect(xBoxStart, yBoxStart, boxWidth, boxHeight);
     // draw x axis gridlines
-    graphics.setColor(theme.getGraphOutlineColor());
+    graphics.setColor(theme.getText());
     Stroke line = graphics.getStroke();
     graphics.setStroke(dashed);
     for (double x : xAxisScale.getTicks()) {
@@ -247,8 +250,10 @@ public class BaseGraph {
     int width = Math.abs(x1 - x2);
     int y = Math.max(y1, y2);
     int height = Math.abs(y1 - y2);
-    graphics.setColor(fillColour);
-    graphics.fillRect(xBoxStart + x, yBoxStart + boxHeight - y, width, height);
+    if (fillColour != null) {
+      graphics.setColor(fillColour);
+      graphics.fillRect(xBoxStart + x, yBoxStart + boxHeight - y, width, height);
+    }
     graphics.setColor(outlineColour);
     graphics.drawRect(xBoxStart + x, yBoxStart + boxHeight - y, width, height);
   }
@@ -267,14 +272,14 @@ public class BaseGraph {
         height - PADDING * 2 - TITLE_FONT_SIZE - AXIS_FONT_SIZE - MARGIN - TITLE_FONT_SIZE,
         yAxisTitle, AXIS_FONT, theme.getText());
     // draw graph border
-    graphics.setColor(theme.getGraphOutlineColor());
+    graphics.setColor(theme.getText());
     graphics.drawRect(xBoxStart, yBoxStart, boxWidth, boxHeight);
     // draw x axis
     graphics.drawLine(xBoxStart, yBoxStart + boxHeight + MARGIN, xBoxStart + boxWidth,
         yBoxStart + boxHeight + MARGIN);
     for (double x : xAxisScale.getTicks()) {
       int dx = (int) (boxWidth * xAxisScale.getScaledValue(x));
-      graphics.setColor(theme.getGraphOutlineColor());
+      graphics.setColor(theme.getText());
       graphics.drawLine(xBoxStart + dx, yBoxStart + boxHeight + MARGIN, xBoxStart + dx,
           yBoxStart + boxHeight + MARGIN * 2);
       GraphicsUtils.drawCenteredText(graphics, xBoxStart + dx - 20,
@@ -282,11 +287,11 @@ public class BaseGraph {
           TICK_FONT, theme.getText());
     }
     // draw y axis
-    graphics.setColor(theme.getGraphOutlineColor());
+    graphics.setColor(theme.getText());
     graphics.drawLine(xBoxStart - MARGIN, yBoxStart, xBoxStart - MARGIN, yBoxStart + boxHeight);
     for (double y : yAxisScale.getTicks()) {
       int dy = (int) (boxHeight * (1.0 - yAxisScale.getScaledValue(y)));
-      graphics.setColor(theme.getGraphOutlineColor());
+      graphics.setColor(theme.getText());
       graphics.drawLine(xBoxStart - MARGIN * 2, yBoxStart + dy, xBoxStart - MARGIN, yBoxStart + dy);
       GraphicsUtils.drawVerticalCenteredText(graphics, xBoxStart - MARGIN * 3 - TICK_FONT_SIZE,
           yBoxStart + dy - 20, TICK_FONT_SIZE, 40, yAxisScale.getValueString(y), TICK_FONT,

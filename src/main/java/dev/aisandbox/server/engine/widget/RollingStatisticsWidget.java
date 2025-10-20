@@ -66,11 +66,6 @@ public class RollingStatisticsWidget {
   private final Theme theme;
 
   /**
-   * Whether the widget background should be opaque
-   */
-  private final boolean opaque;
-
-  /**
    * Collection of values in the rolling window
    */
   private final List<Double> values = new ArrayList<>();
@@ -98,16 +93,13 @@ public class RollingStatisticsWidget {
    * @param padding    Padding from the edges in pixels
    * @param windowSize Maximum number of values to keep in the rolling window
    * @param theme      Visual theme for the widget
-   * @param opaque     Whether the widget background should be opaque
    */
-  public RollingStatisticsWidget(int width, int height, int padding, int windowSize, Theme theme,
-      boolean opaque) {
+  public RollingStatisticsWidget(int width, int height, int padding, int windowSize, Theme theme) {
     this.width = width;
     this.height = height;
     this.padding = padding;
     this.windowSize = windowSize;
     this.theme = theme;
-    this.opaque = opaque;
   }
 
   /**
@@ -162,14 +154,14 @@ public class RollingStatisticsWidget {
    */
   public BufferedImage renderStatistics() {
     // Create either an opaque image with background color or a transparent image
-    BufferedImage image =
-        opaque ? GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground())
-            : GraphicsUtils.createClearImage(width, height);
-
+    BufferedImage image = GraphicsUtils.createBlankImage(width, height, theme.getBackground());
+    Graphics2D g = image.createGraphics();
+    GraphicsUtils.setupRenderingHints(g);
+    // draw border
+    g.setColor(theme.getBorder());
+    g.drawRect(0, 0, width - 1, height - 1);
     // Only render statistics if we have values
     if (!values.isEmpty()) {
-      Graphics2D g = image.createGraphics();
-      GraphicsUtils.setupRenderingHints(g);
 
       // Calculate statistical values from the current window of values
       DoubleStatistics stats = DoubleStatistics.of(
@@ -246,11 +238,6 @@ public class RollingStatisticsWidget {
     private int windowSize = 200;
 
     /**
-     * Default to opaque background
-     */
-    private boolean opaque = true;
-
-    /**
      * Default to light theme
      */
     private Theme theme = Theme.LIGHT;
@@ -261,7 +248,7 @@ public class RollingStatisticsWidget {
      * @return A new RollingStatisticsWidget instance
      */
     public RollingStatisticsWidget build() {
-      return new RollingStatisticsWidget(width, height, padding, windowSize, theme, opaque);
+      return new RollingStatisticsWidget(width, height, padding, windowSize, theme);
     }
   }
 }

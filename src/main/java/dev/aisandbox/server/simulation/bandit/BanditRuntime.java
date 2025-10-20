@@ -69,7 +69,7 @@ import lombok.extern.slf4j.Slf4j;
  * bandit to pull next.
  * </p>
  *
- * @see dev.aisandbox.server.simulation.bandit.BanditBuilder
+ * @see dev.aisandbox.server.simulation.bandit.BanditScenario
  * @see dev.aisandbox.server.simulation.bandit.model.Bandit
  */
 @Slf4j
@@ -349,7 +349,7 @@ public final class BanditRuntime implements Simulation {
 
   @Override
   public void visualise(Graphics2D graphics2D) {
-    graphics2D.setColor(theme.getBackground());
+    graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
     // draw title
     graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);

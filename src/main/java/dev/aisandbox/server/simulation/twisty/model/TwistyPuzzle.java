@@ -213,8 +213,10 @@ public class TwistyPuzzle {
    * @param theme   The visual theme to use for rendering
    */
   public void drawPuzzle(Graphics2D g, int originX, int originY, Theme theme) {
-    g.setColor(theme.getBaize());
+    g.setColor(theme.getBackground());
     g.fillRect(originX, originY, WIDTH, HEIGHT);
+    g.setColor(theme.getBorder());
+    g.drawRect(originX, originY, WIDTH, HEIGHT);
     for (int i = 0; i < getCells().size(); i++) {
       Cell cell = getCells().get(i);
       char state = currentState.charAt(i);

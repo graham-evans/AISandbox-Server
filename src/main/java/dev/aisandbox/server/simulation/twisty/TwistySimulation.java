@@ -267,7 +267,7 @@ public final class TwistySimulation implements Simulation {
   @Override
   public void visualise(Graphics2D graphics2D) {
     // Draw background
-    graphics2D.setColor(theme.getBackground());
+    graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
 
     // Draw title at the top

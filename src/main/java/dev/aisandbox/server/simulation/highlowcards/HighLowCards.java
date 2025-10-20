@@ -330,7 +330,7 @@ public final class HighLowCards implements Simulation {
   @Override
   public void visualise(Graphics2D graphics2D) {
     // Draw background
-    graphics2D.setColor(theme.getBackground());
+    graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
 
     // Draw title
@@ -340,7 +340,10 @@ public final class HighLowCards implements Simulation {
     graphics2D.setColor(theme.getBaize());
     graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
         BAIZE_HEIGHT);
-
+    graphics2D.setColor(theme.getBaizeBorder());
+    graphics2D.drawRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
+        BAIZE_HEIGHT);
+    
     // Draw face-up cards
     for (int dx = 0; dx < faceUpCards.size(); dx++) {
       Card card = faceUpCards.get(dx);

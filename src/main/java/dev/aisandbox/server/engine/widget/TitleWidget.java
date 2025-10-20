@@ -75,10 +75,10 @@ public class TitleWidget {
     this.title = title;
     this.theme = theme;
     // generate image
-    image = new BufferedImage(HD_WIDTH, TITLE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    image = GraphicsUtils.createBlankImage(HD_WIDTH, TITLE_HEIGHT, theme.getBase());
     Graphics2D g = image.createGraphics();
     GraphicsUtils.setupRenderingHints(g);
-    g.setColor(theme.getBackground());
+    g.setColor(theme.getBase());
     g.fillRect(0, 0, HD_WIDTH, TITLE_HEIGHT);
     g.setColor(theme.getText());
     g.setFont(OutputConstants.TITLE_FONT);

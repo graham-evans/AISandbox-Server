@@ -28,11 +28,14 @@ import org.junit.jupiter.api.Test;
 public class ThemeTest {
 
   private static final String COLOUR_TEST = """
-      <div style='width:640px;height:480px;border:1px;background:{{background}};position:relative;'>
-      <div style='width:200px;height:200px;background:{{baize}};position:absolute;bottom:10px;left:10px'>
+      <div style='width:640px;height:480px;background:{{base}};position:relative;'>
+      <div style='position:absolute;left:10px;top:10px'>
+      <img src='{{logo}}'/>
+      </div>
+      <div style='width:200px;height:200px;background:{{baize}};position:absolute;bottom:10px;left:10px;outline:1px solid {{baizeBorder}};'>
       <p style='color:{{text}}'>Baize</p>
       </div>
-      <div style='width:200px;height:200px;background:{{widgetBackground}};position:absolute;bottom:10px;left:220px'>
+      <div style='width:200px;height:200px;background:{{background}};position:absolute;bottom:10px;left:220px;outline:1px solid {{border}};'>
       <p style='color:{{text}}'>Text Widget</p>
       </div>
       </div>
@@ -52,21 +55,22 @@ public class ThemeTest {
       out.print(theme.name());
       out.println("</h2>");
       // create colour map
-      Map<String, String> colourMap = new TreeMap<>();
+      Map<String, String> templateMap = new TreeMap<>();
       for (Field field : Theme.class.getDeclaredFields()) {
         if (field.getType() == Color.class) {
           Method m = Theme.class.getMethod(
               "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
           Color c = (Color) m.invoke(theme);
-          colourMap.put(field.getName(),
+          templateMap.put(field.getName(),
               String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue()));
         }
       }
+      templateMap.put("logo", "../../../src/main/resources/images/AILogo.png");
       // draw diagram
-      out.println(tmpl.execute(colourMap));
+      out.println(tmpl.execute(templateMap));
       // draw table
       out.println("<table><thead><tr><th>Name</th><th>Color</th><th>Hex</th></thead><tbody>");
-      for (Entry<String, String> entry : colourMap.entrySet()) {
+      for (Entry<String, String> entry : templateMap.entrySet()) {
         String colourName = entry.getKey();
         String colourHex = entry.getValue();
         out.println("<tr><td>");

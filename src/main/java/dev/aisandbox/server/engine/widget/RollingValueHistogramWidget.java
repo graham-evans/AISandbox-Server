@@ -71,8 +71,8 @@ public class RollingValueHistogramWidget {
             yAxis);
         for (BinContents bin : bins) {
           if (bin.quantity() > 0) {
-            graph.addBox(bin.binStart(), 0.0, bin.binEnd(), bin.quantity(), theme.getGraphColor1(),
-                theme.getGraphColor1());
+            graph.addBox(bin.binStart(), 0.0, bin.binEnd(), bin.quantity(), theme.getPrimary(),
+                theme.getPrimary());
           }
         }
         graph.addAxisAndTitle();

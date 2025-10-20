@@ -205,22 +205,25 @@ public final class MazeRunner implements Simulation {
 
   @Override
   public void visualise(Graphics2D graphics2D) {
-    graphics2D.setColor(theme.getBackground());
+    graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
     // draw title
     graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
     graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
     // draw baize
-    graphics2D.setColor(theme.getBaize());
+    graphics2D.setColor(theme.getBackground());
     graphics2D.fillRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
+        BAIZE_HEIGHT);
+    graphics2D.setColor(theme.getBorder());
+    graphics2D.drawRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
         BAIZE_HEIGHT);
     // draw maze
     graphics2D.drawImage(mazeImage, MAZE_START_X, MAZE_START_Y,
         maze.getWidth() * SPRITE_SIZE * maze.getZoomLevel(),
         maze.getHeight() * SPRITE_SIZE * maze.getZoomLevel(), null);
     // draw the player
-    graphics2D.setColor(theme.getAgent1Main());
+    graphics2D.setColor(theme.getPrimary());
     graphics2D.fillOval(
         currentCell.getPositionX() * mazeSize.getZoomLevel() * SPRITE_SIZE + MAZE_START_X,
         MAZE_START_Y + currentCell.getPositionY() * mazeSize.getZoomLevel() * SPRITE_SIZE,

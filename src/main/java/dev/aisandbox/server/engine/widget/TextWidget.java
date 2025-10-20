@@ -19,10 +19,10 @@ import lombok.experimental.Accessors;
 /**
  * A widget for displaying scrollable text content in simulation visualizations.
  * <p>
- * This widget provides a text display area with automatic line wrapping and scrolling functionality.
- * New text lines are added at the bottom while older lines scroll upward and are eventually removed
- * when they scroll out of view. This makes it ideal for displaying logs, status messages, or
- * streaming text content in simulations.
+ * This widget provides a text display area with automatic line wrapping and scrolling
+ * functionality. New text lines are added at the bottom while older lines scroll upward and are
+ * eventually removed when they scroll out of view. This makes it ideal for displaying logs, status
+ * messages, or streaming text content in simulations.
  * </p>
  * <p>
  * Key features:
@@ -43,7 +43,7 @@ import lombok.experimental.Accessors;
  *     .font(new Font(Font.MONOSPACED, Font.PLAIN, 14))
  *     .theme(Theme.DARK)
  *     .build();
- * 
+ *
  * widget.addText("Hello, world!");
  * widget.addText("This is a longer line that will be wrapped automatically");
  * BufferedImage image = widget.getImage();
@@ -72,15 +72,15 @@ public class TextWidget {
   /**
    * Creates a new TextWidget with the specified configuration.
    * <p>
-   * This constructor initializes the widget with a blank image of the specified dimensions,
-   * sets up the graphics context with the provided font and theme, and prepares the internal
-   * state for text rendering and scrolling.
+   * This constructor initializes the widget with a blank image of the specified dimensions, sets up
+   * the graphics context with the provided font and theme, and prepares the internal state for text
+   * rendering and scrolling.
    * </p>
    *
-   * @param width the width of the widget in pixels
+   * @param width  the width of the widget in pixels
    * @param height the height of the widget in pixels
-   * @param font the font to use for text rendering
-   * @param theme the theme providing colors and styling
+   * @param font   the font to use for text rendering
+   * @param theme  the theme providing colors and styling
    */
   private TextWidget(int width, int height, Font font, Theme theme) {
     this.width = width;
@@ -88,10 +88,13 @@ public class TextWidget {
     this.lineHeight = font.getSize() + 2;
     this.theme = theme;
     // create blank image
-    image = GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground());
+    image = GraphicsUtils.createBlankImage(width, height, theme.getBackground());
     graphics = image.createGraphics();
-    blankLine = GraphicsUtils.createBlankImage(width - PADDING, lineHeight,
-        theme.getWidgetBackground());
+    // draw border
+    graphics.setColor(theme.getBorder());
+    graphics.drawRect(0, 0, width - 1, height - 1);
+    blankLine = GraphicsUtils.createBlankImage(width - PADDING - 1, lineHeight,
+        theme.getBackground());
     // setup text
     graphics.setColor(theme.getText());
     graphics.setFont(font);
@@ -103,8 +106,8 @@ public class TextWidget {
   /**
    * Creates a new TextWidgetBuilder for configuring TextWidget instances.
    * <p>
-   * The builder allows for fluent configuration of widget properties before creating
-   * the final TextWidget instance.
+   * The builder allows for fluent configuration of widget properties before creating the final
+   * TextWidget instance.
    * </p>
    *
    * @return a new TextWidgetBuilder with default settings
@@ -116,9 +119,9 @@ public class TextWidget {
   /**
    * Adds a line of text to the widget.
    * <p>
-   * If the text fits on a single line within the widget's width, it will be added as-is.
-   * If the text is too long, it will be automatically wrapped at word boundaries.
-   * Each complete line causes the existing content to scroll upward.
+   * If the text fits on a single line within the widget's width, it will be added as-is. If the
+   * text is too long, it will be automatically wrapped at word boundaries. Each complete line
+   * causes the existing content to scroll upward.
    * </p>
    * <p>
    * Word wrapping strategy:
@@ -166,8 +169,8 @@ public class TextWidget {
   /**
    * Adds a single line of text to the widget and triggers scrolling.
    * <p>
-   * This method performs the actual rendering of a text line. It scrolls the existing
-   * content upward by one line height, clears the bottom line, and draws the new text.
+   * This method performs the actual rendering of a text line. It scrolls the existing content
+   * upward by one line height, clears the bottom line, and draws the new text.
    * </p>
    *
    * @param text the single line of text to render (should not contain line breaks)
@@ -186,13 +189,12 @@ public class TextWidget {
   /**
    * Clears all text from the widget and resets it to a blank state.
    * <p>
-   * This method fills the entire widget area with the background color, effectively
-   * removing all previously displayed text. The text color is then restored for
-   * subsequent text rendering.
+   * This method fills the entire widget area with the background color, effectively removing all
+   * previously displayed text. The text color is then restored for subsequent text rendering.
    * </p>
    */
   public void reset() {
-    graphics.setColor(theme.getWidgetBackground());
+    graphics.setColor(theme.getBackground());
     graphics.fillRect(0, 0, width, height);
     graphics.setColor(theme.getText());
   }
@@ -200,9 +202,9 @@ public class TextWidget {
   /**
    * Builder class for creating and configuring TextWidget instances.
    * <p>
-   * This builder uses a fluent API pattern, allowing for method chaining to configure
-   * multiple properties in a single expression. All methods return the builder instance
-   * for continued chaining.
+   * This builder uses a fluent API pattern, allowing for method chaining to configure multiple
+   * properties in a single expression. All methods return the builder instance for continued
+   * chaining.
    * </p>
    * <p>
    * Default values:
@@ -229,23 +231,31 @@ public class TextWidget {
   @Accessors(chain = true, fluent = true)
   public static class TextWidgetBuilder {
 
-    /** Width of the widget in pixels. */
+    /**
+     * Width of the widget in pixels.
+     */
     private int width = 200;
-    
-    /** Height of the widget in pixels. */
+
+    /**
+     * Height of the widget in pixels.
+     */
     private int height = 200;
-    
-    /** Font to use for text rendering. */
+
+    /**
+     * Font to use for text rendering.
+     */
     private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
-    
-    /** Theme providing colors and styling. */
+
+    /**
+     * Theme providing colors and styling.
+     */
     private Theme theme = Theme.LIGHT;
 
     /**
      * Creates a new TextWidget instance with the current builder configuration.
      * <p>
-     * This method finalizes the builder configuration and creates an immutable
-     * TextWidget instance ready for use.
+     * This method finalizes the builder configuration and creates an immutable TextWidget instance
+     * ready for use.
      * </p>
      *
      * @return a new TextWidget configured with this builder's settings
