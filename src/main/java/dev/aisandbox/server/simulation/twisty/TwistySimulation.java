@@ -71,7 +71,7 @@ public final class TwistySimulation implements Simulation {
   /**
    * Maximum number of steps allowed before failing the episode.
    */
-  private static final int MAX_STEPS = 1000;
+  private static final int MAX_STEPS = 50000;
   /**
    * The AI agent that will interact with the puzzle.
    */
