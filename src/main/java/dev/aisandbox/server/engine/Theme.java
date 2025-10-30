@@ -71,10 +71,10 @@ public enum Theme {
   WARM(Color.decode("#fef4e1"), // Base color
       Color.decode("#494949"), // Background
       Color.white,             // Border
-      Color.white,             // Primary
+      Color.decode("#ea423d"),             // Primary
       Color.decode("#494949"), // Secondary
       Color.white,             // Accent
-      Color.decode("#ea423d"), // Text
+      Color.decode("#ffffff"), // Text
       Color.decode("#005500"), // Baize
       Color.decode("#008800"),  // Baize border
       "/images/AILogo.png" // logo
