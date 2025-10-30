@@ -30,7 +30,7 @@ public class ThemeTest {
   private static final String COLOUR_TEST = """
       <div style='width:640px;height:480px;background:{{base}};position:relative;'>
       <div style='position:absolute;left:10px;top:10px'>
-      <img src='{{logo}}'/>
+      <img src='../../../src/main/resources/{{logo}}'/>
       </div>
       <div style='width:200px;height:200px;background:{{baize}};position:absolute;bottom:10px;left:10px;outline:1px solid {{baizeBorder}};'>
       <p style='color:{{text}}'>Baize</p>
@@ -64,8 +64,13 @@ public class ThemeTest {
           templateMap.put(field.getName(),
               String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue()));
         }
+        if (field.getType() == String.class) {
+          Method m = Theme.class.getMethod(
+              "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
+          String value = (String) m.invoke(theme);
+          templateMap.put(field.getName(), value);
+        }
       }
-      templateMap.put("logo", "../../../src/main/resources/images/AILogo.png");
       // draw diagram
       out.println(tmpl.execute(templateMap));
       // draw table

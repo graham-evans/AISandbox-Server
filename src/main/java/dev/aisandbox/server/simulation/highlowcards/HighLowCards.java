@@ -10,7 +10,6 @@ import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOG_FONT;
@@ -343,7 +342,7 @@ public final class HighLowCards implements Simulation {
     graphics2D.setColor(theme.getBaizeBorder());
     graphics2D.drawRect(LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, BAIZE_WIDTH,
         BAIZE_HEIGHT);
-    
+
     // Draw face-up cards
     for (int dx = 0; dx < faceUpCards.size(); dx++) {
       Card card = faceUpCards.get(dx);
@@ -373,7 +372,7 @@ public final class HighLowCards implements Simulation {
         TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, null);
 
     // Draw logo
-    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
+    graphics2D.drawImage(theme.getLogoImage(), HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
   }
 

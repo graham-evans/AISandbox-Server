@@ -6,14 +6,11 @@
 
 package dev.aisandbox.server.engine.output;
 
-import dev.aisandbox.server.simulation.bandit.BanditRuntime;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
-import javax.imageio.ImageIO;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -131,10 +128,6 @@ public class OutputConstants {
   public static final Font WIDGET_TITLE_FONT;
 
   // Shared graphical assets
-  /**
-   * Pre-loaded AI Sandbox logo image
-   */
-  public static final BufferedImage LOGO;
 
   /**
    * List of font file paths to attempt loading from resources
@@ -143,16 +136,7 @@ public class OutputConstants {
       "/fonts/Hack-Regular.ttf");
 
   static {
-    // load logo image from resources
-    BufferedImage i;
-    try {
-      i = ImageIO.read(BanditRuntime.class.getResourceAsStream("/images/AILogo.png"));
-    } catch (IOException e) {
-      log.error("Error loading logo image", e);
-      // Create fallback logo if resource loading fails
-      i = new BufferedImage(LOGO_WIDTH, LOGO_HEIGHT, BufferedImage.TYPE_INT_RGB);
-    }
-    LOGO = i;
+
     // Load fonts
     GraphicsEnvironment GE = GraphicsEnvironment.getLocalGraphicsEnvironment();
     try {

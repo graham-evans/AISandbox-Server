@@ -10,7 +10,6 @@ import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOG_FONT;
@@ -316,7 +315,7 @@ public final class CoinGame implements Simulation {
     }
 
     // Draw the AI Sandbox logo in the top right corner
-    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
+    graphics2D.drawImage(theme.getLogoImage(), HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
 
   }
