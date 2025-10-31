@@ -88,7 +88,7 @@ public class RollingIconWidget {
       image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
       Graphics2D graphics2D = image.createGraphics();
       GraphicsUtils.setupRenderingHints(graphics2D);
-      graphics2D.setColor(theme.getWidgetBackground());
+      graphics2D.setColor(theme.getBackground());
       graphics2D.fillRect(0, 0, width, height);
       graphics2D.setColor(theme.getText());
       GraphicsUtils.drawCenteredText(graphics2D, 0, PADDING, width, WIDGET_TITLE_HEIGHT, title,

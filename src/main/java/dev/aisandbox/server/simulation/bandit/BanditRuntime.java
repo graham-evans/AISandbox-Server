@@ -10,7 +10,6 @@ import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOG_FONT;
@@ -69,7 +68,7 @@ import lombok.extern.slf4j.Slf4j;
  * bandit to pull next.
  * </p>
  *
- * @see dev.aisandbox.server.simulation.bandit.BanditBuilder
+ * @see dev.aisandbox.server.simulation.bandit.BanditScenario
  * @see dev.aisandbox.server.simulation.bandit.model.Bandit
  */
 @Slf4j
@@ -349,7 +348,7 @@ public final class BanditRuntime implements Simulation {
 
   @Override
   public void visualise(Graphics2D graphics2D) {
-    graphics2D.setColor(theme.getBackground());
+    graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
     // draw title
     graphics2D.drawImage(titleWidget.getImage(), 0, TOP_MARGIN, null);
@@ -370,7 +369,7 @@ public final class BanditRuntime implements Simulation {
     graphics2D.drawImage(logWidget.getImage(), LEFT_MARGIN + RESULTS_WIDTH * 2 + WIDGET_SPACING * 2,
         HD_HEIGHT - BOTTOM_MARGIN - RESULTS_HEIGHT, null);
     // draw logo
-    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
+    graphics2D.drawImage(theme.getLogoImage(), HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
   }
 }

@@ -45,11 +45,11 @@ public class PieChartWidget {
   }
 
   private BufferedImage drawGraph() {
-    BufferedImage image = GraphicsUtils.createBlankImage(width, height,
-        theme.getWidgetBackground());
+    BufferedImage image = GraphicsUtils.createBlankImage(width, height, theme.getBackground());
     Graphics2D g = image.createGraphics();
-    g.setColor(theme.getGraphBackground());
-    g.fillRect(PADDING, PADDING, width - PADDING * 2, height - PADDING * 2);
+    g.setColor(theme.getBorder());
+    // g.drawRect(PADDING, PADDING, width - PADDING * 2, height - PADDING * 2);
+    g.drawRect(0, 0, width - 1, height - 1);
     // add title
     GraphicsUtils.drawCenteredText(g, PADDING, PADDING, width - PADDING * 2, TITLE_FONT_SIZE, title,
         TITLE_FONT, theme.getText());
@@ -67,16 +67,18 @@ public class PieChartWidget {
     }
     // draw each slice using drawArc and fillArc (degrees with 90' = north)
     double startAngle = 90;
-    for (Slice slice : segments) {
+    for (int i = 0; i < segments.size(); i++) {
+      Slice slice = segments.get(i);
       // Draw slice
       double value = slice.value / totalValue;
       double angle = value * 360;
-      g.setColor(slice.baseColor);
+
       Shape arc = new Arc2D.Double(startX, startY, pieDiameter, pieDiameter, startAngle, -angle,
           Arc2D.PIE);
       Rectangle bounds = arc.getBounds();
+      g.setColor(i % 2 == 0 ? theme.getPrimary() : theme.getSecondary());
       g.fill(arc);
-      g.setColor(theme.getGraphBackground());
+      g.setColor(theme.getBorder());
       g.draw(arc);
       startAngle -= angle;
     }

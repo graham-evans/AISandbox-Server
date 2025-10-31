@@ -181,7 +181,7 @@ public class RollingSuccessStatisticsWidget {
   public BufferedImage renderStatistics() {
     // Create either an opaque image with background color or a transparent image
     BufferedImage image =
-        opaque ? GraphicsUtils.createBlankImage(width, height, theme.getWidgetBackground())
+        opaque ? GraphicsUtils.createBlankImage(width, height, theme.getBackground())
             : GraphicsUtils.createClearImage(width, height);
 
     // Only render statistics if we have values

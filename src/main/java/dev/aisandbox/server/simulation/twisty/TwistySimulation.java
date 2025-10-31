@@ -11,7 +11,6 @@ import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
 import static dev.aisandbox.server.engine.output.OutputConstants.RIGHT_MARGIN;
@@ -267,7 +266,7 @@ public final class TwistySimulation implements Simulation {
   @Override
   public void visualise(Graphics2D graphics2D) {
     // Draw background
-    graphics2D.setColor(theme.getBackground());
+    graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
 
     // Draw title at the top
@@ -277,7 +276,7 @@ public final class TwistySimulation implements Simulation {
     puzzle.drawPuzzle(graphics2D, LEFT_MARGIN, TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING, theme);
 
     // Draw the logo in the upper right
-    graphics2D.drawImage(LOGO, HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
+    graphics2D.drawImage(theme.getLogoImage(), HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
 
     // Draw statistics widget in the middle right

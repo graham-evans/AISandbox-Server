@@ -7,6 +7,10 @@
 package dev.aisandbox.server.engine;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
+import javax.imageio.ImageIO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +24,11 @@ import lombok.RequiredArgsConstructor;
  *
  * <p>Available themes:
  * <ul>
- *   <li>LIGHT - A light theme with subtle blue accents and high contrast</li>
- *   <li>WARM - A warm color palette with beige/cream backgrounds</li>
+ *   <li>LIGHT - A light theme with high contrast</li>
  *   <li>DARK - A dark theme with high contrast for low-light environments</li>
+ *   <li>MIDNIGHT - A dark blue theme with elegant midnight tones</li>
+ *   <li>WARM - A warm theme with cozy earth tones and orange accents</li>
+ *   <li>FOREST - A natural theme with green tones and earthy accents</li>
  * </ul>
  */
 @Getter
@@ -30,171 +36,153 @@ import lombok.RequiredArgsConstructor;
 public enum Theme {
 
   /**
-   * Light theme with subtle blue accents and high contrast. Primary background: light gray
-   * (#efefef) Text: dark gray (#4c4c4d)
+   * Light theme with subtle blue accents and high contrast.
+   *
+   * <p>Color palette:
+   * <ul>
+   *   <li>Primary background: light gray (#f0f0f0)</li>
+   *   <li>Panel background: white (#ffffff)</li>
+   *   <li>Text: dark gray (#4c4c4d)</li>
+   *   <li>Primary accent: navy blue (#000066)</li>
+   *   <li>Secondary accent: dark red (#660000)</li>
+   * </ul>
    */
-  LIGHT(Color.decode("#efefef"), // Main background color
-      Color.decode("#4c4c4d"), // Primary text color
-      Color.decode("#fffaf0"), // Widget background color (floral white)
-      Color.decode("#fffaf0"), // Graph background color (floral white)
-      Color.decode("#4c4c4d"), // Graph outline/axis color
-      Color.decode("#fffaf0"), // Baize (play area) color
-      Color.decode("#07144b"), // Primary graph data color (dark blue)
-
-      Color.decode("#85d8ef"), // Agent 1 main color (light blue)
-      Color.decode("#85d8ef"), // Agent 1 highlight color
-      Color.decode("#85d8ef"), // Agent 1 lowlight color
-
-      Color.decode("#640d14"), // Agent 2 main color (dark red)
-      Color.decode("#800e13"), // Agent 2 highlight color
-      Color.decode("#38040e"), // Agent 2 lowlight color
-
-      Color.decode("#ffa200"), // Selected agent main color (orange)
-      Color.decode("#ffaa00"), // Selected agent highlight color
-      Color.decode("#ff9500")  // Selected agent lowlight color
+  LIGHT(Color.decode("#f0f0f0"), // Main base color
+      Color.decode("#ffffff"), // Background color for panels
+      Color.decode("#efefef"), // Border of panels
+      Color.decode("#000066"), // Primary color
+      Color.decode("#660000"), // Secondary color
+      Color.decode("#fffaf0"), // Accent
+      Color.decode("#4C4C4D"), // Text
+      Color.decode("#005500"), // Baize
+      Color.decode("#008800"),  // Baize border
+      "/images/AILogo.png" // logo
   ),
 
   /**
-   * Warm theme with beige/cream background and red accents. Primary background: cream (#fef4e1)
-   * Text: darker gray (#494949)
+   * Dark theme with high contrast for low-light environments.
+   *
+   * <p>Color palette:
+   * <ul>
+   *   <li>Primary background: black</li>
+   *   <li>Panel background: dark gray</li>
+   *   <li>Text: white for maximum contrast</li>
+   *   <li>Bright accent colors for visibility</li>
+   * </ul>
    */
-  WARM(Color.decode("#fef4e1"), // Main background color (cream)
-      Color.decode("#494949"), // Primary text color
-      Color.white,             // Widget background color
-      Color.white,             // Graph background color
-      Color.decode("#494949"), // Graph outline/axis color
-      Color.white,             // Baize (play area) color
-      Color.decode("#ea423d"), // Primary graph data color (warm red)
-
-      Color.decode("#038da2"), // Agent 1 main color (teal)
-      Color.decode("#038da2"), // Agent 1 highlight color
-      Color.decode("#038da2"), // Agent 1 lowlight color
-
-      Color.decode("#640d14"), // Agent 2 main color (dark red)
-      Color.decode("#800e13"), // Agent 2 highlight color
-      Color.decode("#38040e"), // Agent 2 lowlight color
-
-      Color.decode("#ffa200"), // Selected agent main color (orange)
-      Color.decode("#ffaa00"), // Selected agent highlight color
-      Color.decode("#ff9500")  // Selected agent lowlight color
+  DARK(Color.decode("#1e1f22"),      // Base color
+      Color.decode("#2b2d30"),   // Background
+      Color.decode("#343538"),  // Border
+      Color.decode("#5489f6"),       // Primary
+      Color.decode("#db5c5c"),        // Secondary
+      Color.decode("#cc895b"),     // Accent
+      Color.white,      // Text
+      Color.decode("#005500"), // Baize
+      Color.decode("#003300"),  // Baize border
+      "/images/AILogoW.png" // logo
   ),
 
   /**
-   * Dark theme with high contrast for low-light environments. Primary background: deep blue
-   * (#000d43) Text: white
+   * Midnight theme with deep blue tones for elegant low-light usage.
+   *
+   * <p>Color palette:
+   * <ul>
+   *   <li>Primary background: deep navy (#0f1419)</li>
+   *   <li>Panel background: midnight blue (#1a2332)</li>
+   *   <li>Text: light blue-gray for contrast</li>
+   *   <li>Cool blue accent colors throughout</li>
+   * </ul>
    */
-  DARK(Color.decode("#000d43"), // Main background color (deep blue)
-      Color.white,             // Primary text color
-      Color.decode("#001155"), // Widget background color (slightly lighter blue)
-      Color.decode("#ffe0a6"), // Graph background color (light amber)
-      Color.decode("#000d43"), // Graph outline/axis color
-      Color.decode("#001155"), // Baize (play area) color
-      Color.decode("#ff0800"), // Primary graph data color (bright red)
+  MIDNIGHT(Color.decode("#0f1419"),     // Base color - deep navy
+      Color.decode("#1a2332"),      // Background - midnight blue
+      Color.decode("#2d3748"),      // Border - slate blue
+      Color.decode("#4299e1"),      // Primary - bright blue
+      Color.decode("#63b3ed"),      // Secondary - light blue
+      Color.decode("#9f7aea"),      // Accent - purple-blue
+      Color.decode("#e2e8f0"),      // Text - light blue-gray
+      Color.decode("#2a4365"),      // Baize - dark blue
+      Color.decode("#1a365d"),      // Baize border - darker blue
+      "/images/AILogoW.png"         // logo
+  ),
 
-      Color.decode("#014f89"), // Agent 1 main color (medium blue)
-      Color.decode("#2a6f97"), // Agent 1 highlight color
-      Color.decode("#01497c"), // Agent 1 lowlight color
+  /**
+   * Warm theme with cozy earth tones and soft orange accents.
+   *
+   * <p>Color palette:
+   * <ul>
+   *   <li>Primary background: warm cream (#faf7f2)</li>
+   *   <li>Panel background: soft ivory (#fffef9)</li>
+   *   <li>Text: warm brown for comfort</li>
+   *   <li>Orange and terracotta accent colors</li>
+   * </ul>
+   */
+  WARM(Color.decode("#faf7f2"),     // Base color - warm cream
+      Color.decode("#fffef9"),      // Background - soft ivory
+      Color.decode("#f0ede6"),      // Border - warm beige
+      Color.decode("#d69e2e"),      // Primary - golden orange
+      Color.decode("#c05621"),      // Secondary - terracotta
+      Color.decode("#ed8936"),      // Accent - warm orange
+      Color.decode("#744210"),      // Text - warm brown
+      Color.decode("#68d391"),      // Baize - warm green
+      Color.decode("#48bb78"),      // Baize border - darker green
+      "/images/AILogo.png"          // logo
+  ),
 
-      Color.decode("#640d14"), // Agent 2 main color (dark red)
-      Color.decode("#800e13"), // Agent 2 highlight color
-      Color.decode("#38040e"), // Agent 2 lowlight color
-
-      Color.decode("#ffa200"), // Selected agent main color (orange)
-      Color.decode("#ffaa00"), // Selected agent highlight color
-      Color.decode("#ff9500")  // Selected agent lowlight color
+  /**
+   * Forest theme with natural green tones and earthy accents.
+   *
+   * <p>Color palette:
+   * <ul>
+   *   <li>Primary background: soft sage (#f7f9f7)</li>
+   *   <li>Panel background: pale mint (#fdfefd)</li>
+   *   <li>Text: deep forest green</li>
+   *   <li>Natural green and earth tone accents</li>
+   * </ul>
+   */
+  FOREST(Color.decode("#f7f9f7"),    // Base color - soft sage
+      Color.decode("#fdfefd"),       // Background - pale mint
+      Color.decode("#e6f4ea"),       // Border - light green
+      Color.decode("#2d7d32"),       // Primary - forest green
+      Color.decode("#388e3c"),       // Secondary - medium green
+      Color.decode("#8bc34a"),       // Accent - lime green
+      Color.decode("#1b5e20"),       // Text - deep forest
+      Color.decode("#4caf50"),       // Baize - natural green
+      Color.decode("#2e7d32"),       // Baize border - darker green
+      "/images/AILogo.png"           // logo
   );
 
-  /**
-   * The main application background color
-   */
+  private final Color base;
   private final Color background;
-
-  /**
-   * The primary text color used throughout the application
-   */
+  private final Color border;
+  private final Color primary;
+  private final Color secondary;
+  private final Color accent;
   private final Color text;
-
-  /**
-   * Background color for UI widgets and components
-   */
-  private final Color widgetBackground;
-
-  /**
-   * Background color for graph and chart areas
-   */
-  private final Color graphBackground;
-
-  /**
-   * Color for graph axes, borders and outlines
-   */
-  private final Color graphOutlineColor;
-
-  /**
-   * Color for the main gameplay or visualization area
-   */
   private final Color baize;
+  private final Color baizeBorder;
+  private final String logo;
 
-  /**
-   * Primary color for graph data visualization
-   */
-  private final Color graphColor1;
+  private final BufferedImage logoImage;
 
-  /**
-   * Main color for the first agent
-   */
-  private final Color agent1Main;
+  Theme(Color base, Color background, Color border, Color primary, Color secondary, Color accent,
+      Color text, Color baize, Color baizeBorder, String logo) {
+    this.base = base;
+    this.background = background;
+    this.border = border;
+    this.primary = primary;
+    this.secondary = secondary;
+    this.accent = accent;
+    this.text = text;
+    this.baize = baize;
+    this.baizeBorder = baizeBorder;
+    this.logo = logo;
 
-  /**
-   * Highlight/accent color for the first agent
-   */
-  private final Color agent1Highlight;
-
-  /**
-   * Secondary/lowlight color for the first agent
-   */
-  private final Color agent1Lowlight;
-
-  /**
-   * Main color for the second agent
-   */
-  private final Color agent2Main;
-
-  /**
-   * Highlight/accent color for the second agent
-   */
-  private final Color agent2Highlight;
-
-  /**
-   * Secondary/lowlight color for the second agent
-   */
-  private final Color agent2Lowlight;
-
-  /**
-   * Main color for the currently selected agent
-   */
-  private final Color agentSelectedMain;
-
-  /**
-   * Highlight/accent color for the currently selected agent
-   */
-  private final Color agentSelectedHighlight;
-
-  /**
-   * Secondary/lowlight color for the currently selected agent
-   */
-  private final Color agentSelectedLowlight;
-
-  /**
-   * Returns the main color for the specified agent index.
-   *
-   * @param i The agent index (0 for first agent, 1 for second agent)
-   * @return The main color for the specified agent, or dark gray if the index is out of range
-   */
-  public Color getAgentMain(int i) {
-    return switch (i) {
-      case 0 -> agent1Main;
-      case 1 -> agent2Main;
-      default -> Color.DARK_GRAY;
-    };
+    BufferedImage tempImage = null;
+    try {
+      tempImage = ImageIO.read(Objects.requireNonNull(Theme.class.getResourceAsStream(logo)));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    logoImage = tempImage;
   }
 }
