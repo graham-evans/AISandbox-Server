@@ -21,13 +21,19 @@ Before v2.0.0 is released, the following changes are needed
 
 - [x] UI for all simulations (layout and widgets complete)
 
-## v2.0.0 Release Candidate 1
+## v2.0.0 Release Candidate 1 - September 2025
 
-- [ ] UI tweaks
-- [ ] Finalise theme colours
-- [ ] Demos available for Java
-- [ ] Demos available for Python
+- [x] UI tweaks
+- [x] Demos available for Java
+- [x] Demos available for Python
+
+## v2.0.0 Release Candidate 2 - November 2025
+
+- [x] Finalise theme colours
+- [x] Demos available for Java
+- [x] Demos available for Python
 - [ ] Documentation complete
 
-At this point the new sandbox should be feature complete, fully documented and include sample code for all simulations.
+
+At this point the new sandbox should be feature-complete, fully documented and include sample code for all simulations.
 I'll then be working on final bugfixes and deployment builds.
