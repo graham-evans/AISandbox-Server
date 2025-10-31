@@ -1,11 +1,11 @@
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
-    id "com.google.protobuf" version "0.9.4"
+    id "com.google.protobuf" version "0.9.5"
     id("io.freefair.lombok") version "9.0.0"
     id 'pmd'
     id 'checkstyle'
-    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'com.github.ben-manes.versions' version '0.52.0'
 }
 
 group = 'dev.aisandbox'
@@ -52,8 +52,9 @@ checkstyle {
 }
 
 pmd {
-    toolVersion = "6.55.0"
-
+    toolVersion = "7.0.0"
+    consoleOutput = true
+    ignoreFailures = true
     sourceSets = [project.sourceSets.main]
 
     pmdMain {
@@ -83,14 +84,15 @@ configurations {
 
 protobuf {
     // Configure the protoc executable
-    protoc { artifact = "com.google.protobuf:protoc:${protobufVersion}" }
+    protoc { 
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
     generateProtoTasks {
         // all() returns the collection of all protoc tasks
         all().configureEach { task ->
             // Here you can configure the task
         }
     }
-
 }
 
 repositories {
@@ -122,8 +124,3 @@ test {
     }
 }
 
-pmd {
-    consoleOutput = true
-    toolVersion = "7.0.0"
-    ignoreFailures = true
-}
