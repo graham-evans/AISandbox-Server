@@ -24,6 +24,24 @@
   <module name="BeforeExecutionExclusionFileFilter">
     <property name="fileNamePattern" value="module\-info\.java$"/>
   </module>
+  
+  <!-- Exclude auto-generated protobuf sources -->
+  <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value=".*[/\\]build[/\\]generated[/\\].*\.java$"/>
+  </module>
+  
+  <!-- Exclude auto-generated protobuf classes by naming pattern -->
+  <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value=".*Proto\.java$"/>
+  </module>
+  
+  <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value=".*Grpc\.java$"/>
+  </module>
+  
+  <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value=".*OrBuilder\.java$"/>
+  </module>
 
   <!-- check for licences in each source file -->
   <module name="Header">

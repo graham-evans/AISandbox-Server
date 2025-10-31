@@ -39,6 +39,15 @@ javadoc {
 checkstyle {
     toolVersion = "10.23.0"
     checkstyleMain.source = "src/main/java"
+    
+    // Exclude auto-generated sources
+    checkstyleMain {
+        exclude '**/build/generated/**'
+        exclude '**/build/generated-src/**'
+        exclude '**/*Proto.java'
+        exclude '**/*Grpc.java'
+        exclude '**/proto/**'
+    }
 }
 
 pmd {
