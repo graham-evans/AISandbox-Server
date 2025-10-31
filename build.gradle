@@ -5,7 +5,7 @@ plugins {
     id("io.freefair.lombok") version "9.0.0"
     id 'pmd'
     id 'checkstyle'
-    id 'com.github.ben-manes.versions' version '0.52.0'
+    id 'com.github.ben-manes.versions' version '0.53.0'
 }
 
 group = 'dev.aisandbox'
@@ -84,13 +84,15 @@ configurations {
 
 protobuf {
     // Configure the protoc executable
+    // Note: Multi-string notation warning is a known issue with protobuf plugin 0.9.5
+    // and will be resolved in a future plugin version
     protoc { 
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
     generateProtoTasks {
         // all() returns the collection of all protoc tasks
         all().configureEach { task ->
-            // Here you can configure the task
+            // Configure task options if needed
         }
     }
 }
