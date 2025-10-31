@@ -2,7 +2,7 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id "com.google.protobuf" version "0.9.4"
-    id("io.freefair.lombok") version "8.12.1"
+    id("io.freefair.lombok") version "9.0.0"
     id 'pmd'
     id 'checkstyle'
     id 'com.github.ben-manes.versions' version '0.51.0'
@@ -10,7 +10,7 @@ plugins {
 
 group = 'dev.aisandbox'
 
-def protobufVersion = '4.30.2'
+def protobufVersion = '4.33.0'
 
 run {
     enableAssertions = true
@@ -101,18 +101,18 @@ dependencies {
     // protobuf
     implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
     // commons utilities
-    implementation 'commons-cli:commons-cli:1.9.0'
-    implementation 'org.apache.commons:commons-statistics-descriptive:1.1'
-    implementation 'org.apache.commons:commons-lang3:3.17.0'
+    implementation 'commons-cli:commons-cli:1.10.0'
+    implementation 'org.apache.commons:commons-statistics-descriptive:1.2'
+    implementation 'org.apache.commons:commons-lang3:3.19.0'
     // logging
-    implementation 'ch.qos.logback:logback-core:1.5.18'
+    implementation 'ch.qos.logback:logback-core:1.5.20'
     testImplementation 'org.slf4j:slf4j-api:2.1.0-alpha1'
-    implementation 'ch.qos.logback:logback-classic:1.5.18'
+    implementation 'ch.qos.logback:logback-classic:1.5.20'
     // test libs
     testImplementation(platform('org.junit:junit-bom:5.11.4'))
     testImplementation('org.junit.jupiter:junit-jupiter')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
-    testImplementation('com.samskivert:jmustache:1.15')
+    testImplementation('com.samskivert:jmustache:1.16')
 }
 
 test {
