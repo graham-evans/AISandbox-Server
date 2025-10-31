@@ -25,8 +25,10 @@ import lombok.RequiredArgsConstructor;
  * <p>Available themes:
  * <ul>
  *   <li>LIGHT - A light theme with high contrast</li>
- *   <li>WARM - A warm color palette with beige/cream backgrounds</li>
  *   <li>DARK - A dark theme with high contrast for low-light environments</li>
+ *   <li>MIDNIGHT - A dark blue theme with elegant midnight tones</li>
+ *   <li>WARM - A warm theme with cozy earth tones and orange accents</li>
+ *   <li>FOREST - A natural theme with green tones and earthy accents</li>
  * </ul>
  */
 @Getter
@@ -58,29 +60,6 @@ public enum Theme {
   ),
 
   /**
-   * Warm theme with beige/cream background and red accents.
-   *
-   * <p>Color palette:
-   * <ul>
-   *   <li>Primary background: cream (#fef4e1)</li>
-   *   <li>Panel background: dark gray (#494949)</li>
-   *   <li>Text: bright red (#ea423d)</li>
-   *   <li>Borders and accents: white</li>
-   * </ul>
-   */
-  WARM(Color.decode("#fef4e1"), // Base color
-      Color.decode("#494949"), // Background
-      Color.white,             // Border
-      Color.decode("#ea423d"),             // Primary
-      Color.decode("#494949"), // Secondary
-      Color.white,             // Accent
-      Color.decode("#ffffff"), // Text
-      Color.decode("#005500"), // Baize
-      Color.decode("#008800"),  // Baize border
-      "/images/AILogo.png" // logo
-  ),
-
-  /**
    * Dark theme with high contrast for low-light environments.
    *
    * <p>Color palette:
@@ -91,16 +70,85 @@ public enum Theme {
    *   <li>Bright accent colors for visibility</li>
    * </ul>
    */
-  DARK(Color.black,      // Base color
+  DARK(Color.decode("#1e1f22"),      // Base color
       Color.decode("#2b2d30"),   // Background
       Color.decode("#343538"),  // Border
-      Color.blue,       // Primary
-      Color.red,        // Secondary
+      Color.decode("#5489f6"),       // Primary
+      Color.decode("#db5c5c"),        // Secondary
       Color.decode("#cc895b"),     // Accent
       Color.white,      // Text
       Color.decode("#005500"), // Baize
       Color.decode("#003300"),  // Baize border
       "/images/AILogoW.png" // logo
+  ),
+
+  /**
+   * Midnight theme with deep blue tones for elegant low-light usage.
+   *
+   * <p>Color palette:
+   * <ul>
+   *   <li>Primary background: deep navy (#0f1419)</li>
+   *   <li>Panel background: midnight blue (#1a2332)</li>
+   *   <li>Text: light blue-gray for contrast</li>
+   *   <li>Cool blue accent colors throughout</li>
+   * </ul>
+   */
+  MIDNIGHT(Color.decode("#0f1419"),     // Base color - deep navy
+      Color.decode("#1a2332"),      // Background - midnight blue
+      Color.decode("#2d3748"),      // Border - slate blue
+      Color.decode("#4299e1"),      // Primary - bright blue
+      Color.decode("#63b3ed"),      // Secondary - light blue
+      Color.decode("#9f7aea"),      // Accent - purple-blue
+      Color.decode("#e2e8f0"),      // Text - light blue-gray
+      Color.decode("#2a4365"),      // Baize - dark blue
+      Color.decode("#1a365d"),      // Baize border - darker blue
+      "/images/AILogoW.png"         // logo
+  ),
+
+  /**
+   * Warm theme with cozy earth tones and soft orange accents.
+   *
+   * <p>Color palette:
+   * <ul>
+   *   <li>Primary background: warm cream (#faf7f2)</li>
+   *   <li>Panel background: soft ivory (#fffef9)</li>
+   *   <li>Text: warm brown for comfort</li>
+   *   <li>Orange and terracotta accent colors</li>
+   * </ul>
+   */
+  WARM(Color.decode("#faf7f2"),     // Base color - warm cream
+      Color.decode("#fffef9"),      // Background - soft ivory
+      Color.decode("#f0ede6"),      // Border - warm beige
+      Color.decode("#d69e2e"),      // Primary - golden orange
+      Color.decode("#c05621"),      // Secondary - terracotta
+      Color.decode("#ed8936"),      // Accent - warm orange
+      Color.decode("#744210"),      // Text - warm brown
+      Color.decode("#68d391"),      // Baize - warm green
+      Color.decode("#48bb78"),      // Baize border - darker green
+      "/images/AILogo.png"          // logo
+  ),
+
+  /**
+   * Forest theme with natural green tones and earthy accents.
+   *
+   * <p>Color palette:
+   * <ul>
+   *   <li>Primary background: soft sage (#f7f9f7)</li>
+   *   <li>Panel background: pale mint (#fdfefd)</li>
+   *   <li>Text: deep forest green</li>
+   *   <li>Natural green and earth tone accents</li>
+   * </ul>
+   */
+  FOREST(Color.decode("#f7f9f7"),    // Base color - soft sage
+      Color.decode("#fdfefd"),       // Background - pale mint
+      Color.decode("#e6f4ea"),       // Border - light green
+      Color.decode("#2d7d32"),       // Primary - forest green
+      Color.decode("#388e3c"),       // Secondary - medium green
+      Color.decode("#8bc34a"),       // Accent - lime green
+      Color.decode("#1b5e20"),       // Text - deep forest
+      Color.decode("#4caf50"),       // Baize - natural green
+      Color.decode("#2e7d32"),       // Baize border - darker green
+      "/images/AILogo.png"           // logo
   );
 
   private final Color base;
