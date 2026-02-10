@@ -3,9 +3,9 @@
 Server simulations for learning Reinforcement Learning and action based AI.
 
 > [!NOTE]
-> This is a re-implementation of the AISandbox-Client project, with the integration changed to use protobuf. There
-is a lot of work to be done before this replaces the original project, so for now, users are advised to use
-the [AISandbox-Client](https://github.com/graham-evans/AISandbox-Client).
+> This is a re-implementation of the AISandbox-Client project, with the integration changed to use protobuf.
+> We are nearing completion of version 2.0, so users are encouraged to try the new software out and report bugs via [GitHub issues](https://github.com/graham-evans/AISandbox-Server/issues).
+
 
 # Progress
 
@@ -35,5 +35,5 @@ Before v2.0.0 is released, the following changes are needed
 - [ ] Documentation complete
 
 
-At this point the new sandbox should be feature-complete, fully documented and include sample code for all simulations.
+The new sandbox is now feature feature-complete, with only some changes to be made to the documentation.
 I'll then be working on final bugfixes and deployment builds.
