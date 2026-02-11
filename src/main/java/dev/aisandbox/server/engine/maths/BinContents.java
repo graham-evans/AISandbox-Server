@@ -8,15 +8,13 @@ package dev.aisandbox.server.engine.maths;
 
 /**
  * Record representing the contents and statistics of a single bin in a histogram.
- * <p>
- * This record encapsulates all the information about a bin used in data distribution analysis,
+ *
+ * <p>This record encapsulates all the information about a bin used in data distribution analysis,
  * including its boundaries, the number of data points it contains, and its calculated density. It
  * is typically used in conjunction with {@link StatisticsUtils} for creating histograms and
  * analyzing data distributions.
- * </p>
- * <p>
- * Example usage:
- * </p>
+ *
+ * <p>Example usage:
  * <pre>
  * BinContents bin = new BinContents(0.0, 1.0, 15, 0.75);
  * System.out.println("Bin [" + bin.binStart() + "-" + bin.binEnd() + "] contains " +

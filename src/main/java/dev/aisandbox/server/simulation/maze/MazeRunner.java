@@ -37,6 +37,10 @@ import java.util.Random;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Simulation runner for the Maze game, where an AI agent navigates through a procedurally
+ * generated maze to reach a goal.
+ */
 @Slf4j
 public final class MazeRunner implements Simulation {
 
@@ -77,7 +81,15 @@ public final class MazeRunner implements Simulation {
 
   private double episodeScore;
 
-
+  /**
+   * Creates a MazeRunner simulation with the specified configuration.
+   *
+   * @param agent the AI agent playing the game
+   * @param mazeSize the size of the maze to generate
+   * @param mazeType the type of maze generation algorithm
+   * @param theme the visual theme for the maze
+   * @param random the random number generator for maze generation
+   */
   public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme, Random random) {
     this.agent = agent;
     this.mazeSize = mazeSize;
@@ -112,7 +124,7 @@ public final class MazeRunner implements Simulation {
   }
 
   /**
-   * Render a maze at 1:1 scale
+   * Render a maze at 1:1 scale.
    *
    * @param maze a {@link Maze} object.
    * @return a {@link java.awt.image.BufferedImage} object.

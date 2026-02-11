@@ -22,33 +22,36 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Builder for the multi-armed bandit simulation scenario.
+ */
 @Setter
 @Getter
 @Slf4j
 public final class BanditScenario implements SimulationBuilder {
 
   /**
-   * How many pulls in each test
+   * How many pulls in each test.
    */
   private BanditPullEnumeration banditPulls = BanditPullEnumeration.ONE_HUNDRED;
 
   /**
-   * How the normals for each bandit are chosen
+   * How the normals for each bandit are chosen.
    */
   private BanditNormalEnumeration banditNormal = BanditNormalEnumeration.NORMAL_0_1;
 
   /**
-   * How the std for each bandit are chosen
+   * How the standard deviation for each bandit are chosen.
    */
   private BanditStdEnumeration banditStd = BanditStdEnumeration.ONE;
 
   /**
-   * How the bandits are updated after each step
+   * How the bandits are updated after each step.
    */
   private BanditUpdateEnumeration banditUpdate = BanditUpdateEnumeration.FIXED;
 
   /**
-   * The number of bandits to include
+   * The number of bandits to include.
    */
   private BanditCountEnumeration banditCount = BanditCountEnumeration.FIVE;
 

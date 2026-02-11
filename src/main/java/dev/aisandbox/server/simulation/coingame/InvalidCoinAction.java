@@ -10,25 +10,35 @@ import dev.aisandbox.server.engine.exception.SimulationException;
 
 /**
  * Exception thrown when an invalid action is attempted in the coin game.
- * <p>
- * This is a move that (in other circumstances) would be allowed, but is not possible with the game
+ *
+ * <p>This is a move that (in other circumstances) would be allowed, but is not possible with the game
  * in its current state.
- * <p>
- * This will result in the player losing the game, but won't result in the simulation stopping.
+ *
+ * <p>This will result in the player losing the game, but won't result in the simulation stopping.
  * Possible actions include:
  * <ul>
  *   <li>Trying to take more coins from a pile than exist in that pile.</li>
  * </ul>
- * </p>
  */
 public class InvalidCoinAction extends SimulationException {
 
   private static final long serialVersionUID = -7413257692226972217L;
 
+  /**
+   * Creates a new InvalidCoinAction with the specified error message.
+   *
+   * @param message a descriptive error message
+   */
   public InvalidCoinAction(String message) {
     super(message);
   }
 
+  /**
+   * Creates a new InvalidCoinAction with the specified error message and cause.
+   *
+   * @param message a descriptive error message
+   * @param cause the underlying cause of this exception
+   */
   public InvalidCoinAction(String message, Throwable cause) {
     super(message, cause);
   }

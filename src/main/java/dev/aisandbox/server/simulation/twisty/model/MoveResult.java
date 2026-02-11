@@ -8,6 +8,12 @@ package dev.aisandbox.server.simulation.twisty.model;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * A record representing the result of a twisty puzzle move.
+ *
+ * @param cost the cost associated with this move
+ * @param icon the visual icon representing this move
+ */
 public record MoveResult(int cost, BufferedImage icon) {
 
 }

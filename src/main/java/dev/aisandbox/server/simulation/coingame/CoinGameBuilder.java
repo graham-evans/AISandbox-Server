@@ -18,12 +18,12 @@ import lombok.Setter;
 
 /**
  * Simulation builder for the Coin game simulation, as explained in the book AlphaGo Simplified.
- * <p>
- * The Coin Game is a classic mathematical game where players take turns to remove coins from piles.
+ *
+ * <p>The Coin Game is a classic mathematical game where players take turns to remove coins from piles.
  * This implementation supports different scenarios (defined by {@link CoinScenario}) that vary in
  * the number of piles and coins, as well as allowed moves.
- * <p>
- * In all scenarios, the player forced to take the last coin loses the game.
+ *
+ * <p>In all scenarios, the player forced to take the last coin loses the game.
  */
 public final class CoinGameBuilder implements SimulationBuilder {
 
@@ -58,8 +58,8 @@ public final class CoinGameBuilder implements SimulationBuilder {
 
   /**
    * Provides the configurable parameters for this simulation.
-   * <p>
-   * Currently only supports selecting the scenario to run.
+   *
+   * <p>Currently only supports selecting the scenario to run.
    *
    * @return A list containing the available simulation parameters
    */
@@ -101,8 +101,8 @@ public final class CoinGameBuilder implements SimulationBuilder {
 
   /**
    * Builds and returns a new CoinGame simulation instance.
-   * <p>
-   * Creates the simulation with the configured scenario and provided agents.
+   *
+   * <p>Creates the simulation with the configured scenario and provided agents.
    *
    * @param agents The list of agents that will participate in the simulation
    * @param theme  The visual theme to apply to the simulation

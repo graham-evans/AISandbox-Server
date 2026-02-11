@@ -10,10 +10,18 @@ package dev.aisandbox.server.fx;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 
+/**
+ * A JavaFX Region that wraps an ImageView and scales it to fill the available space.
+ */
 public class WrappedImageView extends Region {
 
   private final ImageView imageView;
 
+  /**
+   * Creates a WrappedImageView containing the specified ImageView.
+   *
+   * @param imageView the ImageView to wrap
+   */
   public WrappedImageView(ImageView imageView) {
     this.imageView = imageView;
     getChildren().add(imageView);

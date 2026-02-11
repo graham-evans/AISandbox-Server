@@ -24,6 +24,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.tuple.Pair;
 
+/**
+ * A widget that displays a visualization of bandits with their mean and standard deviation.
+ */
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class BanditWidget {
@@ -36,10 +39,21 @@ public class BanditWidget {
   private int activeBandit = -1;
   private BufferedImage image = null;
 
+  /**
+   * Creates a new builder for configuring a bandit widget.
+   *
+   * @return a new builder instance
+   */
   public static BanditWidgetBuilder builder() {
     return new BanditWidgetBuilder();
   }
 
+  /**
+   * Sets the list of bandits to display and marks the active bandit.
+   *
+   * @param bandits the list of bandits to display
+   * @param activeBandit the index of the active bandit
+   */
   public void setBandits(List<Bandit> bandits, int activeBandit) {
     this.bandits = bandits;
     this.activeBandit = activeBandit;
@@ -47,6 +61,13 @@ public class BanditWidget {
     image = null;
   }
 
+  /**
+   * Returns the rendered image of the bandit widget.
+   *
+   * <p>The image is cached and regenerated only when bandits are updated.
+   *
+   * @return the widget image as a BufferedImage
+   */
   public BufferedImage getImage() {
     if (image == null) {
       // render image
@@ -81,6 +102,9 @@ public class BanditWidget {
   }
 
 
+  /**
+   * Builder for configuring bandit widget parameters.
+   */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class BanditWidgetBuilder {
@@ -89,6 +113,11 @@ public class BanditWidget {
     private int height = 200;
     private Theme theme = Theme.LIGHT;
 
+    /**
+     * Builds the bandit widget with the configured parameters.
+     *
+     * @return a new BanditWidget instance
+     */
     public BanditWidget build() {
       return new BanditWidget(width, height, theme);
     }

@@ -10,6 +10,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * Enumeration of bandit update strategies for the multi-armed bandit simulation.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum BanditUpdateEnumeration {
   FIXED("Fixed"), // no update

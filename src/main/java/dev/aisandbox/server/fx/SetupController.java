@@ -40,8 +40,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controller for the simulation setup screen in the JavaFX GUI.
+ */
 @Slf4j
-
 public class SetupController {
 
   FXModel model = FXModel.INSTANCE.getInstance();
@@ -143,6 +145,13 @@ public class SetupController {
     return Math.min(max, Math.max(min, value));
   }
 
+  /**
+   * Creates a UI node for editing a simulation parameter.
+   *
+   * @param builder the simulation builder
+   * @param parameter the parameter to create an editor for
+   * @return a Node that can be used to edit the parameter
+   */
   public static Node createParameterEditor(SimulationBuilder builder,
       SimulationParameter parameter) {
     BorderPane node = new BorderPane();

@@ -13,7 +13,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * Binner which uses ceil(sqrt(n)) bins of equal width
+ * Binner which uses ceil(sqrt(n)) bins of equal width.
  */
 public class EqualWidthBinner implements BinningEngine {
 

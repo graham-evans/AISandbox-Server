@@ -12,11 +12,10 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Enum representing predefined board sizes for the Mine simulation.
- * <p>
- * This enum defines standard board configurations with different dimensions and mine counts,
+ *
+ * <p>This enum defines standard board configurations with different dimensions and mine counts,
  * allowing users to select from common difficulty levels. Each configuration specifies a board
  * width, height, and the number of mines to be placed.
- * </p>
  */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -46,22 +45,22 @@ public enum MineSize {
   MEGA("Mega (40x40 150 Mines)", 40, 40, 150);
 
   /**
-   * Display name of this board size configuration
+   * Display name of this board size configuration.
    */
   private final String name;
 
   /**
-   * Width of the board in cells
+   * Width of the board in cells.
    */
   private final int width;
 
   /**
-   * Height of the board in cells
+   * Height of the board in cells.
    */
   private final int height;
 
   /**
-   * Number of mines to be placed on the board
+   * Number of mines to be placed on the board.
    */
   private final int count;
 

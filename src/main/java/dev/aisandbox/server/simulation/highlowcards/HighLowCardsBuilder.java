@@ -17,8 +17,8 @@ import java.util.Random;
 /**
  * Builder class for the High-Low Cards game simulation. This class implements SimulationBuilder to
  * provide the configuration and instantiation of the HighLowCards simulation.
- * <p>
- * The High-Low Cards game presents a series of playing cards to the player, who must predict
+ *
+ * <p>The High-Low Cards game presents a series of playing cards to the player, who must predict
  * whether the next card will be higher or lower than the current one.
  */
 public final class HighLowCardsBuilder implements SimulationBuilder {

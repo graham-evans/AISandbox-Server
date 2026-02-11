@@ -172,8 +172,8 @@ public final class CoinGame implements Simulation {
 
   /**
    * Creates a protocol buffer message representing the current state of the game.
-   * <p>
-   * This state contains all information needed by an agent to make a decision, including the
+   *
+   * <p>This state contains all information needed by an agent to make a decision, including the
    * current coin counts, maximum allowed move, and game ID's.
    *
    * @return A new CoinGameState protobuf message
@@ -195,8 +195,8 @@ public final class CoinGame implements Simulation {
 
   /**
    * Attempts to make a move in the game by removing coins from a selected row.
-   * <p>
-   * The method checks if the move is legal according to the game rules: - The number of coins to
+   *
+   * <p>The method checks if the move is legal according to the game rules: - The number of coins to
    * remove must be between 1 and the maximum allowed. - The selected row must be valid and contain
    * enough coins. - The move must not exceed the maximum number of coins that can be taken in one
    * turn.
@@ -231,8 +231,8 @@ public final class CoinGame implements Simulation {
 
   /**
    * Checks if the game has reached a terminal state, returning true if this is the case.
-   * <p>
-   * The game is finished when all rows have zero coins left. According to the rules, the player who
+   *
+   * <p>The game is finished when all rows have zero coins left. According to the rules, the player who
    * takes the last coin loses.
    *
    * @return true if all piles are empty, false otherwise
@@ -251,11 +251,11 @@ public final class CoinGame implements Simulation {
 
   /**
    * Inform both players that the episode has finished.
-   * <p>
-   * Only send messages to players who have made moves.
+   *
+   * <p>Only send messages to players who have made moves.
    *
    * @param winner the agent index of the winner
-   * @throws SimulationException
+   * @throws SimulationException if there is an error sending the result messages
    */
   private void informResult(int winner) throws SimulationException {
     if (agentMoved[0]) {
@@ -272,8 +272,8 @@ public final class CoinGame implements Simulation {
 
   /**
    * Renders the visual representation of the game.
-   * <p>
-   * This method is called by the output renderer to draw the game state, including the coin piles,
+   *
+   * <p>This method is called by the output renderer to draw the game state, including the coin piles,
    * UI widgets, and game information.
    *
    * @param graphics2D The graphics context to draw on

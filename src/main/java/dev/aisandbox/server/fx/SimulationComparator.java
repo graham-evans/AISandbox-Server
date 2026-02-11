@@ -9,6 +9,9 @@ package dev.aisandbox.server.fx;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import java.util.Comparator;
 
+/**
+ * Comparator for sorting SimulationBuilder objects by their simulation names.
+ */
 public class SimulationComparator implements Comparator<SimulationBuilder> {
 
   @Override

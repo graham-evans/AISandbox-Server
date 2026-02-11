@@ -8,6 +8,9 @@ package dev.aisandbox.server.simulation.bandit.model;
 
 import lombok.Getter;
 
+/**
+ * Enumeration of available bandit counts for the multi-armed bandit simulation.
+ */
 public enum BanditCountEnumeration {
   FIVE(5), TEN(10), TWENTY(20), FIFTY(50);
 

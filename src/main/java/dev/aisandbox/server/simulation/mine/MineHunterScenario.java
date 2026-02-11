@@ -18,23 +18,20 @@ import lombok.Setter;
 
 /**
  * A simulation builder for the Mine Hunter scenario.
- * <p>
- * This class implements the {@link SimulationBuilder} interface to create instances of the Mine
+ *
+ * <p>This class implements the {@link SimulationBuilder} interface to create instances of the Mine
  * Hunter simulation. Mine Hunter is a game where an AI agent must locate mines hidden in a grid
  * using numerical clues, similar to the classic Minesweeper game.
- * </p>
- * <p>
- * The simulation can be configured with different board sizes, affecting difficulty.
- * </p>
+ *
+ * <p>The simulation can be configured with different board sizes, affecting difficulty.
  */
 public final class MineHunterScenario implements SimulationBuilder {
 
   /**
    * The size configuration for the mine field.
-   * <p>
-   * This property determines the dimensions of the board and number of mines. Defaults to MEDIUM
+   *
+   * <p>This property determines the dimensions of the board and number of mines. Defaults to MEDIUM
    * size (16x16 with 40 mines).
-   * </p>
    */
   @Getter
   @Setter
@@ -65,9 +62,8 @@ public final class MineHunterScenario implements SimulationBuilder {
 
   /**
    * Returns the configurable parameters for this simulation.
-   * <p>
-   * For Mine Hunter, the only configurable parameter is the mine field size.
-   * </p>
+   *
+   * <p>For Mine Hunter, the only configurable parameter is the mine field size.
    *
    * @return A list containing the mine size parameter
    */
@@ -99,9 +95,8 @@ public final class MineHunterScenario implements SimulationBuilder {
 
   /**
    * Provides names for the agents in this simulation.
-   * <p>
-   * Since this simulation only supports one agent, it returns a single name.
-   * </p>
+   *
+   * <p>Since this simulation only supports one agent, it returns a single name.
    *
    * @param agentCount The number of agents (will always be 1 for this simulation)
    * @return An array containing the name for the single agent
@@ -113,10 +108,9 @@ public final class MineHunterScenario implements SimulationBuilder {
 
   /**
    * Creates a new instance of the Mine Hunter simulation.
-   * <p>
-   * This method builds a runtime instance of the simulation with the provided agent, theme, and a
+   *
+   * <p>This method builds a runtime instance of the simulation with the provided agent, theme, and a
    * random number generator for game state generation.
-   * </p>
    *
    * @param agents The list of agents participating in the simulation (only the first one is used)
    * @param theme  The visual theme to use for the simulation

@@ -28,27 +28,27 @@ import lombok.extern.slf4j.Slf4j;
 public class CoinIcons {
 
   /**
-   * The width of a coin pile image in pixels
+   * The width of a coin pile image in pixels.
    */
   public static final int PILE_WIDTH = 290;
 
   /**
-   * The height of a row label image in pixels
+   * The height of a row label image in pixels.
    */
   public static final int ROW_HEIGHT = 80;
 
   /**
-   * The vertical spacing between coins in a stack in pixels
+   * The vertical spacing between coins in a stack in pixels.
    */
   private static final int COIN_SPACE = 20;
 
   /**
-   * The width of an individual coin image in pixels
+   * The width of an individual coin image in pixels.
    */
   private static final int COIN_IMAGE_WIDTH = 241;
 
   /**
-   * The height of an individual coin image in pixels
+   * The height of an individual coin image in pixels.
    */
   private static final int COIN_IMAGE_HEIGHT = 91;
 

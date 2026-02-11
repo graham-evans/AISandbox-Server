@@ -8,10 +8,9 @@ package dev.aisandbox.server.simulation.mine;
 
 /**
  * Enum representing the possible states of a Mine Hunter game.
- * <p>
- * This enum tracks the lifecycle of a game from initialization through gameplay to its eventual
- * conclusion (either victory or defeat).
- * </p>
+ *
+ * <p>This enum tracks the lifecycle of a game from initialization through gameplay to its
+ * eventual conclusion (either victory or defeat).
  */
 public enum GameState {
   /**

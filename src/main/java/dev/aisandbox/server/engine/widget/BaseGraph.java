@@ -219,8 +219,8 @@ public class BaseGraph {
 
   /**
    * Draw a line on the graph in the selected colour.
-   * <p>
-   * X & Y coordinates are scaled to fit the diagram, then drawn.
+   *
+   * <p>X &amp; Y coordinates are scaled to fit the diagram, then drawn.
    *
    * @param startX starting X point
    * @param startY starting Y point

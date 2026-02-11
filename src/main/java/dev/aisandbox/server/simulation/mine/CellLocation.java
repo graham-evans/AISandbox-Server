@@ -6,6 +6,12 @@
 
 package dev.aisandbox.server.simulation.mine;
 
+/**
+ * A record representing a cell location in the minefield grid.
+ *
+ * @param x the x-coordinate
+ * @param y the y-coordinate
+ */
 public record CellLocation(int x, int y) {
 
 }

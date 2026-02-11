@@ -47,11 +47,11 @@ public record Card(CardValue cardValue, CardSuite cardSuite) {
 
   // card sizes - from original PNG files
   /**
-   * The width of a card image in pixels
+   * The width of a card image in pixels.
    */
   public static final int CARD_WIDTH = 240;
   /**
-   * The height of a card image in pixels
+   * The height of a card image in pixels.
    */
   public static final int CARD_HEIGHT = 336;
 
@@ -96,27 +96,27 @@ public record Card(CardValue cardValue, CardSuite cardSuite) {
         13, 13, 'K');
 
     /**
-     * Short text representation of the card value (e.g., "A" for Ace)
+     * Short text representation of the card value (e.g., "A" for Ace).
      */
     private final String shortValue;
 
     /**
-     * Long text representation of the card value (e.g., "Ace")
+     * Long text representation of the card value (e.g., "Ace").
      */
     private final String longValue;
 
     /**
-     * Numeric value when ace is counted as low (1)
+     * Numeric value when ace is counted as low (1).
      */
     private final int valueAceLow;
 
     /**
-     * Numeric value when ace is counted as high (14)
+     * Numeric value when ace is counted as high (14).
      */
     private final int valueAceHigh;
 
     /**
-     * Character used in image filenames
+     * Character used in image filenames.
      */
     private final char charValue;
   }
@@ -130,7 +130,7 @@ public record Card(CardValue cardValue, CardSuite cardSuite) {
     HEARTS('H'), DIAMONDS('D'), CLUBS('C'), SPADES('S');
 
     /**
-     * Character representation of the suit (H, D, C, or S)
+     * Character representation of the suit (H, D, C, or S).
      */
     private final char value;
   }

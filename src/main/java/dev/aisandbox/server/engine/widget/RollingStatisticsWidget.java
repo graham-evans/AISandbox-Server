@@ -210,35 +210,35 @@ public class RollingStatisticsWidget {
 
   /**
    * Builder class for creating RollingStatisticsWidget instances with a fluent API.
-   * <p>
-   * Supports configuration of width, height, padding, window size, opacity, and theme.
+   *
+   * <p>Supports configuration of width, height, padding, window size, opacity, and theme.
    */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class RollingStatisticsWidgetBuilder {
 
     /**
-     * Default width of 200 pixels
+     * Default width of 200 pixels.
      */
     private int width = 200;
 
     /**
-     * Default height of 200 pixels
+     * Default height of 200 pixels.
      */
     private int height = 200;
 
     /**
-     * Default padding of 40 pixels
+     * Default padding of 40 pixels.
      */
     private int padding = 40;
 
     /**
-     * Default window size of 200 values
+     * Default window size of 200 values.
      */
     private int windowSize = 200;
 
     /**
-     * Default to light theme
+     * Default to light theme.
      */
     private Theme theme = Theme.LIGHT;
 

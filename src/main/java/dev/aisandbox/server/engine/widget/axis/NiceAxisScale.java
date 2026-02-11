@@ -13,6 +13,7 @@ import lombok.Getter;
 /**
  * This is an implementation of Paul Heckbert's "Nice Numbers for Graph Labels" algorithm that
  * appears in the first Graphics Gems book.
+ *
  * <p>Graphics Gems - Andrew Glassner ISBN 978-0-08-050753-8
  */
 
@@ -25,7 +26,7 @@ public class NiceAxisScale implements AxisScale {
   private final double maximum;
 
   /**
-   * Create a nice scale with a maximum of 5 ticks and loose labels
+   * Create a nice scale with a maximum of 5 ticks and loose labels.
    *
    * @param minimumValue the minimum value to include
    * @param maximumValue the maximum value to include
@@ -35,7 +36,7 @@ public class NiceAxisScale implements AxisScale {
   }
 
   /**
-   * Create a nice scale with a given number of maximum ticks
+   * Create a nice scale with a given number of maximum ticks.
    *
    * @param minimumValue the minimum value to include
    * @param maximumValue the maximum value to include

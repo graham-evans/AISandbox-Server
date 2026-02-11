@@ -10,11 +10,10 @@ import lombok.Getter;
 
 /**
  * Enum representing predefined maze dimensions for the Maze simulation.
- * <p>
- * This enum defines standard maze configurations with different dimensions and zoom levels,
+ *
+ * <p>This enum defines standard maze configurations with different dimensions and zoom levels,
  * allowing users to select from small, medium, or large maze sizes. Each configuration specifies a
  * maze width, height, and zoom level for rendering.
- * </p>
  */
 public enum MazeSize {
   /**
@@ -49,10 +48,9 @@ public enum MazeSize {
 
   /**
    * The zoom level for rendering the maze.
-   * <p>
-   * Higher values make the maze appear larger on screen. Lower values allow fitting larger mazes in
+   *
+   * <p>Higher values make the maze appear larger on screen. Lower values allow fitting larger mazes in
    * the same display area.
-   * </p>
    */
   @Getter
   private final int zoomLevel;

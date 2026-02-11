@@ -11,6 +11,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
+/**
+ * Cell renderer for displaying SimulationBuilder objects in a ListView.
+ */
 public class SimulationBuilderRenderer implements
     Callback<ListView<SimulationBuilder>, ListCell<SimulationBuilder>> {
 

@@ -8,19 +8,17 @@ package dev.aisandbox.server.simulation.maze;
 
 /**
  * Enumeration of maze generation algorithms available in the AI Sandbox.
- * <p>
- * Each algorithm produces mazes with different characteristics and visual patterns:
- * </p>
+ *
+ * <p>Each algorithm produces mazes with different characteristics and visual patterns:
  * <ul>
  *   <li>BINARYTREE - Creates mazes with a distinctive bias toward the northeast corner</li>
  *   <li>SIDEWINDER - Produces mazes with horizontal corridors and vertical connections</li>
  *   <li>RECURSIVEBACKTRACKER - Generates mazes with long winding passages and few dead ends</li>
  *   <li>BRAIDED - Creates interconnected mazes with loops, offering multiple solution paths</li>
  * </ul>
- * <p>
- * The choice of algorithm affects both the visual appearance and the difficulty characteristics
+ *
+ * <p>The choice of algorithm affects both the visual appearance and the difficulty characteristics
  * of the generated maze, providing variety for different AI training scenarios.
- * </p>
  *
  * @see MazeGenerator
  */
@@ -49,7 +47,9 @@ public enum MazeType {
    */
   BRAIDED("Braided (includes loops)");
 
-  /** The human-readable name of this maze generation algorithm */
+  /**
+   * The human-readable name of this maze generation algorithm.
+   */
   private final String name;
 
   /**

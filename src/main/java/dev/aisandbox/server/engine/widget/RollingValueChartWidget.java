@@ -17,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+/**
+ * A widget that displays a line chart of rolling values in a configurable time window.
+ */
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingValueChartWidget {
@@ -34,10 +37,20 @@ public class RollingValueChartWidget {
   private int startIndex = 1;
   private BufferedImage image = null;
 
+  /**
+   * Creates a new builder for configuring a rolling value chart widget.
+   *
+   * @return a new builder instance
+   */
   public static RollingScoreChartBuilder builder() {
     return new RollingScoreChartBuilder();
   }
 
+  /**
+   * Adds a new value to the chart window.
+   *
+   * @param value the value to add to the chart
+   */
   public void addValue(double value) {
     values.add(value);
     while (values.size() > window) {
@@ -47,11 +60,21 @@ public class RollingValueChartWidget {
     image = null;
   }
 
+  /**
+   * Clears all values from the chart window.
+   */
   public void resetValues() {
     values.clear();
     image = null;
   }
 
+  /**
+   * Returns the rendered image of the line chart.
+   *
+   * <p>The image is cached and regenerated only when new values are added.
+   *
+   * @return the chart image as a BufferedImage
+   */
   public BufferedImage getImage() {
     if (image == null) {
       if (values.isEmpty()) {
@@ -74,6 +97,9 @@ public class RollingValueChartWidget {
     return image;
   }
 
+  /**
+   * Builder for configuring rolling value chart widget parameters.
+   */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class RollingScoreChartBuilder {
@@ -86,6 +112,11 @@ public class RollingValueChartWidget {
     private String xTitle = "Episode";
     private Theme theme = Theme.LIGHT;
 
+    /**
+     * Builds the rolling value chart widget with the configured parameters.
+     *
+     * @return a new RollingValueChartWidget instance
+     */
     public RollingValueChartWidget build() {
       return new RollingValueChartWidget(width, height, window, title, xTitle, yTitle, theme);
     }

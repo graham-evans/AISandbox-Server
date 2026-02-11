@@ -12,11 +12,10 @@ import lombok.Setter;
 
 /**
  * Represents a compiled move for a twisty puzzle.
- * <p>
- * This class defines a move as a permutation matrix that can be applied to puzzle states. Each move
+ *
+ * <p>This class defines a move as a permutation matrix that can be applied to puzzle states. Each move
  * transforms the puzzle state by rearranging elements according to the defined matrix. The moves
  * can be visualized with an associated image and have an assigned cost.
- * </p>
  */
 public class CompiledMove {
 
@@ -27,10 +26,9 @@ public class CompiledMove {
 
   /**
    * The permutation matrix representing this move.
-   * <p>
-   * Each value matrix[i] = j means that the element at position i in the new state should be the
+   *
+   * <p>Each value matrix[i] = j means that the element at position i in the new state should be the
    * element that was at position j in the original state.
-   * </p>
    */
   private final int[] matrix;
 
@@ -60,9 +58,8 @@ public class CompiledMove {
 
   /**
    * Resets the move to the identity permutation.
-   * <p>
-   * After calling this method, applying the move will not change the state.
-   * </p>
+   *
+   * <p>After calling this method, applying the move will not change the state.
    */
   protected void resetMove() {
     for (int i = 0; i < cardinality; i++) {
@@ -92,10 +89,9 @@ public class CompiledMove {
 
   /**
    * Applies this move to a puzzle state.
-   * <p>
-   * The state is represented as a string, where each character represents a specific element of the
+   *
+   * <p>The state is represented as a string, where each character represents a specific element of the
    * puzzle. The move rearranges these elements according to the permutation matrix.
-   * </p>
    *
    * @param state the current puzzle state as a string
    * @return the new puzzle state after applying this move

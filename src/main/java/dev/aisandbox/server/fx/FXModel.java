@@ -23,6 +23,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Singleton model holding the state for the JavaFX GUI application.
+ */
 @Slf4j
 public enum FXModel {
   INSTANCE();

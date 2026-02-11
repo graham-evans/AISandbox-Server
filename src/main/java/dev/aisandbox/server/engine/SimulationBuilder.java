@@ -94,8 +94,8 @@ public interface SimulationBuilder {
    * @param agents A list of player objects
    * @param theme  The theme for any visualisations.
    * @param random A random number generator.
-   * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner} or
-   * stepped through manually.
+   * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner}
+   *         or stepped through manually.
    */
   Simulation build(List<Agent> agents, Theme theme, Random random);
 }

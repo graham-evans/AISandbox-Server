@@ -17,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 
+/**
+ * A cell representing a single grid position in a maze.
+ */
 @RequiredArgsConstructor
 public class Cell {
 
@@ -36,7 +39,7 @@ public class Cell {
   private float value;
 
   /**
-   * Link this cell with a destination in the given direction
+   * Link this cell with a destination in the given direction.
    *
    * @param d a {@link Direction} object.
    * @param c a {@link Cell} object.
@@ -70,7 +73,7 @@ public class Cell {
   }
 
   /**
-   * Can you move from this cell to the target cell
+   * Can you move from this cell to the target cell.
    *
    * @param c a {@link Cell} object.
    * @return a boolean.

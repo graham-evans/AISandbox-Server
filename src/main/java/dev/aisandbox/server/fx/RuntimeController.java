@@ -26,6 +26,9 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 
+/**
+ * FXML controller for the simulation runtime display interface.
+ */
 @Slf4j
 public class RuntimeController {
 
@@ -49,11 +52,21 @@ public class RuntimeController {
     stage.close();
   }
 
+  /**
+   * Updates the output log area with a new line of text.
+   *
+   * @param line the text to append to the log
+   */
   public void updateOutput(String line) {
     outputText += line + "\n";
     Platform.runLater(() -> logArea.setText(outputText));
   }
 
+  /**
+   * Updates the image display with a new rendered frame.
+   *
+   * @param image the buffered image to display
+   */
   public void updateImage(BufferedImage image) {
     Image fximage = SwingFXUtils.toFXImage(image, null);
     Platform.runLater(() -> imageView.setImage(fximage));

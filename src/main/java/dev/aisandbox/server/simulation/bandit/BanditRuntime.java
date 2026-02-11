@@ -318,7 +318,7 @@ public final class BanditRuntime implements Simulation {
   }
 
   /**
-   * Update the bandits by moving each mean N(0,0.1)
+   * Update the bandits by moving each mean N(0,0.1).
    */
   public void updateRandom() {
     for (Bandit b : bandits) {
@@ -328,7 +328,7 @@ public final class BanditRuntime implements Simulation {
 
   /**
    * Update the bandits by moving the mean of the chosen bandit by -0.001 and all others by
-   * +0.001/k
+   * +0.001/k.
    *
    * @param chosen the index of the chosen bandit
    */
@@ -345,7 +345,7 @@ public final class BanditRuntime implements Simulation {
   }
 
   /**
-   * Update the bandits by moving the chosen bandit by -0.001
+   * Update the bandits by moving the chosen bandit by -0.001.
    *
    * @param chosen the index of the chosen bandit
    */

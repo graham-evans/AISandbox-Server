@@ -18,7 +18,7 @@ import java.util.Random;
 public class Deck {
 
   /**
-   * The collection of cards currently in the deck
+   * The collection of cards currently in the deck.
    */
   private final List<Card> cards = new ArrayList<>();
 

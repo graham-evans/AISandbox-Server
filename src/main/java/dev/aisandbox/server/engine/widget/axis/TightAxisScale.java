@@ -22,6 +22,13 @@ public class TightAxisScale implements AxisScale {
   @Getter
   private final List<Double> ticks;
 
+  /**
+   * Creates a TightAxisScale with the specified minimum, maximum, and max tick count.
+   *
+   * @param minimum the minimum value for the axis scale
+   * @param maximum the maximum value for the axis scale
+   * @param maxTicks the maximum number of ticks to display
+   */
   public TightAxisScale(double minimum, double maximum, int maxTicks) {
     this.minimum = minimum;
     this.maximum = maximum;

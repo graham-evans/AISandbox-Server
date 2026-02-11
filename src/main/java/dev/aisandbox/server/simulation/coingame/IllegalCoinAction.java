@@ -11,19 +11,18 @@ import java.io.Serial;
 
 /**
  * Exception thrown when an illegal action is attempted in the coin game.
- * <p>
- * These actions are always illegal, regardless of the state of the game and will result in the
+ *
+ * <p>These actions are always illegal, regardless of the state of the game and will result in the
  * simulation being stopped. Such as:
  * <ul>
  *   <li>Attempting to take a negative, zero, or more than <i>MAX</i> number of coins.</li>
  *   <li>Trying to take coins from a pile that doesn't exist.</li>
  * </ul>
- * </p>
  */
 public class IllegalCoinAction extends SimulationException {
 
   /**
-   * Serial version UID for serialization
+   * Serial version UID for serialization.
    */
   @Serial
   private static final long serialVersionUID = 5907213272446805507L;

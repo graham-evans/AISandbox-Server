@@ -63,6 +63,11 @@ public class RollingPieChartWidget {
     image = null;
   }
 
+  /**
+   * Retrieves the rendered pie chart image.
+   *
+   * @return the buffered image representing the pie chart
+   */
   public BufferedImage getImage() {
     if (image == null) {
       PieChartWidget pie = new PieChartWidget(width, height, title, theme);

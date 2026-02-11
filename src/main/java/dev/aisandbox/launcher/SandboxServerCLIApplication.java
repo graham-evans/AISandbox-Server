@@ -27,10 +27,9 @@ import org.apache.commons.cli.HelpFormatter;
 
 /**
  * Command-line interface application for running AI Sandbox simulations.
- * <p>
- * This class provides a command-line interface for configuring and running simulations without
+ *
+ * <p>This class provides a command-line interface for configuring and running simulations without
  * requiring a graphical user interface. It supports:
- * </p>
  * <ul>
  *   <li>Listing available simulations and their parameters</li>
  *   <li>Configuring simulation parameters via command-line arguments</li>
@@ -38,9 +37,8 @@ import org.apache.commons.cli.HelpFormatter;
  *   <li>Running simulations with various output options (bitmap, null)</li>
  *   <li>Providing help and documentation for each simulation</li>
  * </ul>
- * <p>
- * The CLI application is ideal for:
- * </p>
+ *
+ * <p>The CLI application is ideal for:
  * <ul>
  *   <li>Server deployments without GUI support</li>
  *   <li>Automated testing and batch processing</li>
@@ -70,10 +68,9 @@ public class SandboxServerCLIApplication {
 
   /**
    * Main execution method for the CLI application.
-   * <p>
-   * Parses command-line arguments and determines whether to display help information or execute a
+   *
+   * <p>Parses command-line arguments and determines whether to display help information or execute a
    * simulation based on the provided options.
-   * </p>
    *
    * @param args command-line arguments passed from the launcher
    */
@@ -92,10 +89,9 @@ public class SandboxServerCLIApplication {
 
   /**
    * Displays help information based on the runtime options provided.
-   * <p>
-   * If a specific simulation is specified, shows detailed help for that simulation including
+   *
+   * <p>If a specific simulation is specified, shows detailed help for that simulation including
    * parameters and options. Otherwise, displays general application help.
-   * </p>
    *
    * @param runtimeOptions the parsed runtime options containing help request details
    */
@@ -113,9 +109,8 @@ public class SandboxServerCLIApplication {
 
   /**
    * Executes a simulation based on the provided runtime options.
-   * <p>
-   * This method handles the complete simulation lifecycle including:
-   * </p>
+   *
+   * <p>This method handles the complete simulation lifecycle including:
    * <ul>
    *   <li>Finding and configuring the specified simulation builder</li>
    *   <li>Applying command-line parameters to the simulation</li>

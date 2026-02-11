@@ -20,6 +20,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+/**
+ * A widget that displays a histogram of rolling values in a configurable time window.
+ */
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingValueHistogramWidget {
@@ -37,10 +40,20 @@ public class RollingValueHistogramWidget {
   private final List<Double> values = new ArrayList<>();
   private BufferedImage image = null;
 
+  /**
+   * Creates a new builder for configuring a rolling histogram widget.
+   *
+   * @return a new builder instance
+   */
   public static RollingHistogramChartBuilder builder() {
     return new RollingHistogramChartBuilder();
   }
 
+  /**
+   * Adds a new value to the histogram window.
+   *
+   * @param value the value to add to the histogram
+   */
   public void addValue(double value) {
     // add new value
     values.add(value);
@@ -52,6 +65,13 @@ public class RollingValueHistogramWidget {
     image = null;
   }
 
+  /**
+   * Returns the rendered image of the histogram.
+   *
+   * <p>The image is cached and regenerated only when new values are added.
+   *
+   * @return the histogram image as a BufferedImage
+   */
   public BufferedImage getImage() {
     if (image == null) {
       if (values.isEmpty()) {
@@ -82,26 +102,23 @@ public class RollingValueHistogramWidget {
     return image;
   }
 
+  /**
+   * Builder for configuring rolling histogram widget parameters.
+   */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class RollingHistogramChartBuilder {
 
     /**
      * The width of the final image.
-     *
-     * @Setter Set the width in pixels.
-     * @Getter The width of the final image in pixels.
      */
     private int width = 200;
     /**
      * The height of the final image.
-     *
-     * @Setter Set the height in pixels.
-     * @Setter The height in pixels.
      */
     private int height = 200;
     /**
-     * The number of values to hold in memory
+     * The number of values to hold in memory.
      */
     private int window = 200;
     /**
@@ -109,7 +126,7 @@ public class RollingValueHistogramWidget {
      */
     private Theme theme = Theme.LIGHT;
     /**
-     * The Main title, shown at the top of the widget
+     * The Main title, shown at the top of the widget.
      */
     private String title = "Histogram Title";
     /**
@@ -125,6 +142,11 @@ public class RollingValueHistogramWidget {
      */
     private BinningEngine binEngine = new EqualWidthBinner();
 
+    /**
+     * Builds the rolling histogram widget with the configured parameters.
+     *
+     * @return a new RollingValueHistogramWidget instance
+     */
     public RollingValueHistogramWidget build() {
       return new RollingValueHistogramWidget(width, height, window, theme, title, xAxisTitle,
           yAxisTitle, binEngine);

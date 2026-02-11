@@ -9,6 +9,9 @@ package dev.aisandbox.server.simulation.bandit.model;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * Enumeration of available pull counts for the multi-armed bandit simulation.
+ */
 @Getter
 public enum BanditPullEnumeration {
   TWENTY(20), ONE_HUNDRED(100), FIVE_HUNDRED(500), ONE_THOUSAND(1000), TWO_THOUSAND(

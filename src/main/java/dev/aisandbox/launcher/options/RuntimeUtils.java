@@ -4,12 +4,6 @@
  * more information.
  */
 
-/*
- * AI Sandbox - This program is free software: you can redistribute it and/or modify it under the
- * terms of version 3 of the GNU General Public License. See the README and LICENCE files for
- * more information.
- */
-
 package dev.aisandbox.launcher.options;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
@@ -32,21 +26,19 @@ import org.apache.commons.lang3.EnumUtils;
 
 /**
  * Utility class providing command-line parsing and parameter handling for the AI Sandbox CLI.
- * <p>
- * This utility class handles all aspects of command-line argument processing, parameter validation,
+ *
+ * <p>This utility class handles all aspects of command-line argument processing, parameter validation,
  * and runtime option management for the AI Sandbox CLI application. It provides methods for:
- * </p>
  * <ul>
  *   <li>Parsing command-line arguments into structured options</li>
  *   <li>Validating and applying simulation parameters</li>
  *   <li>Dynamic parameter value setting using reflection</li>
  *   <li>Help text generation and formatting</li>
  * </ul>
- * <p>
- * The utility supports complex parameter types including enumerations, primitive types,
+ *
+ * <p>The utility supports complex parameter types including enumerations, primitive types,
  * and custom parameter validation. It uses Apache Commons CLI for robust argument parsing
  * and provides comprehensive error handling and user feedback.
- * </p>
  *
  * @see RuntimeOptions
  * @see SimulationParameter
@@ -57,10 +49,9 @@ public class RuntimeUtils {
 
   /**
    * Parse a set of strings from the command line and populate a RuntimeOptions POJO.
-   * <p>
-   * Converts raw command-line arguments into a structured {@link RuntimeOptions} object
+   *
+   * <p>Converts raw command-line arguments into a structured {@link RuntimeOptions} object
    * with validated parameters, default values, and error handling for invalid arguments.
-   * </p>
    *
    * @param args the strings from the command line
    * @return the RuntimeOptions POJO containing parsed command-line options
@@ -124,7 +115,7 @@ public class RuntimeUtils {
     return options;
   }
 
-  /***
+  /**
    * Get the options available for the CLI.
    *
    * @return the populated Options class from Apache Commons CLI
