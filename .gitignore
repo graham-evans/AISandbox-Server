@@ -33,3 +33,4 @@ AISandox-server.log*
 .vscode
 bin
 CLAUDE.md
+/.claude/
