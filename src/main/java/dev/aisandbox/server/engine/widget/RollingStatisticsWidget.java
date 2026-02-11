@@ -23,65 +23,65 @@ import org.apache.commons.statistics.descriptive.Statistic;
 
 /**
  * Widget that shows statistics (mean/std/var) of a moving window of values.
- * <p>
- * This widget maintains a rolling window of numerical values and renders statistical information
- * about these values in a graphical format. Statistics displayed include minimum, maximum, mean,
- * standard deviation, and variance.
- * <p>
- * The widget supports custom sizing, padding, window size, and theming through its builder. It
- * implements caching to avoid unnecessary re-rendering of unchanged statistics.
+ *
+ * <p>This widget maintains a rolling window of numerical values and renders statistical
+ * information about these values in a graphical format. Statistics displayed include minimum,
+ * maximum, mean, standard deviation, and variance.
+ *
+ * <p>The widget supports custom sizing, padding, window size, and theming through its builder.
+ * It implements caching to avoid unnecessary re-rendering of unchanged statistics.
  */
 @Slf4j
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingStatisticsWidget {
 
   /**
-   * Format string for displaying double values with 2 decimal places
+   * Format string for displaying double values with 2 decimal places.
    */
   private static final String DOUBLE_FORMAT = "%.2f";
 
   /**
-   * Width of the widget in pixels
+   * Width of the widget in pixels.
    */
   private final int width;
 
   /**
-   * Height of the widget in pixels
+   * Height of the widget in pixels.
    */
   private final int height;
 
   /**
-   * Padding from the edges in pixels
+   * Padding from the edges in pixels.
    */
   private final int padding;
 
   /**
-   * Maximum number of values to keep in the rolling window
+   * Maximum number of values to keep in the rolling window.
    */
   private final int windowSize;
 
   /**
-   * Visual theme (colors, etc.) for the widget
+   * Visual theme (colors, etc.) for the widget.
    */
   private final Theme theme;
 
   /**
-   * Collection of values in the rolling window
+   * Collection of values in the rolling window.
    */
   private final List<Double> values = new ArrayList<>();
 
   /**
-   * Unicode symbol for standard deviation (sigma)
+   * Unicode symbol for standard deviation (sigma).
    */
   private final String STD = "\u03C3";
 
   /**
-   * Unicode symbol for squared (²)
+   * Unicode symbol for squared (²).
    */
   private final String SQR = "\u00B2";
 
   /**
-   * Cached rendered image to avoid unnecessary re-rendering
+   * Cached rendered image to avoid unnecessary re-rendering.
    */
   private BufferedImage cachedImage = null;
 
@@ -113,9 +113,9 @@ public class RollingStatisticsWidget {
 
   /**
    * Adds a new value to the rolling window of statistics.
-   * <p>
-   * If the window is full (i.e., the number of values equals windowSize), the oldest value is
-   * removed. Adding a new value invalidates the cached image.
+   *
+   * <p>If the window is full (i.e., the number of values equals windowSize), the oldest value
+   * is removed. Adding a new value invalidates the cached image.
    *
    * @param score The new value to add to the rolling window
    */
@@ -132,8 +132,8 @@ public class RollingStatisticsWidget {
 
   /**
    * Gets the current image representation of the widget.
-   * <p>
-   * Uses a cached image if available, otherwise renders a new one.
+   *
+   * <p>Uses a cached image if available, otherwise renders a new one.
    *
    * @return A BufferedImage containing the rendered statistics widget
    */
@@ -146,9 +146,9 @@ public class RollingStatisticsWidget {
 
   /**
    * Renders the statistics to a new BufferedImage.
-   * <p>
-   * This method creates a new image and draws the statistical data onto it. If there are no values
-   * in the rolling window, an empty image is returned.
+   *
+   * <p>This method creates a new image and draws the statistical data onto it. If there are no
+   * values in the rolling window, an empty image is returned.
    *
    * @return A newly rendered BufferedImage of the statistics widget
    */

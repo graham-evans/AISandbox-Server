@@ -44,119 +44,118 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Runtime implementation for the Mine Hunter simulation.
- * <p>
- * This class handles the execution of the Mine Hunter game, including board generation, processing
- * agent actions, updating game state, and visualizing the current state. It implements the
- * {@link Simulation} interface to integrate with the AI Sandbox framework.
- * </p>
+ *
+ * <p>This class handles the execution of the Mine Hunter game, including board generation,
+ * processing agent actions, updating game state, and visualizing the current state. It
+ * implements the {@link Simulation} interface to integrate with the AI Sandbox framework.
  */
 @Slf4j
 public final class MineHunterRuntime implements Simulation {
 
   /**
-   * Height of the game play area in pixels
+   * Height of the game play area in pixels.
    */
   private static final int BAIZE_HEIGHT =
       HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING; // 1173
 
   /**
-   * Width of the game play area in pixels (4:3 aspect ratio)
+   * Width of the game play area in pixels (4:3 aspect ratio).
    */
   private static final int BAIZE_WIDTH = BAIZE_HEIGHT * 4 / 3; // 880
   /**
-   * X-coordinate for the start of the board rendering
+   * X-coordinate for the start of the board rendering.
    */
   private static final int BOARD_START_X = LEFT_MARGIN + (BAIZE_WIDTH - 800) / 2;
   /**
-   * Width of the log widget in pixels
+   * Width of the log widget in pixels.
    */
   private static final int LOG_WIDTH =
       HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - BAIZE_WIDTH - WIDGET_SPACING;
   /**
-   * Vertical spacing between elements in the game area
+   * Vertical spacing between elements in the game area.
    */
   private static final int BAIZE_SPACING = (BAIZE_HEIGHT - 800 - STATISTICS_HEIGHT) / 3;
   /**
-   * Y-coordinate for the start of the board rendering
+   * Y-coordinate for the start of the board rendering.
    */
   private static final int BOARD_START_Y =
       TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING + BAIZE_SPACING * 2 + STATISTICS_HEIGHT;
   /**
-   * Height of the log widget in pixels
+   * Height of the log widget in pixels.
    */
   private static final int LOG_HEIGHT = (BAIZE_HEIGHT - WIDGET_SPACING) / 2;
   /**
-   * The agent playing the game
+   * The agent playing the game.
    */
   private final Agent agent;
 
   /**
-   * Random number generator for mine placement
+   * Random number generator for mine placement.
    */
   private final Random random;
 
   /**
-   * Configuration for the mine field dimensions and density
+   * Configuration for the mine field dimensions and density.
    */
   private final MineSize mineSize;
 
   /**
-   * Visual theme for the simulation
+   * Visual theme for the simulation.
    */
   private final Theme theme;
 
   /**
-   * Unique identifier for this simulation session
+   * Unique identifier for this simulation session.
    */
   private final String sessionID = UUID.randomUUID().toString();
 
   /**
-   * Sprite images for the game board cells
+   * Sprite images for the game board cells.
    */
   private final List<BufferedImage> sprites;
 
   /**
-   * Widget displaying win/loss statistics as a pie chart
+   * Widget displaying win/loss statistics as a pie chart.
    */
   private final RollingPieChartWidget pieChartWidget;
 
   /**
-   * Widget displaying the game title
+   * Widget displaying the game title.
    */
   private final TitleWidget titleWidget;
 
   /**
-   * Widget for logging game events
+   * Widget for logging game events.
    */
   private final TextWidget logWidget;
 
   /**
-   * Counter for boards successfully completed
+   * Counter for boards successfully completed.
    */
   private final long boardsWon = 0;
 
   /**
-   * Counter for boards where the player hit a mine
+   * Counter for boards where the player hit a mine.
    */
   private final long boardsLost = 0;
 
   /**
-   * Current game board state
+   * Current game board state.
    */
   private Board board = null;
 
   /**
-   * Number of flags the player has left to place
+   * Number of flags the player has left to place.
    */
   private int flagsLeft;
 
   /**
-   * Scaling factor for rendering the board
+   * Scaling factor for rendering the board.
    */
   private double scale = 1.0;
 
   /**
-   * Unique identifier for the current game episode
+   * Unique identifier for the current game episode.
    */
   private String episodeID;
 

@@ -22,69 +22,70 @@ import org.apache.commons.statistics.descriptive.Statistic;
 
 /**
  * Widget that displays statistics for a rolling window of success/failure events.
- * <p>
- * This widget maintains a rolling window of success/failure results along with associated values
- * for successful events. It renders statistical information including success rate and, for
- * successful events, minimum, maximum, mean, standard deviation, and variance of their values.
- * <p>
- * The widget supports custom sizing, padding, window size, and theming through its builder. It
- * implements caching to avoid unnecessary re-rendering of unchanged statistics.
+ *
+ * <p>This widget maintains a rolling window of success/failure results along with associated
+ * values for successful events. It renders statistical information including success rate and,
+ * for successful events, minimum, maximum, mean, standard deviation, and variance of their
+ * values.
+ *
+ * <p>The widget supports custom sizing, padding, window size, and theming through its builder.
+ * It implements caching to avoid unnecessary re-rendering of unchanged statistics.
  */
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingSuccessStatisticsWidget {
 
   /**
-   * Format string for displaying double values with 2 decimal places
+   * Format string for displaying double values with 2 decimal places.
    */
   private static final String DOUBLE_FORMAT = "%.2f";
 
   /**
-   * Width of the widget in pixels
+   * Width of the widget in pixels.
    */
   private final int width;
 
   /**
-   * Height of the widget in pixels
+   * Height of the widget in pixels.
    */
   private final int height;
 
   /**
-   * Padding from the edges in pixels
+   * Padding from the edges in pixels.
    */
   private final int padding;
 
   /**
-   * Maximum number of values to keep in the rolling window
+   * Maximum number of values to keep in the rolling window.
    */
   private final int windowSize;
 
   /**
-   * Visual theme (colors, etc.) for the widget
+   * Visual theme (colors, etc.) for the widget.
    */
   private final Theme theme;
 
   /**
-   * Whether the widget background should be opaque
+   * Whether the widget background should be opaque.
    */
   private final boolean opaque;
 
   /**
-   * Collection of success/failure results in the rolling window
+   * Collection of success/failure results in the rolling window.
    */
   private final List<SuccessResult> values = new ArrayList<>();
 
   /**
-   * Unicode symbol for standard deviation (sigma)
+   * Unicode symbol for standard deviation (sigma).
    */
   private final String STD = "\u03C3";
 
   /**
-   * Unicode symbol for squared (²)
+   * Unicode symbol for squared (²).
    */
   private final String SQR = "\u00B2";
 
   /**
-   * Cached rendered image to avoid unnecessary re-rendering
+   * Cached rendered image to avoid unnecessary re-rendering.
    */
   private BufferedImage cachedImage = null;
 
@@ -119,8 +120,8 @@ public class RollingSuccessStatisticsWidget {
 
   /**
    * Adds a failure result to the rolling window of statistics.
-   * <p>
-   * A failure is represented with a value of 0.0.
+   *
+   * <p>A failure is represented with a value of 0.0.
    */
   public void addFailure() {
     addResult(false, 0.0);
@@ -128,9 +129,9 @@ public class RollingSuccessStatisticsWidget {
 
   /**
    * Adds a result to the rolling window of statistics.
-   * <p>
-   * If the window is full (i.e., the number of values equals windowSize), the oldest result is
-   * removed. Adding a new result invalidates the cached image.
+   *
+   * <p>If the window is full (i.e., the number of values equals windowSize), the oldest result
+   * is removed. Adding a new result invalidates the cached image.
    *
    * @param success Whether the result represents a success
    * @param value   The value associated with the result (typically only meaningful for successes)
@@ -157,8 +158,8 @@ public class RollingSuccessStatisticsWidget {
 
   /**
    * Gets the current image representation of the widget.
-   * <p>
-   * Uses a cached image if available, otherwise renders a new one.
+   *
+   * <p>Uses a cached image if available, otherwise renders a new one.
    *
    * @return A BufferedImage containing the rendered statistics widget
    */
@@ -171,10 +172,10 @@ public class RollingSuccessStatisticsWidget {
 
   /**
    * Renders the statistics to a new BufferedImage.
-   * <p>
-   * This method creates a new image and draws the statistical data onto it. If there are no values
-   * in the rolling window, an empty image is returned. For success results, additional statistics
-   * about their values are displayed.
+   *
+   * <p>This method creates a new image and draws the statistical data onto it. If there are no
+   * values in the rolling window, an empty image is returned. For success results, additional
+   * statistics about their values are displayed.
    *
    * @return A newly rendered BufferedImage of the statistics widget
    */
@@ -237,40 +238,40 @@ public class RollingSuccessStatisticsWidget {
 
   /**
    * Builder class for creating RollingSuccessStatisticsWidget instances with a fluent API.
-   * <p>
-   * Supports configuration of width, height, padding, window size, opacity, and theme.
+   *
+   * <p>Supports configuration of width, height, padding, window size, opacity, and theme.
    */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class RollingSuccessStatisticsWidgetBuilder {
 
     /**
-     * Default width of 200 pixels
+     * Default width of 200 pixels.
      */
     private int width = 200;
 
     /**
-     * Default height of 200 pixels
+     * Default height of 200 pixels.
      */
     private int height = 200;
 
     /**
-     * Default padding of 40 pixels
+     * Default padding of 40 pixels.
      */
     private int padding = 40;
 
     /**
-     * Default window size of 200 values
+     * Default window size of 200 values.
      */
     private int windowSize = 200;
 
     /**
-     * Default to opaque background
+     * Default to opaque background.
      */
     private boolean opaque = true;
 
     /**
-     * Default to light theme
+     * Default to light theme.
      */
     private Theme theme = Theme.LIGHT;
 
@@ -286,8 +287,8 @@ public class RollingSuccessStatisticsWidget {
 
   /**
    * Record representing a success or failure result with an associated value.
-   * <p>
-   * For success results, the value is meaningful. For failures, the value is typically 0.0.
+   *
+   * <p>For success results, the value is meaningful. For failures, the value is typically 0.0.
    *
    * @param success Whether the result represents a success
    * @param value   The value associated with the result

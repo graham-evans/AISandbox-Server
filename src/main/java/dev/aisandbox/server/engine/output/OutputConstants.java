@@ -16,23 +16,20 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Constants and resources for simulation output rendering.
- * <p>
- * This utility class provides standardized dimensions, fonts, colors, and other constants used
- * throughout the AI Sandbox for consistent visual output. All simulations should use these
+ *
+ * <p>This utility class provides standardized dimensions, fonts, colors, and other constants
+ * used throughout the AI Sandbox for consistent visual output. All simulations should use these
  * constants to ensure uniform appearance and proper layout across different simulation types.
- * </p>
- * <p>
- * The constants are organized into several categories:
- * </p>
+ *
+ * <p>The constants are organized into several categories:
  * <ul>
  *   <li><strong>Screen Dimensions:</strong> HD resolution constants for consistent output size</li>
  *   <li><strong>Layout Margins:</strong> Standard spacing for UI elements and widgets</li>
  *   <li><strong>Typography:</strong> Pre-loaded fonts for titles, text, and statistics</li>
  *   <li><strong>Assets:</strong> Common images like logos and icons</li>
  * </ul>
- * <p>
- * All constants are static and the class cannot be instantiated.
- * </p>
+ *
+ * <p>All constants are static and the class cannot be instantiated.
  */
 @UtilityClass
 @Slf4j
@@ -40,97 +37,99 @@ public class OutputConstants {
 
   // Screen dimension constants
   /**
-   * Standard HD width for all simulation output (1920 pixels)
+   * Standard HD width for all simulation output (1920 pixels).
    */
   public static final int HD_WIDTH = 1920;
   /**
-   * Standard HD height for all simulation output (1080 pixels)
+   * Standard HD height for all simulation output (1080 pixels).
    */
   public static final int HD_HEIGHT = 1080;
 
   // Logo dimensions
   /**
-   * Width of the AI Sandbox logo in pixels
+   * Width of the AI Sandbox logo in pixels.
    */
   public static final int LOGO_WIDTH = 91;
   /**
-   * Height of the AI Sandbox logo in pixels
+   * Height of the AI Sandbox logo in pixels.
    */
   public static final int LOGO_HEIGHT = 108;
 
   // Layout and spacing constants
   /**
+   * Deprecated margin constant (use specific margin constants instead).
+   *
    * @deprecated Use specific margin constants instead
    */
   @Deprecated
   public static final int MARGIN = 100;
   /**
-   * Standard height for title areas
+   * Standard height for title areas.
    */
   public static final int TITLE_HEIGHT = 50;
   /**
-   * Standard height for header sections
+   * Standard height for header sections.
    */
   public static final int HEADER_HEIGHT = 40;
   /**
-   * Top margin for content areas
+   * Top margin for content areas.
    */
   public static final int TOP_MARGIN = 50;
   /**
-   * Bottom margin for content areas
+   * Bottom margin for content areas.
    */
   public static final int BOTTOM_MARGIN = 50;
   /**
-   * Left margin for content areas
+   * Left margin for content areas.
    */
   public static final int LEFT_MARGIN = 50;
   /**
-   * Right margin for content areas
+   * Right margin for content areas.
    */
   public static final int RIGHT_MARGIN = 50;
   /**
-   * Standard spacing between widgets and UI elements
+   * Standard spacing between widgets and UI elements.
    */
   public static final int WIDGET_SPACING = 50;
   /**
-   * Font height for log text display
+   * Font height for log text display.
    */
   public static final int LOG_FONT_HEIGHT = 16;
   /**
-   * Height for statistics display areas
+   * Height for statistics display areas.
    */
   public static final int STATISTICS_HEIGHT = 32;
   /**
-   * Height for widget title areas
+   * Height for widget title areas.
    */
   public static final int WIDGET_TITLE_HEIGHT = 18;
 
   // Typography - pre-loaded fonts for consistent text rendering
   /**
-   * Font used for main titles and headings
+   * Font used for main titles and headings.
    */
   public static final Font TITLE_FONT;
   /**
-   * Font used for section headers
+   * Font used for section headers.
    */
   public static final Font HEADER_FONT;
   /**
-   * Font used for log messages and general text
+   * Font used for log messages and general text.
    */
   public static final Font LOG_FONT;
   /**
-   * Font used for statistical displays and data
+   * Font used for statistical displays and data.
    */
   public static final Font STATISTICS_FONT;
   /**
-   * Font used for widget titles and labels
+   * Font used for widget titles and labels.
    */
   public static final Font WIDGET_TITLE_FONT;
 
   // Shared graphical assets
 
   /**
-   * List of font file paths to attempt loading from resources
+   * List of font file paths to attempt loading from resources.
    */
   private static final List<String> FONT_LIST = List.of("/fonts/Arimo-VariableFont_wght.ttf",
       "/fonts/Hack-Regular.ttf");

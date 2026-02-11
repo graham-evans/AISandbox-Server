@@ -53,145 +53,145 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implementation of the High-Low Cards game simulation.
- * <p>
- * This simulation presents a sequence of playing cards to the agent, who must predict whether the
- * next card will be higher or lower than the current one. The game continues until either the agent
- * makes an incorrect prediction or all cards have been revealed.
- * <p>
- * The simulation tracks and displays the agent's score, statistics, and game state using various
- * graphical widgets.
+ *
+ * <p>This simulation presents a sequence of playing cards to the agent, who must predict whether
+ * the next card will be higher or lower than the current one. The game continues until either the
+ * agent makes an incorrect prediction or all cards have been revealed.
+ *
+ * <p>The simulation tracks and displays the agent's score, statistics, and game state using
+ * various graphical widgets.
  */
 @Slf4j
 public final class HighLowCards implements Simulation {
 
   // UI Elements and constants
   /**
-   * Width of the baize (green felt area) where cards are displayed
+   * Width of the baize (green felt area) where cards are displayed.
    */
   private static final int BAIZE_WIDTH =
       HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING - 400;
 
   /**
-   * Height of the baize area
+   * Height of the baize area.
    */
   private static final int BAIZE_HEIGHT =
       (HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2) * 5 / 8;
 
   /**
-   * Padding inside the baize area
+   * Padding inside the baize area.
    */
   private static final int BAIZE_PADDING = 30;
 
   // card layout
   /**
-   * Horizontal gap between face up and face down cards
+   * Horizontal gap between face up and face down cards.
    */
   private static final int CARD_GAP = 30;
 
   // statistics widget
   /**
-   * Width of the statistics panel
+   * Width of the statistics panel.
    */
   private static final int STATISTICS_WIDTH =
       HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING - BAIZE_WIDTH;
 
   /**
-   * Height of the statistics panel
+   * Height of the statistics panel.
    */
   private static final int STATISTICS_HEIGHT = BAIZE_HEIGHT;
 
   // results widgets
   /**
-   * Width of each results widget
+   * Width of each results widget.
    */
   private static final int RESULTS_WIDTH =
       (HD_WIDTH - LEFT_MARGIN - RIGHT_MARGIN - WIDGET_SPACING * 2) / 3;
 
   /**
-   * Height of each results widget
+   * Height of each results widget.
    */
   private static final int RESULTS_HEIGHT =
       HD_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN - TITLE_HEIGHT - WIDGET_SPACING * 2 - BAIZE_HEIGHT;
 
   /**
-   * Horizontal spacing between cards - calculated based on card count
+   * Horizontal spacing between cards, calculated based on card count.
    */
   private final int CARD_SPACE;
 
   /**
-   * Cache for card images to avoid reloading
+   * Cache for card images to avoid reloading.
    */
   private final Map<String, BufferedImage> cardImages = new HashMap<>();
 
   /**
-   * Visual theme for the simulation
+   * Visual theme for the simulation.
    */
   private final Theme theme;
 
   // simulation elements
   /**
-   * The agent playing the game
+   * The agent playing the game.
    */
   private final Agent agent;
 
   /**
-   * Number of cards to be used in each episode
+   * Number of cards to be used in each episode.
    */
   private final int cardCount;
 
   /**
-   * Random number generator for shuffling
+   * Random number generator for shuffling.
    */
   private final Random random;
 
   /**
-   * List of cards that have been revealed (face-up)
+   * List of cards that have been revealed face-up.
    */
   private final List<Card> faceUpCards = new ArrayList<>();
 
   /**
-   * List of cards that are still hidden (face-down)
+   * List of cards that are still hidden face-down.
    */
   private final List<Card> faceDownCards = new ArrayList<>();
 
   /**
-   * Unique ID for the entire session
+   * Unique ID for the entire session.
    */
   private final String sessionID = UUID.randomUUID().toString();
 
   // statistics and reporting elements
   /**
-   * Title widget at the top of the display
+   * Title widget at the top of the display.
    */
   private final TitleWidget titleWidget;
 
   /**
-   * Widget showing score trends over time
+   * Widget showing score trends over time.
    */
   private final RollingValueChartWidget scoreWidget;
 
   /**
-   * Widget showing distribution of scores
+   * Widget showing distribution of scores.
    */
   private final RollingValueHistogramWidget scoreHistogramWidget;
 
   /**
-   * Text log widget to display game events
+   * Text log widget to display game events.
    */
   private final TextWidget logWidget;
 
   /**
-   * Widget showing aggregate statistics
+   * Widget showing aggregate statistics.
    */
   private final RollingStatisticsWidget statisticsWidget;
 
   /**
-   * Unique ID for the current episode
+   * Unique ID for the current episode.
    */
   private String episodeID;
 
   /**
-   * Current score in the episode
+   * Current score in the episode.
    */
   private int score = 0;
 
@@ -232,8 +232,8 @@ public final class HighLowCards implements Simulation {
 
   /**
    * Resets the simulation to start a new episode.
-   * <p>
-   * Creates a new deck, shuffles it, deals cards, and resets score.
+   *
+   * <p>Creates a new deck, shuffles it, deals cards, and resets score.
    */
   private void reset() {
     // create a deck of cards
@@ -257,9 +257,9 @@ public final class HighLowCards implements Simulation {
 
   /**
    * Advances the simulation by one step.
-   * <p>
-   * Gets the agent's prediction (high/low), reveals the next card, evaluates if the prediction was
-   * correct, and updates the game state.
+   *
+   * <p>Gets the agent's prediction (high/low), reveals the next card, evaluates if the prediction
+   * was correct, and updates the game state.
    *
    * @param output The renderer for displaying the simulation state
    */
@@ -321,8 +321,8 @@ public final class HighLowCards implements Simulation {
 
   /**
    * Renders the visual state of the simulation.
-   * <p>
-   * Draws the background, cards, and all UI widgets including statistics and logs.
+   *
+   * <p>Draws the background, cards, and all UI widgets including statistics and logs.
    *
    * @param graphics2D The graphics context to render to
    */
