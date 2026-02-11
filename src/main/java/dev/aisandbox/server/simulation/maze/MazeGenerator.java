@@ -14,6 +14,13 @@ import java.util.Set;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Utility class for generating and manipulating mazes using various algorithms.
+ *
+ * <p>Provides static methods to generate mazes using different algorithms (Binary Tree, Sidewinder,
+ * Recursive Backtracker) and utility methods for maze operations (finding paths, normalizing
+ * values, etc.).
+ */
 @Slf4j
 @UtilityClass
 public class MazeGenerator {
@@ -44,8 +51,8 @@ public class MazeGenerator {
 
   /**
    * Applies the Binary Tree algorithm to a given maze.
-   * <p>
-   * The Binary Tree algorithm is a simple method for generating mazes. It works by selecting a
+   *
+   * <p>The Binary Tree algorithm is a simple method for generating mazes. It works by selecting a
    * random cell and then creating paths from that cell to its unvisited neighbors, repeating this
    * process until all cells have been visited.
    *
@@ -71,9 +78,9 @@ public class MazeGenerator {
 
   /**
    * Applies the Sidewinder algorithm to a given maze.
-   * <p>
-   * The Sidewinder algorithm is a simple method for generating mazes. It works by starting at the
-   * top row of the maze and moving rightwards, creating paths as it goes. When the end of the
+   *
+   * <p>The Sidewinder algorithm is a simple method for generating mazes. It works by starting at
+   * the top row of the maze and moving rightwards, creating paths as it goes. When the end of the
    * current cell is reached, the algorithm moves down to the next cell in the top row.
    *
    * @param rand A random number generator used for generating the maze.
@@ -108,9 +115,9 @@ public class MazeGenerator {
 
   /**
    * Applies the Recursive Backtracker algorithm to a given maze.
-   * <p>
-   * The Recursive Backtracker algorithm is a depth-first search method for generating mazes. It
-   * works by starting at a random cell and then recursively visiting its unvisited neighbors,
+   *
+   * <p>The Recursive Backtracker algorithm is a depth-first search method for generating mazes.
+   * It works by starting at a random cell and then recursively visiting its unvisited neighbors,
    * creating paths as it goes.
    *
    * @param rand A random number generator used for generating the maze.
@@ -147,10 +154,10 @@ public class MazeGenerator {
 
   /**
    * Removes dead ends from a given maze.
-   * <p>
-   * A dead end is a cell with only one path leading out of it. This method works by checking each
-   * cell in the maze and, if it has only one path, selecting a random neighbor to create a new path
-   * to.
+   *
+   * <p>A dead end is a cell with only one path leading out of it. This method works by checking
+   * each cell in the maze and, if it has only one path, selecting a random neighbor to create a
+   * new path to.
    *
    * @param rand A random number generator used for generating the maze.
    * @param maze The maze to remove dead ends from.
@@ -175,8 +182,8 @@ public class MazeGenerator {
 
   /**
    * Finds the furthest points in a given maze.
-   * <p>
-   * This method works by applying the Dijkstra algorithm to the maze, first selecting a random
+   *
+   * <p>This method works by applying the Dijkstra algorithm to the maze, first selecting a random
    * start cell and then finding the cell with the highest value (i.e. the furthest point from the
    * start). The maze is then normalized so that all values are between 0 and 1.
    *
@@ -194,10 +201,10 @@ public class MazeGenerator {
 
   /**
    * Applies the Dijkstra algorithm to a given maze.
-   * <p>
-   * The Dijkstra algorithm is a method for finding the shortest path between two points in a graph.
-   * In this implementation, it is used to assign a value to each cell based on its distance from a
-   * random start point.
+   *
+   * <p>The Dijkstra algorithm is a method for finding the shortest path between two points in a
+   * graph. In this implementation, it is used to assign a value to each cell based on its distance
+   * from a random start point.
    *
    * @param maze The maze to apply the Dijkstra algorithm to.
    */
@@ -210,8 +217,8 @@ public class MazeGenerator {
 
   /**
    * Finds the cell with the highest value in a given maze.
-   * <p>
-   * This method works by iterating over each cell in the maze and returning the one with the
+   *
+   * <p>This method works by iterating over each cell in the maze and returning the one with the
    * highest value.
    *
    * @param maze The maze to find the furthest point in.
@@ -231,10 +238,10 @@ public class MazeGenerator {
 
   /**
    * Applies the Dijkstra algorithm to a given maze.
-   * <p>
-   * The Dijkstra algorithm is a method for finding the shortest path between two points in a graph.
-   * In this implementation, it is used to assign a value to each cell based on its distance from a
-   * random start point.
+   *
+   * <p>The Dijkstra algorithm is a method for finding the shortest path between two points in a
+   * graph. In this implementation, it is used to assign a value to each cell based on its distance
+   * from a random start point.
    *
    * @param maze  The maze to apply the Dijkstra algorithm to.
    * @param start A Cell object representing the starting point.
@@ -275,8 +282,8 @@ public class MazeGenerator {
 
   /**
    * Normalizes the values of each cell in a given maze.
-   * <p>
-   * This method works by finding the minimum and maximum values in the maze, then scaling all
+   *
+   * <p>This method works by finding the minimum and maximum values in the maze, then scaling all
    * values to be between 0 and 1.
    *
    * @param maze The maze to normalize.

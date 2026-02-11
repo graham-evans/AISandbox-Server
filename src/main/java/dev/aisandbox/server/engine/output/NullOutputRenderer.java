@@ -10,18 +10,15 @@ import dev.aisandbox.server.engine.Simulation;
 
 /**
  * A no-operation implementation of {@link OutputRenderer} for headless execution.
- * <p>
- * This renderer is used when visual output is not required, such as in automated testing,
- * batch processing, or command-line execution scenarios. It implements all required methods
- * but performs no actual rendering operations.
- * </p>
- * <p>
- * The only visible output from this renderer is text written to the console via
+ *
+ * <p>This renderer is used when visual output is not required, such as in automated testing,
+ * batch processing, or command-line execution scenarios. It implements all required methods but
+ * performs no actual rendering operations.
+ *
+ * <p>The only visible output from this renderer is text written to the console via
  * {@link #write(String)}, which redirects to {@code System.out.println()}.
- * </p>
- * <p>
- * This implementation is useful for:
- * </p>
+ *
+ * <p>This implementation is useful for:
  * <ul>
  *   <li>Unit testing simulations without GUI dependencies</li>
  *   <li>Performance benchmarking without rendering overhead</li>
@@ -45,9 +42,8 @@ public class NullOutputRenderer implements OutputRenderer {
 
   /**
    * No-operation setup method.
-   * <p>
-   * This implementation does nothing as no initialization is required for null output.
-   * </p>
+   *
+   * <p>This implementation does nothing as no initialization is required for null output.
    *
    * @param simulation the simulation to render (ignored in this implementation)
    */
@@ -58,10 +54,9 @@ public class NullOutputRenderer implements OutputRenderer {
 
   /**
    * No-operation display method.
-   * <p>
-   * This implementation does nothing as no visual rendering is performed.
-   * Simulations will continue to run normally, but no visual output will be generated.
-   * </p>
+   *
+   * <p>This implementation does nothing as no visual rendering is performed. Simulations will
+   * continue to run normally, but no visual output will be generated.
    */
   @Override
   public void display() {
@@ -70,11 +65,10 @@ public class NullOutputRenderer implements OutputRenderer {
 
   /**
    * Outputs text to the console.
-   * <p>
-   * This is the only method that produces visible output from the null renderer.
-   * Text is printed directly to {@code System.out}, making it useful for logging
-   * simulation progress or results in headless execution environments.
-   * </p>
+   *
+   * <p>This is the only method that produces visible output from the null renderer. Text is
+   * printed directly to {@code System.out}, making it useful for logging simulation progress or
+   * results in headless execution environments.
    *
    * @param text the text to write to the console
    */

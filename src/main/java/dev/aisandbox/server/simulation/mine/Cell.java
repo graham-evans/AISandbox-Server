@@ -10,62 +10,55 @@ import lombok.Data;
 
 /**
  * Represents a single cell in a Minesweeper game board.
- * <p>
- * Each cell can contain a mine, be covered/uncovered, be flagged by the player, and have a count of
- * neighboring mines. This class models the state and behavior of individual cells in the Mine
+ *
+ * <p>Each cell can contain a mine, be covered/uncovered, be flagged by the player, and have a count
+ * of neighboring mines. This class models the state and behavior of individual cells in the Mine
  * Hunter simulation.
- * </p>
- * <p>
- * The cell's state determines how it is displayed to the player and how it affects gameplay when
+ *
+ * <p>The cell's state determines how it is displayed to the player and how it affects gameplay when
  * interacted with.
- * </p>
  */
 @Data
 public class Cell {
 
   /**
    * Indicates whether this cell contains a mine.
-   * <p>
-   * When true, uncovering this cell will end the game in defeat.
-   * </p>
+   *
+   * <p>When true, uncovering this cell will end the game in defeat.
    */
   private boolean mine;
 
   /**
    * Indicates whether this cell is still covered (not revealed).
-   * <p>
-   * Default value is true (covered). When false, the cell has been revealed to the player, showing
-   * either a mine or the number of neighboring mines.
-   * </p>
+   *
+   * <p>Default value is true (covered). When false, the cell has been revealed to the player,
+   * showing either a mine or the number of neighboring mines.
    */
   private boolean covered = true;
 
   /**
    * Indicates whether this cell has been flagged by the player.
-   * <p>
-   * Flagged cells cannot be uncovered until the flag is removed. Correctly flagging all mines is
+   *
+   * <p>Flagged cells cannot be uncovered until the flag is removed. Correctly flagging all mines is
    * one way to win the game.
-   * </p>
    */
   private boolean flagged;
 
   /**
    * Stores the number of neighboring cells that contain mines.
-   * <p>
-   * This value ranges from 0 to 8, representing the count of mines in the eight surrounding cells
+   *
+   * <p>This value ranges from 0 to 8, representing the count of mines in the eight surrounding cells
    * (horizontally, vertically, and diagonally).
-   * </p>
    */
   private int neighbours;
 
   /**
    * Returns the sprite index to use when rendering this cell.
-   * <p>
-   * This method maps the cell's logical state to a visual representation by providing an index into
-   * a sprite sheet of cell images.
-   * </p>
-   * <p>
-   * The mapping from character representation to sprite index is:
+   *
+   * <p>This method maps the cell's logical state to a visual representation by providing an index
+   * into a sprite sheet of cell images.
+   *
+   * <p>The mapping from character representation to sprite index is:
    * <ul>
    * <li>12: Correctly flagged mine ('F')</li>
    * <li>13: Incorrectly flagged cell ('f')</li>
@@ -74,7 +67,6 @@ public class Cell {
    * <li>0: Empty cell with no neighboring mines ('.')</li>
    * <li>1-8: Cell showing count of neighboring mines</li>
    * </ul>
-   * </p>
    *
    * @return the index of the sprite to use for rendering this cell
    */
@@ -99,12 +91,11 @@ public class Cell {
 
   /**
    * Returns a character representation of the cell's current state for display to the player.
-   * <p>
-   * This method provides a character-based visualization of the cell's state, which is used for
+   *
+   * <p>This method provides a character-based visualization of the cell's state, which is used for
    * both communication with the agent and internal logic.
-   * </p>
-   * <p>
-   * The returned characters are:
+   *
+   * <p>The returned characters are:
    * <ul>
    * <li>'F': A correctly flagged mine</li>
    * <li>'f': An incorrectly flagged cell (no mine)</li>

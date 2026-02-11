@@ -18,15 +18,13 @@ import lombok.Setter;
 
 /**
  * Builder class for creating maze navigation simulations.
- * <p>
- * The MazeBuilder creates simulations where AI agents must navigate through a maze
- * to find the exit. Once the exit is reached, the agent receives a reward and is
- * teleported to a random position to continue exploration. This creates an ongoing
- * learning environment where agents can optimize their pathfinding strategies.
- * </p>
- * <p>
- * Key features of maze simulations:
- * </p>
+ *
+ * <p>The MazeBuilder creates simulations where AI agents must navigate through a maze to find
+ * the exit. Once the exit is reached, the agent receives a reward and is teleported to a random
+ * position to continue exploration. This creates an ongoing learning environment where agents can
+ * optimize their pathfinding strategies.
+ *
+ * <p>Key features of maze simulations:
  * <ul>
  *   <li>Configurable maze sizes (SMALL, MEDIUM, LARGE, XLARGE)</li>
  *   <li>Multiple maze generation algorithms (BINARYTREE, SIDEWINDER, etc.)</li>
@@ -34,10 +32,9 @@ import lombok.Setter;
  *   <li>Reward-based learning with teleportation mechanics</li>
  *   <li>Real-time visualization of agent movement and progress</li>
  * </ul>
- * <p>
- * The simulation provides comprehensive state information to agents including maze
+ *
+ * <p>The simulation provides comprehensive state information to agents including maze
  * dimensions, valid movement directions, reward feedback, and current position data.
- * </p>
  *
  * @see MazeSize
  * @see MazeType
@@ -83,8 +80,8 @@ public final class MazeBuilder implements SimulationBuilder {
 
   /**
    * {@inheritDoc}
-   * <p>
-   * Returns a map of parameters, including mazeSize and mazeType.
+   *
+   * <p>Returns a map of parameters, including mazeSize and mazeType.
    */
   @Override
   public List<SimulationParameter> getParameters() {
@@ -94,8 +91,8 @@ public final class MazeBuilder implements SimulationBuilder {
 
   /**
    * {@inheritDoc}
-   * <p>
-   * Returns 1 as the minimum agent count for this simulation.
+   *
+   * <p>Returns 1 as the minimum agent count for this simulation.
    */
   @Override
   public int getMinAgentCount() {
@@ -104,8 +101,8 @@ public final class MazeBuilder implements SimulationBuilder {
 
   /**
    * {@inheritDoc}
-   * <p>
-   * Returns 1 as the maximum agent count for this simulation.
+   *
+   * <p>Returns 1 as the maximum agent count for this simulation.
    */
   @Override
   public int getMaxAgentCount() {
@@ -114,8 +111,8 @@ public final class MazeBuilder implements SimulationBuilder {
 
   /**
    * {@inheritDoc}
-   * <p>
-   * Returns an array containing a single string, "Agent 1".
+   *
+   * <p>Returns an array containing a single string, "Agent 1".
    *
    * @param agentCount The number of players in the simulation (always 1 for this builder).
    */
@@ -126,13 +123,13 @@ public final class MazeBuilder implements SimulationBuilder {
 
   /**
    * {@inheritDoc}
-   * <p>
-   * Creates a MazeRunner simulation with the specified agents, maze size, maze type, and theme.
+   *
+   * <p>Creates a MazeRunner simulation with the specified agents, maze size, maze type, and theme.
    *
    * @param agents The list of agents to use in the simulation (always contains at least one
    *               agent).
    * @param theme  The theme for the simulation.
-   * @param random
+   * @param random The random number generator to use in the simulation.
    */
   @Override
   public Simulation build(List<Agent> agents, Theme theme, Random random) {
