@@ -28,6 +28,13 @@ import java.util.concurrent.SynchronousQueue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Thread for accepting network connections from AI agents.
+ *
+ * <p>This thread waits on a ServerSocket for an external AI agent to connect, then
+ * establishes the communication channel by placing a ConnectionPair into a queue
+ * for the main simulation thread to use.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class NetworkAgentConnectionThread extends Thread {
@@ -55,6 +62,9 @@ public class NetworkAgentConnectionThread extends Thread {
     }
   }
 
+  /**
+   * Represents a pair of input and output streams for agent communication.
+   */
   public record ConnectionPair(InputStream input, OutputStream output) {
 
   }

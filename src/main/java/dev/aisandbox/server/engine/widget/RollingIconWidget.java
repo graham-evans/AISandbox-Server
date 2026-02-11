@@ -19,6 +19,12 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Widget for displaying a rolling grid of icons.
+ *
+ * <p>This widget displays small icons in a grid layout, maintaining a maximum number of icons
+ * in memory. Old icons are automatically removed when the limit is exceeded.
+ */
 @Slf4j
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingIconWidget {
@@ -39,6 +45,17 @@ public class RollingIconWidget {
 
   private BufferedImage cachedImage = null;
 
+  /**
+   * Creates a new rolling icon widget.
+   *
+   * @param width the width of the widget in pixels
+   * @param height the height of the widget in pixels
+   * @param iconWidth the width of each icon
+   * @param iconHeight the height of each icon
+   * @param useCache whether to cache the rendered image
+   * @param title the title of the widget
+   * @param theme the theme for colors and styling
+   */
   public RollingIconWidget(int width, int height, int iconWidth, int iconHeight, boolean useCache,
       String title, Theme theme) {
     this.width = width;
@@ -57,16 +74,29 @@ public class RollingIconWidget {
         + WIDGET_TITLE_HEIGHT + PADDING * 2;
   }
 
+  /**
+   * Creates a builder for constructing RollingIconWidget instances.
+   *
+   * @return a new RollingIconWidgetBuilder
+   */
   public static RollingIconWidgetBuilder builder() {
     return new RollingIconWidgetBuilder();
   }
 
+  /**
+   * Clears all icons from the widget.
+   */
   public void clearIcons() {
     log.info("Clear icons");
     images.clear();
     cachedImage = null;
   }
 
+  /**
+   * Adds an icon to the widget.
+   *
+   * @param iconImage the icon image to add
+   */
   public void addIcon(@NonNull BufferedImage iconImage) {
     assert (iconImage.getWidth() == iconWidth && iconImage.getHeight() == iconHeight);
     images.add(iconImage);
@@ -110,6 +140,9 @@ public class RollingIconWidget {
     return image;
   }
 
+  /**
+   * Builder for creating RollingIconWidget instances with fluent API.
+   */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class RollingIconWidgetBuilder {
@@ -122,6 +155,11 @@ public class RollingIconWidget {
     private String title = "Recent Icons";
     private Theme theme = Theme.LIGHT;
 
+    /**
+     * Builds and returns a new RollingIconWidget instance.
+     *
+     * @return a new RollingIconWidget with the configured parameters
+     */
     public RollingIconWidget build() {
       return new RollingIconWidget(width, height, iconWidth, iconHeight, useCache, title, theme);
     }

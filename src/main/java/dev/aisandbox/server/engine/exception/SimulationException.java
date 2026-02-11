@@ -17,10 +17,21 @@ public class SimulationException extends Exception {
   @Serial
   private static final long serialVersionUID = -5614005125536427971L;
 
+  /**
+   * Creates a simulation exception with the given message.
+   *
+   * @param message a descriptive message about the exception
+   */
   public SimulationException(String message) {
     super(message);
   }
 
+  /**
+   * Creates a simulation exception with the given message and cause.
+   *
+   * @param message a descriptive message about the exception
+   * @param cause the underlying cause of this exception
+   */
   public SimulationException(String message, Throwable cause) {
     super(message, cause);
   }

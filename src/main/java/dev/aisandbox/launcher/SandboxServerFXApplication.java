@@ -17,6 +17,13 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * JavaFX application for launching the AI Sandbox Server GUI.
+ *
+ * <p>This application initializes and displays the simulation interface, managing the JavaFX stage
+ * and scene lifecycle. It loads the FXML layout from the resources and handles application startup
+ * and shutdown, including stopping any running simulation.
+ */
 @Slf4j
 public class SandboxServerFXApplication extends Application {
 

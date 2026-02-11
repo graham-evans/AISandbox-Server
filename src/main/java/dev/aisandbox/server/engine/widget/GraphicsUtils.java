@@ -140,6 +140,18 @@ public class GraphicsUtils {
     graphics.setTransform(origTransform);
   }
 
+  /**
+   * Draws text centered within the specified bounding box.
+   *
+   * @param graphics the graphics context to draw on
+   * @param x the x-coordinate of the bounding box
+   * @param y the y-coordinate of the bounding box
+   * @param width the width of the bounding box
+   * @param height the height of the bounding box
+   * @param text the text to draw
+   * @param font the font to use for rendering
+   * @param colour the color to use for the text
+   */
   public static void drawCenteredText(Graphics2D graphics, int x, int y, int width, int height,
       String text, Font font, Color colour) {
     graphics.setFont(font);

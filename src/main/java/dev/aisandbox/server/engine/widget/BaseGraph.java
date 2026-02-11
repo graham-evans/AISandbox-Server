@@ -240,6 +240,16 @@ public class BaseGraph {
         yBoxStart + boxHeight - y2);
   }
 
+  /**
+   * Adds a rectangular box to the graph at the specified coordinates.
+   *
+   * @param startX the starting X coordinate in data space
+   * @param startY the starting Y coordinate in data space
+   * @param endX the ending X coordinate in data space
+   * @param endY the ending Y coordinate in data space
+   * @param fillColour the color to fill the box with, or null for no fill
+   * @param outlineColour the color of the box outline
+   */
   public void addBox(double startX, double startY, double endX, double endY, Color fillColour,
       Color outlineColour) {
     int x1 = (int) (xAxisScale.getScaledValue(startX) * boxWidth);
@@ -258,7 +268,9 @@ public class BaseGraph {
     graphics.drawRect(xBoxStart + x, yBoxStart + boxHeight - y, width, height);
   }
 
-
+  /**
+   * Draws the main title and axis titles on the graph.
+   */
   public void addAxisAndTitle() {
     // draw main title
     GraphicsUtils.drawCenteredText(graphics, PADDING, PADDING, width - PADDING * 2, TITLE_FONT_SIZE,

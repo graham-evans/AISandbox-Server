@@ -13,6 +13,12 @@ import java.awt.image.BufferedImage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Output renderer that displays simulation frames in the JavaFX interface.
+ *
+ * <p>This renderer sends the current simulation visualization to the RuntimeController
+ * for display in the JavaFX GUI, with optional frame skipping for performance optimization.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class FXRenderer implements OutputRenderer {

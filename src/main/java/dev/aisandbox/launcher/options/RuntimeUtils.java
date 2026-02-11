@@ -156,6 +156,15 @@ public class RuntimeUtils {
     return options;
   }
 
+  /**
+   * Retrieves enumeration options for a given parameter from a bean object.
+   *
+   * @param bean the object containing the parameter
+   * @param parameter the parameter name to retrieve options for
+   * @return an Optional containing comma-separated enum values if the parameter is an enum,
+   *         or empty Optional if not
+   * @deprecated Use simulation parameter validation through SimulationBuilder instead
+   */
   @Deprecated
   public Optional<String> getParameterEnumOptions(Object bean, String parameter) {
     try {
@@ -175,6 +184,13 @@ public class RuntimeUtils {
     }
   }
 
+  /**
+   * Retrieves the current value of a simulation parameter from a SimulationBuilder.
+   *
+   * @param simulationBuilder the simulation builder instance
+   * @param parameter the parameter to retrieve
+   * @return the string representation of the parameter value, or null if retrieval fails
+   */
   public String getParameterValue(SimulationBuilder simulationBuilder,
       SimulationParameter parameter) {
     try {
@@ -189,6 +205,13 @@ public class RuntimeUtils {
     }
   }
 
+  /**
+   * Sets a simulation parameter value by parameter name.
+   *
+   * @param simulationBuilder the simulation builder instance to update
+   * @param name the name of the parameter to set
+   * @param value the string value to set
+   */
   public void setParameterValue(SimulationBuilder simulationBuilder, String name, String value) {
     Optional<SimulationParameter> oParam = simulationBuilder.getParameters().stream()
         .filter(param -> param.name().equalsIgnoreCase(name)).findFirst();

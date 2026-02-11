@@ -15,6 +15,13 @@ import javax.imageio.ImageIO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Output renderer that writes simulation frames to PNG image files.
+ *
+ * <p>This renderer captures the simulation visualization and saves each frame
+ * as a PNG file to the specified output directory, with optional frame skipping
+ * for performance optimization.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class BitmapOutputRenderer implements OutputRenderer {

@@ -20,6 +20,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+/**
+ * Widget for displaying a rolling pie chart that updates based on incoming values.
+ *
+ * <p>This widget maintains a sliding window of values and displays them as a pie chart,
+ * automatically updating as new values are added and old values are removed.
+ */
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 @RequiredArgsConstructor
 public class RollingPieChartWidget {
@@ -33,10 +39,21 @@ public class RollingPieChartWidget {
   private final Map<String, Color> sliceColours = new HashMap<>();
   private BufferedImage image = null;
 
+  /**
+   * Creates a builder for constructing RollingPieChartWidget instances.
+   *
+   * @return a new RollingPieChartWidgetBuilder
+   */
   public static RollingPieChartWidgetBuilder builder() {
     return new RollingPieChartWidgetBuilder();
   }
 
+  /**
+   * Adds a value to the rolling window.
+   *
+   * @param value the value to add
+   * @param valueColour the color to use for this value in the pie chart
+   */
   public void addValue(String value, Color valueColour) {
     values.add(value);
     sliceColours.put(value, valueColour);
@@ -63,6 +80,9 @@ public class RollingPieChartWidget {
     return image;
   }
 
+  /**
+   * Builder for creating RollingPieChartWidget instances with fluent API.
+   */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class RollingPieChartWidgetBuilder {
@@ -73,6 +93,11 @@ public class RollingPieChartWidget {
     private int window = 200;
     private Theme theme = Theme.LIGHT;
 
+    /**
+     * Builds and returns a new RollingPieChartWidget instance.
+     *
+     * @return a new RollingPieChartWidget with the configured parameters
+     */
     public RollingPieChartWidget build() {
       return new RollingPieChartWidget(width, height, window, title, theme);
     }

@@ -21,6 +21,12 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Widget for rendering pie charts as BufferedImages.
+ *
+ * <p>This widget creates a pie chart visualization with segments representing data values,
+ * and renders it as an image that can be displayed or saved.
+ */
 @Slf4j
 public class PieChartWidget {
 
@@ -35,7 +41,14 @@ public class PieChartWidget {
   private BufferedImage image;
   private List<Slice> segments = List.of();
 
-
+  /**
+   * Creates a new pie chart widget.
+   *
+   * @param width the width of the widget in pixels
+   * @param height the height of the widget in pixels
+   * @param title the title of the pie chart
+   * @param theme the theme for colors and styling
+   */
   public PieChartWidget(int width, int height, String title, Theme theme) {
     this.width = width;
     this.height = height;
@@ -101,15 +114,28 @@ public class PieChartWidget {
     return image;
   }
 
+  /**
+   * Creates a builder for constructing PieChartWidget instances.
+   *
+   * @return a new PieChartWidgetBuilder
+   */
   public static PieChartWidgetBuilder builder() {
     return new PieChartWidgetBuilder();
   }
 
+  /**
+   * Updates the pie chart with new segments and refreshes the visualization.
+   *
+   * @param segments the list of segments to display
+   */
   public void setPie(List<Slice> segments) {
     this.segments = segments;
     image = drawGraph();
   }
 
+  /**
+   * Builder for creating PieChartWidget instances with fluent API.
+   */
   @Setter
   @Accessors(chain = true, fluent = true)
   public static class PieChartWidgetBuilder {
@@ -119,12 +145,20 @@ public class PieChartWidget {
     private String title = "Pie Chart";
     private Theme theme = Theme.LIGHT;
 
+    /**
+     * Builds and returns a new PieChartWidget instance.
+     *
+     * @return a new PieChartWidget with the configured parameters
+     */
     public PieChartWidget build() {
       return new PieChartWidget(width, height, title, theme);
     }
 
   }
 
+  /**
+   * Represents a single slice in the pie chart.
+   */
   public record Slice(String title, double value, Color baseColor) {
 
   }

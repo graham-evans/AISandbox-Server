@@ -103,7 +103,11 @@ public interface OutputRenderer {
    */
   void display();
 
-
+  /**
+   * Writes text output from the simulation.
+   *
+   * @param text the text to output
+   */
   void write(String text);
 
   /**
