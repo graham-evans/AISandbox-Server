@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+/**
+ * This package contains message definitions for the Mancala (Kalah variant) simulation.
+ * Mancala is a two-player strategy board game with a 2x6 board where players take turns
+ * sowing seeds counter-clockwise. The player with the most seeds in their store wins.
+ */
+package mancala;
+option java_multiple_files = true;
+option java_package = "dev.aisandbox.server.simulation.mancala.proto";
+
+/**
+ * MancalaState represents the current state of the Mancala board.
+ * Sent to the current player before they choose a move.
+ */
+message MancalaState {
+  string sessionID = 1; // Unique identifier for this simulation run
+  string episodeID = 2; // Unique identifier for the current episode
+  repeated int32 pits = 3; // Seed counts for all 12 pits (indices 0-5: Player 1, indices 6-11: Player 2)
+  repeated int32 stores = 4; // Seed counts for stores (index 0: Player 1, index 1: Player 2)
+  int32 currentPlayer = 5; // The current player (0 or 1)
+  repeated int32 validMoves = 6; // Which pit indices (0-5) the current player can choose
+}
+
+/**
+ * MancalaAction represents a player's move in Mancala.
+ * The player selects one of their non-empty pits to sow from.
+ */
+message MancalaAction {
+  int32 selectedPit = 1; // The pit to sow from (0-5 index into the current player's row)
+}
+
+/**
+ * Signal enum indicates the game status after a move.
+ */
+enum MancalaSignal {
+  WIN = 0;  // The player has won the game
+  PLAY = 1; // The game continues
+  LOSE = 2; // The player has lost the game
+  DRAW = 3; // The game ended in a draw
+}
+
+/**
+ * MancalaResult is sent after the game state changes.
+ * Contains the signal and final store counts when the game ends.
+ */
+message MancalaResult {
+  MancalaSignal signal = 1; // The game signal for this player
+  repeated int32 finalStores = 2; // Final store counts (only populated on game end)
+}
