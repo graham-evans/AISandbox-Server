@@ -14,6 +14,7 @@ import dev.aisandbox.server.simulation.highlowcards.proto.HighLowChoice;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 
+/** Mock player for testing the High/Low Cards simulation. */
 @Slf4j
 public class MockPlayer extends MockAgent {
 

@@ -24,15 +24,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+/** Tests for running the Twisty puzzle simulation. */
 public class TestRunTwisty {
 
-  private final static File outputDirectory = new File("build/test/twisty");
+  private static final File outputDirectory = new File("build/test/twisty");
 
+  /** Initializes the output directory for Twisty tests. */
   @BeforeAll
   public static void setupDir() {
     outputDirectory.mkdirs();
   }
 
+  /**
+   * Provides all combinations of puzzle types and themes for testing.
+   *
+   * @return stream of test arguments
+   */
   static Stream<Arguments> allTwistyProvider() {
     Stream.Builder<Arguments> arguments = Stream.builder();
     for (PuzzleType puzzle : PuzzleType.values()) {
@@ -43,6 +50,12 @@ public class TestRunTwisty {
     return arguments.build();
   }
 
+  /**
+   * Tests running the Twisty puzzle with different puzzle types and themes.
+   *
+   * @param puzzleType the type of puzzle to test
+   * @param theme the theme to render with
+   */
   @ParameterizedTest
   @MethodSource("allTwistyProvider")
   public void testRunTwisty(PuzzleType puzzleType, Theme theme) {

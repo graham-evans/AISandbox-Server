@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/** Mock player for testing the Coin Game simulation. */
 @RequiredArgsConstructor
 @Slf4j
 public class MockPlayer extends MockAgent {

@@ -15,6 +15,7 @@ import dev.aisandbox.launcher.options.RuntimeOptions;
 import dev.aisandbox.launcher.options.RuntimeUtils;
 import org.junit.jupiter.api.Test;
 
+/** Tests for command-line option parsing. */
 public class CommandLineOptionsTests {
 
   @Test

@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/** Mock agent for testing the Mine Hunter simulation. */
 @Slf4j
 @RequiredArgsConstructor
 public class MockMineAgent extends MockAgent {

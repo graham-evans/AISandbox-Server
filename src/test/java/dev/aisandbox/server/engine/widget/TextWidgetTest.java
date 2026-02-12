@@ -17,10 +17,12 @@ import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+/** Tests for the TextWidget class. */
 public class TextWidgetTest {
 
   private static final File outputDir = new File("build/test/widgets/text");
 
+  /** Initializes the output directory for widget tests. */
   @BeforeAll
   public static void setupDir() {
     outputDir.mkdirs();

@@ -20,8 +20,14 @@ import java.util.Random;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+/** Tests for running the High/Low Cards simulation. */
 public class TestRunHighLowCards {
 
+  /**
+   * Tests the High/Low Cards simulation with different themes.
+   *
+   * @param theme the theme to test with
+   */
   @ParameterizedTest
   @EnumSource(Theme.class)
   public void testRunHighLowCards(Theme theme) {

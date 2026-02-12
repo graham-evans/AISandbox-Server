@@ -20,8 +20,14 @@ import java.util.Random;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+/** Tests for running the Coin Game simulation. */
 public class TestRunCoinGame {
 
+  /**
+   * Tests the Coin Game simulation with different themes.
+   *
+   * @param theme the theme to test with
+   */
   @ParameterizedTest
   @EnumSource(Theme.class)
   public void testRunCoinGame(Theme theme) {

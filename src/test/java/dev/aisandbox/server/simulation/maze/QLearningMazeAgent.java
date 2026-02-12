@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/** Mock agent using Q-learning to solve maze problems. */
 @Slf4j
 @RequiredArgsConstructor
 public class QLearningMazeAgent extends MockAgent {

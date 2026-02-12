@@ -3,6 +3,7 @@
  * terms of version 3 of the GNU General Public License. See the README and LICENCE files for
  * more information.
  */
+
 package dev.aisandbox.server.simulation.twisty;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,17 +24,25 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+/** Generates and validates starting state images for Twisty puzzle types. */
 @Slf4j
 public class PuzzleCellImageGenerator {
 
-  private final static File outputDirectory = new File("build/test/twisty-start");
+  private static final File outputDirectory = new File("build/test/twisty-start");
   private static final int CIRCLE_SIZE = 50;
 
+  /** Initializes the output directory for puzzle cell images. */
   @BeforeAll
   public static void setupDir() {
     outputDirectory.mkdirs();
   }
 
+  /**
+   * Generates and saves a cell-labeled image of a puzzle's starting configuration.
+   *
+   * @param puzzleType the puzzle type to generate an image for
+   * @throws IOException if image writing fails
+   */
   @ParameterizedTest
   @EnumSource(PuzzleType.class)
   public void generatePuzzleCellImage(PuzzleType puzzleType) throws IOException {

@@ -23,15 +23,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+/** Tests for running the Mine Hunter simulation. */
 public class TestRunMine {
 
-  private final static File outputDirectory = new File("build/test/mine");
+  private static final File outputDirectory = new File("build/test/mine");
 
+  /** Initializes the output directory for Mine tests. */
   @BeforeAll
   public static void setupDir() {
     outputDirectory.mkdirs();
   }
 
+  /**
+   * Provides all combinations of mine sizes and themes for testing.
+   *
+   * @return stream of test arguments
+   */
   static Stream<Arguments> allMineProvider() {
     Stream.Builder<Arguments> arguments = Stream.builder();
     for (MineSize mineSize : MineSize.values()) {
@@ -42,6 +49,12 @@ public class TestRunMine {
     return arguments.build();
   }
 
+  /**
+   * Tests running the Mine Hunter simulation with different sizes and themes.
+   *
+   * @param mineSize the mine field size to test
+   * @param theme the theme to render with
+   */
   @ParameterizedTest
   @MethodSource("allMineProvider")
   public void testRunMineSize(MineSize mineSize, Theme theme) {

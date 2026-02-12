@@ -20,6 +20,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+/** Tests to verify uniqueness constraints on simulation builders. */
 public class UniquenessTests {
 
   private static final List<SimulationBuilder> builderList = new ArrayList<>();
@@ -31,8 +32,8 @@ public class UniquenessTests {
   }
 
   /**
-   * Tests that there are the expected number of simulation builders available
-   **/
+   * Tests that there are the expected number of simulation builders available.
+   */
   @Test
   public void includedTest() {
     assertNotNull(builderList);
@@ -40,7 +41,7 @@ public class UniquenessTests {
   }
 
   /**
-   * Tests that all simulation builders have unique names
+   * Tests that all simulation builders have unique names.
    */
   @Test
   public void uniqueNameTest() {
@@ -52,7 +53,7 @@ public class UniquenessTests {
   }
 
   /**
-   * Tests that no builders names have whitespace in them
+   * Tests that no builders names have whitespace in them.
    */
   @Test
   public void whitespaceTest() {

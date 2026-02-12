@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/** Mock agent for testing the Twisty puzzle simulation. */
 @Slf4j
 @RequiredArgsConstructor
 public class MockTwistyAgent extends MockAgent {

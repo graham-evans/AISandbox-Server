@@ -14,6 +14,7 @@ import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/** Mock player for testing the Multi-Armed Bandit simulation. */
 @Slf4j
 @RequiredArgsConstructor
 public class MockBanditPlayer extends MockAgent {

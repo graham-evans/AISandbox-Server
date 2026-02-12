@@ -15,6 +15,7 @@ import dev.aisandbox.server.simulation.bandit.model.BanditPullEnumeration;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/** Tests for Bandit simulation parameter configuration. */
 public class BanditParameterTest {
 
   @Test

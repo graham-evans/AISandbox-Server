@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+/** Tests for the move compiler in the Twisty puzzle simulation. */
 @Slf4j
 public class MoveCompilerTest {
 

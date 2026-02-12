@@ -23,16 +23,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+/** Tests for running the Maze simulation. */
 public class TestRunMaze {
 
-  private final static File outputDirectory = new File("build/test/maze");
+  private static final File outputDirectory = new File("build/test/maze");
 
-
+  /** Initializes the output directory for Maze tests. */
   @BeforeAll
   public static void setupDir() {
     outputDirectory.mkdirs();
   }
 
+  /**
+   * Provides all combinations of maze types, sizes, and themes for testing.
+   *
+   * @return stream of test arguments
+   */
   static Stream<Arguments> allMazeProvider() {
     Stream.Builder<Arguments> arguments = Stream.builder();
     for (MazeType mazeType : MazeType.values()) {
@@ -45,6 +51,13 @@ public class TestRunMaze {
     return arguments.build();
   }
 
+  /**
+   * Tests running the Maze simulation with different types, sizes, and themes.
+   *
+   * @param mazeType the maze type to test
+   * @param mazeSize the maze size to test
+   * @param theme the theme to render with
+   */
   @ParameterizedTest
   @MethodSource("allMazeProvider")
   public void testRunMaze(MazeType mazeType, MazeSize mazeSize, Theme theme) {

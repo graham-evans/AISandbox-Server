@@ -21,15 +21,23 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+/** Tests for drawing move icons for Twisty puzzle types. */
 public class IconTests {
 
-  private final static File outputDirectory = new File("build/test/twisty/icons");
+  private static final File outputDirectory = new File("build/test/twisty/icons");
 
+  /** Initializes the output directory for icon tests. */
   @BeforeAll
   public static void setupDir() {
     outputDirectory.mkdirs();
   }
 
+  /**
+   * Tests drawing all move icons for a given puzzle type.
+   *
+   * @param ptype the puzzle type to draw icons for
+   * @throws IOException if image writing fails
+   */
   @ParameterizedTest
   @EnumSource(PuzzleType.class)
   public void testDrawMoveIcons(PuzzleType ptype) throws IOException {
