@@ -438,12 +438,12 @@ External agents can be written in any language that supports TCP sockets and Pro
 
 When adding a new simulation, make sure you have:
 
-- [ ] Created a `.proto` file in `src/main/proto/` with State, Action, and Result messages
-- [ ] Created a `SimulationBuilder` implementation with parameters, agent counts, and a `build` method
-- [ ] Created a `Simulation` implementation with `step` and `visualise` methods
-- [ ] Used theme colours (not hard-coded colours) in all visualisation code
-- [ ] Registered the simulation in `SimulationEnumeration`
-- [ ] Created a mock agent that extends `MockAgent`
-- [ ] Created a test class that runs the simulation across all themes
-- [ ] Added the GPL v3 header to every new Java source file
-- [ ] Verified the code passes `./gradlew checkstyleMain` and `./gradlew pmdMain`
+- Created a `.proto` file in `src/main/proto/` with State, Action, and Result messages
+- Created a `SimulationBuilder` implementation with parameters, agent counts, and a `build` method
+- Created a `Simulation` implementation with `step` and `visualise` methods
+- Used theme colours (not hard-coded colours) in all visualisation code
+- Registered the simulation in `SimulationEnumeration`
+- Created a mock agent that extends `MockAgent`
+- Created a test class that runs the simulation across all themes
+- Added the GPL v3 header to every new Java source file
+- Verified the code passes `./gradlew checkstyleMain` and `./gradlew pmdMain`
