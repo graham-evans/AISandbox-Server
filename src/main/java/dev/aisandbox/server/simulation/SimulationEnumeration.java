@@ -10,6 +10,7 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.simulation.bandit.BanditScenario;
 import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
+import dev.aisandbox.server.simulation.mancala.MancalaBuilder;
 import dev.aisandbox.server.simulation.maze.MazeBuilder;
 import dev.aisandbox.server.simulation.mine.MineHunterScenario;
 import dev.aisandbox.server.simulation.twisty.TwistyBuilder;
@@ -86,7 +87,16 @@ public enum SimulationEnumeration {
    * <p>Agent must solve 3D puzzles like Rubik's cubes through sequence of moves. Tests complex
    * state space navigation and goal-oriented planning in high-dimensional spaces.
    */
-  TWISTY(new TwistyBuilder());
+  TWISTY(new TwistyBuilder()),
+
+  /**
+   * Mancala (Kalah variant) - two-player seed-sowing strategy game.
+   *
+   * <p>Players take turns sowing seeds counter-clockwise around a board of 2x6 pits plus two
+   * stores. Landing in your own store grants an extra turn; landing in an empty pit on your
+   * side captures the opponent's opposite seeds. The player with the most seeds wins.
+   */
+  MANCALA(new MancalaBuilder());
   /**
    * The {@link SimulationBuilder} instance associated with this simulation type.
    */
