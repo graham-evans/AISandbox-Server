@@ -447,3 +447,39 @@ When adding a new simulation, make sure you have:
 - Created a test class that runs the simulation across all themes
 - Added the GPL v3 header to every new Java source file
 - Verified the code passes `./gradlew checkstyleMain` and `./gradlew pmdMain`
+
+---
+
+## Patterns for single agent simulations
+
+For simulations featuring a single agent, it's normal to implement the State→Action→Reward pattern.
+
+![](SAR.png "Sequence diagram of the State Action Reward pattern.")
+
+1. The Server sends the current state of the simulation to the agent.
+2. The Agent responds with the action it chooses.
+3. The Server steps through the simulation and sends a summary of the result to the Agent. This includes data about the simulation itself such as if the episode is finishing or the current "score".
+
+This process is repeated until the simulation finishes.
+
+In the multi-armed bandit scenario, these messages are serialised as the BanditState, BanditAction and BanditReward objects.
+
+---
+
+## Patterns for multi agent simulations
+
+Multi-agent simulations can also use the state → Action → Reward pattern, however it becomes more complicated when a single agent can cause the episode to end for all agents (such as winning the episode or making an illegal move). Then the problems becomes how do you tell the other agents about the end of the simulation (and not ask for an action in return).
+
+An alternative is the State + Signal → Action pattern.
+
+![](SSA.png "State + Signal Action pattern.")
+
+1. The server sends the current state of the simulation to an agent. This includes any accumulated rewards and an enumerated signal telling the agent if an action is required.
+2. The agent examines the signal and reads if an action is being asked for.
+3. If required, the agent sends an action to the server, which is used to drive the simulation forward.
+
+This process can be repeated for any or all agents, as long as the simulation runs.
+
+The advantage of this method is it's possible to tell all agents when an episode ends, without triggering an action response. You can also use it to update inactive agents about any intermediate knowledge which they can use to update their internal state.
+
+The disadvantage is, you rely on each agent to correctly read the signal and not get out of sync with the other agents.

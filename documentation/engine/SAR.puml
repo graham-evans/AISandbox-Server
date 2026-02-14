@@ -1,0 +1,10 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+Server -> Agent: Current state of the simulation
+Agent -> Server: Action
+Server -> Agent: Result of action
+
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+Server -> Agent: Current State (with accumulative rewards)
+
+Agent -> Agent: Check signal
+
+alt Response Required
+
+  Agent -> Server: Action
+
+end
+
+@enduml
