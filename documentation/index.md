@@ -16,6 +16,8 @@ to learn and grow.
 
 Download the sandbox and start coding straight away.
 
+[<i class="fa-solid fa-download"></i>](intro/Downloads.md)
+
 </div>
 <div class="col">
 
