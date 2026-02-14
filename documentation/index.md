@@ -18,7 +18,7 @@ Download the sandbox and start coding straight away.
 
 <br>
 
-## [<i class="fa-solid fa-download fa-8x"></i>](intro/Downloads.md)
+## [<i class="fa-solid fa-download fa-5x"></i>](intro/Downloads.md)
 
 </div>
 <div class="col">
@@ -29,7 +29,7 @@ Look at the environments you can code against.
 
 <br>
 
-## [<i class="fa-solid fa-layer-group fa-8x"></i>](simulations/index.md)
+## [<i class="fa-solid fa-layer-group fa-5x"></i>](simulations/index.md)
 </div>
 <div class="col">
 
@@ -39,7 +39,7 @@ Learn the Q-Learning algorithm and start solving problems.
 
 <br>
 
-## [<i class="fa-solid fa-chalkboard-user fa-8x"></i>](intro/resources.md)
+## [<i class="fa-solid fa-chalkboard-user fa-5x"></i>](intro/resources.md)
 
 </div>
 </div>
