@@ -6,13 +6,12 @@
 
 package dev.aisandbox.server.engine.output;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
-import java.io.IOException;
-import java.util.List;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Constants and resources for simulation output rendering.
@@ -150,10 +149,10 @@ public class OutputConstants {
       log.error("Error loading fonts", e);
     }
     // create base fonts
-    TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, TITLE_HEIGHT);
-    HEADER_FONT = new Font("Arimo Regular", Font.PLAIN, HEADER_HEIGHT);
-    LOG_FONT = new Font("Hack Regular", Font.PLAIN, LOG_FONT_HEIGHT);
-    STATISTICS_FONT = new Font("Arimo Regular", Font.PLAIN, STATISTICS_HEIGHT);
-    WIDGET_TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, WIDGET_TITLE_HEIGHT);
+    TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, TITLE_HEIGHT); // NOPMD
+    HEADER_FONT = new Font("Arimo Regular", Font.PLAIN, HEADER_HEIGHT); // NOPMD
+    LOG_FONT = new Font("Hack Regular", Font.PLAIN, LOG_FONT_HEIGHT); // NOPMD
+    STATISTICS_FONT = new Font("Arimo Regular", Font.PLAIN, STATISTICS_HEIGHT); // NOPMD
+    WIDGET_TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, WIDGET_TITLE_HEIGHT); // NOPMD
   }
 }
