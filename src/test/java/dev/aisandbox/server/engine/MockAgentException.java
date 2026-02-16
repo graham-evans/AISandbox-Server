@@ -8,11 +8,16 @@ package dev.aisandbox.server.engine;
 
 import dev.aisandbox.server.engine.exception.SimulationException;
 
+import java.io.Serial;
+
 /**
  * Exception thrown by mock agents during testing scenarios.
  * Extends SimulationException to provide specific error handling for mock agents.
  */
 public class MockAgentException extends SimulationException {
+
+  @Serial
+  private static final long serialVersionUID = 4084744853925356397L;
 
   /**
    * Creates a new MockAgentException with the specified message.
