@@ -10,13 +10,6 @@ import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.TreeMap;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,21 +17,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Controller for the simulation setup screen in the JavaFX GUI.
@@ -69,20 +55,15 @@ public class SetupController {
   void initialize() {
     // FX assertions
     assert agentCounter
-        != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
+        != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation.fxml'.";
     assert externalCheckBox
-        != null : "fx:id=\"externalCheckBox\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
+        != null : "fx:id=\"externalCheckBox\" was not injected: check your FXML file 'simulation.fxml'.";
     assert parameterBox
-        != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
+        != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation.fxml'.";
     assert simDescription
-        != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
+        != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation.fxml'.";
     assert simulationList
-        != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation"
-        + ".fxml'.";
+        != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation.fxml'.";
     assert themeChoice
         != null : "fx:id=\"themeChoice\" was not injected: check your FXML file 'simulation.fxml'.";
 
