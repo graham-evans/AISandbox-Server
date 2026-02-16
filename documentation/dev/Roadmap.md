@@ -21,7 +21,21 @@
 
 Note: At this point we have feature parity between v1 and v2 codebases and v1 will no longer be supported.
 
-## Scenario Roadmap
+## Version 2.1
+
++ No engine changes planned
+
+### Scenarios
+
++ Mancala
++ Werewolf
++ Cascade (Match-3)
+
+## Future Plans
+
+- Move to Java 25 (next LTS version)
+
+### Scenarios
 
 - Car Driving – Advanced car driving simulation including navigation and obstacle avoidance.
 - Car Racing – Top down racing game where the AI must drive round a track with simple physics.
@@ -31,5 +45,5 @@ Note: At this point we have feature parity between v1 and v2 codebases and v1 wi
 - Snake
 - Sokoban Puzzle
 - “Space Invaders” – Clone of an 80’s style arcade game.
-- Wargame 
+- Wargame (Potentially 'Minimal Space Combat')
 - Zebra Puzzle – A puzzle involving understanding the relationships between elements. Normally solved by constraints based programming, but could be adapted for learning algorithms. Zebra Puzzle page on Wikipedia. Note: This was originally intended to be in the v1.2 release but has since been dropped.
