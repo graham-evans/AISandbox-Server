@@ -20,5 +20,4 @@ main -> thread: Start simulation
 activate thread
 thread -> sim : playStep
 
-
 @enduml
