@@ -470,11 +470,42 @@ In the multi-armed bandit scenario, these messages are serialised as the BanditS
 
 Multi-agent simulations can also use the state → Action → Reward pattern, however it becomes more complicated when a single agent can cause the episode to end for all agents (such as winning the episode or making an illegal move). Then the problems becomes how do you tell the other agents about the end of the simulation (and not ask for an action in return).
 
+To get round this issue, a simulation can delay sending the reward message until just before the next state is sent.
+
+![](MultiSAR.png "State Action Reward pattern in a two agent simulation")
+
+The diagram shows three distinct phases for a two-agent game:
+
+**Episode Start** — Each agent receives a State and responds with an Action. No Result is sent yet because there is no prior action to report on.
+
+1. Server sends State to Agent 1.
+2. Agent 1 responds with an Action.
+3. Server sends State to Agent 2.
+4. Agent 2 responds with an Action.
+
+**Steady State (repeat)** — Before each agent's next turn, the server sends the Result of their *previous* action (with a `PLAY` signal indicating the episode continues), immediately followed by the new State. The agent then responds with their next Action. This is the key insight: the Result is deferred until the start of the next turn rather than sent immediately after the action.
+
+5. Server sends Result(`PLAY`) to Agent 1.
+6. Server sends State to Agent 1.
+7. Agent 1 responds with an Action.
+8. Server sends Result(`PLAY`) to Agent 2.
+9. Server sends State to Agent 2.
+10. Agent 2 responds with an Action.
+
+This steady-state loop repeats for the duration of the episode.
+
+**Game Over** — When the episode ends (a player wins, makes an illegal move, or the game is drawn), the server sends a final Result to *every* agent with the appropriate signal (`WIN`, `LOSE`, or `DRAW`). Because there is no subsequent State message, no agent is asked for an Action — this cleanly communicates the outcome without requiring any special handling on the agent side.
+
+11. Server sends Result(`WIN` / `LOSE` / `DRAW`) to Agent 1.
+12. Server sends Result(`WIN` / `LOSE` / `DRAW`) to Agent 2.
+
+By deferring the Result until just before the next State, this pattern avoids the problem of needing to notify non-active agents when the episode ends unexpectedly. Every agent always receives its final Result regardless of which agent caused the episode to end.
+
 An alternative is the State + Signal → Action pattern.
 
 ![](SSA.png "State + Signal Action pattern.")
 
-1. The server sends the current state of the simulation to an agent. This includes any accumulated rewards and an enumerated signal telling the agent if an action is required.
+1. The server sends the current state of the simulation to **every** agent. This includes any accumulated rewards (from previous actions), and an enumerated signal telling the agent if an action is required **from them**.
 2. The agent examines the signal and reads if an action is being asked for.
 3. If required, the agent sends an action to the server, which is used to drive the simulation forward.
 
