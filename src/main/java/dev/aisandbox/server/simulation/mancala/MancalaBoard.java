@@ -281,6 +281,29 @@ public class MancalaBoard {
   }
 
   /**
+   * Returns the board state from the perspective of the given player.
+   *
+   * <p>The returned 14-element array is always indexed as:
+   * <ul>
+   *   <li>0-5: the requesting player's pits</li>
+   *   <li>6: the requesting player's store</li>
+   *   <li>7-12: the opponent's pits</li>
+   *   <li>13: the opponent's store</li>
+   * </ul>
+   *
+   * @param player the player (0 or 1)
+   * @return a 14-element array with the board rotated to the player's perspective
+   */
+  public int[] getRelativeBoard(int player) {
+    int[] relative = new int[BOARD_SIZE];
+    int offset = player == 0 ? 0 : PITS_PER_PLAYER + 1;
+    for (int i = 0; i < BOARD_SIZE; i++) {
+      relative[i] = board[(i + offset) % BOARD_SIZE];
+    }
+    return relative;
+  }
+
+  /**
    * Enumeration of possible sow outcomes.
    */
   public enum SowResult {

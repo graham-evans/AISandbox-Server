@@ -228,16 +228,11 @@ public final class MancalaGame implements Simulation {
    * @return the state message
    */
   private MancalaState buildState(List<Integer> validMoves) {
-    int[] p1Pits = board.getPitsForPlayer(0);
-    int[] p2Pits = board.getPitsForPlayer(1);
+    int[] relative = board.getRelativeBoard(currentPlayer);
     return MancalaState.newBuilder()
         .setSessionID(sessionId)
         .setEpisodeID(episodeId)
-        .addAllPits(Arrays.stream(p1Pits).boxed().toList())
-        .addAllPits(Arrays.stream(p2Pits).boxed().toList())
-        .addStores(board.getStore(0))
-        .addStores(board.getStore(1))
-        .setCurrentPlayer(currentPlayer)
+        .addAllBoard(Arrays.stream(relative).boxed().toList())
         .addAllValidMoves(validMoves)
         .build();
   }

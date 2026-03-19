@@ -16,10 +16,8 @@ option java_package = "dev.aisandbox.server.simulation.mancala.proto";
 message MancalaState {
   string sessionID = 1; // Unique identifier for this simulation run
   string episodeID = 2; // Unique identifier for the current episode
-  repeated int32 pits = 3; // Seed counts for all 12 pits (indices 0-5: Player 1, indices 6-11: Player 2)
-  repeated int32 stores = 4; // Seed counts for stores (index 0: Player 1, index 1: Player 2)
-  int32 currentPlayer = 5; // The current player (0 or 1)
-  repeated int32 validMoves = 6; // Which pit indices (0-5) the current player can choose
+  repeated int32 board = 3; // 14-element board from the current player's perspective (0-5: your pits, 6: your store, 7-12: opponent's pits, 13: opponent's store)
+  repeated int32 validMoves = 4; // Which pit indices (0-5) the current player can choose
 }
 
 /**

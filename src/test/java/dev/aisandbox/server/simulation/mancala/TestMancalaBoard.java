@@ -238,6 +238,42 @@ public class TestMancalaBoard {
   }
 
   /**
+   * Tests that getRelativeBoard for player 0 returns the board as-is.
+   */
+  @Test
+  public void testRelativeBoardPlayer0() {
+    MancalaBoard board = new MancalaBoard(4);
+    int[] relative = board.getRelativeBoard(0);
+    assertArrayEquals(board.getBoard(), relative);
+  }
+
+  /**
+   * Tests that getRelativeBoard for player 1 rotates so their pits are first.
+   */
+  @Test
+  public void testRelativeBoardPlayer1() {
+    MancalaBoard board = new MancalaBoard(4);
+    int[] b = board.getBoard();
+    // Set up a distinctive board state
+    b[0] = 1; b[1] = 2; b[2] = 3; b[3] = 4; b[4] = 5; b[5] = 6;
+    b[6] = 10; // Player 1 store
+    b[7] = 7; b[8] = 8; b[9] = 9; b[10] = 10; b[11] = 11; b[12] = 12;
+    b[13] = 20; // Player 2 store
+
+    int[] relative = board.getRelativeBoard(1);
+    // Player 2's pits should now be indices 0-5
+    assertArrayEquals(new int[]{7, 8, 9, 10, 11, 12},
+        new int[]{relative[0], relative[1], relative[2], relative[3], relative[4], relative[5]});
+    // Player 2's store at index 6
+    assertEquals(20, relative[6]);
+    // Player 1's pits should now be indices 7-12
+    assertArrayEquals(new int[]{1, 2, 3, 4, 5, 6},
+        new int[]{relative[7], relative[8], relative[9], relative[10], relative[11], relative[12]});
+    // Player 1's store at index 13
+    assertEquals(10, relative[13]);
+  }
+
+  /**
    * Tests sowing that wraps around the board past opponent's store.
    */
   @Test
