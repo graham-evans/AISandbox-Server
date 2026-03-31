@@ -1,6 +1,6 @@
 # Roadmap
 
-## Version 2.0
+## Current Version 2.0
 
 ### Features
 
@@ -28,8 +28,11 @@ Note: At this point we have feature parity between v1 and v2 codebases and v1 wi
 ### Scenarios
 
 + Mancala
-+ Werewolf
 + Cascade (Match-3)
+
+## Version 2.2
+
++ Integration with openTelemetry
 
 ## Future Plans
 
@@ -37,6 +40,9 @@ Note: At this point we have feature parity between v1 and v2 codebases and v1 wi
 
 ### Scenarios
 
+- Prisoners Dilemma - Classic AI tournament with many agents
+- Warehouse Simulation - Move items and fulfill orders as efficiently as possible.
+- Factory Simulation - Optimise a manufacturing plant for maximum profit.
 - Car Driving – Advanced car driving simulation including navigation and obstacle avoidance.
 - Car Racing – Top down racing game where the AI must drive round a track with simple physics.
 - Nethack clone
