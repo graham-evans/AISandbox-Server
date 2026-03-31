@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant Server
+participant "Agent 1" as A1
+participant "Agent 2" as A2
+
+== Episode Start ==
+
+Server -> A1: State
+A1 -> Server: Action
+Server -> A2: State
+A2 -> Server: Action
+
+== Steady State (repeat) ==
+
+Server -> A1: Result(PLAY)
+Server -> A1: State
+A1 -> Server: Action
+Server -> A2: Result(PLAY)
+Server -> A2: State
+A2 -> Server: Action
+
+== Game Over ==
+
+Server -> A1: Result(WIN / LOSE / DRAW)
+Server -> A2: Result(WIN / LOSE / DRAW)
+
+@enduml

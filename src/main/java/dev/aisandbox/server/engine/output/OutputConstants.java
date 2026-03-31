@@ -131,7 +131,7 @@ public class OutputConstants {
    * List of font file paths to attempt loading from resources.
    */
   private static final List<String> FONT_LIST = List.of("/fonts/Arimo-VariableFont_wght.ttf",
-      "/fonts/Hack-Regular.ttf");
+      "/fonts/Hack-Regular.ttf", "/fonts/OpenSans-Regular.ttf");
 
   static {
 

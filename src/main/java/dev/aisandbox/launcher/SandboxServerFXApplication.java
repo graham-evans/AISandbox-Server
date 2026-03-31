@@ -9,12 +9,16 @@ package dev.aisandbox.launcher;
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.fx.FXModel;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,9 +30,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SandboxServerFXApplication extends Application {
-
-  //    private ConfigurableApplicationContext context;
-  private Parent rootNode;
 
   @Override
   public void init() throws Exception {
@@ -43,11 +44,19 @@ public class SandboxServerFXApplication extends Application {
     Parent root = loader.load();
     Scene scene = new Scene(root, 800, 600);
     stage.setScene(scene);
-    stage.centerOnScreen();
     stage.setTitle("AI Sandbox");
     stage.getIcons()
         .add(new Image(SandboxServerFXApplication.class.getResourceAsStream("/images/AILogo.png")));
+    stage.setOpacity(0);
     stage.show();
+    PauseTransition pause = new PauseTransition(Duration.millis(100));
+    pause.setOnFinished(event -> {
+      Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+      stage.setX(screenBounds.getMinX() + (screenBounds.getWidth() - stage.getWidth()) / 2);
+      stage.setY(screenBounds.getMinY() + (screenBounds.getHeight() - stage.getHeight()) / 2);
+      stage.setOpacity(1);
+    });
+    pause.play();
   }
 
   @Override
