@@ -10,46 +10,15 @@ Unlike real-time match-3 games, Cascade is fully turn-based — the board only c
 
 ## The Board
 
-The game is played on an **8 × 8 grid** of coloured tiles. At the start of each game, the grid is filled randomly with tiles of **five colours**: Red, Blue, Green, Yellow, and Purple. No starting configuration will contain any pre-existing matches.
+The game is played on an **8 × 8 grid** of coloured tiles. At the start of each game, the grid is filled randomly 
+with tiles of **five colours**: Red, Blue, Green, Yellow, and Purple. In advanced modes there may also be blocks of 
+ice or stones. No starting configuration will contain any pre-existing matches.
 
-Each turn, the AI selects a **swap** — two horizontally or vertically adjacent tiles — and exchanges their positions. A swap is only valid if it produces at least one match of three or more tiles; invalid swaps are rejected and the move is wasted.
-
-After a swap is accepted, the following sequence happens automatically:
-
-1. **Match resolution** — all groups of three or more same-coloured tiles in a row or column are removed simultaneously.
-2. **Gravity** — tiles above empty spaces fall downward to fill the gaps.
-3. **Refill** — new randomly-coloured tiles drop in from the top to fill any remaining empty columns.
-4. **Cascade check** — if the new layout contains any new matches, they resolve automatically (with a score multiplier) and the cycle repeats until the board is stable.
-5. **Move count** — the move counter decrements by one once the board is fully stable.
-
-A standard game lasts **30 moves**. The game ends when the move counter reaches zero.
-
----
-
-## Scoring
-
-| Event                           | Points                   |
-|---------------------------------|--------------------------|
-| Tile removed (base)             | 10 pts                   |
-| Match of 4                      | +50 pts bonus            |
-| Match of 5                      | +150 pts bonus           |
-| L-shaped or T-shaped match      | +75 pts bonus            |
-| Cascade (each subsequent chain) | ×1.5 multiplier (stacks) |
-| Special object destroyed        | See below                |
-
-Cascade multipliers stack multiplicatively. A third-level cascade applies a ×2.25 multiplier to all tiles removed in that wave.
-
----
-
-## Standard Tiles
+### Tiles
 
 Each standard tile has a single colour attribute. Three or more in a straight line (horizontally or vertically) form a valid match. Longer matches and crossing matches trigger bonus scoring and, in some cases, spawn special objects automatically.
 
----
-
-## Special Objects
-
-Special objects are placed on the board either at game start, spawned mid-game by certain matches, or introduced by level configuration. They occupy a single cell and interact with matches and explosions in ways that differ from standard tiles.
+In addition to the 'standard' tiles there are several special tiles which can be spawned mid-game by certain matches, or introduced by level configuration. They occupy a single cell and interact with matches and explosions in ways that differ from standard tiles.
 
 ### 💣 Bomb
 
@@ -67,7 +36,9 @@ Special objects are placed on the board either at game start, spawned mid-game b
 
 **Spawn condition:** Formed automatically when an **L-shaped or T-shaped match** occurs (i.e., two lines share a tile).
 
-**Appearance:** An arrow tile. The direction of the arrow depends on the orientation of the match: a predominantly horizontal match produces a horizontal Rocket; a vertical one produces a vertical Rocket.
+**Appearance:** An arrow tile. The direction of the arrow depends on the orientation of the match: a predominantly 
+horizontal match produces a horizontal Rocket; a vertical one produces a vertical Rocket; in the colour of the match 
+that created it.
 
 **Behaviour:** When triggered, a Rocket fires across its **entire row or column** (depending on its orientation), removing every tile it passes through. Special objects in the path are also triggered.
 
@@ -93,9 +64,11 @@ Special objects are placed on the board either at game start, spawned mid-game b
 
 **Appearance:** A tile encased in a translucent blue shell.
 
-**Behaviour:** An Ice Block traps the tile inside it. The trapped tile's colour is visible, but it cannot participate in matches directly. To free it, a match must be made **adjacent** to the Ice Block. A freed tile becomes a normal tile of its original colour. Bombs and Rockets destroy Ice Blocks instantly regardless of layer count.
+**Behaviour:** An Ice Block traps the tile inside it and doesn't fall with gravity. The trapped tile's colour is 
+visible, and can participate in matches, but it cannot be swapped with another tile. To free it, a match must be 
+made that **includes** the frozen tile. Bombs and Rockets destroy Ice Blocks instantly.
 
-**AI note:** Ice Blocks don't score when freed, but they restrict the effective colour distribution of the board and block cascade paths. Freeing high-value tiles (such as buried specials) early is usually worth the investment.
+**AI note:** Ice Blocks restrict the effective colour distribution of the board and block cascade paths. Freeing tiles early is usually worth the investment.
 
 ---
 
@@ -109,17 +82,41 @@ Special objects are placed on the board either at game start, spawned mid-game b
 
 **AI note:** Stones are obstacles, not opportunities. Prioritise clearing them with explosives early before they fragment the board into isolated sections that are difficult to chain.
 
+## Turn order
+
+Each turn, the AI selects a **swap** — two horizontally or vertically adjacent tiles — and exchanges their positions.
+A swap is only valid if it produces at least one match of three or more tiles or activates a special tile; invalid swaps are rejected and the move is wasted.
+
+After a swap is accepted, the following sequence happens automatically:
+
+1. **Match resolution** — all groups of three or more same-coloured tiles in a row or column are removed (normal 
+   tiles) or activated (bombs and rockets) simultaneously.
+2. **Special tile activation** — all currently activated bombs and rockets remove their target tiles. If these contain 
+   unactivated bombs or rockets then these become activated.
+3. **Gravity** — tiles above empty spaces fall downward to fill the gaps.
+4. **Refill** — new randomly-coloured tiles drop in from the top to fill any remaining empty columns.
+5. **Cascade** — The score multiplier is doubled (starts at 1)
+
+This process then repeats until the board becomes 'stable' - it contains no activated tiles and no rows or columns 
+of three coloured tiles.
+
+A standard game lasts **30 moves**. The game ends when the move counter reaches zero.
+
 ---
 
-### ⏱️ Timer Tile
+## Scoring
 
-**Spawn condition:** Introduced by level configuration on harder difficulties.
+| Event                           | Points                 |
+|---------------------------------|------------------------|
+| Tile removed (base)             | 10 pts                 |
+| Match of 4                      | +50 pts bonus          |
+| Match of 5                      | +150 pts bonus         |
+| L-shaped or T-shaped match      | +75 pts bonus          |
+| Cascade (each subsequent chain) | ×2 multiplier (stacks) |
+| Special object destroyed        | See below              |
 
-**Appearance:** A coloured tile with a number overlaid (e.g., "3").
-
-**Behaviour:** A Timer Tile counts down each time a move is made on the board — not each time it is matched. When the counter reaches zero, the tile **explodes**, dealing a 3 × 3 area blast identical to a Bomb but awarding **no points**. Matching the tile before it detonates removes it normally and awards standard scoring.
-
-**AI note:** Timer Tiles are ticking threats that can disrupt carefully laid plans. Matching or detonating them before they go off should generally be prioritised, especially when they sit near other special objects or critical cascades.
+Cascade multipliers stack multiplicatively. A second level cascade scores 20 points per removed tile, a 
+third level scores 40.
 
 ---
 
@@ -158,7 +155,8 @@ A benchmark score table will be published separately. As a rough guide:
 
 **Model the board state completely**
 
-Your agent needs a complete representation of the board: every cell's content (colour, special type, layer count for Ice, countdown for Timers), the current move count, and the current score. Don't discard special-object metadata — a Bomb is fundamentally different from a normal tile of the same colour and must be tracked separately.
+Your agent needs a complete representation of the board: every cell's content (colour and type), the current move count,
+and the current score. Don't discard special-object metadata — a Bomb is fundamentally different from a normal tile of the same colour and must be tracked separately.
 
 **Enumerate legal moves efficiently**
 
