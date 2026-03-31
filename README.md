@@ -16,6 +16,7 @@ Full documentation is available at [aisandbox.dev](https://aisandbox.dev).
 | **Maze** | Explore a maze to find the exit, then exploit the biases in the generator. |
 | **Mine Hunter** | Use logic to defuse a minefield. |
 | **Twisty Puzzles** | Traditional logic puzzles of various sizes. |
+| **Mancala** | Two-player game collecting seeds (version 2.1) |
 
 ## Getting Started
 
