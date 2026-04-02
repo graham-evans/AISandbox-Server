@@ -295,6 +295,245 @@ public class CascadeBoardUtils {
   }
 
   // ---------------------------------------------------------------------------
+  // Swap validation
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Returns {@code true} if swapping the cells at ({@code x1},{@code y1}) and
+   * ({@code x2},{@code y2}) is a valid action.
+   *
+   * <p>The two positions must be orthogonally adjacent. The swap is valid when:
+   * <ul>
+   *   <li>one cell is a {@link TileType#PRISM} and the other is a swappable, occupied cell, or</li>
+   *   <li>both cells are swappable and occupied, and performing the swap would create at least one
+   *       run of three or more matchable tiles.</li>
+   * </ul>
+   *
+   * @param board the current board state
+   * @param x1    column of the first cell
+   * @param y1    row of the first cell
+   * @param x2    column of the second cell
+   * @param y2    row of the second cell
+   * @return {@code true} if the swap is legal
+   */
+  public static boolean isValidSwap(CascadeBoard board, int x1, int y1, int x2, int y2) {
+    if (!board.inBounds(x1, y1) || !board.inBounds(x2, y2)) {
+      return false;
+    }
+    if (Math.abs(x2 - x1) + Math.abs(y2 - y1) != 1) {
+      return false;
+    }
+    CascadeCell c1 = board.getCell(x1, y1);
+    CascadeCell c2 = board.getCell(x2, y2);
+    if (c1.getType() == TileType.PRISM && c2.isOccupied() && isSwappable(board, x2, y2)) {
+      return true;
+    }
+    if (c2.getType() == TileType.PRISM && c1.isOccupied() && isSwappable(board, x1, y1)) {
+      return true;
+    }
+    if (!c1.isOccupied() || !c2.isOccupied()) {
+      return false;
+    }
+    if (!isSwappable(board, x1, y1) || !isSwappable(board, x2, y2)) {
+      return false;
+    }
+    return swapCreatesMatch(board, x1, y1, x2, y2);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Board resolution
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Resolves all pending matches on {@code board} using the full cascade loop.
+   *
+   * <p>Each wave finds all runs of three or more matchable tiles of the same colour, removes them,
+   * applies gravity, refills empty cells with random tiles, and doubles the cascade multiplier
+   * before repeating. The loop stops when the board is stable (no new matches).
+   *
+   * <p>The score gained during resolution is also added to {@link CascadeBoard#addScore}.
+   *
+   * @param board  the board to resolve (modified in place)
+   * @param random the source of randomness used for tile refill
+   * @return the total points scored during this resolution
+   */
+  public static long resolveBoard(CascadeBoard board, Random random) {
+    long totalScore = 0;
+    int multiplier = 1;
+    while (true) {
+      boolean[][] toRemove = new boolean[CascadeBoard.WIDTH][CascadeBoard.HEIGHT];
+      int count = findAllMatches(board, toRemove);
+      if (count == 0) {
+        break;
+      }
+      long waveScore = (long) count * 10 * multiplier;
+      totalScore += waveScore;
+      board.addScore(waveScore);
+      for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+        for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+          if (toRemove[x][y]) {
+            board.setCell(x, y, CascadeCell.empty());
+          }
+        }
+      }
+      applyGravity(board);
+      refill(board, random);
+      multiplier *= 2;
+    }
+    return totalScore;
+  }
+
+  /**
+   * Reshuffles all moveable tiles on the board when no valid moves remain.
+   *
+   * <p>All {@link CascadeCell#isFallable()} tiles are removed and the board is re-populated via
+   * {@link #initialise(CascadeBoard, Random)}, which guarantees no pre-existing matches. Stones
+   * and ice blocks remain in their original positions. Score and move count are unchanged.
+   *
+   * @param board  the board to reshuffle (modified in place)
+   * @param random the source of randomness
+   */
+  public static void reshuffleBoard(CascadeBoard board, Random random) {
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (board.getCell(x, y).isFallable()) {
+          board.setCell(x, y, CascadeCell.empty());
+        }
+      }
+    }
+    initialise(board, random);
+  }
+
+  /**
+   * Scans {@code board} for all horizontal and vertical runs of three or more matchable tiles of
+   * the same colour, marking each involved cell in {@code mark}.
+   *
+   * @param board  the board to scan
+   * @param mark   a {@code WIDTH × HEIGHT} boolean array; cells to be removed are set to
+   *               {@code true}
+   * @return the number of unique cells marked for removal
+   */
+  private static int findAllMatches(CascadeBoard board, boolean[][] mark) {
+    int count = 0;
+    // Horizontal runs
+    for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+      int x = 0;
+      while (x < CascadeBoard.WIDTH) {
+        CascadeCell cell = board.getCell(x, y);
+        if (!cell.isMatchable()) {
+          x++;
+          continue;
+        }
+        TileColour colour = cell.getColour();
+        int end = x + 1;
+        while (end < CascadeBoard.WIDTH
+            && board.getCell(end, y).isMatchable()
+            && board.getCell(end, y).getColour() == colour) {
+          end++;
+        }
+        if (end - x >= 3) {
+          for (int i = x; i < end; i++) {
+            if (!mark[i][y]) {
+              mark[i][y] = true;
+              count++;
+            }
+          }
+        }
+        x = end;
+      }
+    }
+    // Vertical runs
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      int y = 0;
+      while (y < CascadeBoard.HEIGHT) {
+        CascadeCell cell = board.getCell(x, y);
+        if (!cell.isMatchable()) {
+          y++;
+          continue;
+        }
+        TileColour colour = cell.getColour();
+        int end = y + 1;
+        while (end < CascadeBoard.HEIGHT
+            && board.getCell(x, end).isMatchable()
+            && board.getCell(x, end).getColour() == colour) {
+          end++;
+        }
+        if (end - y >= 3) {
+          for (int j = y; j < end; j++) {
+            if (!mark[x][j]) {
+              mark[x][j] = true;
+              count++;
+            }
+          }
+        }
+        y = end;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Applies gravity to every column: fallable tiles sink to fill empty cells below them.
+   *
+   * <p>{@link TileType#STONE} and {@link TileType#ICE} cells are fixed obstacles; they do not
+   * move and split a column into independent segments. Within each segment, fallable tiles compact
+   * to the bottom while empty cells float to the top.
+   */
+  private static void applyGravity(CascadeBoard board) {
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      int segBottom = CascadeBoard.HEIGHT - 1;
+      while (segBottom >= 0) {
+        TileType bt = board.getCell(x, segBottom).getType();
+        if (bt == TileType.STONE || bt == TileType.ICE) {
+          segBottom--;
+          continue;
+        }
+        // Find the top of this segment
+        int segTop = segBottom;
+        while (segTop > 0) {
+          TileType above = board.getCell(x, segTop - 1).getType();
+          if (above == TileType.STONE || above == TileType.ICE) {
+            break;
+          }
+          segTop--;
+        }
+        // Compact fallable tiles to the bottom of [segTop..segBottom]
+        int writeY = segBottom;
+        for (int y = segBottom; y >= segTop; y--) {
+          if (board.getCell(x, y).isFallable()) {
+            if (writeY != y) {
+              board.setCell(x, writeY, board.getCell(x, y));
+              board.setCell(x, y, CascadeCell.empty());
+            }
+            writeY--;
+          }
+        }
+        segBottom = segTop - 1;
+      }
+    }
+  }
+
+  /**
+   * Fills every empty cell on the board with a new random standard tile.
+   *
+   * <p>Called after {@link #applyGravity(CascadeBoard)} to restore the board to a fully occupied
+   * state. Colours are chosen uniformly at random; a subsequent cascade check will resolve any
+   * matches that happen to form.
+   *
+   * @param board  the board to refill (modified in place)
+   * @param random the source of randomness
+   */
+  private static void refill(CascadeBoard board, Random random) {
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (!board.getCell(x, y).isOccupied()) {
+          board.setCell(x, y, CascadeCell.standard(COLOURS[random.nextInt(COLOURS.length)]));
+        }
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   // Serialisation
   // ---------------------------------------------------------------------------
 

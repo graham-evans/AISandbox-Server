@@ -8,6 +8,7 @@ package dev.aisandbox.server.simulation;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.simulation.bandit.BanditScenario;
+import dev.aisandbox.server.simulation.cascade.CascadeScenario;
 import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
 import dev.aisandbox.server.simulation.maze.MazeBuilder;
@@ -86,7 +87,15 @@ public enum SimulationEnumeration {
    * <p>Agent must solve 3D puzzles like Rubik's cubes through sequence of moves. Tests complex
    * state space navigation and goal-oriented planning in high-dimensional spaces.
    */
-  TWISTY(new TwistyBuilder());
+  TWISTY(new TwistyBuilder()),
+
+  /**
+   * The Cascade simulation — a match-3 puzzle for AI agents.
+   *
+   * <p>The agent scores points by swapping adjacent tiles on an 8×8 grid to form matching groups,
+   * trigger chain reactions, and detonate special objects. A standard game lasts 30 moves.
+   */
+  CASCADE(new CascadeScenario());
   /**
    * The {@link SimulationBuilder} instance associated with this simulation type.
    */
