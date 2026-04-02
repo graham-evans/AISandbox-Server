@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.simulation.cascade.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +34,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class CascadeCell {
 
   /** What kind of object occupies this cell. */
@@ -82,7 +84,8 @@ public class CascadeCell {
     return type == TileType.STANDARD
         || type == TileType.BOMB
         || type == TileType.ROCKET_H
-        || type == TileType.ROCKET_V;
+        || type == TileType.ROCKET_V
+        || type == TileType.ICE;
   }
 
   /**

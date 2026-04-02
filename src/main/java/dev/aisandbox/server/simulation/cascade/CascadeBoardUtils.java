@@ -10,6 +10,7 @@ import dev.aisandbox.server.simulation.cascade.model.CascadeBoard;
 import dev.aisandbox.server.simulation.cascade.model.CascadeCell;
 import dev.aisandbox.server.simulation.cascade.model.TileColour;
 import dev.aisandbox.server.simulation.cascade.model.TileType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import lombok.experimental.UtilityClass;
@@ -177,23 +178,25 @@ public class CascadeBoardUtils {
    *
    * <p>A board is valid (has moves available) when any of the following is true:
    * <ul>
-   *   <li>A {@link TileType#BOMB}, {@link TileType#ROCKET_H}, {@link TileType#ROCKET_V}, or
-   *       {@link TileType#PRISM} is present — these can always be triggered.</li>
+   *   <li>A {@link TileType#PRISM} is present and has at least one adjacent non-{@link
+   *       TileType#ICE}, non-{@link TileType#STONE} neighbour — a prism can be swapped with any
+   *       such tile to activate it.</li>
    *   <li>Swapping any two adjacent (horizontally or vertically neighbouring) non-{@link
    *       TileType#ICE}, non-{@link TileType#STONE} tiles would create a run of three or more
-   *       matchable tiles of the same colour.</li>
+   *       matchable tiles of the same colour. This includes swaps involving
+   *       {@link TileType#BOMB} and {@link TileType#ROCKET_H}/{@link TileType#ROCKET_V} tiles,
+   *       which are matchable and participate in colour runs.</li>
    * </ul>
    *
    * @param board the board to inspect
    * @return {@code true} if at least one valid move exists
    */
   public static boolean isValid(CascadeBoard board) {
-    // A special object on the board always constitutes a playable move
+    // A prism with at least one swappable neighbour constitutes a valid move
     for (int x = 0; x < CascadeBoard.WIDTH; x++) {
       for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
-        TileType type = board.getCell(x, y).getType();
-        if (type == TileType.BOMB || type == TileType.ROCKET_H
-            || type == TileType.ROCKET_V || type == TileType.PRISM) {
+        if (board.getCell(x, y).getType() == TileType.PRISM
+            && hasSwappableNeighbour(board, x, y)) {
           return true;
         }
       }
@@ -226,6 +229,17 @@ public class CascadeBoardUtils {
   private static boolean isSwappable(CascadeBoard board, int x, int y) {
     TileType type = board.getCell(x, y).getType();
     return type != TileType.ICE && type != TileType.STONE;
+  }
+
+  /**
+   * Returns {@code true} if at least one of the four orthogonal neighbours of ({@code x},{@code y})
+   * is within bounds and swappable.
+   */
+  private static boolean hasSwappableNeighbour(CascadeBoard board, int x, int y) {
+    return (board.inBounds(x - 1, y) && isSwappable(board, x - 1, y))
+        || (board.inBounds(x + 1, y) && isSwappable(board, x + 1, y))
+        || (board.inBounds(x, y - 1) && isSwappable(board, x, y - 1))
+        || (board.inBounds(x, y + 1) && isSwappable(board, x, y + 1));
   }
 
   /**
@@ -280,108 +294,182 @@ public class CascadeBoardUtils {
     return count;
   }
 
+  // ---------------------------------------------------------------------------
+  // Serialisation
+  // ---------------------------------------------------------------------------
+
   /**
-   * Builds a {@link CascadeBoard} from a list of eight row strings, suitable for constructing
-   * specific board states in unit tests.
+   * Serialises the board to a list of eight strings (y=0 to y=7).
    *
-   * <p>Each string represents one row (y = 0 at the top), and must contain exactly eight
-   * whitespace-separated cell tokens. The token format is:
+   * <p>Each string contains eight space-separated two-character cell tokens (x=0 to x=7).
+   * The first character encodes the tile colour and the second the tile type. Both characters are
+   * uppercased when the cell's {@code activated} flag is set. The three special fixed tokens are:
+   * <ul>
+   *   <li>{@code ..} — empty cell</li>
+   *   <li>{@code ##} — stone</li>
+   *   <li>{@code xx} / {@code XX} — prism (inactive / active)</li>
+   * </ul>
    *
-   * <pre>
-   *   .          empty cell
-   *   r/b/g/y/p  standard tile  (red / blue / green / yellow / purple)
-   *   Br/Bb/…    bomb of that colour
-   *   Hr/Hb/…    horizontal rocket of that colour
-   *   Vr/Vb/…    vertical rocket of that colour
-   *   X          prism  (no colour)
-   *   Ir/Ib/…    ice block encasing a tile of that colour
-   *   #          stone  (no colour)
-   * </pre>
-   *
-   * <p>Append {@code !} to any bomb or rocket token to mark it as already activated, e.g.
-   * {@code Br!} is an activated red bomb. The {@code !} suffix is silently ignored on tile types
-   * that do not use the activated flag.
-   *
-   * @param rows exactly {@value CascadeBoard#HEIGHT} row strings
-   * @return a populated {@link CascadeBoard} reflecting the described layout
-   * @throws IllegalArgumentException if the row count, token count, or any token is invalid
+   * @param board the board to serialise
+   * @return a list of eight row strings
    */
-  public static CascadeBoard boardFromStrings(List<String> rows) {
+  public static List<String> serialiseBoard(CascadeBoard board) {
+    List<String> rows = new ArrayList<>(CascadeBoard.HEIGHT);
+    for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+      StringBuilder sb = new StringBuilder();
+      for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+        if (x > 0) {
+          sb.append(' ');
+        }
+        sb.append(serialiseCell(board.getCell(x, y)));
+      }
+      rows.add(sb.toString());
+    }
+    return rows;
+  }
+
+  /**
+   * Updates every cell of {@code board} by parsing the given serialised row strings.
+   *
+   * <p>The {@code score} and {@code movesRemaining} fields of the board are not modified.
+   *
+   * @param board the board whose cells will be replaced
+   * @param rows  exactly {@value CascadeBoard#HEIGHT} strings, each containing exactly
+   *              {@value CascadeBoard#WIDTH} space-separated two-character tokens
+   * @throws IllegalArgumentException if the row count is wrong, a row contains the wrong number
+   *         of tokens, or a token is unrecognised or malformed
+   */
+  public static void deserialiseBoard(CascadeBoard board, List<String> rows) {
     if (rows.size() != CascadeBoard.HEIGHT) {
       throw new IllegalArgumentException(
           "Expected " + CascadeBoard.HEIGHT + " rows, got " + rows.size());
     }
-    CascadeBoard board = new CascadeBoard();
     for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
-      String[] tokens = rows.get(y).trim().split("\\s+");
+      String[] tokens = rows.get(y).split(" ");
       if (tokens.length != CascadeBoard.WIDTH) {
         throw new IllegalArgumentException(
             "Row " + y + ": expected " + CascadeBoard.WIDTH + " tokens, got " + tokens.length);
       }
       for (int x = 0; x < CascadeBoard.WIDTH; x++) {
-        board.setCell(x, y, parseCell(tokens[x]));
+        board.setCell(x, y, deserialiseToken(tokens[x], x, y));
       }
     }
-    return board;
+  }
+
+  /** Converts a single {@link CascadeCell} to its two-character serialised token. */
+  private static String serialiseCell(CascadeCell cell) {
+    return switch (cell.getType()) {
+      case EMPTY -> "..";
+      case STONE -> "##";
+      case PRISM -> cell.isActivated() ? "XX" : "xx";
+      default -> {
+        char c = colourToChar(cell.getColour());
+        char t = typeToChar(cell.getType());
+        if (cell.isActivated()) {
+          yield "" + Character.toUpperCase(c) + Character.toUpperCase(t);
+        } else {
+          yield "" + c + t;
+        }
+      }
+    };
+  }
+
+  private static char colourToChar(TileColour colour) {
+    return switch (colour) {
+      case RED -> 'r';
+      case BLUE -> 'b';
+      case GREEN -> 'g';
+      case YELLOW -> 'y';
+      case PURPLE -> 'p';
+      case NONE -> throw new IllegalArgumentException("Cannot serialise NONE colour");
+    };
+  }
+
+  private static char typeToChar(TileType type) {
+    return switch (type) {
+      case STANDARD -> 'o';
+      case BOMB -> 'b';
+      case ROCKET_H -> 'h';
+      case ROCKET_V -> 'v';
+      case ICE -> 'i';
+      case EMPTY, STONE, PRISM -> throw new IllegalArgumentException(
+          "Type " + type + " does not use colour+type encoding");
+    };
   }
 
   /**
-   * Parses a single cell token into a {@link CascadeCell}.
+   * Parses a two-character token into a {@link CascadeCell}.
    *
-   * @param token the token string (see {@link #boardFromStrings} for the format)
+   * @param token the two-character string to parse
+   * @param x     column index (used in error messages only)
+   * @param y     row index (used in error messages only)
    * @return the corresponding cell
-   * @throws IllegalArgumentException if the token is not recognised
+   * @throws IllegalArgumentException if the token is not exactly two characters or is unrecognised
    */
-  private static CascadeCell parseCell(String token) {
-    boolean activated = token.endsWith("!");
-    String t = activated ? token.substring(0, token.length() - 1) : token;
-
-    CascadeCell cell = switch (t) {
-      case "." -> CascadeCell.empty();
-      case "r" -> CascadeCell.standard(TileColour.RED);
-      case "b" -> CascadeCell.standard(TileColour.BLUE);
-      case "g" -> CascadeCell.standard(TileColour.GREEN);
-      case "y" -> CascadeCell.standard(TileColour.YELLOW);
-      case "p" -> CascadeCell.standard(TileColour.PURPLE);
-      case "X" -> CascadeCell.prism();
-      case "#" -> CascadeCell.stone();
-      default -> parseTwoCharCell(t, token);
-    };
-
+  private static CascadeCell deserialiseToken(String token, int x, int y) {
+    if (token.length() != 2) {
+      throw new IllegalArgumentException(
+          "Token at (" + x + "," + y + ") must be 2 characters, got: \"" + token + "\"");
+    }
+    if (token.equals("..")) {
+      return CascadeCell.empty();
+    }
+    if (token.equals("##")) {
+      return CascadeCell.stone();
+    }
+    boolean activated = Character.isUpperCase(token.charAt(0))
+        && Character.isUpperCase(token.charAt(1));
+    String lower = token.toLowerCase();
+    if (lower.equals("xx")) {
+      CascadeCell cell = CascadeCell.prism();
+      if (activated) {
+        cell.setActivated(true);
+      }
+      return cell;
+    }
+    TileColour colour = charToColour(lower.charAt(0), x, y);
+    TileType type = charToType(lower.charAt(1), x, y);
+    CascadeCell cell = buildCell(type, colour);
     if (activated) {
-      cell.activate();
+      cell.setActivated(true);
     }
     return cell;
   }
 
-  /**
-   * Parses a two-character cell token (type letter + colour letter) into a {@link CascadeCell}.
-   *
-   * @param t     the token with any trailing {@code !} already stripped
-   * @param token the original token (used in error messages)
-   * @return the corresponding cell
-   * @throws IllegalArgumentException if the token is not a recognised two-character cell code
-   */
-  private static CascadeCell parseTwoCharCell(String t, String token) {
-    if (t.length() != 2) {
-      throw new IllegalArgumentException("Unrecognised cell token: '" + token + "'");
-    }
-    TileColour colour = switch (t.charAt(1)) {
+  private static TileColour charToColour(char c, int x, int y) {
+    return switch (c) {
       case 'r' -> TileColour.RED;
       case 'b' -> TileColour.BLUE;
       case 'g' -> TileColour.GREEN;
       case 'y' -> TileColour.YELLOW;
       case 'p' -> TileColour.PURPLE;
       default -> throw new IllegalArgumentException(
-          "Unknown colour '" + t.charAt(1) + "' in token: '" + token + "'");
-    };
-    return switch (t.charAt(0)) {
-      case 'B' -> CascadeCell.bomb(colour);
-      case 'H' -> CascadeCell.rocketH(colour);
-      case 'V' -> CascadeCell.rocketV(colour);
-      case 'I' -> CascadeCell.ice(colour);
-      default -> throw new IllegalArgumentException(
-          "Unknown tile type '" + t.charAt(0) + "' in token: '" + token + "'");
+          "Unknown colour character '" + c + "' at (" + x + "," + y + ")");
     };
   }
+
+  private static TileType charToType(char c, int x, int y) {
+    return switch (c) {
+      case 'o' -> TileType.STANDARD;
+      case 'b' -> TileType.BOMB;
+      case 'h' -> TileType.ROCKET_H;
+      case 'v' -> TileType.ROCKET_V;
+      case 'i' -> TileType.ICE;
+      default -> throw new IllegalArgumentException(
+          "Unknown type character '" + c + "' at (" + x + "," + y + ")");
+    };
+  }
+
+  private static CascadeCell buildCell(TileType type, TileColour colour) {
+    return switch (type) {
+      case STANDARD -> CascadeCell.standard(colour);
+      case BOMB -> CascadeCell.bomb(colour);
+      case ROCKET_H -> CascadeCell.rocketH(colour);
+      case ROCKET_V -> CascadeCell.rocketV(colour);
+      case ICE -> CascadeCell.ice(colour);
+      case EMPTY, STONE, PRISM -> throw new IllegalArgumentException(
+          "Unexpected type in buildCell: " + type);
+    };
+  }
+
 }

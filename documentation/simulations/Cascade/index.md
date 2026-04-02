@@ -162,9 +162,23 @@ A benchmark score table will be published separately. As a rough guide:
 # Board serialisation
 
 When serialised, the board is represented as eight strings (y=0 to y=7). Each string contains eight cells (x=0 to 
-x=7) with each cell being a two or three character sequence separated by spaces. The first character will represent 
-the colour ('.' = empty)
+x=7) with each cell being a two character sequence separated by spaces. The first character will represent 
+the colour and the second the type of tile. If the cell is activated, both characters will be capitalised. Note: in normal play a board with activated cells would never be sent to the agents.
 
+| Cell Colour | Cell Type         | Serialised Representation |
+|-------------|-------------------|---------------------------|
+| none        | empty             | ..                        |
+| Red         | Normal            | ro                        |
+| Blue        | Normal            | bo                        |
+| Green       | Normal            | go                        |
+| Yellow      | Normal            | yo                        |
+| Purple      | Normal            | po                        |
+| Red         | Vertical Rocket   | rv                        |
+| Blue        | Horizontal Rocket | bh                        |
+| Green       | Bomb              | gb                        |                         
+| Yellow      | Ice               | yi                        |
+| none        | Stone             | ##                        |
+| none        | Prism             | xx                        |
 ---
 
 # Algorithms and Hints
