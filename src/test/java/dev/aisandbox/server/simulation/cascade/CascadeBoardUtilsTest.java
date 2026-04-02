@@ -218,7 +218,7 @@ public class CascadeBoardUtilsTest {
   @Test
   void twoPrismsAdjacentAreValid() {
     assertTrue(CascadeBoardUtils.isValid(board(
-        "xx xx bo go yo po ro bo"
+        "xx xx ## go yo po ro bo"
     )));
   }
 
