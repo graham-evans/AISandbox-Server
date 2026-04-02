@@ -122,16 +122,24 @@ third level scores 40.
 
 ## Combo Interactions
 
-When two special objects are adjacent and one is triggered, both fire simultaneously. Some notable combos:
+When two special objects (of any colour) are adjacent and both are selected, both fire simultaneously. 
+Some notable combos:
 
-| Combo           | Effect                                                                           |
-|-----------------|----------------------------------------------------------------------------------|
-| Bomb + Bomb     | Combined 5 × 5 area blast                                                        |
-| Rocket + Rocket | Clears both its row *and* column (full cross)                                    |
-| Bomb + Rocket   | Clears a 3-tile-wide row *and* column through the Bomb's centre                  |
-| Prism + Bomb    | Replaces every tile of the target colour with a Bomb, then detonates all of them |
-| Prism + Rocket  | Fires a Rocket from the position of every tile of the target colour              |
-| Prism + Prism   | Clears the **entire board**                                                      |
+| Combo           | Effect                                                                         |
+|-----------------|--------------------------------------------------------------------------------|
+| Bomb + Bomb     | Combined 5 × 5 area blast                                                      |
+| Rocket + Rocket | Clears both its row *and* column (full cross)                                  |
+| Bomb + Rocket   | Clears a 3-tile-wide row *and* column through the Bomb's centre                |
+| Prism + Bomb    | Replaces every tile of the bomb colour with a Bomb, then detonates all of them |
+| Prism + Rocket  | Fires a Rocket from the position of every tile of the rocket colour            |
+| Prism + Prism   | Clears the **entire board**                                                    |
+
+---
+
+## Impossible boards
+
+When the board contains no pairs of tiles that be swapped to create a line of three, the board is reshuffled. This 
+does not effect the score or move count.
 
 ---
 
@@ -148,6 +156,14 @@ A benchmark score table will be published separately. As a rough guide:
 | 12,000 – 25,000 | Strong    |
 | 25,000 – 50,000 | Expert    |
 | > 50,000        | Master    |
+
+---
+
+# Board serialisation
+
+When serialised, the board is represented as eight strings (y=0 to y=7). Each string contains eight cells (x=0 to 
+x=7) with each cell being a two or three character sequence separated by spaces. The first character will represent 
+the colour ('.' = empty)
 
 ---
 
