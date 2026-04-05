@@ -7,6 +7,7 @@
 package dev.aisandbox.server.simulation.cascade.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The 8×8 game board for the Cascade match-3 simulation.
@@ -44,7 +45,14 @@ public class CascadeBoard {
 
   /** Accumulated score for the current game. */
   @Getter
+  @Setter
   private long score;
+
+  @Getter
+  @Setter
+  private long multiplier = 1;
+
+  public static final long TILE_SCORE = 10;
 
   /**
    * Creates a new, empty board with the default move budget.
@@ -163,6 +171,7 @@ public class CascadeBoard {
     CascadeBoard copy = new CascadeBoard();
     copy.movesRemaining = this.movesRemaining;
     copy.score = this.score;
+    copy.multiplier = this.multiplier;
     for (int x = 0; x < WIDTH; x++) {
       for (int y = 0; y < HEIGHT; y++) {
         copy.grid[x][y] = this.grid[x][y].copy();

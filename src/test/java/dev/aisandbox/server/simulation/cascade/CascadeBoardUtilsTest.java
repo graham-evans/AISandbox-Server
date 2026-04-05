@@ -45,10 +45,10 @@ public class CascadeBoardUtilsTest {
 
   // ── isStable: should return true ─────────────────────────────────────────
 
-  /** Scenario 1: empty board has no tiles and therefore no matches. */
+  /** Empty board has empty tiles and is therefore not stable — empty cells must be filled. */
   @Test
-  void emptyBoardIsStable() {
-    assertTrue(CascadeBoardUtils.isStable(new CascadeBoard()));
+  void emptyBoardIsNotStable() {
+    assertFalse(CascadeBoardUtils.isStable(new CascadeBoard()));
   }
 
   /**
@@ -69,41 +69,59 @@ public class CascadeBoardUtilsTest {
     )));
   }
 
-  /** Scenario 3: exactly two adjacent red tiles — one short of a match. */
+  /** Scenario 2: exactly two adjacent red tiles — one short of a match. */
   @Test
   void runOfTwoIsStable() {
     assertTrue(CascadeBoardUtils.isStable(board(
-        "ro ro bo go yo po ro bo"
+        "ro ro bo go yo po ro bo",
+        STONE_ROW, STONE_ROW, STONE_ROW,
+        STONE_ROW, STONE_ROW, STONE_ROW, STONE_ROW
     )));
   }
 
-  /** Scenario 4: a stone in the middle breaks what would otherwise be a run of three reds. */
+  /** Scenario 3: a stone in the middle breaks what would otherwise be a run of three reds. */
   @Test
   void stoneBreaksRunIsStable() {
     // ro ro ## ro — stone is not matchable, so the run resets
     assertTrue(CascadeBoardUtils.isStable(board(
-        "ro ro ## ro go yo po bo"
-    )));
-  }
-
-  /** Scenario 5: an empty cell in the middle breaks what would otherwise be a run of three. */
-  @Test
-  void emptyCellBreaksRunIsStable() {
-    // ro ro .. ro — empty cell is not matchable, so the run resets
-    assertTrue(CascadeBoardUtils.isStable(board(
-        "ro ro .. ro go yo po bo"
+        "ro ro ## ro go yo po bo",
+        STONE_ROW, STONE_ROW, STONE_ROW,
+        STONE_ROW, STONE_ROW, STONE_ROW, STONE_ROW
     )));
   }
 
   /**
-   * Scenario 6: a prism sitting between two red tiles does not extend the run
+   * Scenario 4: an empty cell sealed above by an ice tile is stable — the ice blocks both
+   * fallable tiles and new tiles from above, so the gap can never be filled.
+   *
+   * <p>Column 0: ice (y=0), empty (y=1), then stones. The empty at y=1 has ice directly above it;
+   * nothing can enter its segment from above.
+   */
+  @Test
+  void emptyCellSealedByIceAboveIsStable() {
+    assertTrue(CascadeBoardUtils.isStable(board(
+        "ri ## ## ## ## ## ## ##",
+        ".. ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##"
+    )));
+  }
+
+  /**
+   * Scenario 5: a prism sitting between two red tiles does not extend the run
    * because prisms are not matchable.
    */
   @Test
   void prismBreaksRunIsStable() {
     // ro xx ro — prism breaks the colour run
     assertTrue(CascadeBoardUtils.isStable(board(
-        "ro xx ro bo go yo po bo"
+        "ro xx ro bo go yo po bo",
+        STONE_ROW, STONE_ROW, STONE_ROW,
+        STONE_ROW, STONE_ROW, STONE_ROW, STONE_ROW
     )));
   }
 
@@ -188,12 +206,61 @@ public class CascadeBoardUtilsTest {
     )));
   }
 
-  /** Scenario 9 (false): an ice tile flanked by two standard tiles of the same colour. */
+  /** Scenario 8 (false): an ice tile flanked by two standard tiles of the same colour. */
   @Test
   void iceInRunIsNotStable() {
     // ro ri ro — red standard, red ice, red standard
     assertFalse(CascadeBoardUtils.isStable(board(
         "ro ri ro bo go yo po go"
+    )));
+  }
+
+  /**
+   * Scenario 9 (false): a board containing any activated tile is not stable — activated tiles
+   * are pending resolution and must be processed before the board is considered settled.
+   * The activated red bomb tile at (0,0) does not form a run of three, but the board is
+   * still unstable because of the activated state.
+   */
+  @Test
+  void activatedTileIsNotStable() {
+    // RB = activated red bomb; no run of three present, but board is not stable
+    assertFalse(CascadeBoardUtils.isStable(board(
+        "RB go bo yo po ro bo go"
+    )));
+  }
+
+  /**
+   * Scenario 10 (false): an empty cell at y=0 (top of the board) is not stable — the column
+   * segment is open to the top so a new tile will drop in to fill it.
+   *
+   * <p>Column 2 is empty at y=0 with no blocker above it (it is the topmost row).
+   */
+  @Test
+  void emptyCellAtTopIsNotStable() {
+    assertFalse(CascadeBoardUtils.isStable(board(
+        "ro ro .. ro go yo po bo",
+        STONE_ROW, STONE_ROW, STONE_ROW,
+        STONE_ROW, STONE_ROW, STONE_ROW, STONE_ROW
+    )));
+  }
+
+  /**
+   * Scenario 11 (false): an empty cell with a fallable tile above it is not stable — gravity
+   * will move the tile down to fill the gap.
+   *
+   * <p>Column 0: standard red tile at y=0, empty at y=1, then stones. The red tile should fall.
+   */
+  @Test
+  void emptyCellWithFallableTileAboveIsNotStable() {
+    assertFalse(CascadeBoardUtils.isStable(board(
+        "ro ## ## ## ## ## ## ##",
+        ".. ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##",
+        "## ## ## ## ## ## ## ##"
     )));
   }
 

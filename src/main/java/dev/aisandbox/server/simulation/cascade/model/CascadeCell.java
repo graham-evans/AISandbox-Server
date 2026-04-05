@@ -101,6 +101,18 @@ public class CascadeCell {
   }
 
   /**
+   * Returns {@code type} if this cell can be swapped with an adjacent cell.
+   * @return {@code true} when the sell is standard / bomb / rocket / prism.
+   */
+  public boolean isSwappable() {
+    return type == TileType.STANDARD
+            || type == TileType.BOMB
+            || type == TileType.ROCKET_H
+            || type == TileType.ROCKET_V
+            || type == TileType.PRISM;
+  }
+
+  /**
    * Marks this tile as activated if it is a Bomb or Rocket, ready to fire in the current
    * resolution wave.
    *

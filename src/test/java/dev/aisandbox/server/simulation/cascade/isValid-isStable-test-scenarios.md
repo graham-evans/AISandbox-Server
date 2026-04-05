@@ -4,24 +4,26 @@
 
 ### Should return `true` (board IS stable)
 
-1. Empty board — no tiles, nothing to match
-2. Full board of mixed colours with no runs of 3
-3. Run of exactly 2 same-colour tiles in a row (one short of a match)
-4. Stones breaking what would otherwise be a run of 3
-5. Empty cells breaking what would otherwise be a run of 3
-6. Prism sitting between two same-colour tiles (prism is not matchable, breaks the run)
-7. Board containing only stones
+1. Full board of mixed colours with no runs of 3
+2. Run of exactly 2 same-colour tiles in a row (one short of a match)
+3. Stones breaking what would otherwise be a run of 3
+4. An empty cell that is sealed above by an ICE or STONE tile — no fallable tile can reach it and no new tile can enter from above (e.g. a column of ice where the middle tile was destroyed; the ice above blocks the gap permanently)
+5. Prism sitting between two same-colour tiles (prism is not matchable, breaks the run)
+6. Board containing only stones
 
 ### Should return `false` (board is NOT stable)
 
 1. Horizontal run of exactly 3 same-colour standard tiles
 2. Horizontal run of 4+ same-colour standard tiles
-4. Vertical run of exactly 3 same-colour standard tiles
-5. Vertical run of 4+ same-colour standard tiles
-6. Run of 3 at the far edge of the board (columns 5–7 or rows 5–7)
-7. Run of 3 made up of mixed matchable types: e.g. standard + bomb + rocket of same colour
-8. Bomb of same colour as 2 adjacent standard tiles forming a run of 3
-9. Ice tile of same colour as 2 adjacent standard tiles forming a run of 3
+3. Vertical run of exactly 3 same-colour standard tiles
+4. Vertical run of 4+ same-colour standard tiles
+5. Run of 3 at the far edge of the board (columns 5–7 or rows 5–7)
+6. Run of 3 made up of mixed matchable types: e.g. standard + bomb + rocket of same colour
+7. Bomb of same colour as 2 adjacent standard tiles forming a run of 3
+8. Ice tile of same colour as 2 adjacent standard tiles forming a run of 3
+9. Any activated tiles
+10. An empty cell at the top of the board (y=0), or with only empty cells above it — the column segment is open to the top so new tiles will drop in to fill it
+11. An empty cell with a fallable tile above it (and no ICE or STONE blocking between them) — gravity will move that tile down to fill the gap
 
 ---
 

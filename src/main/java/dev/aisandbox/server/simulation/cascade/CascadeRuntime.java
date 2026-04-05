@@ -250,7 +250,8 @@ public final class CascadeRuntime implements Simulation {
 
   private void startNewEpisode() {
     episodeID = UUID.randomUUID().toString();
-    board = CascadeBoardUtils.randomBoard(random);
+    board = new CascadeBoard();
+    CascadeBoardUtils.initialise(board,random);
     gameOver = false;
     log.debug("New episode {} started", episodeID);
   }

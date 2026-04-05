@@ -27,23 +27,7 @@ public class CascadeBoardUtils {
   private static final TileColour[] COLOURS = TileColour.playableValues();
 
   /**
-   * Creates a new 8×8 board filled with random standard coloured tiles.
-   *
-   * <p>The board is guaranteed to contain no pre-existing matches of three or more in a row or
-   * column. All cells are standard tiles drawn from the five playable colours (Red, Blue, Green,
-   * Yellow, Purple).
-   *
-   * @param random the source of randomness used for colour selection
-   * @return a fully populated {@link CascadeBoard} ready for play
-   */
-  public static CascadeBoard randomBoard(Random random) {
-    CascadeBoard board = new CascadeBoard();
-    initialise(board, random);
-    return board;
-  }
-
-  /**
-   * Fills every cell of {@code board} with a random standard tile such that no
+   * Fills every empty cell of {@code board} with a random standard tile such that no
    * three-or-more-in-a-row match exists in the resulting configuration.
    *
    * <p>The algorithm places a random colour in each cell left-to-right, top-to-bottom, then
@@ -55,7 +39,7 @@ public class CascadeBoardUtils {
    * @param board  the board to populate (existing contents are overwritten)
    * @param random the source of randomness used for colour selection
    */
-  private static void initialise(CascadeBoard board, Random random) {
+  public static void initialise(CascadeBoard board, Random random) {
     for (int x = 0; x < CascadeBoard.WIDTH; x++) {
       for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
         if (!board.getCell(x, y).isOccupied()) {
@@ -136,6 +120,14 @@ public class CascadeBoardUtils {
    * @return {@code true} if the board is stable (no pending matches)
    */
   public static boolean isStable(CascadeBoard board) {
+    // Any activated tile means the board is still mid-resolution
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (board.getCell(x, y).isActivated()) {
+          return false;
+        }
+      }
+    }
     // Check horizontal runs
     for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
       int runLength = 1;
@@ -167,6 +159,31 @@ public class CascadeBoardUtils {
         } else {
           runLength = 1;
           runColour = cell.isMatchable() ? cell.getColour() : TileColour.NONE;
+        }
+      }
+    }
+    // Check for unsettled empty cells.
+    // An empty cell is unsettled if it is reachable from above: either a fallable tile sits above
+    // it in the same column segment (gravity will move it down) or there is no STONE/ICE barrier
+    // between the empty cell and the top of the board (new tiles will drop in to fill it).
+    // An empty cell sealed above by a STONE or ICE is a permanent gap and does not affect stability.
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (board.getCell(x, y).getType() == TileType.EMPTY) {
+          boolean sealedAbove = false;
+          for (int above = y - 1; above >= 0; above--) {
+            TileType aboveType = board.getCell(x, above).getType();
+            if (aboveType == TileType.STONE || aboveType == TileType.ICE) {
+              sealedAbove = true;
+              break;
+            }
+            if (board.getCell(x, above).isFallable()) {
+              return false; // fallable tile will drop into this empty cell
+            }
+          }
+          if (!sealedAbove) {
+            return false; // segment is open to the top — new tiles will enter
+          }
         }
       }
     }
