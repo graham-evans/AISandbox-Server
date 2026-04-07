@@ -138,8 +138,8 @@ Some notable combos:
 
 ## Impossible boards
 
-When the board contains no pairs of tiles that be swapped to create a line of three, the board is reshuffled. This 
-does not effect the score or move count.
+When the board contains no pairs of tiles that be swapped to create a line of three or trigger a special combo, the board is reshuffled. 
+This does not affect the score or move count.
 
 ---
 
