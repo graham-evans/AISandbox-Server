@@ -35,48 +35,134 @@ Called at the start of the simulation and when a new episode is required.
    1. Set the current board the new board.
    2. Redraw the screen
    3. While the current board is unstable:
-      1. Double the multiplier
-      2. Call the update logic method to advance
-      3. Redraw the screen
+      1. Call the update logic method to advance (it handles multiplier internally)
+      2. Redraw the screen
 10. Build the reward object (calculating the scoreGained from the currentScore-oldScore) and send it to the agent.
 11. If there are no moves left, record the episode score and call StartNewEpisode.
 
 
 ## Make Move logic:
 
-Make move takes a board and two x,y pairs (the pair of cells to be swapped) . It will follow the following steps:
+Make move takes a board and two x,y pairs (the pair of cells to be swapped). It will follow the following steps:
 
-1. If the two cells are not next to each other, throw an invalid move exception.
-2. If either of the two cells is frozen, a stone or empty, throw an invalid move exception.
-3. If both cells are prisms:
-   1. Count the number of cells that are not empty or stones.
-   2. replace all of these with empty cells
-   3. increase the score by the number of cells multiplied by ten.
-   4. double the score multiplier.
-   5. Return the board
-4. If one is a prism and the other is a bomb / vertical rocket / horizontal rocket.
-   1. Note the bombs/rockets colour
-   2. replace the prism with a bomb/vertical rocket/horizontal rocket of this colour and activate it.
-   3. replace the original bomb/rocket with an empty cell
-   4. replace all unfrozen standard cells of this colour with bombs/rockets and activate them.
-   5. Increase the score by 10
-   6. Return the board
-5. If one is a prism and the other is a standard tile.
+1. If the two cells are not orthogonally adjacent (Manhattan distance ≠ 1), throw an invalid move exception.
+2. If either of the two cells is ICE, STONE, or EMPTY, throw an invalid move exception.
+3. If both cells are PRISM:
+   1. Count all cells that are not EMPTY or STONE (this explicitly includes ICE tiles, standard tiles, bombs, rockets, and both prisms themselves).
+   2. Replace all of these with EMPTY cells.
+   3. Increase the score by the count multiplied by ten, scaled by the current multiplier.
+   4. Double the score multiplier.
+   5. Return the board.
+4. If one cell is a PRISM and the other is a BOMB, ROCKET_H, or ROCKET_V (the "special"):
+   1. Note the special tile's type and colour.
+   2. Replace the PRISM cell with a new tile of that type and colour, and mark it activated.
+   3. Replace the original special cell with an EMPTY cell.
+   4. For every STANDARD tile of the noted colour on the board: replace it with a tile of the noted type and colour, and mark it activated.
+   5. For every existing BOMB, ROCKET_H, or ROCKET_V tile of that colour already on the board: mark it activated (do not convert — just trigger it).
+   6. ICE tiles of the noted colour are NOT affected — they remain frozen.
+   7. Increase the score by (count of converted standard tiles + 1) × 10, where the +1 accounts for the prism cell.
+   8. Return the board (activated tiles will fire during the update loop).
+5. If one cell is a PRISM and the other is a STANDARD tile:
    1. Remember the colour of the standard tile.
-   2. Count the number of standard tiles of this colour.
-   3. Replace each of these standard tiles with empty cells
-   4. Increase the score by the count multiplied by ten.
-   5. Activate any bombs / rockets of this colour.
-   6. double the score multiplier
-   7. Return the board
-6. Create a copy of the board and swap the selected cells.
-7. Check to see if the new board is stable, if it is, throw an invalid move exception.
-9. return the new board
+   2. Count all STANDARD tiles of this colour on the board (include the partner tile itself; do not count the prism).
+   3. Replace the PRISM cell with an EMPTY cell.
+   4. Replace each counted STANDARD tile with an EMPTY cell.
+   5. For each ICE tile of this co/lour: replace it with a STANDARD tile of that colour (unfreeze it — it does not 
+      score directly here).
+   6. Activate any BOMB, ROCKET_H, or ROCKET_V tiles of this colour (they will fire during the update loop).
+   7. Increase the score by the count multiplied by ten, scaled by the current multiplier.
+   8. Double the score multiplier.
+   9. Return the board.
+6. If both cells are BOMB:
+   1. Remove both bombs (replace with EMPTY).
+   2. Mark all non-STONE, non-EMPTY tiles within the 5×5 area centred on each bomb's original position for removal.
+   3. Before removing them, activate any BOMB, ROCKET_H, ROCKET_V, or PRISM tiles within either 5×5 area.
+   4. Remove all marked tiles (replace with EMPTY).
+   5. Increase the score by the count of removed tiles multiplied by ten, scaled by the current multiplier.
+   6. Return the board.
+7. If one cell is a BOMB and the other is a ROCKET_H or ROCKET_V:
+   1. Remove both tiles (replace with EMPTY).
+   2. Clear the full row AND full column passing through the BOMB's original position (every non-STONE tile on both lines).
+   3. Before removing them, activate any specials encountered along the row and column.
+   4. Remove all cleared tiles.
+   5. Increase the score by the count of removed tiles multiplied by ten, scaled by the current multiplier.
+   6. Return the board.
+8. If both cells are ROCKET (any combination of ROCKET_H and ROCKET_V):
+   1. Remove both rockets (replace with EMPTY).
+   2. Clear the full row and full column through each rocket's original position (up to four lines if the rockets are at different positions).
+   3. Before removing them, activate any specials encountered.
+   4. Remove all cleared tiles.
+   5. Increase the score by the count of removed tiles multiplied by ten, scaled by the current multiplier.
+   6. Return the board.
+9. (Normal swap) Create a copy of the board and swap the two selected cells.
+10. Check whether the swap created at least one run of three or more matching tiles at either swapped position. If no run was created, throw an invalid move exception.
+11. Return the new board (the update loop will resolve all matches).
 
 
 ## Update board logic:
 
-This is called on unstable boards to implement gravity and cascades, it takes a board object and follows these steps:
+This is called on unstable boards to advance the board state by one step. It is called repeatedly until the board is stable. Each call performs the single highest-priority applicable action and returns, so the caller can redraw the screen between steps.
 
-1. Allow fallable tiles to drop down into any empty spaces - if there are any, return.
-2. explode any
+Note: because the multiplier is now managed here, the Step logic (step 9.iii.1) no longer needs to double the multiplier itself — the update method handles it.
+
+### Priority 1 — Gravity and refill
+
+1. For each column, within each segment bounded by STONE and ICE tiles:
+   a. Compact all fallable tiles downward so that empty cells bubble to the top of the segment.
+2. Fill any empty cells at the top of open column segments (not sealed above by STONE or ICE) with new random STANDARD tiles.
+3. If any tiles moved or were created, return. (No scoring, no multiplier change.)
+
+### Priority 2 — Resolve activated specials
+
+If any tiles on the board have their activated flag set:
+
+1. Collect all currently activated tiles into a processing set and clear their activated flags.
+2. For each activated BOMB in the set:
+   a. Replace the bomb cell with EMPTY.
+   b. For each cell in the 3×3 area centred on the bomb (clamped to board bounds):
+      - Skip already-EMPTY cells.
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction).
+      - If it is STONE: replace with EMPTY (bombs destroy stone).
+      - If it is ICE: replace with EMPTY (destroyed, not unfrozen).
+      - Otherwise: replace with EMPTY.
+   c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
+3. For each activated ROCKET_H in the set:
+   a. Replace the rocket cell with EMPTY.
+   b. For each cell in the rocket's entire row:
+      - Skip already-EMPTY cells.
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction).
+      - If it is STONE: replace with EMPTY (rockets destroy stone).
+      - If it is ICE: replace with EMPTY (destroyed, not unfrozen).
+      - Otherwise: replace with EMPTY.
+   c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
+4. For each activated ROCKET_V in the set:
+   a. Replace the rocket cell with EMPTY.
+   b. For each cell in the rocket's entire column:
+      - Skip already-EMPTY cells.
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction).
+      - If it is STONE: replace with EMPTY (rockets destroy stone).
+      - If it is ICE: replace with EMPTY (destroyed, not unfrozen).
+      - Otherwise: replace with EMPTY.
+   c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
+5. If any new tiles were marked activated during steps 2–4, repeat from step 1 of this priority (process the full chain reaction within the same call).
+6. Double the score multiplier.
+7. Return.
+
+### Priority 3 — Resolve matches and spawn specials
+
+1. Scan the board for all horizontal and vertical runs of 3 or more matchable tiles of the same colour. Mark every tile belonging to at least one run.
+2. If no tiles are marked, the board is stable — return without changes.
+3. Determine special spawns from the match geometry. For each distinct match group, evaluate the shape and spawn at most one special:
+   a. **Straight run of exactly 4**: spawn a ROCKET perpendicular to the run direction (horizontal 4 → ROCKET_V, vertical 4 → ROCKET_H) at a centre position of the run.
+   b. **Straight run of exactly 5**: spawn a BOMB at the centre of the run.
+   c. **Straight run of 6 or more**: spawn a PRISM at the centre of the run.
+   d. **L-shape or T-shape** (a cell at the intersection of a horizontal and vertical run, each of length 3+): spawn a ROCKET at the intersection (ROCKET_H if the horizontal arm is longer or equal, ROCKET_V if the vertical arm is longer).
+   e. If a cell qualifies for multiple spawn rules, use the highest tier: PRISM > BOMB > ROCKET.
+   f. Spawned specials inherit the colour of the matched run and are placed **unactivated**.
+4. Process the marked tiles:
+   a. If a marked tile is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (it will fire on the next update call via Priority 2). Do **not** remove it.
+   b. Otherwise: replace it with EMPTY — unless it is the designated position for a spawned special, in which case place the new special there instead.
+5. For each ICE tile that is orthogonally adjacent to at least one tile that was removed in step 4b: replace it with a STANDARD tile of its colour (unfreeze it). Unfrozen tiles do not count toward scoring.
+6. Add tiles removed × TILE_SCORE × current multiplier to the score. Count only tiles replaced with EMPTY in step 4b — do not count activated specials or unfrozen ice.
+7. Double the score multiplier.
+8. Return.
