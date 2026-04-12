@@ -6,18 +6,6 @@
 
 package dev.aisandbox.server.simulation.cascade;
 
-import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
-import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
-import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
-import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOG_FONT;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
-import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
-import static dev.aisandbox.server.engine.output.OutputConstants.RIGHT_MARGIN;
-import static dev.aisandbox.server.engine.output.OutputConstants.TITLE_HEIGHT;
-import static dev.aisandbox.server.engine.output.OutputConstants.TOP_MARGIN;
-import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
-
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
@@ -29,19 +17,18 @@ import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.cascade.model.CascadeBoard;
 import dev.aisandbox.server.simulation.cascade.model.CascadeCell;
-import dev.aisandbox.server.simulation.cascade.model.TileColour;
 import dev.aisandbox.server.simulation.cascade.model.TileType;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeAction;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeResult;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeSignal;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeState;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import lombok.extern.slf4j.Slf4j;
+
+import java.awt.*;
 import java.util.Random;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
+
+import static dev.aisandbox.server.engine.output.OutputConstants.*;
 
 /**
  * Runtime implementation of the Cascade match-3 simulation.
@@ -174,24 +161,30 @@ public final class CascadeRuntime implements Simulation {
     int ax2 = action.getX2();
     int ay2 = action.getY2();
 
-    long scoreGained = 0;
-    if (CascadeBoardUtils.isValidSwap(board, ax1, ay1, ax2, ay2)) {
-      board.swap(ax1, ay1, ax2, ay2);
-      scoreGained = CascadeBoardUtils.resolveBoard(board, random);
+    long oldScore = board.getScore();
+    try {
+      board = makeMove(board,ax1,ay1,ax2,ay2);
+      output.display();
+      log.debug("Swapped {},{} with {},{}",ax1,ay1,ax2,ay2);
+      while (updateBoard()) {
+        output.display();
+        log.debug("Board updated, score now {}",board.getScore());
+      }
       logWidget.addText(
-          "Swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2 + ") +" + scoreGained + " pts");
-    } else {
+              "Swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2 + ") +" + (board.getScore() - oldScore) + " pts");
+    } catch (InvalidCascadeAction e) {
       logWidget.addText(
-          "Invalid swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2 + ") - wasted move");
+              "Invalid swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2 + ") - wasted move");
     }
 
     board.consumeMove();
+
     gameOver = board.isGameOver();
 
     CascadeSignal signal = gameOver ? CascadeSignal.GAME_OVER : CascadeSignal.CONTINUE;
     agent.send(CascadeResult.newBuilder()
         .setX1(ax1).setY1(ay1).setX2(ax2).setY2(ay2)
-        .setScoreGained(scoreGained)
+        .setScoreGained((board.getScore() - oldScore))
         .setTotalScore(board.getScore())
         .setSignal(signal)
         .build());
@@ -204,6 +197,29 @@ public final class CascadeRuntime implements Simulation {
 
     output.display();
   }
+
+  /**
+   * Make a move by swapping the two selected tiles. Throw InvalidCascadeAction if this is not possible or if it results in a move with no runs of 3 or more tiles. The full logic is shown in runtime.md
+   * @param oldBoard The original board
+   * @param x1 The X position of the first cell
+   * @param y1 The Y position of the first cell
+   * @param x2 The X position of the second cell
+   * @param y2 The Y position of the second cell.
+   * @return The board with the cells swapped and any special cells activated.
+   * @throws InvalidCascadeAction The move was invalid - ignore this move.
+   */
+  protected CascadeBoard makeMove(CascadeBoard oldBoard,int x1,int y1,int x2,int y2) throws InvalidCascadeAction {
+    return oldBoard;
+  }
+
+  /**
+   * Update the current board as per the rules in runtime.md
+   * @return True if the board has been changed (draw the screen then call this method again), or False if no changes were made and the board is now stable.
+   */
+  protected boolean updateBoard() {
+    return false;
+  }
+
 
   /**
    * Renders the current board state, score chart, and log to the provided graphics context.
