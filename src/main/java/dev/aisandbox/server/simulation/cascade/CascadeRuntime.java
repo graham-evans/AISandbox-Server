@@ -161,23 +161,26 @@ public final class CascadeRuntime implements Simulation {
     int ax2 = action.getX2();
     int ay2 = action.getY2();
 
+    board.setMultiplier(1);
     long oldScore = board.getScore();
+    board.consumeMove();
     try {
-      board = makeMove(board,ax1,ay1,ax2,ay2);
+      board = CascadeBoardUtils.makeMove(board, ax1, ay1, ax2, ay2);
       output.display();
-      log.debug("Swapped {},{} with {},{}",ax1,ay1,ax2,ay2);
-      while (updateBoard()) {
+      log.debug("Swapped {},{} with {},{}", ax1, ay1, ax2, ay2);
+      while (!CascadeBoardUtils.isStable(board)) {
+        board = CascadeBoardUtils.updateBoard(board, random);
         output.display();
-        log.debug("Board updated, score now {}",board.getScore());
+        log.debug("Board updated, score now {}", board.getScore());
       }
       logWidget.addText(
-              "Swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2 + ") +" + (board.getScore() - oldScore) + " pts");
+          "Swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2 + ") +"
+              + (board.getScore() - oldScore) + " pts");
     } catch (InvalidCascadeAction e) {
       logWidget.addText(
-              "Invalid swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2 + ") - wasted move");
+          "Invalid swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2
+              + ") - wasted move");
     }
-
-    board.consumeMove();
 
     gameOver = board.isGameOver();
 
@@ -197,29 +200,6 @@ public final class CascadeRuntime implements Simulation {
 
     output.display();
   }
-
-  /**
-   * Make a move by swapping the two selected tiles. Throw InvalidCascadeAction if this is not possible or if it results in a move with no runs of 3 or more tiles. The full logic is shown in runtime.md
-   * @param oldBoard The original board
-   * @param x1 The X position of the first cell
-   * @param y1 The Y position of the first cell
-   * @param x2 The X position of the second cell
-   * @param y2 The Y position of the second cell.
-   * @return The board with the cells swapped and any special cells activated.
-   * @throws InvalidCascadeAction The move was invalid - ignore this move.
-   */
-  protected CascadeBoard makeMove(CascadeBoard oldBoard,int x1,int y1,int x2,int y2) throws InvalidCascadeAction {
-    return oldBoard;
-  }
-
-  /**
-   * Update the current board as per the rules in runtime.md
-   * @return True if the board has been changed (draw the screen then call this method again), or False if no changes were made and the board is now stable.
-   */
-  protected boolean updateBoard() {
-    return false;
-  }
-
 
   /**
    * Renders the current board state, score chart, and log to the provided graphics context.

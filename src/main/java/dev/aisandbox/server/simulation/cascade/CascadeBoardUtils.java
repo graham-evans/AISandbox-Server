@@ -551,6 +551,49 @@ public class CascadeBoardUtils {
   }
 
   // ---------------------------------------------------------------------------
+  // Make Move
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Performs a move by swapping the two selected tiles and applying any immediate effects
+   * (prism interactions, special+special combos). Full logic is described in runtime.md.
+   *
+   * @param board the current board (not modified for normal swaps; may be modified for
+   *              prism/special interactions)
+   * @param x1    column of the first cell
+   * @param y1    row of the first cell
+   * @param x2    column of the second cell
+   * @param y2    row of the second cell
+   * @return the board after the swap and any immediate effects have been applied
+   * @throws InvalidCascadeAction if the move is not valid
+   */
+  public static CascadeBoard makeMove(CascadeBoard board, int x1, int y1, int x2, int y2) {
+    // TODO: implement per runtime.md Make Move logic
+    throw new InvalidCascadeAction("makeMove not yet implemented");
+  }
+
+  // ---------------------------------------------------------------------------
+  // Update Board
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Advances an unstable board by one step: applies gravity and refill (priority 1),
+   * resolves activated specials (priority 2), or resolves matches and spawns specials
+   * (priority 3). Only the single highest-priority applicable action is performed per call.
+   * Full logic is described in runtime.md.
+   *
+   * <p>Call this method repeatedly until {@link #isStable(CascadeBoard)} returns {@code true}.
+   *
+   * @param board  the board to advance (modified in place)
+   * @param random the source of randomness for tile refill
+   * @return the updated board
+   */
+  public static CascadeBoard updateBoard(CascadeBoard board, Random random) {
+    // TODO: implement per runtime.md Update board logic
+    return board;
+  }
+
+  // ---------------------------------------------------------------------------
   // Serialisation
   // ---------------------------------------------------------------------------
 
