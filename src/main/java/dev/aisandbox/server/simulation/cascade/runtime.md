@@ -59,7 +59,7 @@ Make move takes a board and two x,y pairs (the pair of cells to be swapped). It 
    3. Replace the original special cell with an EMPTY cell.
    4. For every STANDARD tile of the noted colour on the board: replace it with a tile of the noted type and colour, and mark it activated.
    5. For every existing BOMB, ROCKET_H, or ROCKET_V tile of that colour already on the board: mark it activated (do not convert — just trigger it).
-   6. ICE tiles of the noted colour are NOT affected — they remain frozen.
+   6. For each ICE tile of the noted colour: replace it with a STANDARD tile of that colour (unfreeze it). Unfrozen tiles are not subsequently converted to specials.
    7. Increase the score by (count of converted standard tiles + 1) × 10, where the +1 accounts for the prism cell.
    8. Return the board (activated tiles will fire during the update loop).
 5. If one cell is a PRISM and the other is a STANDARD tile:
@@ -67,33 +67,38 @@ Make move takes a board and two x,y pairs (the pair of cells to be swapped). It 
    2. Count all STANDARD tiles of this colour on the board (include the partner tile itself; do not count the prism).
    3. Replace the PRISM cell with an EMPTY cell.
    4. Replace each counted STANDARD tile with an EMPTY cell.
-   5. For each ICE tile of this co/lour: replace it with a STANDARD tile of that colour (unfreeze it — it does not 
-      score directly here).
+   5. For each ICE tile of this colour: replace it with a STANDARD tile of that colour (unfreeze it — it does not score directly here).
    6. Activate any BOMB, ROCKET_H, or ROCKET_V tiles of this colour (they will fire during the update loop).
    7. Increase the score by the count multiplied by ten, scaled by the current multiplier.
    8. Double the score multiplier.
    9. Return the board.
 6. If both cells are BOMB:
    1. Remove both bombs (replace with EMPTY).
-   2. Mark all non-STONE, non-EMPTY tiles within the 5×5 area centred on each bomb's original position for removal.
-   3. Before removing them, activate any BOMB, ROCKET_H, ROCKET_V, or PRISM tiles within either 5×5 area.
-   4. Remove all marked tiles (replace with EMPTY).
-   5. Increase the score by the count of removed tiles multiplied by ten, scaled by the current multiplier.
-   6. Return the board.
+   2. For each non-EMPTY cell within the 5×5 area centred on each bomb's original position (this includes STONE and ICE):
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (it will fire in the update loop).
+      - Otherwise (STANDARD, ICE, STONE, PRISM): replace with EMPTY.
+   3. Increase the score by the count of tiles destroyed (replaced with EMPTY in step 2) multiplied by ten, scaled by the current multiplier.
+   4. Return the board.
 7. If one cell is a BOMB and the other is a ROCKET_H or ROCKET_V:
    1. Remove both tiles (replace with EMPTY).
-   2. Clear the full row AND full column passing through the BOMB's original position (every non-STONE tile on both lines).
-   3. Before removing them, activate any specials encountered along the row and column.
-   4. Remove all cleared tiles.
-   5. Increase the score by the count of removed tiles multiplied by ten, scaled by the current multiplier.
-   6. Return the board.
+   2. Fire in all four cardinal directions from the BOMB's original position. In each direction, process cells one at a time:
+      - Skip already-EMPTY cells.
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated. Continue past it.
+      - If it is STONE: replace with EMPTY (destroyed). **Stop in this direction.**
+      - If it is ICE: replace with EMPTY (destroyed). Continue.
+      - Otherwise: replace with EMPTY. Continue.
+   3. Increase the score by the count of tiles destroyed (replaced with EMPTY in step 2) multiplied by ten, scaled by the current multiplier.
+   4. Return the board.
 8. If both cells are ROCKET (any combination of ROCKET_H and ROCKET_V):
    1. Remove both rockets (replace with EMPTY).
-   2. Clear the full row and full column through each rocket's original position (up to four lines if the rockets are at different positions).
-   3. Before removing them, activate any specials encountered.
-   4. Remove all cleared tiles.
-   5. Increase the score by the count of removed tiles multiplied by ten, scaled by the current multiplier.
-   6. Return the board.
+   2. Each rocket fires along its row and column from its original position. In each direction, process cells one at a time:
+      - Skip already-EMPTY cells.
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated. Continue past it.
+      - If it is STONE: replace with EMPTY (destroyed). **Stop in this direction.**
+      - If it is ICE: replace with EMPTY (destroyed). Continue.
+      - Otherwise: replace with EMPTY. Continue.
+   3. Increase the score by the count of tiles destroyed multiplied by ten, scaled by the current multiplier.
+   4. Return the board.
 9. (Normal swap) Create a copy of the board and swap the two selected cells.
 10. Check whether the swap created at least one run of three or more matching tiles at either swapped position. If no run was created, throw an invalid move exception.
 11. Return the new board (the update loop will resolve all matches).
@@ -128,21 +133,21 @@ If any tiles on the board have their activated flag set:
    c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
 3. For each activated ROCKET_H in the set:
    a. Replace the rocket cell with EMPTY.
-   b. For each cell in the rocket's entire row:
+   b. Fire in both directions along the row from the rocket's position. In each direction, process cells one at a time:
       - Skip already-EMPTY cells.
-      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction).
-      - If it is STONE: replace with EMPTY (rockets destroy stone).
-      - If it is ICE: replace with EMPTY (destroyed, not unfrozen).
-      - Otherwise: replace with EMPTY.
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction). Continue past it.
+      - If it is STONE: replace with EMPTY (destroyed). **Stop in this direction.**
+      - If it is ICE: replace with EMPTY (destroyed). Continue.
+      - Otherwise: replace with EMPTY. Continue.
    c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
 4. For each activated ROCKET_V in the set:
    a. Replace the rocket cell with EMPTY.
-   b. For each cell in the rocket's entire column:
+   b. Fire in both directions along the column from the rocket's position. In each direction, process cells one at a time:
       - Skip already-EMPTY cells.
-      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction).
-      - If it is STONE: replace with EMPTY (rockets destroy stone).
-      - If it is ICE: replace with EMPTY (destroyed, not unfrozen).
-      - Otherwise: replace with EMPTY.
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction). Continue past it.
+      - If it is STONE: replace with EMPTY (destroyed). **Stop in this direction.**
+      - If it is ICE: replace with EMPTY (destroyed). Continue.
+      - Otherwise: replace with EMPTY. Continue.
    c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
 5. If any new tiles were marked activated during steps 2–4, repeat from step 1 of this priority (process the full chain reaction within the same call).
 6. Double the score multiplier.
@@ -153,7 +158,7 @@ If any tiles on the board have their activated flag set:
 1. Scan the board for all horizontal and vertical runs of 3 or more matchable tiles of the same colour. Mark every tile belonging to at least one run.
 2. If no tiles are marked, the board is stable — return without changes.
 3. Determine special spawns from the match geometry. For each distinct match group, evaluate the shape and spawn at most one special:
-   a. **Straight run of exactly 4**: spawn a ROCKET perpendicular to the run direction (horizontal 4 → ROCKET_V, vertical 4 → ROCKET_H) at a centre position of the run.
+   a. **Straight run of exactly 4**: no special is spawned. The four tiles are removed normally for points.
    b. **Straight run of exactly 5**: spawn a BOMB at the centre of the run.
    c. **Straight run of 6 or more**: spawn a PRISM at the centre of the run.
    d. **L-shape or T-shape** (a cell at the intersection of a horizontal and vertical run, each of length 3+): spawn a ROCKET at the intersection (ROCKET_H if the horizontal arm is longer or equal, ROCKET_V if the vertical arm is longer).

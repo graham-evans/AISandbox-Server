@@ -55,8 +55,8 @@ public enum TileType {
    * A horizontal rocket special object.
    *
    * <p>Created by an L-shaped or T-shaped match where the dominant axis is horizontal. When
-   * triggered, fires across its entire row, removing every tile and triggering any specials in the
-   * path.
+   * triggered, fires in both directions along its row, removing every tile and triggering any
+   * specials in the path. Destroys the first Stone it reaches in each direction and stops there.
    */
   ROCKET_H,
 
@@ -64,8 +64,8 @@ public enum TileType {
    * A vertical rocket special object.
    *
    * <p>Created by an L-shaped or T-shaped match where the dominant axis is vertical. When
-   * triggered, fires down its entire column, removing every tile and triggering any specials in
-   * the path.
+   * triggered, fires in both directions along its column, removing every tile and triggering any
+   * specials in the path. Destroys the first Stone it reaches in each direction and stops there.
    */
   ROCKET_V,
 
@@ -83,17 +83,19 @@ public enum TileType {
    * An ice-block obstacle encasing a tile.
    *
    * <p>Placed by level configuration before the game starts. The trapped tile's colour is visible
-   * but cannot participate in matches directly. Freed by making a match adjacent to the ice block.
-   * A single freed ice tile becomes an ordinary standard tile of its original colour. Bombs and
-   * Rockets destroy ice blocks instantly.
+   * and participates in colour matching — if an ice tile forms part of a run of three or more, it
+   * is destroyed (removed from the board). An ice tile adjacent to a match (but not part of it) is
+   * freed: it becomes an ordinary standard tile of its original colour. Bombs and Rockets destroy
+   * ice blocks instantly.
    */
   ICE,
 
   /**
    * A stone obstacle.
    *
-   * <p>Inert — does not match, does not fall under gravity, and blocks cascade propagation. Can
-   * only be removed by a direct Bomb or Rocket explosion.
+   * <p>Inert — does not match, does not fall under gravity. Can only be removed by a direct Bomb
+   * or Rocket explosion. A Bomb destroys any Stone within its 3×3 blast area. A Rocket destroys
+   * the first Stone it reaches in each direction and stops there.
    */
   STONE
 
