@@ -47,17 +47,36 @@ Called at the start of the simulation and when a new episode is required.
 Make move takes a board and two x,y pairs (the pair of cells to be swapped) . It will follow the following steps:
 
 1. If the two cells are not next to each other, throw an invalid move exception.
-2. If either of the two cells is frozen or a stone, throw an invalid move exception.
-3. If both cells are prisms.
-4. If one is a prism and the other is a bomb.
-5. If one is a prism and the other is a vertical rocket.
-6. If one is a prism and the other in a horizontal rocket.
-7. Create a copy of the board and swap the selected cells.
-8. Check to see if the new board is stable, if it is, throw an invalid move exception.
-9. Call update move (once only) to resolve the first set of connections.
-10. return the new board
+2. If either of the two cells is frozen, a stone or empty, throw an invalid move exception.
+3. If both cells are prisms:
+   1. Count the number of cells that are not empty or stones.
+   2. replace all of these with empty cells
+   3. increase the score by the number of cells multiplied by ten.
+   4. double the score multiplier.
+   5. Return the board
+4. If one is a prism and the other is a bomb / vertical rocket / horizontal rocket.
+   1. Note the bombs/rockets colour
+   2. replace the prism with a bomb/vertical rocket/horizontal rocket of this colour and activate it.
+   3. replace the original bomb/rocket with an empty cell
+   4. replace all unfrozen standard cells of this colour with bombs/rockets and activate them.
+   5. Increase the score by 10
+   6. Return the board
+5. If one is a prism and the other is a standard tile.
+   1. Remember the colour of the standard tile.
+   2. Count the number of standard tiles of this colour.
+   3. Replace each of these standard tiles with empty cells
+   4. Increase the score by the count multiplied by ten.
+   5. Activate any bombs / rockets of this colour.
+   6. double the score multiplier
+   7. Return the board
+6. Create a copy of the board and swap the selected cells.
+7. Check to see if the new board is stable, if it is, throw an invalid move exception.
+9. return the new board
 
 
 ## Update board logic:
 
 This is called on unstable boards to implement gravity and cascades, it takes a board object and follows these steps:
+
+1. Allow fallable tiles to drop down into any empty spaces - if there are any, return.
+2. explode any
