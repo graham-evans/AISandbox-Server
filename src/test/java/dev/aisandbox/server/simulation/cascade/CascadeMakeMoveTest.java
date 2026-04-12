@@ -507,15 +507,14 @@ public class CascadeMakeMoveTest {
     );
     b.setMultiplier(1);
     CascadeBoard snapshot = b.copy();
-    // Cross from (3,3): clears column 3 and row 3 entirely (except stones at row 7)
-    // Plus cross from (4,3) clears column 4 and row 3
-    // Bomb at (3,3) fires in 4 directions: up/down/left/right from (3,3)
+    // Cardinals from bomb (3,3): entire column 3 and row 3 cleared.
+    // Diagonals of bomb (3,3): (2,2),(4,2),(2,4),(4,4) also destroyed.
     String[] expected = {
         "go bo go .. go go bo go",
         "bo go bo .. bo go go bo",
-        "go bo go .. go go bo go",
+        "go bo .. .. .. go bo go",  // (2,2) and (4,2) diagonals destroyed
         ".. .. .. .. .. .. .. ..",
-        "go bo go .. go go bo go",
+        "go bo .. .. .. go bo go",  // (2,4) and (4,4) diagonals destroyed
         "bo go bo .. bo go go bo",
         "go bo go .. go go bo go",
         S
@@ -548,15 +547,14 @@ public class CascadeMakeMoveTest {
     );
     b.setMultiplier(1);
     CascadeBoard snapshot = b.copy();
-    // Up from (3,2): hits (3,1)=go -> destroyed. hits (3,0)=## -> destroyed, STOPS.
-    // Down from (3,2): hits (3,3), (3,4) -> destroyed. hits stone row -> stops.
-    // Left from (3,2): (2,2),(1,2),(0,2) -> destroyed.
-    // Right from (3,2): (4,2) is rocket (already removed). (5,2),(6,2),(7,2) -> destroyed.
+    // Diagonals of (3,2): (2,1),(4,1),(2,3),(4,3) destroyed.
+    // Up: (3,1) destroyed, (3,0)=## stone destroyed -> STOP.
+    // Down: (3,3),(3,4) destroyed. Left: (2,2),(1,2),(0,2) destroyed. Right: (5,2),(6,2),(7,2).
     String[] expected = {
         "go bo go .. go go bo go",
-        "bo go bo .. bo go go bo",
+        "bo go .. .. .. go go bo",  // (2,1) diag, (3,1) up, (4,1) diag destroyed
         ".. .. .. .. .. .. .. ..",
-        "bo go bo .. go go go bo",
+        "bo go .. .. .. go go bo",  // (2,3) diag, (3,3) down, (4,3) diag destroyed
         "go bo go .. go go bo go",
         S, S, S
     };
@@ -588,14 +586,15 @@ public class CascadeMakeMoveTest {
     );
     b.setMultiplier(1);
     CascadeBoard snapshot = b.copy();
-    // Cross from (3,3). Up hits (3,2)=go -> destroyed, (3,1)=prism -> destroyed + prism effect.
-    // Prism effect (red): red standard at (0,0) -> destroyed.
+    // Diagonals of (3,3): (2,2),(4,2),(2,4),(4,4) destroyed.
+    // Up: (3,2) destroyed, (3,1)=prism destroyed + prism effect (red), continues: (3,0) destroyed.
+    // Prism effect: red standard at (0,0) destroyed.
     String[] expected = {
-        ".. bo go .. go go bo go",
-        "bo go bo .. bo go go bo",
-        "go bo go .. go go bo go",
+        ".. bo go .. go go bo go",  // (0,0) red destroyed by prism, (3,0) destroyed by cross
+        "bo go bo .. bo go go bo",  // (3,1) prism destroyed
+        "go bo .. .. .. go bo go",  // (2,2) and (4,2) diagonals + (3,2) cardinal destroyed
         ".. .. .. .. .. .. .. ..",
-        "go bo go .. go go bo go",
+        "go bo .. .. .. go bo go",  // (2,4) and (4,4) diagonals + (3,4) cardinal destroyed
         S, S, S
     };
     boolean passed = false;

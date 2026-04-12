@@ -82,15 +82,20 @@ Make move takes a board and two x,y pairs (the pair of cells to be swapped). It 
    4. Return the board.
 7. If one cell is a BOMB and the other is a ROCKET_H or ROCKET_V:
    1. Remove both tiles (replace with EMPTY).
-   2. Fire in all four cardinal directions from the BOMB's original position. In each direction, process cells one at a time:
+   2. Destroy the four diagonal neighbours of the BOMB's original position (clamped to board bounds). For each diagonal cell:
+      - Skip already-EMPTY cells.
+      - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated.
+      - If it is a PRISM: replace with EMPTY and trigger the prism effect using the swapped bomb's colour.
+      - Otherwise (STANDARD, ICE, STONE): replace with EMPTY.
+   3. Fire in all four cardinal directions from the BOMB's original position. In each direction, process cells one at a time:
       - Skip already-EMPTY cells.
       - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated. Continue past it.
       - If it is a PRISM: replace with EMPTY and trigger the prism effect using the swapped bomb's colour. Continue.
       - If it is STONE: replace with EMPTY (destroyed). **Stop in this direction.**
       - If it is ICE: replace with EMPTY (destroyed). Continue.
       - Otherwise: replace with EMPTY. Continue.
-   3. Increase the score by the count of tiles destroyed (replaced with EMPTY in step 2) multiplied by ten, scaled by the current multiplier.
-   4. Return the board.
+   4. Increase the score by the count of tiles destroyed (replaced with EMPTY in steps 2 and 3) multiplied by ten, scaled by the current multiplier.
+   5. Return the board.
 8. If both cells are ROCKET (any combination of ROCKET_H and ROCKET_V):
    1. Remove both rockets (replace with EMPTY).
    2. Each rocket fires along its row and column from its original position. In each direction, process cells one at a time:
