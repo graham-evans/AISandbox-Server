@@ -37,17 +37,20 @@ public final class CascadeTestReport {
     public final String[] inputRows;
     public final String inputInfo;
     public final String[] expectedRows;
+    public final String expectedInfo;
     public final String[] actualRows;
     public final String actualInfo;
     public final String errorMessage;
 
     public TestRecord(String testName, boolean passed, String[] inputRows, String inputInfo,
-        String[] expectedRows, String[] actualRows, String actualInfo, String errorMessage) {
+        String[] expectedRows, String expectedInfo, String[] actualRows, String actualInfo,
+        String errorMessage) {
       this.testName = testName;
       this.passed = passed;
       this.inputRows = inputRows;
       this.inputInfo = inputInfo;
       this.expectedRows = expectedRows;
+      this.expectedInfo = expectedInfo;
       this.actualRows = actualRows;
       this.actualInfo = actualInfo;
       this.errorMessage = errorMessage;
@@ -73,6 +76,22 @@ public final class CascadeTestReport {
    */
   public static void record(String testName, boolean passed, CascadeBoard inputBoard,
       String[] expectedRows, CascadeBoard actualBoard, String errorMessage) {
+    record(testName, passed, inputBoard, expectedRows, null, actualBoard, errorMessage);
+  }
+
+  /**
+   * Records a test result with expected score/multiplier information.
+   *
+   * @param testName     the display name of the test
+   * @param passed       whether the test passed
+   * @param inputBoard   the board state before the operation (may be null for exception tests)
+   * @param expectedRows the expected pattern rows (may be null for exception tests)
+   * @param expectedInfo expected score/multiplier text (may be null if not checked)
+   * @param actualBoard  the board state after the operation (may be null if exception thrown)
+   * @param errorMessage error details if the test failed (may be null)
+   */
+  public static void record(String testName, boolean passed, CascadeBoard inputBoard,
+      String[] expectedRows, String expectedInfo, CascadeBoard actualBoard, String errorMessage) {
     String[] inRows = inputBoard != null
         ? CascadeBoardUtils.serialiseBoard(inputBoard).toArray(new String[0]) : null;
     String inInfo = inputBoard != null
@@ -86,7 +105,7 @@ public final class CascadeTestReport {
         actualBoard.getScore(), actualBoard.getMovesRemaining(), actualBoard.getMultiplier())
         : "";
     RESULTS.add(new TestRecord(testName, passed, inRows, inInfo,
-        expectedRows, actRows, actInfo, errorMessage));
+        expectedRows, expectedInfo != null ? expectedInfo : "", actRows, actInfo, errorMessage));
   }
 
   /**
@@ -107,7 +126,7 @@ public final class CascadeTestReport {
         inputBoard.getScore(), inputBoard.getMovesRemaining(), inputBoard.getMultiplier())
         : "";
     RESULTS.add(new TestRecord(testName, passed, inRows, inInfo,
-        new String[]{expectedError}, null, "", errorMessage));
+        new String[]{expectedError}, "", null, "", errorMessage));
   }
 
   /**
@@ -152,6 +171,9 @@ public final class CascadeTestReport {
         if (r.expectedRows != null) {
           entry.put("hasExpected", true);
           entry.put("expectedGrid", buildGrid(r.expectedRows));
+          entry.put("hasExpectedInfo",
+              r.expectedInfo != null && !r.expectedInfo.isEmpty());
+          entry.put("expectedInfo", r.expectedInfo);
         }
         if (r.actualRows != null) {
           entry.put("hasActual", true);
@@ -370,6 +392,7 @@ public final class CascadeTestReport {
               </tr>
               {{/expectedGrid}}
             </table>
+            {{#hasExpectedInfo}}<div class="board-info">{{expectedInfo}}</div>{{/hasExpectedInfo}}
           </div>
           {{/hasExpected}}
 

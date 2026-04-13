@@ -49,6 +49,14 @@ public class CascadeMakeMoveTest {
     }
   }
 
+  private static void recordAndAssert(String name, boolean passed, CascadeBoard input,
+      String[] expected, CascadeBoard actual, String error, String expectedInfo) {
+    CascadeTestReport.record(name, passed, input, expected, expectedInfo, actual, error);
+    if (!passed) {
+      fail(error);
+    }
+  }
+
   private static void recordExceptionAndAssert(String name, boolean passed, CascadeBoard input,
       String expectedError, String error) {
     CascadeTestReport.recordException(name, passed, input, expectedError, error);
@@ -171,7 +179,8 @@ public class CascadeMakeMoveTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusPrism", passed, snapshot, expected, result, error);
+    recordAndAssert("prismPlusPrism", passed, snapshot, expected, result, error,
+        "Score: 80  Multiplier: 2");
   }
 
   // ── Step 4: Prism + Special ────────────────────────────────────────────
@@ -208,7 +217,8 @@ public class CascadeMakeMoveTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusBomb", passed, snapshot, expected, result, error);
+    recordAndAssert("prismPlusBomb", passed, snapshot, expected, result, error,
+        "Score: 30  Multiplier: 1");
   }
 
   @Test
@@ -238,7 +248,8 @@ public class CascadeMakeMoveTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusRocketH", passed, snapshot, expected, result, error);
+    recordAndAssert("prismPlusRocketH", passed, snapshot, expected, result, error,
+        "Score: 30");
   }
 
   @Test
@@ -266,7 +277,8 @@ public class CascadeMakeMoveTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusRocketV", passed, snapshot, expected, result, error);
+    recordAndAssert("prismPlusRocketV", passed, snapshot, expected, result, error,
+        "Score: 30");
   }
 
   // ── Step 5: Prism + Standard ───────────────────────────────────────────
@@ -300,7 +312,8 @@ public class CascadeMakeMoveTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusStandard", passed, snapshot, expected, result, error);
+    recordAndAssert("prismPlusStandard", passed, snapshot, expected, result, error,
+        "Score: 30  Multiplier: 2");
   }
 
   @Test
@@ -331,7 +344,8 @@ public class CascadeMakeMoveTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusStandardWithIce", passed, snapshot, expected, result, error);
+    recordAndAssert("prismPlusStandardWithIce", passed, snapshot, expected, result, error,
+        "Score: 10  Multiplier: 2");
   }
 
   // ── Step 6: Bomb + Bomb (5x5 area) ────────────────────────────────────
@@ -375,7 +389,8 @@ public class CascadeMakeMoveTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("bombPlusBomb", passed, snapshot, expected, result, error);
+    recordAndAssert("bombPlusBomb", passed, snapshot, expected, result, error,
+        "Score: 300");
   }
 
   @Test
@@ -835,7 +850,7 @@ public class CascadeMakeMoveTest {
       result = b;
     }
     recordAndAssert("normalSwapCreatesHorizontalMatch", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 0");
   }
 
   @Test
@@ -870,7 +885,7 @@ public class CascadeMakeMoveTest {
       result = b;
     }
     recordAndAssert("normalSwapCreatesVerticalMatch", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 0");
   }
 
   @Test
@@ -924,7 +939,7 @@ public class CascadeMakeMoveTest {
       result = b;
     }
     recordAndAssert("prismPlusPrismWithExistingMultiplier", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 320  Multiplier: 8");
   }
 
   @Test
@@ -955,6 +970,6 @@ public class CascadeMakeMoveTest {
       result = b;
     }
     recordAndAssert("prismPlusStandardDoublesMultiplier", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 40  Multiplier: 4");
   }
 }

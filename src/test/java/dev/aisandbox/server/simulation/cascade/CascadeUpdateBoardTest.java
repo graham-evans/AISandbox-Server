@@ -53,6 +53,14 @@ public class CascadeUpdateBoardTest {
     }
   }
 
+  private static void recordAndAssert(String name, boolean passed, CascadeBoard input,
+      String[] expected, CascadeBoard actual, String error, String expectedInfo) {
+    CascadeTestReport.record(name, passed, input, expected, expectedInfo, actual, error);
+    if (!passed) {
+      fail(error);
+    }
+  }
+
   // ══════════════════════════════════════════════════════════════════════════
   // Priority 1 — Gravity and refill
   // ══════════════════════════════════════════════════════════════════════════
@@ -279,7 +287,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("gravityNoScoring", passed, snapshot, expected, result, error);
+    recordAndAssert("gravityNoScoring", passed, snapshot, expected, result, error,
+        "Score: 100");
   }
 
   @Test
@@ -353,7 +362,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombExplodes3x3", passed, snapshot, expected, result, error);
+    recordAndAssert("activatedBombExplodes3x3", passed, snapshot, expected, result, error,
+        "Score: 80  Multiplier: 2");
   }
 
   @Test
@@ -453,7 +463,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombAtEdge", passed, snapshot, expected, result, error);
+    recordAndAssert("activatedBombAtEdge", passed, snapshot, expected, result, error,
+        "Score: 30  Multiplier: 2");
   }
 
   @Test
@@ -594,7 +605,7 @@ public class CascadeUpdateBoardTest {
       result = b;
     }
     recordAndAssert("activatedRocketHFiresHorizontally", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 70  Multiplier: 2");
   }
 
   @Test
@@ -638,7 +649,7 @@ public class CascadeUpdateBoardTest {
       result = b;
     }
     recordAndAssert("activatedRocketVFiresVertically", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 60  Multiplier: 2");
   }
 
   @Test
@@ -804,7 +815,7 @@ public class CascadeUpdateBoardTest {
       result = b;
     }
     recordAndAssert("chainReactionWithinSingleCall", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Multiplier: 2");
   }
 
   @Test
@@ -840,7 +851,7 @@ public class CascadeUpdateBoardTest {
       result = b;
     }
     recordAndAssert("activatedSpecialsDoubleMultiplier", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 320  Multiplier: 8");
   }
 
   @Test
@@ -911,7 +922,7 @@ public class CascadeUpdateBoardTest {
       result = b;
     }
     recordAndAssert("horizontalRunOfThreeCleared", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 30  Multiplier: 2");
   }
 
   @Test
@@ -945,7 +956,7 @@ public class CascadeUpdateBoardTest {
       result = b;
     }
     recordAndAssert("verticalRunOfThreeCleared", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 30  Multiplier: 2");
   }
 
   @Test
@@ -973,7 +984,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("runOfFourNoSpecial", passed, snapshot, expected, result, error);
+    recordAndAssert("runOfFourNoSpecial", passed, snapshot, expected, result, error,
+        "Score: 40");
   }
 
   @Test
@@ -1002,7 +1014,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("runOfFiveSpawnsBomb", passed, snapshot, expected, result, error);
+    recordAndAssert("runOfFiveSpawnsBomb", passed, snapshot, expected, result, error,
+        "Score: 40");
   }
 
   @Test
@@ -1031,7 +1044,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("runOfSixSpawnsPrism", passed, snapshot, expected, result, error);
+    recordAndAssert("runOfSixSpawnsPrism", passed, snapshot, expected, result, error,
+        "Score: 50");
   }
 
   @Test
@@ -1068,7 +1082,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("lShapeSpawnsRocket", passed, snapshot, expected, result, error);
+    recordAndAssert("lShapeSpawnsRocket", passed, snapshot, expected, result, error,
+        "Score: 40");
   }
 
   @Test
@@ -1139,7 +1154,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("matchedBombActivated", passed, snapshot, expected, result, error);
+    recordAndAssert("matchedBombActivated", passed, snapshot, expected, result, error,
+        "Score: 20");
   }
 
   @Test
@@ -1168,7 +1184,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("matchedRocketActivated", passed, snapshot, expected, result, error);
+    recordAndAssert("matchedRocketActivated", passed, snapshot, expected, result, error,
+        "Score: 20");
   }
 
   @Test
@@ -1200,7 +1217,7 @@ public class CascadeUpdateBoardTest {
       result = b;
     }
     recordAndAssert("iceAdjacentToMatchUnfreezes", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 30");
   }
 
   @Test
@@ -1230,7 +1247,8 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("iceInMatchDestroyed", passed, snapshot, expected, result, error);
+    recordAndAssert("iceInMatchDestroyed", passed, snapshot, expected, result, error,
+        "Score: 30");
   }
 
   @Test
@@ -1260,7 +1278,7 @@ public class CascadeUpdateBoardTest {
       result = b;
     }
     recordAndAssert("matchScoringWithMultiplier", passed, snapshot,
-        expected, result, error);
+        expected, result, error, "Score: 90  Multiplier: 6");
   }
 
   @Test
@@ -1288,6 +1306,7 @@ public class CascadeUpdateBoardTest {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("matchDoublesMultiplier", passed, snapshot, expected, result, error);
+    recordAndAssert("matchDoublesMultiplier", passed, snapshot, expected, result, error,
+        "Multiplier: 2");
   }
 }
