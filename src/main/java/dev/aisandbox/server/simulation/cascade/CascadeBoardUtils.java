@@ -551,6 +551,135 @@ public class CascadeBoardUtils {
   }
 
   // ---------------------------------------------------------------------------
+  // Shared helpers for explosions and prism effects
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Triggers the prism colour effect: destroys all STANDARD tiles of {@code colour}, activates
+   * all BOMB/ROCKET tiles of that colour, and unfreezes all ICE tiles of that colour to STANDARD.
+   *
+   * <p>The PRISM cell itself must be handled by the caller before invoking this method.
+   *
+   * @param board  the board to modify
+   * @param colour the colour to target
+   * @return the number of STANDARD tiles destroyed (for scoring by the caller)
+   */
+  private static int triggerPrismEffect(CascadeBoard board, TileColour colour) {
+    int destroyed = 0;
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        CascadeCell cell = board.getCell(x, y);
+        if (cell.getType() == TileType.STANDARD && cell.getColour() == colour) {
+          board.setCell(x, y, CascadeCell.empty());
+          destroyed++;
+        } else if (isSpecial(cell.getType()) && cell.getColour() == colour) {
+          cell.setActivated(true);
+        } else if (cell.getType() == TileType.ICE && cell.getColour() == colour) {
+          board.setCell(x, y, CascadeCell.standard(colour));
+        }
+      }
+    }
+    return destroyed;
+  }
+
+  /**
+   * Fires a rocket-style beam from ({@code startX},{@code startY}) in the direction
+   * ({@code dx},{@code dy}), processing one cell at a time. The starting cell itself is
+   * not processed — the caller must handle it.
+   *
+   * @param board       the board to modify
+   * @param startX      column of the origin (not processed)
+   * @param startY      row of the origin (not processed)
+   * @param dx          horizontal step (-1, 0, or 1)
+   * @param dy          vertical step (-1, 0, or 1)
+   * @param triggerColour colour used when hitting a prism
+   * @return the number of tiles destroyed (replaced with EMPTY)
+   */
+  private static int fireInDirection(CascadeBoard board, int startX, int startY,
+      int dx, int dy, TileColour triggerColour) {
+    int destroyed = 0;
+    int x = startX + dx;
+    int y = startY + dy;
+    while (board.inBounds(x, y)) {
+      CascadeCell cell = board.getCell(x, y);
+      if (cell.getType() == TileType.EMPTY) {
+        x += dx;
+        y += dy;
+        continue;
+      }
+      if (isSpecial(cell.getType())) {
+        cell.setActivated(true);
+        x += dx;
+        y += dy;
+        continue;
+      }
+      if (cell.getType() == TileType.PRISM) {
+        board.setCell(x, y, CascadeCell.empty());
+        destroyed++;
+        destroyed += triggerPrismEffect(board, triggerColour);
+        x += dx;
+        y += dy;
+        continue;
+      }
+      if (cell.getType() == TileType.STONE) {
+        board.setCell(x, y, CascadeCell.empty());
+        destroyed++;
+        break;
+      }
+      // ICE, STANDARD, or anything else: destroy and continue
+      board.setCell(x, y, CascadeCell.empty());
+      destroyed++;
+      x += dx;
+      y += dy;
+    }
+    return destroyed;
+  }
+
+  /**
+   * Returns {@code true} if the tile type is a special that can be activated (BOMB or ROCKET).
+   */
+  private static boolean isSpecial(TileType type) {
+    return type == TileType.BOMB || type == TileType.ROCKET_H || type == TileType.ROCKET_V;
+  }
+
+  /**
+   * Returns {@code true} if the tile type is any rocket variant.
+   */
+  private static boolean isRocket(TileType type) {
+    return type == TileType.ROCKET_H || type == TileType.ROCKET_V;
+  }
+
+  /**
+   * Processes a single cell during a bomb/explosion area effect. Handles activation of specials,
+   * prism triggers, and destruction of other tile types.
+   *
+   * @param board        the board to modify
+   * @param x            column of the cell to process
+   * @param y            row of the cell to process
+   * @param triggerColour colour used when hitting a prism
+   * @return the number of tiles destroyed (replaced with EMPTY)
+   */
+  private static int processExplosionCell(CascadeBoard board, int x, int y,
+      TileColour triggerColour) {
+    CascadeCell cell = board.getCell(x, y);
+    if (cell.getType() == TileType.EMPTY) {
+      return 0;
+    }
+    if (isSpecial(cell.getType())) {
+      cell.setActivated(true);
+      return 0;
+    }
+    if (cell.getType() == TileType.PRISM) {
+      board.setCell(x, y, CascadeCell.empty());
+      int destroyed = 1 + triggerPrismEffect(board, triggerColour);
+      return destroyed;
+    }
+    // STANDARD, ICE, STONE: destroy
+    board.setCell(x, y, CascadeCell.empty());
+    return 1;
+  }
+
+  // ---------------------------------------------------------------------------
   // Make Move
   // ---------------------------------------------------------------------------
 
@@ -568,8 +697,196 @@ public class CascadeBoardUtils {
    * @throws InvalidCascadeAction if the move is not valid
    */
   public static CascadeBoard makeMove(CascadeBoard board, int x1, int y1, int x2, int y2) {
-    // TODO: implement per runtime.md Make Move logic
-    throw new InvalidCascadeAction("makeMove not yet implemented");
+    // Step 1: adjacency check
+    if (Math.abs(x2 - x1) + Math.abs(y2 - y1) != 1) {
+      throw new InvalidCascadeAction("Cells are not adjacent");
+    }
+    CascadeCell c1 = board.getCell(x1, y1);
+    CascadeCell c2 = board.getCell(x2, y2);
+    // Step 2: swappability check
+    if (!c1.isSwappable() || !c2.isSwappable()) {
+      throw new InvalidCascadeAction("Cell is not swappable");
+    }
+
+    // Step 3: Prism + Prism
+    if (c1.getType() == TileType.PRISM && c2.getType() == TileType.PRISM) {
+      int count = 0;
+      for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+        for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+          CascadeCell cell = board.getCell(x, y);
+          if (cell.getType() != TileType.EMPTY && cell.getType() != TileType.STONE) {
+            board.setCell(x, y, CascadeCell.empty());
+            count++;
+          }
+        }
+      }
+      board.addScore(count * CascadeBoard.TILE_SCORE * board.getMultiplier());
+      board.setMultiplier(board.getMultiplier() * 2);
+      return board;
+    }
+
+    // Step 4: Prism + Special (BOMB/ROCKET)
+    if ((c1.getType() == TileType.PRISM && isSpecial(c2.getType()))
+        || (c2.getType() == TileType.PRISM && isSpecial(c1.getType()))) {
+      int prismX;
+      int prismY;
+      int specialX;
+      int specialY;
+      if (c1.getType() == TileType.PRISM) {
+        prismX = x1;
+        prismY = y1;
+        specialX = x2;
+        specialY = y2;
+      } else {
+        prismX = x2;
+        prismY = y2;
+        specialX = x1;
+        specialY = y1;
+      }
+      CascadeCell special = board.getCell(specialX, specialY);
+      TileType specialType = special.getType();
+      TileColour specialColour = special.getColour();
+      // Replace prism with activated copy of the special
+      CascadeCell prismReplacement = buildCell(specialType, specialColour);
+      prismReplacement.setActivated(true);
+      board.setCell(prismX, prismY, prismReplacement);
+      // Replace original special with empty
+      board.setCell(specialX, specialY, CascadeCell.empty());
+      // Convert STANDARD of that colour, activate existing specials, unfreeze ice
+      int converted = 0;
+      for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+        for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+          if (x == prismX && y == prismY) {
+            continue;
+          }
+          CascadeCell cell = board.getCell(x, y);
+          if (cell.getType() == TileType.STANDARD && cell.getColour() == specialColour) {
+            CascadeCell replacement = buildCell(specialType, specialColour);
+            replacement.setActivated(true);
+            board.setCell(x, y, replacement);
+            converted++;
+          } else if (isSpecial(cell.getType()) && cell.getColour() == specialColour) {
+            cell.setActivated(true);
+          } else if (cell.getType() == TileType.ICE && cell.getColour() == specialColour) {
+            board.setCell(x, y, CascadeCell.standard(specialColour));
+          }
+        }
+      }
+      board.addScore((converted + 1) * CascadeBoard.TILE_SCORE);
+      return board;
+    }
+
+    // Step 5: Prism + Standard
+    if ((c1.getType() == TileType.PRISM && c2.getType() == TileType.STANDARD)
+        || (c2.getType() == TileType.PRISM && c1.getType() == TileType.STANDARD)) {
+      int prismX;
+      int prismY;
+      CascadeCell standardCell;
+      if (c1.getType() == TileType.PRISM) {
+        prismX = x1;
+        prismY = y1;
+        standardCell = c2;
+      } else {
+        prismX = x2;
+        prismY = y2;
+        standardCell = c1;
+      }
+      TileColour colour = standardCell.getColour();
+      board.setCell(prismX, prismY, CascadeCell.empty());
+      int destroyed = triggerPrismEffect(board, colour);
+      board.addScore(destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
+      board.setMultiplier(board.getMultiplier() * 2);
+      return board;
+    }
+
+    // Step 6: Bomb + Bomb
+    if (c1.getType() == TileType.BOMB && c2.getType() == TileType.BOMB) {
+      TileColour bombColour = c1.getColour();
+      board.setCell(x1, y1, CascadeCell.empty());
+      board.setCell(x2, y2, CascadeCell.empty());
+      int destroyed = 2; // count the two bombs themselves
+      // Process 5x5 area centred on each bomb
+      for (int bx : new int[]{x1, x2}) {
+        for (int by : new int[]{y1, y2}) {
+          for (int dx = -2; dx <= 2; dx++) {
+            for (int dy = -2; dy <= 2; dy++) {
+              int nx = bx + dx;
+              int ny = by + dy;
+              if (board.inBounds(nx, ny)) {
+                destroyed += processExplosionCell(board, nx, ny, bombColour);
+              }
+            }
+          }
+        }
+      }
+      board.addScore(destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
+      return board;
+    }
+
+    // Step 7: Bomb + Rocket
+    if ((c1.getType() == TileType.BOMB && isRocket(c2.getType()))
+        || (c2.getType() == TileType.BOMB && isRocket(c1.getType()))) {
+      int bombX;
+      int bombY;
+      TileColour bombColour;
+      if (c1.getType() == TileType.BOMB) {
+        bombX = x1;
+        bombY = y1;
+        bombColour = c1.getColour();
+      } else {
+        bombX = x2;
+        bombY = y2;
+        bombColour = c2.getColour();
+      }
+      board.setCell(x1, y1, CascadeCell.empty());
+      board.setCell(x2, y2, CascadeCell.empty());
+      int destroyed = 2; // count the bomb and rocket themselves
+      // Destroy 4 diagonal neighbours of the bomb's position
+      int[][] diags = {{-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
+      for (int[] d : diags) {
+        int nx = bombX + d[0];
+        int ny = bombY + d[1];
+        if (board.inBounds(nx, ny)) {
+          destroyed += processExplosionCell(board, nx, ny, bombColour);
+        }
+      }
+      // Fire in 4 cardinal directions from the bomb's position
+      destroyed += fireInDirection(board, bombX, bombY, 0, -1, bombColour);
+      destroyed += fireInDirection(board, bombX, bombY, 0, 1, bombColour);
+      destroyed += fireInDirection(board, bombX, bombY, -1, 0, bombColour);
+      destroyed += fireInDirection(board, bombX, bombY, 1, 0, bombColour);
+      board.addScore(destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
+      return board;
+    }
+
+    // Step 8: Rocket + Rocket
+    if (isRocket(c1.getType()) && isRocket(c2.getType())) {
+      TileColour colour1 = c1.getColour();
+      TileColour colour2 = c2.getColour();
+      board.setCell(x1, y1, CascadeCell.empty());
+      board.setCell(x2, y2, CascadeCell.empty());
+      int destroyed = 2; // count both rockets themselves
+      // Rocket 1 fires along its row and column
+      destroyed += fireInDirection(board, x1, y1, -1, 0, colour1);
+      destroyed += fireInDirection(board, x1, y1, 1, 0, colour1);
+      destroyed += fireInDirection(board, x1, y1, 0, -1, colour1);
+      destroyed += fireInDirection(board, x1, y1, 0, 1, colour1);
+      // Rocket 2 fires along its row and column
+      destroyed += fireInDirection(board, x2, y2, -1, 0, colour2);
+      destroyed += fireInDirection(board, x2, y2, 1, 0, colour2);
+      destroyed += fireInDirection(board, x2, y2, 0, -1, colour2);
+      destroyed += fireInDirection(board, x2, y2, 0, 1, colour2);
+      board.addScore(destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
+      return board;
+    }
+
+    // Steps 9-11: Normal swap
+    CascadeBoard copy = board.copy();
+    copy.swap(x1, y1, x2, y2);
+    if (!hasMatchAt(copy, x1, y1) && !hasMatchAt(copy, x2, y2)) {
+      throw new InvalidCascadeAction("Swap creates no match");
+    }
+    return copy;
   }
 
   // ---------------------------------------------------------------------------
@@ -589,8 +906,390 @@ public class CascadeBoardUtils {
    * @return the updated board
    */
   public static CascadeBoard updateBoard(CascadeBoard board, Random random) {
-    // TODO: implement per runtime.md Update board logic
+    // Priority 1: Gravity and refill
+    if (applyGravityAndSmartRefill(board, random)) {
+      return board;
+    }
+
+    // Priority 2: Resolve activated specials
+    if (resolveActivatedSpecials(board)) {
+      return board;
+    }
+
+    // Priority 3: Resolve matches and spawn specials
+    resolveMatchesAndSpawn(board);
     return board;
+  }
+
+  /**
+   * Applies gravity and refills open column segments. Returns {@code true} if any tile moved
+   * or was created.
+   */
+  private static boolean applyGravityAndSmartRefill(CascadeBoard board, Random random) {
+    boolean changed = false;
+    // Apply gravity: compact fallable tiles downward
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      int segBottom = CascadeBoard.HEIGHT - 1;
+      while (segBottom >= 0) {
+        TileType bt = board.getCell(x, segBottom).getType();
+        if (bt == TileType.STONE || bt == TileType.ICE) {
+          segBottom--;
+          continue;
+        }
+        int segTop = segBottom;
+        while (segTop > 0) {
+          TileType above = board.getCell(x, segTop - 1).getType();
+          if (above == TileType.STONE || above == TileType.ICE) {
+            break;
+          }
+          segTop--;
+        }
+        int writeY = segBottom;
+        for (int y = segBottom; y >= segTop; y--) {
+          if (board.getCell(x, y).isFallable()) {
+            if (writeY != y) {
+              board.setCell(x, writeY, board.getCell(x, y));
+              board.setCell(x, y, CascadeCell.empty());
+              changed = true;
+            }
+            writeY--;
+          }
+        }
+        segBottom = segTop - 1;
+      }
+    }
+    // Smart refill: only fill empty cells that are open to the top (not sealed by STONE/ICE)
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (board.getCell(x, y).getType() == TileType.EMPTY) {
+          boolean sealed = false;
+          for (int above = y - 1; above >= 0; above--) {
+            TileType aboveType = board.getCell(x, above).getType();
+            if (aboveType == TileType.STONE || aboveType == TileType.ICE) {
+              sealed = true;
+              break;
+            }
+          }
+          if (!sealed) {
+            board.setCell(x, y, CascadeCell.standard(COLOURS[random.nextInt(COLOURS.length)]));
+            changed = true;
+          }
+        }
+      }
+    }
+    return changed;
+  }
+
+  /**
+   * Resolves all activated specials (bombs and rockets) with chain reactions.
+   * Returns {@code true} if any activated tiles were processed.
+   */
+  private static boolean resolveActivatedSpecials(CascadeBoard board) {
+    boolean anyProcessed = false;
+    boolean hasActivated = true;
+    while (hasActivated) {
+      hasActivated = false;
+      // Collect activated tiles
+      List<int[]> activated = new ArrayList<>();
+      for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+        for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+          if (board.getCell(x, y).isActivated()) {
+            activated.add(new int[]{x, y,
+                board.getCell(x, y).getType().ordinal(),
+                board.getCell(x, y).getColour().ordinal()});
+            board.getCell(x, y).setActivated(false);
+          }
+        }
+      }
+      if (activated.isEmpty()) {
+        break;
+      }
+      anyProcessed = true;
+      // Process each activated tile
+      for (int[] info : activated) {
+        int ax = info[0];
+        int ay = info[1];
+        TileType aType = board.getCell(ax, ay).getType();
+        TileColour aColour = TileColour.values()[info[3]];
+        // The tile might have been destroyed by a previous chain reaction in this pass
+        if (board.getCell(ax, ay).getType() == TileType.EMPTY) {
+          continue;
+        }
+        if (aType == TileType.BOMB) {
+          board.setCell(ax, ay, CascadeCell.empty());
+          int destroyed = 0;
+          for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+              int nx = ax + dx;
+              int ny = ay + dy;
+              if (board.inBounds(nx, ny)) {
+                destroyed += processExplosionCell(board, nx, ny, aColour);
+              }
+            }
+          }
+          board.addScore((long) destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
+        } else if (aType == TileType.ROCKET_H) {
+          board.setCell(ax, ay, CascadeCell.empty());
+          int destroyed = 0;
+          destroyed += fireInDirection(board, ax, ay, -1, 0, aColour);
+          destroyed += fireInDirection(board, ax, ay, 1, 0, aColour);
+          board.addScore((long) destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
+        } else if (aType == TileType.ROCKET_V) {
+          board.setCell(ax, ay, CascadeCell.empty());
+          int destroyed = 0;
+          destroyed += fireInDirection(board, ax, ay, 0, -1, aColour);
+          destroyed += fireInDirection(board, ax, ay, 0, 1, aColour);
+          board.addScore((long) destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
+        }
+      }
+      // Check for new activations (chain reaction)
+      for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+        for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+          if (board.getCell(x, y).isActivated()) {
+            hasActivated = true;
+            break;
+          }
+        }
+        if (hasActivated) {
+          break;
+        }
+      }
+    }
+    if (anyProcessed) {
+      board.setMultiplier(board.getMultiplier() * 2);
+    }
+    return anyProcessed;
+  }
+
+  /**
+   * Unmarks ICE tiles that sit at the boundary of a run of 4+ and whose removal still leaves
+   * a valid run of 3+. These tiles will be unfrozen via adjacency (step 5) instead of being
+   * destroyed as part of the match.
+   */
+  private static void pruneNonEssentialIce(CascadeBoard board, boolean[][] mark) {
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (!mark[x][y] || board.getCell(x, y).getType() != TileType.ICE) {
+          continue;
+        }
+        TileColour colour = board.getCell(x, y).getColour();
+        boolean essential = false;
+        // Check horizontal run containing this cell
+        int hLeft = x;
+        while (hLeft > 0 && mark[hLeft - 1][y]
+            && board.getCell(hLeft - 1, y).isMatchable()
+            && board.getCell(hLeft - 1, y).getColour() == colour) {
+          hLeft--;
+        }
+        int hRight = x;
+        while (hRight < CascadeBoard.WIDTH - 1 && mark[hRight + 1][y]
+            && board.getCell(hRight + 1, y).isMatchable()
+            && board.getCell(hRight + 1, y).getColour() == colour) {
+          hRight++;
+        }
+        int hLen = hRight - hLeft + 1;
+        if (hLen >= 3) {
+          if (hLen <= 3 || (x != hLeft && x != hRight)) {
+            essential = true;
+          }
+        }
+        // Check vertical run containing this cell
+        int vTop = y;
+        while (vTop > 0 && mark[x][vTop - 1]
+            && board.getCell(x, vTop - 1).isMatchable()
+            && board.getCell(x, vTop - 1).getColour() == colour) {
+          vTop--;
+        }
+        int vBottom = y;
+        while (vBottom < CascadeBoard.HEIGHT - 1 && mark[x][vBottom + 1]
+            && board.getCell(x, vBottom + 1).isMatchable()
+            && board.getCell(x, vBottom + 1).getColour() == colour) {
+          vBottom++;
+        }
+        int vLen = vBottom - vTop + 1;
+        if (vLen >= 3) {
+          if (vLen <= 3 || (y != vTop && y != vBottom)) {
+            essential = true;
+          }
+        }
+        if (!essential) {
+          mark[x][y] = false;
+        }
+      }
+    }
+  }
+
+  /**
+   * Resolves all matches on the board, spawns specials from match geometry, unfreezes adjacent
+   * ice, and scores. Does nothing if no matches exist.
+   */
+  private static void resolveMatchesAndSpawn(CascadeBoard board) {
+    boolean[][] mark = new boolean[CascadeBoard.WIDTH][CascadeBoard.HEIGHT];
+    int totalMarked = findAllMatches(board, mark);
+    if (totalMarked == 0) {
+      return;
+    }
+
+    // Prune non-essential ICE from match boundaries: ICE at the start/end of a run of 4+
+    // can be unfrozen via adjacency (step 5) instead of being destroyed as part of the match.
+    pruneNonEssentialIce(board, mark);
+
+    // Determine special spawns from match geometry
+    // Track what special (if any) should spawn at each marked position
+    TileType[][] spawnType = new TileType[CascadeBoard.WIDTH][CascadeBoard.HEIGHT];
+    TileColour[][] spawnColour = new TileColour[CascadeBoard.WIDTH][CascadeBoard.HEIGHT];
+
+    // Find horizontal runs and assign bomb/prism spawns
+    for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+      int x = 0;
+      while (x < CascadeBoard.WIDTH) {
+        CascadeCell cell = board.getCell(x, y);
+        if (!cell.isMatchable()) {
+          x++;
+          continue;
+        }
+        TileColour colour = cell.getColour();
+        int end = x + 1;
+        while (end < CascadeBoard.WIDTH
+            && board.getCell(end, y).isMatchable()
+            && board.getCell(end, y).getColour() == colour) {
+          end++;
+        }
+        int len = end - x;
+        if (len >= 5) {
+          int centre = x + (len - 1) / 2;
+          TileType candidate = len >= 6 ? TileType.PRISM : TileType.BOMB;
+          if (spawnType[centre][y] == null || spawnTier(candidate) > spawnTier(spawnType[centre][y])) {
+            spawnType[centre][y] = candidate;
+            spawnColour[centre][y] = colour;
+          }
+        }
+        x = end;
+      }
+    }
+
+    // Find vertical runs and assign bomb/prism spawns
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      int y = 0;
+      while (y < CascadeBoard.HEIGHT) {
+        CascadeCell cell = board.getCell(x, y);
+        if (!cell.isMatchable()) {
+          y++;
+          continue;
+        }
+        TileColour colour = cell.getColour();
+        int end = y + 1;
+        while (end < CascadeBoard.HEIGHT
+            && board.getCell(x, end).isMatchable()
+            && board.getCell(x, end).getColour() == colour) {
+          end++;
+        }
+        int len = end - y;
+        if (len >= 5) {
+          int centre = y + (len - 1) / 2;
+          TileType candidate = len >= 6 ? TileType.PRISM : TileType.BOMB;
+          if (spawnType[x][centre] == null
+              || spawnTier(candidate) > spawnTier(spawnType[x][centre])) {
+            spawnType[x][centre] = candidate;
+            spawnColour[x][centre] = colour;
+          }
+        }
+        y = end;
+      }
+    }
+
+    // Find L/T shapes: cells at intersection of horizontal and vertical runs (each >= 3)
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (!mark[x][y]) {
+          continue;
+        }
+        CascadeCell cell = board.getCell(x, y);
+        if (!cell.isMatchable()) {
+          continue;
+        }
+        TileColour colour = cell.getColour();
+        int hLen = 1
+            + countRun(board, x, y, -1, 0, colour)
+            + countRun(board, x, y, 1, 0, colour);
+        int vLen = 1
+            + countRun(board, x, y, 0, -1, colour)
+            + countRun(board, x, y, 0, 1, colour);
+        if (hLen >= 3 && vLen >= 3) {
+          TileType candidate = hLen >= vLen ? TileType.ROCKET_H : TileType.ROCKET_V;
+          if (spawnType[x][y] == null || spawnTier(candidate) > spawnTier(spawnType[x][y])) {
+            spawnType[x][y] = candidate;
+            spawnColour[x][y] = colour;
+          }
+        }
+      }
+    }
+
+    // Process marked tiles and track which cells were replaced with EMPTY
+    boolean[][] removed = new boolean[CascadeBoard.WIDTH][CascadeBoard.HEIGHT];
+    int removeCount = 0;
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (!mark[x][y]) {
+          continue;
+        }
+        CascadeCell cell = board.getCell(x, y);
+        if (isSpecial(cell.getType())) {
+          // Activate specials (bomb/rocket) — don't remove
+          cell.setActivated(true);
+        } else if (spawnType[x][y] != null) {
+          // Spawn position: place the new special
+          CascadeCell spawned;
+          if (spawnType[x][y] == TileType.PRISM) {
+            spawned = CascadeCell.prism();
+          } else {
+            spawned = buildCell(spawnType[x][y], spawnColour[x][y]);
+          }
+          board.setCell(x, y, spawned);
+          // The original tile is "removed" but replaced by a special — still counts as removed
+          // Wait, per spec: "Count only tiles replaced with EMPTY in step 4b"
+          // Spawn position does NOT count toward removed
+        } else {
+          // Replace with EMPTY
+          board.setCell(x, y, CascadeCell.empty());
+          removed[x][y] = true;
+          removeCount++;
+        }
+      }
+    }
+
+    // Unfreeze adjacent ice
+    for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+      for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+        if (!removed[x][y]) {
+          continue;
+        }
+        int[][] neighbours = {{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}};
+        for (int[] n : neighbours) {
+          if (board.inBounds(n[0], n[1])
+              && board.getCell(n[0], n[1]).getType() == TileType.ICE) {
+            TileColour iceColour = board.getCell(n[0], n[1]).getColour();
+            board.setCell(n[0], n[1], CascadeCell.standard(iceColour));
+          }
+        }
+      }
+    }
+
+    // Score and double multiplier
+    board.addScore((long) removeCount * CascadeBoard.TILE_SCORE * board.getMultiplier());
+    board.setMultiplier(board.getMultiplier() * 2);
+  }
+
+  /**
+   * Returns a priority tier for spawn type selection. Higher values win.
+   */
+  private static int spawnTier(TileType type) {
+    return switch (type) {
+      case PRISM -> 3;
+      case BOMB -> 2;
+      case ROCKET_H, ROCKET_V -> 1;
+      default -> 0;
+    };
   }
 
   // ---------------------------------------------------------------------------
