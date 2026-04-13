@@ -23,6 +23,7 @@ pipeline {
                 gradle 'distZip pmdMain test checkstyleMain checkstyleTest'
             }
         }
+    }
 
     post {
         always {
