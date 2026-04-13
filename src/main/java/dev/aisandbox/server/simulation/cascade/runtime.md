@@ -79,7 +79,8 @@ Make move takes a board and two x,y pairs (the pair of cells to be swapped). It 
       - If it is a PRISM: replace with EMPTY and trigger the prism effect using the swapped bomb's colour (same effect as described in Update Priority 2).
       - Otherwise (STANDARD, ICE, STONE): replace with EMPTY.
    3. Increase the score by the count of tiles destroyed (replaced with EMPTY in step 2) multiplied by ten, scaled by the current multiplier.
-   4. Return the board.
+   4. Double the current multiplier
+   5. Return the board.
 7. If one cell is a BOMB and the other is a ROCKET_H or ROCKET_V:
    1. Remove both tiles (replace with EMPTY).
    2. Destroy the four diagonal neighbours of the BOMB's original position (clamped to board bounds). For each diagonal cell:

@@ -109,6 +109,30 @@ public final class CascadeTestReport {
   }
 
   /**
+   * Records a test result with expected score and multiplier as typed values.
+   *
+   * <p>The expected moves are derived from the input board so that the expected info line
+   * matches the "Score: X  Moves: Y  Multiplier: Z" format used for input and actual boards.
+   *
+   * @param testName            the display name of the test
+   * @param passed              whether the test passed
+   * @param inputBoard          the board state before the operation (may be null for exception tests)
+   * @param expectedRows        the expected pattern rows (may be null for exception tests)
+   * @param expectedScore       the expected score value
+   * @param expectedMultiplier  the expected multiplier value
+   * @param actualBoard         the board state after the operation (may be null if exception thrown)
+   * @param errorMessage        error details if the test failed (may be null)
+   */
+  public static void record(String testName, boolean passed, CascadeBoard inputBoard,
+      String[] expectedRows, long expectedScore, long expectedMultiplier,
+      CascadeBoard actualBoard, String errorMessage) {
+    long expectedMoves = inputBoard != null ? inputBoard.getMovesRemaining() : 0;
+    String expectedInfo = String.format("Score: %d  Moves: %d  Multiplier: %d",
+        expectedScore, expectedMoves, expectedMultiplier);
+    record(testName, passed, inputBoard, expectedRows, expectedInfo, actualBoard, errorMessage);
+  }
+
+  /**
    * Records a test that expected an exception.
    *
    * @param testName      the display name of the test

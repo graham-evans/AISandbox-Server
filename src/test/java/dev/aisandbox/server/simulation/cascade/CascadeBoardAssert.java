@@ -83,6 +83,63 @@ public final class CascadeBoardAssert {
   // ── Assertion ───────────────────────────────────────────────────────────
 
   /**
+   * Asserts that {@code actual} matches the expected row pattern, score, and multiplier.
+   *
+   * <p>Any rows not supplied are treated as all-empty. On failure the error message includes:
+   * <ol>
+   *   <li>A list of every mismatched cell with position, expected description, actual description,
+   *       and reason.</li>
+   *   <li>Score and multiplier mismatches, if any.</li>
+   *   <li>A side-by-side rendering of the expected pattern and the actual board.</li>
+   * </ol>
+   *
+   * @param actual              the board to verify
+   * @param expectedScore       the expected value of {@link CascadeBoard#getScore()}
+   * @param expectedMultiplier  the expected value of {@link CascadeBoard#getMultiplier()}
+   * @param expectedRows        up to eight row strings; supports wildcard tokens
+   */
+  public static void assertMatches(CascadeBoard actual, long expectedScore,
+      long expectedMultiplier, String... expectedRows) {
+    List<String> padded = pad(expectedRows);
+    List<String> mismatches = new ArrayList<>();
+
+    for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+      String[] tokens = padded.get(y).split(" ");
+      if (tokens.length != CascadeBoard.WIDTH) {
+        fail("Expected row " + y + " has " + tokens.length
+            + " tokens, need " + CascadeBoard.WIDTH);
+      }
+      for (int x = 0; x < CascadeBoard.WIDTH; x++) {
+        String reason = checkCell(tokens[x], actual.getCell(x, y));
+        if (reason != null) {
+          mismatches.add(String.format("  (%d,%d): expected %-24s actual %-24s %s",
+              x, y, describeToken(tokens[x]), describeCell(actual.getCell(x, y)), reason));
+        }
+      }
+    }
+
+    if (actual.getScore() != expectedScore) {
+      mismatches.add(String.format("  score:       expected %-24s actual %d",
+          expectedScore, actual.getScore()));
+    }
+    if (actual.getMultiplier() != expectedMultiplier) {
+      mismatches.add(String.format("  multiplier:  expected %-24s actual %d",
+          expectedMultiplier, actual.getMultiplier()));
+    }
+
+    if (!mismatches.isEmpty()) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("Board mismatch: ").append(mismatches.size()).append(" item(s) differ\n\n");
+      for (String m : mismatches) {
+        sb.append(m).append('\n');
+      }
+      sb.append('\n');
+      sb.append(renderComparison(padded, actual));
+      fail(sb.toString());
+    }
+  }
+
+  /**
    * Asserts that {@code actual} matches the expected row pattern cell by cell.
    *
    * <p>Any rows not supplied are treated as all-empty. On failure the error message includes:
@@ -94,7 +151,10 @@ public final class CascadeBoardAssert {
    *
    * @param actual       the board to verify
    * @param expectedRows up to eight row strings; supports wildcard tokens
+   * @deprecated Use {@link #assertMatches(CascadeBoard, long, long, String...)} to also verify
+   *     score and multiplier.
    */
+  @Deprecated
   public static void assertMatches(CascadeBoard actual, String... expectedRows) {
     List<String> padded = pad(expectedRows);
     List<String> mismatches = new ArrayList<>();

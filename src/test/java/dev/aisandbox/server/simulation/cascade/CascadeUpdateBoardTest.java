@@ -8,7 +8,6 @@ package dev.aisandbox.server.simulation.cascade;
 
 import static dev.aisandbox.server.simulation.cascade.CascadeBoardAssert.assertMatches;
 import static dev.aisandbox.server.simulation.cascade.CascadeBoardAssert.board;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import dev.aisandbox.server.simulation.cascade.model.CascadeBoard;
@@ -46,16 +45,10 @@ public class CascadeUpdateBoardTest {
   }
 
   private static void recordAndAssert(String name, boolean passed, CascadeBoard input,
-      String[] expected, CascadeBoard actual, String error) {
-    CascadeTestReport.record(name, passed, input, expected, actual, error);
-    if (!passed) {
-      fail(error);
-    }
-  }
-
-  private static void recordAndAssert(String name, boolean passed, CascadeBoard input,
-      String[] expected, CascadeBoard actual, String error, String expectedInfo) {
-    CascadeTestReport.record(name, passed, input, expected, expectedInfo, actual, error);
+      long expectedScore, long expectedMultiplier, String[] expected, CascadeBoard actual,
+      String error) {
+    CascadeTestReport.record(name, passed, input, expected, expectedScore, expectedMultiplier,
+        actual, error);
     if (!passed) {
       fail(error);
     }
@@ -85,13 +78,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 0L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("gravityDropsSingleTile", passed, snapshot, expected, result, error);
+    recordAndAssert("gravityDropsSingleTile", passed, snapshot, 0L, 1L, expected, result, error);
   }
 
   @Test
@@ -119,13 +112,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 0L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("gravityDropsMultipleTiles", passed, snapshot, expected, result, error);
+    recordAndAssert("gravityDropsMultipleTiles", passed, snapshot, 0L, 1L, expected, result,
+        error);
   }
 
   @Test
@@ -158,13 +152,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 0L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("gravityStopsAtStone", passed, snapshot, expected, result, error);
+    recordAndAssert("gravityStopsAtStone", passed, snapshot, 0L, 1L, expected, result, error);
   }
 
   @Test
@@ -193,13 +187,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 0L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("gravityStopsAtIce", passed, snapshot, expected, result, error);
+    recordAndAssert("gravityStopsAtIce", passed, snapshot, 0L, 1L, expected, result, error);
   }
 
   @Test
@@ -221,13 +215,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 0L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("refillsTopOfOpenColumn", passed, snapshot, expected, result, error);
+    recordAndAssert("refillsTopOfOpenColumn", passed, snapshot, 0L, 1L, expected, result, error);
   }
 
   @Test
@@ -251,13 +245,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 0L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("noRefillBelowSeal", passed, snapshot, expected, result, error);
+    recordAndAssert("noRefillBelowSeal", passed, snapshot, 0L, 1L, expected, result, error);
   }
 
   @Test
@@ -280,15 +274,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(100, result.getScore(), "gravity does not change score");
+      assertMatches(result, 100L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("gravityNoScoring", passed, snapshot, expected, result, error,
-        "Score: 100");
+    recordAndAssert("gravityNoScoring", passed, snapshot, 100L, 1L, expected, result, error);
   }
 
   @Test
@@ -314,13 +306,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 0L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("gravityBeforeRefill", passed, snapshot, expected, result, error);
+    recordAndAssert("gravityBeforeRefill", passed, snapshot, 0L, 1L, expected, result, error);
   }
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -354,16 +346,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(80, result.getScore(), "8 tiles * 10 * multiplier 1");
-      assertEquals(2, result.getMultiplier(), "multiplier doubled");
+      assertMatches(result, 80L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombExplodes3x3", passed, snapshot, expected, result, error,
-        "Score: 80  Multiplier: 2");
+    recordAndAssert("activatedBombExplodes3x3", passed, snapshot, 80L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -390,14 +380,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 80L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombDestroysStone", passed, snapshot,
-        expected, result, error);
+    recordAndAssert("activatedBombDestroysStone", passed, snapshot, 80L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -424,14 +414,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 80L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombDestroysIce", passed, snapshot,
-        expected, result, error);
+    recordAndAssert("activatedBombDestroysIce", passed, snapshot, 80L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -454,17 +444,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
       // 3 tiles destroyed (go, bo, ro — bomb itself doesn't count as destroyed)
-      assertEquals(30, result.getScore(), "3 tiles * 10 * 1");
-      assertEquals(2, result.getMultiplier(), "multiplier doubled");
+      assertMatches(result, 30L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombAtEdge", passed, snapshot, expected, result, error,
-        "Score: 30  Multiplier: 2");
+    recordAndAssert("activatedBombAtEdge", passed, snapshot, 30L, 2L, expected, result, error);
   }
 
   @Test
@@ -493,13 +480,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 70L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombChainsBomb", passed, snapshot, expected, result, error);
+    recordAndAssert("activatedBombChainsBomb", passed, snapshot, 70L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -526,14 +514,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 70L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombChainsRocket", passed, snapshot,
-        expected, result, error);
+    recordAndAssert("activatedBombChainsRocket", passed, snapshot, 70L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -565,13 +553,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 90L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombHitsPrism", passed, snapshot, expected, result, error);
+    recordAndAssert("activatedBombHitsPrism", passed, snapshot, 90L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -595,17 +584,15 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
       // 7 tiles destroyed (rocket itself doesn't count)
-      assertEquals(70, result.getScore(), "7 tiles * 10 * 1");
-      assertEquals(2, result.getMultiplier(), "multiplier doubled");
+      assertMatches(result, 70L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedRocketHFiresHorizontally", passed, snapshot,
-        expected, result, error, "Score: 70  Multiplier: 2");
+    recordAndAssert("activatedRocketHFiresHorizontally", passed, snapshot, 70L, 2L, expected,
+        result, error);
   }
 
   @Test
@@ -639,17 +626,15 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
       // 6 tiles destroyed (rocket itself doesn't count)
-      assertEquals(60, result.getScore(), "6 tiles * 10 * 1");
-      assertEquals(2, result.getMultiplier(), "multiplier doubled");
+      assertMatches(result, 60L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedRocketVFiresVertically", passed, snapshot,
-        expected, result, error, "Score: 60  Multiplier: 2");
+    recordAndAssert("activatedRocketVFiresVertically", passed, snapshot, 60L, 2L, expected,
+        result, error);
   }
 
   @Test
@@ -674,13 +659,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 60L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("rocketStopsAtStone", passed, snapshot, expected, result, error);
+    recordAndAssert("rocketStopsAtStone", passed, snapshot, 60L, 2L, expected, result, error);
   }
 
   @Test
@@ -704,13 +689,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 70L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("rocketDestroysIce", passed, snapshot, expected, result, error);
+    recordAndAssert("rocketDestroysIce", passed, snapshot, 70L, 2L, expected, result, error);
   }
 
   @Test
@@ -735,13 +720,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 60L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("rocketChainsSpecial", passed, snapshot, expected, result, error);
+    recordAndAssert("rocketChainsSpecial", passed, snapshot, 60L, 2L, expected, result, error);
   }
 
   @Test
@@ -769,13 +754,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 80L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("rocketHitsPrism", passed, snapshot, expected, result, error);
+    recordAndAssert("rocketHitsPrism", passed, snapshot, 80L, 2L, expected, result, error);
   }
 
   @Test
@@ -806,16 +791,15 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
       // Multiplier doubled once for the whole activated-special resolution
-      assertEquals(2, result.getMultiplier(), "multiplier doubled once");
+      assertMatches(result, 120L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("chainReactionWithinSingleCall", passed, snapshot,
-        expected, result, error, "Multiplier: 2");
+    recordAndAssert("chainReactionWithinSingleCall", passed, snapshot, 120L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -842,16 +826,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(320, result.getScore(), "8 tiles * 10 * multiplier 4");
-      assertEquals(8, result.getMultiplier(), "multiplier doubled from 4 to 8");
+      assertMatches(result, 320L, 8L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedSpecialsDoubleMultiplier", passed, snapshot,
-        expected, result, error, "Score: 320  Multiplier: 8");
+    recordAndAssert("activatedSpecialsDoubleMultiplier", passed, snapshot, 320L, 8L, expected,
+        result, error);
   }
 
   @Test
@@ -881,14 +863,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      assertMatches(result, 160L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("multipleActivatedSpecials", passed, snapshot,
-        expected, result, error);
+    recordAndAssert("multipleActivatedSpecials", passed, snapshot, 160L, 2L, expected, result,
+        error);
   }
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -913,16 +895,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(30, result.getScore(), "3 tiles * 10 * 1");
-      assertEquals(2, result.getMultiplier(), "multiplier doubled");
+      assertMatches(result, 30L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("horizontalRunOfThreeCleared", passed, snapshot,
-        expected, result, error, "Score: 30  Multiplier: 2");
+    recordAndAssert("horizontalRunOfThreeCleared", passed, snapshot, 30L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -947,16 +927,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(30, result.getScore(), "3 tiles * 10 * 1");
-      assertEquals(2, result.getMultiplier(), "multiplier doubled");
+      assertMatches(result, 30L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("verticalRunOfThreeCleared", passed, snapshot,
-        expected, result, error, "Score: 30  Multiplier: 2");
+    recordAndAssert("verticalRunOfThreeCleared", passed, snapshot, 30L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -977,15 +955,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(40, result.getScore(), "4 tiles * 10 * 1");
+      assertMatches(result, 40L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("runOfFourNoSpecial", passed, snapshot, expected, result, error,
-        "Score: 40");
+    recordAndAssert("runOfFourNoSpecial", passed, snapshot, 40L, 2L, expected, result, error);
   }
 
   @Test
@@ -1007,15 +983,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(40, result.getScore(), "4 tiles removed * 10 * 1");
+      assertMatches(result, 40L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("runOfFiveSpawnsBomb", passed, snapshot, expected, result, error,
-        "Score: 40");
+    recordAndAssert("runOfFiveSpawnsBomb", passed, snapshot, 40L, 2L, expected, result, error);
   }
 
   @Test
@@ -1037,15 +1011,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(50, result.getScore(), "5 tiles removed * 10 * 1");
+      assertMatches(result, 50L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("runOfSixSpawnsPrism", passed, snapshot, expected, result, error,
-        "Score: 50");
+    recordAndAssert("runOfSixSpawnsPrism", passed, snapshot, 50L, 2L, expected, result, error);
   }
 
   @Test
@@ -1074,16 +1046,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
       // 4 tiles removed (the 5 in the L minus the 1 where rocket spawns)
-      assertEquals(40, result.getScore(), "4 tiles removed * 10 * 1");
+      assertMatches(result, 40L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("lShapeSpawnsRocket", passed, snapshot, expected, result, error,
-        "Score: 40");
+    recordAndAssert("lShapeSpawnsRocket", passed, snapshot, 40L, 2L, expected, result, error);
   }
 
   @Test
@@ -1117,13 +1087,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
+      // 6 tiles removed (7 in T-shape minus 1 where bomb spawns)
+      assertMatches(result, 60L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("tShapeSpawnsRocket", passed, snapshot, expected, result, error);
+    recordAndAssert("tShapeSpawnsRocket", passed, snapshot, 60L, 2L, expected, result, error);
   }
 
   @Test
@@ -1146,16 +1117,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
       // Only 2 tiles removed (the two standard reds)
-      assertEquals(20, result.getScore(), "2 tiles * 10 * 1");
+      assertMatches(result, 20L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("matchedBombActivated", passed, snapshot, expected, result, error,
-        "Score: 20");
+    recordAndAssert("matchedBombActivated", passed, snapshot, 20L, 2L, expected, result, error);
   }
 
   @Test
@@ -1177,15 +1146,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(20, result.getScore(), "2 tiles * 10 * 1");
+      assertMatches(result, 20L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("matchedRocketActivated", passed, snapshot, expected, result, error,
-        "Score: 20");
+    recordAndAssert("matchedRocketActivated", passed, snapshot, 20L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -1208,16 +1176,15 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
       // Only 3 tiles scored (not the unfrozen ice)
-      assertEquals(30, result.getScore(), "3 match tiles * 10 * 1");
+      assertMatches(result, 30L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("iceAdjacentToMatchUnfreezes", passed, snapshot,
-        expected, result, error, "Score: 30");
+    recordAndAssert("iceAdjacentToMatchUnfreezes", passed, snapshot, 30L, 2L, expected, result,
+        error);
   }
 
   @Test
@@ -1239,16 +1206,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
       // All 3 tiles in the match scored (including the ice)
-      assertEquals(30, result.getScore(), "3 tiles * 10 * 1");
+      assertMatches(result, 30L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("iceInMatchDestroyed", passed, snapshot, expected, result, error,
-        "Score: 30");
+    recordAndAssert("iceInMatchDestroyed", passed, snapshot, 30L, 2L, expected, result, error);
   }
 
   @Test
@@ -1269,16 +1234,14 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(90, result.getScore(), "3 * 10 * 3 = 90");
-      assertEquals(6, result.getMultiplier(), "multiplier doubled from 3 to 6");
+      assertMatches(result, 90L, 6L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("matchScoringWithMultiplier", passed, snapshot,
-        expected, result, error, "Score: 90  Multiplier: 6");
+    recordAndAssert("matchScoringWithMultiplier", passed, snapshot, 90L, 6L, expected, result,
+        error);
   }
 
   @Test
@@ -1299,14 +1262,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, expected);
-      assertEquals(2, result.getMultiplier(), "multiplier doubled from 1 to 2");
+      assertMatches(result, 30L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("matchDoublesMultiplier", passed, snapshot, expected, result, error,
-        "Multiplier: 2");
+    recordAndAssert("matchDoublesMultiplier", passed, snapshot, 30L, 2L, expected, result,
+        error);
   }
 }
