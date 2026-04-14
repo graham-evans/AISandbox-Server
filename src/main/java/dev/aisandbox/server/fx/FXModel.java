@@ -47,7 +47,7 @@ public enum FXModel {
 
   @Getter
   @Setter
-  private SimulationRunner runner = null;
+  private transient SimulationRunner runner = null;
 
   FXModel() {
     // populate simulation list

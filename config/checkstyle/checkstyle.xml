@@ -456,6 +456,9 @@
       <!-- The check is suppressed in the next line of code after the comment -->
       <property name="influenceFormat" value="1"/>
     </module>
+    <module name="TodoComment">
+      <property name="format" value="(?i)(TODO)|(FIXME)"/>
+    </module>
 
 
   </module>

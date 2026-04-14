@@ -113,7 +113,7 @@ public class Cell {
     Iterator<Map.Entry<Direction, Cell>> itr = neighbours.entrySet().iterator();
     while (itr.hasNext()) {
       Map.Entry<Direction, Cell> entry = itr.next();
-      if (entry.getValue() == c) {
+      if (entry.getValue() == c) { // NOPMD - comparing the objects not the value of the objects.
         addPath(entry.getKey());
       }
     }

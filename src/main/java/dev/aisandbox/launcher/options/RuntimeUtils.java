@@ -110,7 +110,7 @@ public class RuntimeUtils {
       options = workBuilder.build();
     } catch (ParseException e) {
       System.err.println("Error parsing command line arguments: " + e.getMessage());
-      System.exit(-1);
+      System.exit(-1); // NOPMD: allowed as we're running from the command line.
     }
     return options;
   }

@@ -1,39 +1,70 @@
 # AI Sandbox - Simulation Server
 
-Server simulations for learning Reinforcement Learning and action based AI.
+Server simulations for learning Reinforcement Learning and action-based AI.
 
-> [!NOTE]
-> This is a re-implementation of the AISandbox-Client project, with the integration changed to use protobuf.
-> We are nearing completion of version 2.0, so users are encouraged to try the new software out and report bugs via [GitHub issues](https://github.com/graham-evans/AISandbox-Server/issues).
+The AI Sandbox provides a collection of environments where you can build and train AI agents using any programming language that supports [Protocol Buffers](https://protobuf.dev/). Write your agent, connect it over TCP, and start learning.
 
+Full documentation is available at [aisandbox.dev](https://aisandbox.dev).
 
-# Progress
+## Implemented Simulations
 
-Before v2.0.0 is released, the following changes are needed
+| Simulation | Description |
+|---|---|
+| **Multi Armed Bandits** | Repeatedly select from a series of one-armed bandits to achieve the best return over time. |
+| **The Coin Game** | Two-player puzzles where the aim is to force your opponent to take the last coin. |
+| **High / Low Cards** | Choose whether the next card will be higher or lower than the last. |
+| **Maze** | Explore a maze to find the exit, then exploit the biases in the generator. |
+| **Mine Hunter** | Use logic to defuse a minefield. |
+| **Twisty Puzzles** | Traditional logic puzzles of various sizes. |
+| **Mancala** | Two-player game collecting seeds (version 2.1) |
 
-## v2.0.0 Milestone 1 - Feb 2025
+## Getting Started
 
-- [x] All simulations converted to use protobuf and have basic functionality  
-- [x] UI framework implemented
-- [x] CLI framework implemented
+### Download
 
-## v2.0.0 Milestone 2 - May 2025
+Platform-specific installers and archives are available from the [downloads page](https://aisandbox.dev/intro/Downloads.html) on the website.
 
-- [x] UI for all simulations (layout and widgets complete)
+### Run from Source
 
-## v2.0.0 Release Candidate 1 - September 2025
+Requires JDK 21 or higher ([Adoptium](https://adoptium.net/), [Oracle](https://www.oracle.com/java/technologies/downloads), or [Microsoft OpenJDK](https://learn.microsoft.com/en-us/java/openjdk/download)).
 
-- [x] UI tweaks
-- [x] Demos available for Java
-- [x] Demos available for Python
+```bash
+./gradlew run
+```
 
-## v2.0.0 Release Candidate 2 - November 2025
+This launches the GUI where you can select a simulation, configure its parameters, and start it. The server then opens a TCP port for each agent slot, ready for your code to connect.
 
-- [x] Finalise theme colours
-- [x] Demos available for Java
-- [x] Demos available for Python
-- [ ] Documentation complete
+### Write an Agent
 
+Connect to the server using Protocol Buffers over TCP from any language. Example agents are available in:
 
-The new sandbox is now feature feature-complete, with only some changes to be made to the documentation.
-I'll then be working on final bugfixes and deployment builds.
+- [Java demos](https://github.com/graham-evans/AISandbox-Demos-Java)
+- [Python demos](https://github.com/graham-evans/AISandbox-Demos-Python)
+
+### CLI Mode
+
+Run simulations headlessly by passing command-line arguments:
+
+```bash
+./gradlew run --args="--help"
+```
+
+## Building
+
+```bash
+./gradlew build       # Compile, test, and run static analysis
+./gradlew test        # Run tests only
+./gradlew distZip     # Create distribution archive
+```
+
+Cross-compile for other platforms with:
+
+```bash
+./gradlew clean distZip -Denv=win
+```
+
+Supported platforms: `win`, `linux`, `linux-aarch64`, `mac`, `osx`, `osx-aarch64`.
+
+## Licence
+
+This project is licensed under the [GNU General Public License v3.0](LICENCE).

@@ -100,7 +100,7 @@ public class CoinIcons {
         coinImage.getHeight());
 
     // Create the font for numeric labels
-    Font font = new Font("Arial", Font.BOLD, 20);
+    Font font = new Font("Open Sans", Font.BOLD, 20);
 
     // Generate images for quantities from 0 to cointCount
     for (int i = 0; i <= cointCount; i++) {

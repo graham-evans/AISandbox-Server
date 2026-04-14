@@ -64,7 +64,7 @@ public class BaseGraph {
   /**
    * Font used for the main graph title.
    */
-  private final static Font TITLE_FONT = new Font("Arial", Font.BOLD, TITLE_FONT_SIZE);
+  private final static Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
   /**
    * Font size for axis labels.
    */
@@ -72,7 +72,7 @@ public class BaseGraph {
   /**
    * Font used for axis labels.
    */
-  private final static Font AXIS_FONT = new Font("Arial", Font.PLAIN, AXIS_FONT_SIZE);
+  private final static Font AXIS_FONT = new Font("Open Sans", Font.PLAIN, AXIS_FONT_SIZE);
   /**
    * Font size for tick mark labels.
    */
@@ -80,7 +80,7 @@ public class BaseGraph {
   /**
    * Font used for tick mark labels.
    */
-  private final static Font TICK_FONT = new Font("Arial", Font.PLAIN, TICK_FONT_SIZE);
+  private final static Font TICK_FONT = new Font("Open Sans", Font.PLAIN, TICK_FONT_SIZE);
   /**
    * Dash pattern for gridlines.
    */

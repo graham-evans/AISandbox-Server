@@ -162,7 +162,7 @@ public enum Theme {
   private final Color baizeBorder;
   private final String logo;
 
-  private final BufferedImage logoImage;
+  private final transient BufferedImage logoImage;
 
   Theme(Color base, Color background, Color border, Color primary, Color secondary, Color accent,
       Color text, Color baize, Color baizeBorder, String logo) {
