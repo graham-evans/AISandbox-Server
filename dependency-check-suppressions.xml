@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.4.xsd"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.4.xsd
+                                  https://dependency-check.github.io/DependencyCheck/dependency-suppression.1.4.xsd">
+   <suppress>
+      <notes><![CDATA[
+    file name: commons-beanutils-1.10.1.jar - we don't use the vulnerable function
+    ]]></notes>
+      <sha1>22c392b43aa32e1364fb39647111edfa91df9070</sha1>
+      <cpe>cpe:/a:apache:commons_beanutils</cpe>
+   </suppress>
+</suppressions>
