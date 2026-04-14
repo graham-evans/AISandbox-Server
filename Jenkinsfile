@@ -6,11 +6,6 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
-    // Use the Gradle installation configured in Jenkins Global Tool Configuration
-    tools {
-        gradle 'Gradle 8.14'
-    }
-
     // Poll SCM hourly
     triggers {
         pollSCM('H * * * *')
@@ -20,7 +15,7 @@ pipeline {
         // Run Gradle build with all tasks
         stage('Build & Test') {
             steps {
-                gradle 'distZip pmdMain test checkstyleMain checkstyleTest'
+                sh './gradlew distZip pmdMain test checkstyleMain checkstyleTest'
             }
         }
     }
