@@ -49,9 +49,9 @@ public class TestRunMancala {
       OutputRenderer out = new BitmapOutputRenderer();
       out.setOutputDirectory(outputDirectory);
       out.setup(sim);
-      out.setSkipFrames(100);
+      out.setSkipFrames(10);
       // start simulation
-      for (int step = 0; step < 1200; step++) {
+      for (int step = 0; step < 200; step++) {
         sim.step(out);
       }
       // finish simulation

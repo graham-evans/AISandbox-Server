@@ -6,6 +6,7 @@ plugins {
     id 'pmd'
     id 'checkstyle'
     id 'com.github.ben-manes.versions' version '0.53.0'
+    id 'org.owasp.dependencycheck' version '12.2.1'
 }
 
 group = 'dev.aisandbox'
@@ -62,6 +63,21 @@ pmd {
                 '**/proto/**'
         ]
     }
+}
+
+dependencyCheck {
+    // Generate both HTML (for humans) and XML (for Jenkins)
+    format = 'ALL'
+
+    // Fail the build if any dependency has a CVSS score of 7 or higher
+    // (adjust this threshold to suit your risk tolerance)
+    failBuildOnCVSS = 7.0
+
+    // The NVD API key - read from an environment variable so it's not in source control
+    nvd.apiKey = System.getenv('NVD_API_KEY') ?: ''
+
+    // suppress known false positives
+    suppressionFile = 'dependency-check-suppressions.xml'
 }
 
 tasks.register('copyDocs', Copy) {

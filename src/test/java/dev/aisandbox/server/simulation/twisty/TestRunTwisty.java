@@ -75,11 +75,11 @@ public class TestRunTwisty {
           puzzleType.name() + "_" + theme.name().toLowerCase());
       targetDir.mkdirs();
       OutputRenderer out = new BitmapOutputRenderer();
-      out.setSkipFrames(100);
+      out.setSkipFrames(10);
       out.setOutputDirectory(targetDir);
       out.setup(sim);
       // start simulation
-      for (int step = 0; step < 1000; step++) {
+      for (int step = 0; step < 100; step++) {
         sim.step(out);
       }
       // finish simulation

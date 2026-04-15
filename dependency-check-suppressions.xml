@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.4.xsd"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.4.xsd
+                                  https://dependency-check.github.io/DependencyCheck/dependency-suppression.1.4.xsd">
+   <suppress>
+      <notes><![CDATA[
+    file name: commons-beanutils-1.10.1.jar - we don't use the vulnerable function
+    ]]></notes>
+      <sha1>22c392b43aa32e1364fb39647111edfa91df9070</sha1>
+      <cpe>cpe:/a:apache:commons_beanutils</cpe>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: commons-lang3-3.14.0.jar
+    ]]></notes>
+      <sha1>1ed471194b02f2c6cb734a0cd6f6f107c673afae</sha1>
+      <cve>CVE-2025-48924</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: commons-lang3-3.8.1.jar
+    ]]></notes>
+      <sha1>6505a72a097d9270f7a9e7bf42c4238283247755</sha1>
+      <cve>CVE-2025-48924</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: pmd-ant-7.0.0.jar
+    ]]></notes>
+      <sha1>2859d86591d286cf1fefead6b99640238617c979</sha1>
+      <cve>CVE-2026-28338</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: pmd-core-7.0.0.jar
+    ]]></notes>
+      <sha1>8e59841d1e4e0f726a867cdbcf62275800023ea0</sha1>
+      <cpe>cpe:/a:pmd_project:pmd</cpe>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: pmd-java-7.0.0.jar
+    ]]></notes>
+      <sha1>d0e46b36088d26e37585e6f1e7e53a3f0efe4631</sha1>
+      <cpe>cpe:/a:pmd_project:pmd</cpe>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: plexus-utils-3.3.0.jar
+    ]]></notes>
+      <sha1>cf43b5391de623b36fe066a21127baef82c64022</sha1>
+      <cpe>cpe:/a:codehaus-plexus:plexus-utils</cpe>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <sha1>efc080757b6b0cfe1ecbfddef27a44496549afa4</sha1>
+      <cve>CVE-2009-2476</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <sha1>efc080757b6b0cfe1ecbfddef27a44496549afa4</sha1>
+      <cve>CVE-2009-2689</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-2475</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-3879</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-3881</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-3882</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-3883</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-2690</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-3728</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-3880</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-graphics-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-graphics@.*$</packageUrl>
+      <cve>CVE-2009-3884</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-2476</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-2689</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-2475</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-3879</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-3881</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-3882</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-3883</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-2690</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-3728</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-3880</cve>
+   </suppress>
+   <suppress>
+      <notes><![CDATA[
+    file name: javafx-swing-21.0.8-linux.jar
+    ]]></notes>
+      <packageUrl regex="true">^pkg:maven/org\.openjfx/javafx-swing@.*$</packageUrl>
+      <cve>CVE-2009-3884</cve>
+   </suppress>
+</suppressions>
