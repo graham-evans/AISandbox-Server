@@ -48,11 +48,11 @@ public class TestRunBandit {
       outputDirectory.mkdirs();
       // create output
       OutputRenderer out = new BitmapOutputRenderer();
-      out.setSkipFrames(100);
+      out.setSkipFrames(10);
       out.setOutputDirectory(outputDirectory);
       out.setup(sim);
       // start simulation
-      for (int step = 0; step < 1000; step++) {
+      for (int step = 0; step < 100; step++) {
         sim.step(out);
       }
       // finish simulation

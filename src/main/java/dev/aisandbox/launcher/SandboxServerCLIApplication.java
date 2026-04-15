@@ -19,11 +19,12 @@ import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.help.HelpFormatter;
 
 /**
  * Command-line interface application for running AI Sandbox simulations.
@@ -101,9 +102,13 @@ public class SandboxServerCLIApplication {
       helpSimulation(runtimeOptions.simulation());
     } else {
       // show generic help
-      HelpFormatter formatter = new HelpFormatter();
+      HelpFormatter formatter = HelpFormatter.builder().get();
       System.out.println();
-      formatter.printHelp("AISandboxServer", RuntimeUtils.getOptions());
+      try {
+        formatter.printHelp("AISandboxServer", null, RuntimeUtils.getOptions(), null, true);
+      } catch (IOException e) {
+        log.error("Error printing help", e);
+      }
     }
   }
 
