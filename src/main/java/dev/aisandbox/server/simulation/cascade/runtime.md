@@ -51,8 +51,7 @@ Make move takes a board and two x,y pairs (the pair of cells to be swapped). It 
    1. Count all cells that are not EMPTY or STONE (this explicitly includes ICE tiles, standard tiles, bombs, rockets, and both prisms themselves).
    2. Replace all of these with EMPTY cells.
    3. Increase the score by the count multiplied by ten, scaled by the current multiplier.
-   4. Double the score multiplier.
-   5. Return the board.
+   4. Return the board.
 4. If one cell is a PRISM and the other is a BOMB, ROCKET_H, or ROCKET_V (the "special"):
    1. Note the special tile's type and colour.
    2. Replace the PRISM cell with a new tile of that type and colour, and mark it activated.
@@ -70,8 +69,7 @@ Make move takes a board and two x,y pairs (the pair of cells to be swapped). It 
    5. For each ICE tile of this colour: replace it with a STANDARD tile of that colour (unfreeze it — it does not score directly here).
    6. Activate any BOMB, ROCKET_H, or ROCKET_V tiles of this colour (they will fire during the update loop).
    7. Increase the score by the count multiplied by ten, scaled by the current multiplier.
-   8. Double the score multiplier.
-   9. Return the board.
+   8. Return the board.
 6. If both cells are BOMB:
    1. Remove both bombs (replace with EMPTY).
    2. For each non-EMPTY cell within the 5×5 area centred on each bomb's original position (this includes STONE and ICE):
@@ -79,8 +77,7 @@ Make move takes a board and two x,y pairs (the pair of cells to be swapped). It 
       - If it is a PRISM: replace with EMPTY and trigger the prism effect using the swapped bomb's colour (same effect as described in Update Priority 2).
       - Otherwise (STANDARD, ICE, STONE): replace with EMPTY.
    3. Increase the score by the count of tiles destroyed (replaced with EMPTY in step 2) multiplied by ten, scaled by the current multiplier.
-   4. Double the current multiplier
-   5. Return the board.
+   4. Return the board.
 7. If one cell is a BOMB and the other is a ROCKET_H or ROCKET_V:
    1. Remove both tiles (replace with EMPTY).
    2. Destroy the four diagonal neighbours of the BOMB's original position (clamped to board bounds). For each diagonal cell:
@@ -117,14 +114,14 @@ Make move takes a board and two x,y pairs (the pair of cells to be swapped). It 
 
 This is called on unstable boards to advance the board state by one step. It is called repeatedly until the board is stable. Each call performs the single highest-priority applicable action and returns, so the caller can redraw the screen between steps.
 
-Note: because the multiplier is now managed here, the Step logic (step 9.iii.1) no longer needs to double the multiplier itself — the update method handles it.
+Note: the score multiplier is managed exclusively in Priority 1 (gravity and refill). It doubles each time gravity or refill makes changes to the board, ensuring the multiplier increases between scoring waves without needing to be managed in each scoring path.
 
 ### Priority 1 — Gravity and refill
 
 1. For each column, within each segment bounded by STONE and ICE tiles:
    a. Compact all fallable tiles downward so that empty cells bubble to the top of the segment.
 2. Fill any empty cells at the top of open column segments (not sealed above by STONE or ICE) with new random STANDARD tiles.
-3. If any tiles moved or were created, return. (No scoring, no multiplier change.)
+3. If any tiles moved or were created, double the score multiplier and return. (No scoring occurs in this step.)
 
 ### Priority 2 — Resolve activated specials
 
@@ -162,8 +159,7 @@ If any tiles on the board have their activated flag set:
       - Otherwise: replace with EMPTY. Continue.
    c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
 5. If any new tiles were marked activated during steps 2–4, repeat from step 1 of this priority (process the full chain reaction within the same call).
-6. Double the score multiplier.
-7. Return.
+6. Return.
 
 **Prism triggered by explosion:** When a bomb or rocket explosion hits a PRISM, the prism fires using the colour of the bomb or rocket that destroyed it. The effect is:
    - Replace the PRISM with EMPTY.
@@ -188,5 +184,4 @@ If any tiles on the board have their activated flag set:
    b. Otherwise: replace it with EMPTY — unless it is the designated position for a spawned special, in which case place the new special there instead.
 5. For each ICE tile that is orthogonally adjacent to at least one tile that was removed in step 4b: replace it with a STANDARD tile of its colour (unfreeze it). Unfrozen tiles do not count toward scoring.
 6. Add tiles removed × TILE_SCORE × current multiplier to the score. Count only tiles replaced with EMPTY in step 4b — do not count activated specials or unfrozen ice.
-7. Double the score multiplier.
-8. Return.
+7. Return.

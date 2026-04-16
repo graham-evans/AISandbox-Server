@@ -721,7 +721,6 @@ public class CascadeBoardUtils {
         }
       }
       board.addScore(count * CascadeBoard.TILE_SCORE * board.getMultiplier());
-      board.setMultiplier(board.getMultiplier() * 2);
       return board;
     }
 
@@ -795,7 +794,6 @@ public class CascadeBoardUtils {
       board.setCell(prismX, prismY, CascadeCell.empty());
       int destroyed = triggerPrismEffect(board, colour);
       board.addScore(destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
-      board.setMultiplier(board.getMultiplier() * 2);
       return board;
     }
 
@@ -908,6 +906,7 @@ public class CascadeBoardUtils {
   public static CascadeBoard updateBoard(CascadeBoard board, Random random) {
     // Priority 1: Gravity and refill
     if (applyGravityAndSmartRefill(board, random)) {
+      board.setMultiplier(board.getMultiplier() * 2);
       return board;
     }
 
@@ -1054,9 +1053,6 @@ public class CascadeBoardUtils {
           break;
         }
       }
-    }
-    if (anyProcessed) {
-      board.setMultiplier(board.getMultiplier() * 2);
     }
     return anyProcessed;
   }
@@ -1275,9 +1271,8 @@ public class CascadeBoardUtils {
       }
     }
 
-    // Score and double multiplier
+    // Score
     board.addScore((long) removeCount * CascadeBoard.TILE_SCORE * board.getMultiplier());
-    board.setMultiplier(board.getMultiplier() * 2);
   }
 
   /**
