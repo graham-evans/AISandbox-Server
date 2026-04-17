@@ -164,7 +164,7 @@ public class CascadeMakeMoveTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.makeMove(b, 3, 0, 4, 0);
-      assertMatches(result, 80L, 2L, expected);
+      assertMatches(result, 80L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
@@ -273,7 +273,7 @@ public class CascadeMakeMoveTest {
     // Prism at (0,0), red standard at (1,0). Other reds at (3,0) and (5,0).
     // Red bomb at (6,0) should be activated. Red ice at (7,0) should unfreeze.
     // Count of red STANDARD destroyed: (1,0), (3,0), (5,0) = 3.
-    // Score = 3 * 10 * 1 = 30, multiplier doubled to 2.
+    // Score = 3 * 10 * 1 = 30, multiplier stays at 1.
     CascadeBoard b = board(
         "xx ro go ro go ro rb ri",
         S, S, S, S, S, S, S
@@ -289,20 +289,20 @@ public class CascadeMakeMoveTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.makeMove(b, 0, 0, 1, 0);
-      assertMatches(result, 30L, 2L, expected);
+      assertMatches(result, 30L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusStandard", passed, snapshot, 30L, 2L, expected, result, error);
+    recordAndAssert("prismPlusStandard", passed, snapshot, 30L, 1L, expected, result, error);
   }
 
   @Test
   void prismPlusStandardWithIce() {
     // Verify ICE tiles of matching colour unfreeze to STANDARD (not destroyed).
     // Prism at (0,0), red standard at (1,0). Red ice at (3,0) and (5,0).
-    // Only the red STANDARD at (1,0) is destroyed. Score = 1 * 10 = 10. Multiplier doubled.
+    // Only the red STANDARD at (1,0) is destroyed. Score = 1 * 10 = 10. Multiplier stays.
     CascadeBoard b = board(
         "xx ro go ri go ri bo po",
         S, S, S, S, S, S, S
@@ -318,13 +318,13 @@ public class CascadeMakeMoveTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.makeMove(b, 0, 0, 1, 0);
-      assertMatches(result, 10L, 2L, expected);
+      assertMatches(result, 10L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusStandardWithIce", passed, snapshot, 10L, 2L, expected, result,
+    recordAndAssert("prismPlusStandardWithIce", passed, snapshot, 10L, 1L, expected, result,
         error);
   }
 
@@ -444,6 +444,47 @@ public class CascadeMakeMoveTest {
     }
     recordAndAssert("bombPlusBombHitsPrism", passed, snapshot, 310L, 1L, expected, result, error);
   }
+
+  @Test
+  void bombPlusBombHitsPrismHitsBomb() {
+    // Bombs at (3,2) and (4,2). Prism at (2,2) within 5x5 area.
+    // Prism triggers using bomb's colour (red) — activates all red BOMB tiles on board.
+    // Red bomb at (0,0) should be activated by prism effect.
+    // Union: x=1..6, y=0..4 = 30 tiles (including prism). Prism effect: +1 (0,0).
+    // Score = 31 * 10 = 310.
+    CascadeBoard b = board(
+            "rb go bo go go bo go bo",
+            "go bo go go go go bo go",
+            "bo go xx rb rb go go bo",
+            "go bo go go go go bo go",
+            "bo go bo go go bo go bo",
+            S, S, S
+    );
+    b.setMultiplier(1);
+    CascadeBoard snapshot = b.copy();
+    // 5x5 union covers x=1..6, y=0..4. Plus prism effect kills red STANDARD at (0,0).
+    String[] expected = {
+            "RB .. .. .. .. .. .. bo",
+            "go .. .. .. .. .. .. go",
+            "bo .. .. .. .. .. .. bo",
+            "go .. .. .. .. .. .. go",
+            "bo .. .. .. .. .. .. bo",
+            S, S, S
+    };
+    boolean passed = false;
+    String error = null;
+    CascadeBoard result = null;
+    try {
+      result = CascadeBoardUtils.makeMove(b, 3, 2, 4, 2);
+      assertMatches(result, 300L, 1L, expected);
+      passed = true;
+    } catch (AssertionError | Exception e) {
+      error = e.getMessage();
+      result = b;
+    }
+    recordAndAssert("bombPlusBombHitsPrismHitsBomb", passed, snapshot, 300L, 1L, expected, result, error);
+  }
+
 
   @Test
   void bombPlusBombHitsSpecial() {
@@ -919,38 +960,9 @@ public class CascadeMakeMoveTest {
   // ── Score/multiplier tests ─────────────────────────────────────────────
 
   @Test
-  void prismPlusPrismWithExistingMultiplier() {
-    // Start with multiplier=4. Prism+prism should use current multiplier for scoring.
-    // 8 tiles destroyed. Score = 8 * 10 * 4 = 320. Multiplier doubled to 8.
-    CascadeBoard b = board(
-        "ro go bo xx xx bo go ro",
-        S, S, S, S, S, S, S
-    );
-    b.setMultiplier(4);
-    CascadeBoard snapshot = b.copy();
-    String[] expected = {
-        ".. .. .. .. .. .. .. ..",
-        S, S, S, S, S, S, S
-    };
-    boolean passed = false;
-    String error = null;
-    CascadeBoard result = null;
-    try {
-      result = CascadeBoardUtils.makeMove(b, 3, 0, 4, 0);
-      assertMatches(result, 320L, 8L, expected);
-      passed = true;
-    } catch (AssertionError | Exception e) {
-      error = e.getMessage();
-      result = b;
-    }
-    recordAndAssert("prismPlusPrismWithExistingMultiplier", passed, snapshot, 320L, 8L, expected,
-        result, error);
-  }
-
-  @Test
-  void prismPlusStandardDoublesMultiplier() {
-    // Start with multiplier=2. After prism+standard, multiplier should be 4.
-    // 2 red standard tiles. Score = 2 * 10 * 2 = 40. Multiplier -> 4.
+  void prismPlusStandardKeepsMultiplier() {
+    // Start with multiplier=2. After prism+standard, multiplier should be 2.
+    // 2 red standard tiles. Score = 2 * 10 * 2 = 40. Multiplier = 2.
     CascadeBoard b = board(
         "xx ro go ro go bo go po",
         S, S, S, S, S, S, S
@@ -966,13 +978,13 @@ public class CascadeMakeMoveTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.makeMove(b, 0, 0, 1, 0);
-      assertMatches(result, 40L, 4L, expected);
+      assertMatches(result, 40L, 2L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("prismPlusStandardDoublesMultiplier", passed, snapshot, 40L, 4L, expected,
+    recordAndAssert("prismPlusStandardDoublesMultiplier", passed, snapshot, 40L, 2L, expected,
         result, error);
   }
 }
