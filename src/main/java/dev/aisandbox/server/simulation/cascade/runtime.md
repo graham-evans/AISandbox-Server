@@ -185,6 +185,6 @@ If any tiles on the board have their activated flag set:
 4. Process the marked tiles:
    a. If a marked tile is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (it will fire on the next update call via Priority 2). Do **not** remove it.
    b. Otherwise: replace it with EMPTY — unless it is the designated position for a spawned special, in which case place the new special there instead.
-5. For each ICE tile that is orthogonally adjacent to at least one tile that was removed in step 4b: replace it with a STANDARD tile of its colour (unfreeze it). Unfrozen tiles do not count toward scoring.
-6. Add tiles removed × TILE_SCORE × current multiplier to the score. Count only tiles replaced with EMPTY in step 4b — do not count activated specials or unfrozen ice.
-7. Return.
+5. (Add tiles removed + tiles swapped for specials) × TILE_SCORE × current multiplier to the score. Do not count 
+   activated specials or unfrozen ice.
+6. Return.
