@@ -127,10 +127,11 @@ Note: the score multiplier is managed exclusively in Priority 1 (gravity and ref
 
 If any tiles on the board have their activated flag set:
 
-1. Collect all currently activated tiles into a processing set and clear their activated flags.
+1. Collect all currently activated tiles into a processing set.
 2. For each activated BOMB in the set:
    a. Replace the bomb cell with EMPTY.
-   b. For each cell in the 3×3 area centred on the bomb (clamped to board bounds):
+   b. Increase score by TILE_SCPRE * current multiplier
+   c. For each cell in the 3×3 area centred on the bomb (clamped to board bounds):
       - Skip already-EMPTY cells.
       - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction).
       - If it is a PRISM: replace with EMPTY and trigger the prism effect using the bomb's colour (see below).
@@ -140,26 +141,28 @@ If any tiles on the board have their activated flag set:
    c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
 3. For each activated ROCKET_H in the set:
    a. Replace the rocket cell with EMPTY.
-   b. Fire in both directions along the row from the rocket's position. In each direction, process cells one at a time:
+   b. Increase score by TILE_SCORE * current multiplier
+   c. Fire in both directions along the row from the rocket's position. In each direction, process cells one at a time:
       - Skip already-EMPTY cells.
       - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction). Continue past it.
       - If it is a PRISM: replace with EMPTY and trigger the prism effect using the rocket's colour (see below). Continue.
       - If it is STONE: replace with EMPTY (destroyed). **Stop in this direction.**
       - If it is ICE: replace with EMPTY (destroyed). Continue.
       - Otherwise: replace with EMPTY. Continue.
-   c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
+   d. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
 4. For each activated ROCKET_V in the set:
    a. Replace the rocket cell with EMPTY.
-   b. Fire in both directions along the column from the rocket's position. In each direction, process cells one at a time:
+   b. Increase score by TILE_SCORE * current multiplier
+   c. Fire in both directions along the column from the rocket's position. In each direction, process cells one at a 
+   time:
       - Skip already-EMPTY cells.
       - If it is a BOMB, ROCKET_H, or ROCKET_V: mark it activated (chain reaction). Continue past it.
       - If it is a PRISM: replace with EMPTY and trigger the prism effect using the rocket's colour (see below). Continue.
       - If it is STONE: replace with EMPTY (destroyed). **Stop in this direction.**
       - If it is ICE: replace with EMPTY (destroyed). Continue.
       - Otherwise: replace with EMPTY. Continue.
-   c. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
-5. If any new tiles were marked activated during steps 2–4, repeat from step 1 of this priority (process the full chain reaction within the same call).
-6. Return.
+   d. Add tiles destroyed × TILE_SCORE × current multiplier to the score.
+5. Return.
 
 **Prism triggered by explosion:** When a bomb or rocket explosion hits a PRISM, the prism fires using the colour of the bomb or rocket that destroyed it. The effect is:
    - Replace the PRISM with EMPTY.
