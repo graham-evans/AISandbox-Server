@@ -13,10 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Utility for generating HTML test reports for Cascade board tests.
@@ -30,34 +27,36 @@ public final class CascadeTestReport {
   private CascadeTestReport() {
   }
 
-  /** A single test result record. */
-  public static class TestRecord {
-    public final String testName;
-    public final boolean passed;
-    public final String[] inputRows;
-    public final String inputInfo;
-    public final String[] expectedRows;
-    public final String expectedInfo;
-    public final String[] actualRows;
-    public final String actualInfo;
-    public final String errorMessage;
+  /**
+   * A single test result record.
+   */
+    public record TestRecord(String testName, boolean passed, String[] inputRows, String inputInfo, String[] expectedRows,
+                             String expectedInfo, String[] actualRows, String actualInfo,
+                             String errorMessage) implements Comparable<TestRecord> {
 
-    public TestRecord(String testName, boolean passed, String[] inputRows, String inputInfo,
-        String[] expectedRows, String expectedInfo, String[] actualRows, String actualInfo,
-        String errorMessage) {
-      this.testName = testName;
-      this.passed = passed;
-      this.inputRows = inputRows;
-      this.inputInfo = inputInfo;
-      this.expectedRows = expectedRows;
-      this.expectedInfo = expectedInfo;
-      this.actualRows = actualRows;
-      this.actualInfo = actualInfo;
-      this.errorMessage = errorMessage;
+    private int contentHash() {
+        return Objects.hash(
+                passed,
+                Arrays.hashCode(inputRows),
+                inputInfo,
+                Arrays.hashCode(expectedRows),
+                expectedInfo,
+                Arrays.hashCode(actualRows),
+                actualInfo,
+                errorMessage);
+      }
+
+      @Override
+      public int compareTo(TestRecord other) {
+        int cmp = this.testName.compareTo(other.testName);
+        if (cmp != 0) {
+          return cmp;
+        }
+        return Integer.compare(this.contentHash(), other.contentHash());
+      }
     }
-  }
 
-  private static final List<TestRecord> RESULTS = new ArrayList<>();
+  private static final Set<TestRecord> RESULTS = new TreeSet<>();
 
   /** Clears all recorded results. Call from {@code @BeforeAll}. */
   public static void reset() {
