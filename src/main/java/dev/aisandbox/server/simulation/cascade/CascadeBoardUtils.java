@@ -1016,6 +1016,7 @@ public class CascadeBoardUtils {
         }
         if (aType == TileType.BOMB) {
           board.setCell(ax, ay, CascadeCell.empty());
+          board.addScore(CascadeBoard.TILE_SCORE * board.getMultiplier());
           int destroyed = 0;
           for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
@@ -1029,12 +1030,14 @@ public class CascadeBoardUtils {
           board.addScore((long) destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
         } else if (aType == TileType.ROCKET_H) {
           board.setCell(ax, ay, CascadeCell.empty());
+          board.addScore(CascadeBoard.TILE_SCORE * board.getMultiplier());
           int destroyed = 0;
           destroyed += fireInDirection(board, ax, ay, -1, 0, aColour);
           destroyed += fireInDirection(board, ax, ay, 1, 0, aColour);
           board.addScore((long) destroyed * CascadeBoard.TILE_SCORE * board.getMultiplier());
         } else if (aType == TileType.ROCKET_V) {
           board.setCell(ax, ay, CascadeCell.empty());
+          board.addScore(CascadeBoard.TILE_SCORE * board.getMultiplier());
           int destroyed = 0;
           destroyed += fireInDirection(board, ax, ay, 0, -1, aColour);
           destroyed += fireInDirection(board, ax, ay, 0, 1, aColour);

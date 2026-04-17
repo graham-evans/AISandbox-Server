@@ -466,13 +466,14 @@ public class CascadeUpdateBoardTest {
     );
     b.setMultiplier(1);
     CascadeBoard snapshot = b.copy();
-    // Green bomb at (4,3) should be marked activated (not destroyed).
-    // Other tiles in 3x3 destroyed except the green bomb.
+    // Green bomb at (4,3) chains in the same call. Its 3x3 (x=3..5, y=2..4) finds only the
+    // 3 stones at x=5 still standing — everything else was already emptied by the red bomb.
+    // Red: 10(self) + 7*10 = 80. Green: 10(self) + 3*10 = 40. Total = 120.
     String[] expected = {
         S, S,
-        "## ## .. .. .. ## ## ##",
-        "## ## .. .. GB ## ## ##",
-        "## ## .. .. .. ## ## ##",
+        "## ## .. .. .. .. ## ##",
+        "## ## .. .. .. .. ## ##",
+        "## ## .. .. .. .. ## ##",
         S, S, S
     };
     boolean passed = false;
@@ -480,13 +481,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, 80L, 1L, expected);
+      assertMatches(result, 120L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombChainsBomb", passed, snapshot, 80L, 1L, expected, result,
+    recordAndAssert("activatedBombChainsBomb", passed, snapshot, 120L, 1L, expected, result,
         error);
   }
 
@@ -502,10 +503,13 @@ public class CascadeUpdateBoardTest {
     );
     b.setMultiplier(1);
     CascadeBoard snapshot = b.copy();
+    // Green rocket_h at (4,3) chains in the same call. Firing left it hits stone at x=1 (stop);
+    // firing right it hits stone at x=5 (stop). Both stones destroyed.
+    // Red: 10(self) + 7*10 = 80. Green: 10(self) + 2*10 = 30. Total = 110.
     String[] expected = {
         S, S,
         "## ## .. .. .. ## ## ##",
-        "## ## .. .. GH ## ## ##",
+        "## .. .. .. .. .. ## ##",
         "## ## .. .. .. ## ## ##",
         S, S, S
     };
@@ -514,13 +518,13 @@ public class CascadeUpdateBoardTest {
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      assertMatches(result, 80L, 1L, expected);
+      assertMatches(result, 110L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("activatedBombChainsRocket", passed, snapshot, 80L, 1L, expected, result,
+    recordAndAssert("activatedBombChainsRocket", passed, snapshot, 110L, 1L, expected, result,
         error);
   }
 
@@ -712,26 +716,28 @@ public class CascadeUpdateBoardTest {
     );
     b.setMultiplier(1);
     CascadeBoard snapshot = b.copy();
-    // Rocket fires left and right. Green bomb at (5,3) activated, not destroyed.
-    // Continues past green bomb: (6,3) and (7,3) destroyed.
+    // Green bomb at (5,3) chains in the same call. Its 3x3 (x=4..6, y=2..4) hits 6 stones
+    // (3 in row 2 and 3 in row 4 at x=4,5,6) — row 3 cells are already empty.
+    // Rocket: 10(self) + 6*10 = 70. Green bomb: 10(self) + 6*10 = 70. Total = 140.
     String[] expected = {
-        S, S, S,
-        ".. .. .. .. .. GB .. ..",
-        S, S, S, S
+        S, S,
+        "## ## ## ## .. .. .. ##",
+        ".. .. .. .. .. .. .. ..",
+        "## ## ## ## .. .. .. ##",
+        S, S, S
     };
     boolean passed = false;
     String error = null;
     CascadeBoard result = null;
     try {
       result = CascadeBoardUtils.updateBoard(b, seededRandom());
-      // Rocket self (10) + 3 left + 3 right (bomb activated, not destroyed) = 6 tiles (60) = 70
-      assertMatches(result, 70L, 1L, expected);
+      assertMatches(result, 140L, 1L, expected);
       passed = true;
     } catch (AssertionError | Exception e) {
       error = e.getMessage();
       result = b;
     }
-    recordAndAssert("rocketChainsSpecial", passed, snapshot, 70L, 1L, expected, result, error);
+    recordAndAssert("rocketChainsSpecial", passed, snapshot, 140L, 1L, expected, result, error);
   }
 
   @Test
