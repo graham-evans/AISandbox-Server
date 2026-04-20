@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+/**
+ * This package contains message definitions for the Cascade match-3 simulation.
+ * In Cascade, an agent scores points by swapping adjacent tiles on an 8×8 grid to
+ * form matching groups, trigger special objects, and chain cascades. The game lasts
+ * a fixed number of moves; the goal is to maximise the total score.
+ */
+package cascade;
+option java_multiple_files = true;
+option java_package = "dev.aisandbox.server.simulation.cascade.proto";
+
+/**
+ * CascadeState is sent to the agent at the start of each turn.
+ * It describes the full board configuration and the current game progress.
+ */
+message CascadeState {
+  string sessionID = 1;     // Unique identifier for this simulation run
+  string episodeID = 2;     // Unique identifier for the current game episode
+  int32 movesRemaining = 3; // Number of swaps left before the game ends
+  int64 score = 4;          // Accumulated score for the current episode
+  repeated string row = 5;  // Serialised board rows (y=0 to y=7); each row contains
+                             // eight space-separated two-character cell tokens
+                             // (see board serialisation documentation for token format)
+}
+
+/**
+ * CascadeAction is sent by the agent to request a tile swap.
+ * The two positions must be horizontally or vertically adjacent. A swap is only
+ * accepted if it produces at least one match of three or more tiles or activates
+ * a special tile (Prism); otherwise the move is rejected and the turn is wasted.
+ */
+message CascadeAction {
+  int32 x1 = 1; // Column of the first tile  (0 = left)
+  int32 y1 = 2; // Row of the first tile     (0 = top)
+  int32 x2 = 3; // Column of the second tile (must be adjacent to x1,y1)
+  int32 y2 = 4; // Row of the second tile    (must be adjacent to x1,y1)
+}
+
+/**
+ * CascadeResult is sent to the agent after each action, reporting the outcome
+ * of the swap and any points scored during the resulting cascade resolution.
+ */
+message CascadeResult {
+  int32 x1 = 1;              // Column of the first tile from the accepted action
+  int32 y1 = 2;              // Row of the first tile from the accepted action
+  int32 x2 = 3;              // Column of the second tile from the accepted action
+  int32 y2 = 4;              // Row of the second tile from the accepted action
+  int64 scoreGained = 5;     // Points scored during this move (including all cascade waves)
+  int64 totalScore = 6;      // Cumulative score for the episode so far
+  CascadeSignal signal = 7;  // Whether the episode continues or has ended
+}
+
+/**
+ * CascadeSignal indicates whether the game continues after the current action.
+ */
+enum CascadeSignal {
+  CONTINUE  = 0; // The game continues; the agent should await the next CascadeState
+  GAME_OVER = 1; // The move budget is exhausted; the episode has ended
+}

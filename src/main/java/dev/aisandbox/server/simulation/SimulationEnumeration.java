@@ -8,6 +8,7 @@ package dev.aisandbox.server.simulation;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.simulation.bandit.BanditScenario;
+import dev.aisandbox.server.simulation.cascade.CascadeScenario;
 import dev.aisandbox.server.simulation.coingame.CoinGameBuilder;
 import dev.aisandbox.server.simulation.highlowcards.HighLowCardsBuilder;
 import dev.aisandbox.server.simulation.mancala.MancalaBuilder;
@@ -96,7 +97,16 @@ public enum SimulationEnumeration {
    * stores. Landing in your own store grants an extra turn; landing in an empty pit on your
    * side captures the opponent's opposite seeds. The player with the most seeds wins.
    */
-  MANCALA(new MancalaBuilder());
+  MANCALA(new MancalaBuilder()),
+
+  /**
+   * The Cascade simulation — a match-3 puzzle for AI agents.
+   *
+   * <p>The agent scores points by swapping adjacent tiles on an 8×8 grid to form matching groups,
+   * trigger chain reactions, and detonate special objects. A standard game lasts 30 moves.
+   */
+  CASCADE(new CascadeScenario());
+
   /**
    * The {@link SimulationBuilder} instance associated with this simulation type.
    */
