@@ -39,6 +39,15 @@ public class SandboxServerFXApplication extends Application {
   @Override
   public void start(Stage stage) throws Exception {
     log.info("Starting application - FX");
+    // Set macOS Dock icon (stage.getIcons() only affects the window title bar)
+    if (java.awt.Taskbar.isTaskbarSupported()) {
+      java.awt.Taskbar taskbar = java.awt.Taskbar.getTaskbar();
+      if (taskbar.isSupported(java.awt.Taskbar.Feature.ICON_IMAGE)) {
+        java.awt.Image dockImage = java.awt.Toolkit.getDefaultToolkit()
+            .getImage(SandboxServerFXApplication.class.getResource("/images/AILogoW.png"));
+        taskbar.setIconImage(dockImage);
+      }
+    }
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fx/simulation.fxml"));
     loader.setResources(ResourceBundle.getBundle("fx.simulation"));
     Parent root = loader.load();
