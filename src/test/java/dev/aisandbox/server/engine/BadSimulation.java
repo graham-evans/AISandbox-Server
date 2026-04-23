@@ -6,6 +6,8 @@
 
 package dev.aisandbox.server.engine;
 
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+
 import java.util.List;
 import java.util.Random;
 
@@ -46,7 +48,7 @@ public class BadSimulation implements SimulationBuilder {
   }
 
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     return null;
   }
 }
