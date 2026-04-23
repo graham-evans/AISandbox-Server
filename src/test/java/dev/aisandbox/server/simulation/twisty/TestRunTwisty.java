@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
+
+import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -68,7 +70,7 @@ public class TestRunTwisty {
       List<Agent> agents = Arrays.stream(builder.getAgentNames(1))
           .map(s -> (Agent) new MockTwistyAgent(s)).toList();
       // create simulation
-      Simulation sim = builder.build(agents, theme, new Random());
+      Simulation sim = builder.build(agents, theme, new Random(), new NullTelementryEngine());
       assertNotNull(sim);
       // create output
       File targetDir = new File(outputDirectory,

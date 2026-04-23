@@ -13,6 +13,8 @@ import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
 import java.util.List;
 import java.util.Random;
+
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -104,13 +106,14 @@ public final class CoinGameBuilder implements SimulationBuilder {
    *
    * <p>Creates the simulation with the configured scenario and provided agents.
    *
-   * @param agents The list of agents that will participate in the simulation
-   * @param theme  The visual theme to apply to the simulation
-   * @param random A random number generator for any stochastic elements
+   * @param agents          The list of agents that will participate in the simulation
+   * @param theme           The visual theme to apply to the simulation
+   * @param random          A random number generator for any stochastic elements
+   * @param telemetryEngine
    * @return A new CoinGame simulation instance
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     return new CoinGame(agents, scenario, theme);
   }
 }

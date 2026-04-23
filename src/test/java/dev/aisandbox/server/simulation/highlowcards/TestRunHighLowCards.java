@@ -17,6 +17,8 @@ import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.io.File;
 import java.util.List;
 import java.util.Random;
+
+import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -37,7 +39,7 @@ public class TestRunHighLowCards {
       // create players
       List<Agent> agents = List.of(new MockPlayer());
       // create simulation
-      Simulation sim = simulationBuilder.build(agents, theme, new Random());
+      Simulation sim = simulationBuilder.build(agents, theme, new Random(), new NullTelementryEngine());
       // create output directory
       File outputDirectory = new File("build/test/highLowCards/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();

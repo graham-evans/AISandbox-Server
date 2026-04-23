@@ -13,6 +13,8 @@ import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
 import java.util.List;
 import java.util.Random;
+
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -124,13 +126,14 @@ public final class TwistyBuilder implements SimulationBuilder {
    *
    * <p>Builds a new TwistySimulation with the configured parameters.</p>
    *
-   * @param agents The list of agents participating in the simulation
-   * @param theme  The visual theme for the simulation
-   * @param random A random number generator for state initialization
+   * @param agents          The list of agents participating in the simulation
+   * @param theme           The visual theme for the simulation
+   * @param random          A random number generator for state initialization
+   * @param telemetryEngine
    * @return A new TwistySimulation instance, or null if an error occurs during creation
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     try {
       return new TwistySimulation(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved,
           theme, random);

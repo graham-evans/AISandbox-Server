@@ -13,6 +13,7 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
 import dev.aisandbox.server.simulation.bandit.model.BanditPullEnumeration;
 import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
 import java.io.File;
@@ -42,7 +43,7 @@ public class TestRunBandit {
       List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1))
           .map(s -> (Agent) new MockBanditPlayer(s)).toList();
       // create simulation
-      Simulation sim = banditBuilder.build(agents, theme, new Random());
+      Simulation sim = banditBuilder.build(agents, theme, new Random(), new NullTelementryEngine());
       // create output directory
       File outputDirectory = new File("build/test/bandit/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();

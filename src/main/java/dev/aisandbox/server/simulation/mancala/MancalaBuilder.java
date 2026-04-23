@@ -13,6 +13,8 @@ import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
 import java.util.List;
 import java.util.Random;
+
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -70,7 +72,7 @@ public final class MancalaBuilder implements SimulationBuilder {
   }
 
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     return new MancalaGame(agents, seedsPerPit.getSeeds(), theme);
   }
 }

@@ -24,6 +24,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.EpisodeDounbleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -182,22 +184,27 @@ public final class BanditRuntime implements Simulation {
    * Unique identifier for the current episode.
    */
   private String episodeID = UUID.randomUUID().toString();
+  /**
+   * Telemetry engine for logging and metrics
+   */
+  private final TelemetryEngine telemetryEngine;
 
   /**
    * Constructs a new Bandit simulation runtime with the specified configuration.
    *
-   * @param agent     the AI agent that will interact with the bandits
-   * @param random    the random number generator for reward generation
-   * @param banditCount the number of bandits available in the simulation
-   * @param pullCount the number of pulls allowed per episode
-   * @param normal    the mean value distribution for bandit initialization
-   * @param std       the standard deviation for bandit reward distributions
-   * @param updateRule the rule for updating bandit estimates
-   * @param theme     the visual theme for rendering
+   * @param agent           the AI agent that will interact with the bandits
+   * @param random          the random number generator for reward generation
+   * @param banditCount     the number of bandits available in the simulation
+   * @param pullCount       the number of pulls allowed per episode
+   * @param normal          the mean value distribution for bandit initialization
+   * @param std             the standard deviation for bandit reward distributions
+   * @param updateRule      the rule for updating bandit estimates
+   * @param theme           the visual theme for rendering
+   * @param telemetryEngine engine for logging and metrics
    */
   public BanditRuntime(Agent agent, Random random, int banditCount, int pullCount,
-      BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule,
-      Theme theme) {
+                       BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule,
+                       Theme theme, TelemetryEngine telemetryEngine) {
     // store parameters
     this.agent = agent;
     this.random = random;
@@ -207,6 +214,7 @@ public final class BanditRuntime implements Simulation {
     this.std = std;
     this.updateRule = updateRule;
     this.theme = theme;
+    this.telemetryEngine = telemetryEngine;
     // initialise widgets
     titleWidget = TitleWidget.builder().theme(theme).title("Multi-armed Bandit").build();
     logWidget = TextWidget.builder().width(RESULTS_WIDTH).height(RESULTS_HEIGHT).font(LOG_FONT)
@@ -274,6 +282,7 @@ public final class BanditRuntime implements Simulation {
       episodeScoreWidget.addValue(episodeScore);
       episodeSuccessWidget.addValue(episodeBestMoveCount / pullCount);
       statisticsWidget.addScore(episodeScore);
+      telemetryEngine.writeTelementryEvent(new EpisodeDounbleScoreEvent(BanditScenario.BANDIT_NAME,sessionID,episodeID,episodeScore));
     }
     // update the screen
     output.display();
