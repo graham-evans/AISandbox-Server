@@ -6,7 +6,7 @@
 
 package dev.aisandbox.server.simulation.mancala;
 
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.InvalidActionException;
 import java.io.Serial;
 
 /**
@@ -17,7 +17,7 @@ import java.io.Serial;
  *
  * <p>This will result in the player losing the game, but won't stop the simulation.
  */
-public class InvalidMancalaAction extends SimulationException {
+public class InvalidMancalaAction extends InvalidActionException {
 
   @Serial
   private static final long serialVersionUID = 1L;

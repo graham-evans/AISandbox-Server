@@ -45,4 +45,14 @@ public class InvalidActionException extends SimulationException {
   public InvalidActionException(String message) {
     super(message);
   }
+
+  /**
+   * Creates a new InvalidActionException with the specified error message and cause.
+   *
+   * @param message a descriptive error message explaining the invalid action
+   * @param cause the underlying cause of this exception
+   */
+  public InvalidActionException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

@@ -6,7 +6,7 @@
 
 package dev.aisandbox.server.simulation.twisty;
 
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
 import java.io.Serial;
 
 /**
@@ -20,9 +20,9 @@ import java.io.Serial;
  *
  * @author gde
  * @version $Id: $Id
- * @see dev.aisandbox.server.engine.exception.SimulationException
+ * @see dev.aisandbox.server.engine.exception.IllegalActionException
  */
-public class NotExistentMoveException extends SimulationException {
+public class NotExistentMoveException extends IllegalActionException {
 
   /**
    * Serialization version UID for maintaining compatibility across different versions.

@@ -46,4 +46,14 @@ public class IllegalActionException extends SimulationException {
   public IllegalActionException(String message) {
     super(message);
   }
+
+  /**
+   * Creates a new IllegalActionException with the specified error message and cause.
+   *
+   * @param message a descriptive error message explaining the illegal action
+   * @param cause the underlying cause of this exception
+   */
+  public IllegalActionException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
