@@ -13,6 +13,8 @@ import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
 import java.util.List;
 import java.util.Random;
+
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -112,13 +114,14 @@ public final class MineHunterScenario implements SimulationBuilder {
    * <p>This method builds a runtime instance of the simulation with the provided agent, theme, and a
    * random number generator for game state generation.
    *
-   * @param agents The list of agents participating in the simulation (only the first one is used)
-   * @param theme  The visual theme to use for the simulation
-   * @param random A random number generator for creating the mine field
+   * @param agents          The list of agents participating in the simulation (only the first one is used)
+   * @param theme           The visual theme to use for the simulation
+   * @param random          A random number generator for creating the mine field
+   * @param telemetryEngine
    * @return A new {@link MineHunterRuntime} instance
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     return new MineHunterRuntime(agents.getFirst(), mineSize, theme, random);
   }
 }

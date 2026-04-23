@@ -14,6 +14,7 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
 import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,7 @@ public class TestRunBadBandit {
           .toList();
 
       // Build the simulation using the bad player implementations.
-      Simulation sim = banditBuilder.build(agents, Theme.LIGHT, new Random());
+      Simulation sim = banditBuilder.build(agents, Theme.LIGHT, new Random(), new NullTelementryEngine());
 
       // Set up a null output renderer for the simulation.
       OutputRenderer out = new NullOutputRenderer();
@@ -83,7 +84,7 @@ public class TestRunBadBandit {
           .toList();
 
       // Build the simulation using the bad player implementations.
-      Simulation sim = banditBuilder.build(agents, Theme.LIGHT, new Random());
+      Simulation sim = banditBuilder.build(agents, Theme.LIGHT, new Random(), new NullTelementryEngine());
 
       // Set up a null output renderer for the simulation.
       OutputRenderer out = new NullOutputRenderer();
