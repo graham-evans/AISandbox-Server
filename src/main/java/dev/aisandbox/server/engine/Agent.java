@@ -7,7 +7,7 @@
 package dev.aisandbox.server.engine;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 
 /**
  * Interface representing an agent that can participate in simulations.
@@ -40,9 +40,9 @@ public interface Agent {
    * </p>
    *
    * @param msg The Protocol Buffer message to send
-   * @throws SimulationException Can be thrown on IO error or communication failure.
+   * @throws SimulationRuntimeException Can be thrown on IO error or communication failure.
    */
-  void send(GeneratedMessage msg) throws SimulationException;
+  void send(GeneratedMessage msg) throws SimulationRuntimeException;
 
   /**
    * Wait (block) until the agent responds with the expected object.
@@ -55,10 +55,10 @@ public interface Agent {
    * @param responseType The class of the message to be returned (must extend GeneratedMessage).
    * @param <T>          The message type to be returned.
    * @return The agents response message.
-   * @throws SimulationException Can be thrown if the wrong object is returned, if the agent
+   * @throws SimulationRuntimeException Can be thrown if the wrong object is returned, if the agent
    *                             disconnects, or if there are communication errors.
    */
-  <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationException;
+  <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationRuntimeException;
 
   /**
    * Close the agent connection and clean up any resources.

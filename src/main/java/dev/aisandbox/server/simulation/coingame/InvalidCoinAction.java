@@ -6,7 +6,8 @@
 
 package dev.aisandbox.server.simulation.coingame;
 
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.InvalidActionException;
+import java.io.Serial;
 
 /**
  * Exception thrown when an invalid action is attempted in the coin game.
@@ -20,8 +21,9 @@ import dev.aisandbox.server.engine.exception.SimulationException;
  *   <li>Trying to take more coins from a pile than exist in that pile.</li>
  * </ul>
  */
-public class InvalidCoinAction extends SimulationException {
+public class InvalidCoinAction extends InvalidActionException {
 
+  @Serial
   private static final long serialVersionUID = -7413257692226972217L;
 
   /**

@@ -12,7 +12,7 @@ import java.io.Serial;
  * Generic simulation exception, used for all exceptions that occur during the execution of a
  * simulation.
  */
-public class SimulationException extends Exception {
+public class SimulationRuntimeException extends Exception {
 
   @Serial
   private static final long serialVersionUID = -5614005125536427971L;
@@ -22,7 +22,7 @@ public class SimulationException extends Exception {
    *
    * @param message a descriptive message about the exception
    */
-  public SimulationException(String message) {
+  public SimulationRuntimeException(String message) {
     super(message);
   }
 
@@ -32,7 +32,7 @@ public class SimulationException extends Exception {
    * @param message a descriptive message about the exception
    * @param cause the underlying cause of this exception
    */
-  public SimulationException(String message, Throwable cause) {
+  public SimulationRuntimeException(String message, Throwable cause) {
     super(message, cause);
   }
 }

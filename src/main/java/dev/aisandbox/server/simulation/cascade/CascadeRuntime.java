@@ -9,7 +9,8 @@ package dev.aisandbox.server.simulation.cascade;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
@@ -138,10 +139,10 @@ public final class CascadeRuntime implements Simulation {
    * The board is reshuffled (without affecting score or moves) whenever it reaches a deadlock.
    *
    * @param output the renderer used to display the current state after processing
-   * @throws SimulationException if agent communication fails
+   * @throws SimulationRuntimeException if agent communication fails
    */
   @Override
-  public void step(OutputRenderer output) throws SimulationException {
+  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
     if (gameOver) {
       startNewEpisode();
     }

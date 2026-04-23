@@ -21,7 +21,8 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
 import dev.aisandbox.server.engine.widget.RollingSuccessStatisticsWidget;
@@ -195,7 +196,7 @@ public final class TwistySimulation implements Simulation {
    * @throws NotExistentMoveException If the agent attempts an invalid move
    */
   @Override
-  public void step(OutputRenderer output) throws SimulationException {
+  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
     // Special case - call display if this is the start of an episode
     if (moves == 0) {
       output.display();

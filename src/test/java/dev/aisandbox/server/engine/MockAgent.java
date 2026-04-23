@@ -7,7 +7,7 @@
 package dev.aisandbox.server.engine;
 
 import com.google.protobuf.GeneratedMessage;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -33,21 +33,21 @@ public class MockAgent implements Agent {
    * <p>This is the method that needs overriding!
    *
    * @param msg The Message to send to the mock agent
-   * @throws SimulationException if there is an error processing the message
+   * @throws SimulationRuntimeException if there is an error processing the message
    */
   @Override
-  public void send(GeneratedMessage msg) throws SimulationException {
+  public void send(GeneratedMessage msg) throws SimulationRuntimeException {
     // process message
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationException {
+  public <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationRuntimeException {
     if (outputQueue.isEmpty()) {
-      throw new SimulationException("No response available");
+      throw new SimulationRuntimeException("No response available");
     }
     GeneratedMessage message = outputQueue.removeFirst();
     if (message.getClass() != responseType) {
-      throw new SimulationException(
+      throw new SimulationRuntimeException(
           "Expected " + responseType + " but received " + message.getClass());
     } else {
       return (T) message;

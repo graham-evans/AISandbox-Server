@@ -6,7 +6,7 @@
 
 package dev.aisandbox.server.simulation.coingame;
 
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
 import java.io.Serial;
 
 /**
@@ -19,7 +19,7 @@ import java.io.Serial;
  *   <li>Trying to take coins from a pile that doesn't exist.</li>
  * </ul>
  */
-public class IllegalCoinAction extends SimulationException {
+public class IllegalCoinAction extends IllegalActionException {
 
   /**
    * Serial version UID for serialization.

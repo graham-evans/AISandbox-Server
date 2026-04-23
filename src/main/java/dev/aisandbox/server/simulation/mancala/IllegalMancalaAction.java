@@ -6,7 +6,7 @@
 
 package dev.aisandbox.server.simulation.mancala;
 
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
 import java.io.Serial;
 
 /**
@@ -18,7 +18,7 @@ import java.io.Serial;
  *   <li>Selecting a pit index outside the valid range (0-5).</li>
  * </ul>
  */
-public class IllegalMancalaAction extends SimulationException {
+public class IllegalMancalaAction extends IllegalActionException {
 
   @Serial
   private static final long serialVersionUID = 1L;
