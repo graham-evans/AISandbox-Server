@@ -14,7 +14,7 @@ package dev.aisandbox.server.engine.network;
 
 import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.Agent;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.network.NetworkAgentConnectionThread.ConnectionPair;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -141,7 +141,7 @@ public class NetworkAgent implements Agent {
   }
 
   @Override
-  public void send(GeneratedMessage o) throws SimulationException {
+  public void send(GeneratedMessage o) throws SimulationRuntimeException {
     if (o == null) {
       log.warn("Trying to send a null object to {}", agentName);
     } else {
@@ -156,14 +156,14 @@ public class NetworkAgent implements Agent {
       o.writeDelimitedTo(connectionPair.output());
     } catch (IOException e) {
       log.error("IO exception while sending message to {}", agentName, e);
-      throw new SimulationException("IO Error sending to " + agentName);
+      throw new SimulationRuntimeException("IO Error sending to " + agentName);
     } catch (InterruptedException e) {
-      throw new SimulationException("Sending message while shutting down");
+      throw new SimulationRuntimeException("Sending message while shutting down");
     }
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationException {
+  public <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationRuntimeException {
     try {
       if (connectionPair == null) {
         // wait for a connection
@@ -178,7 +178,7 @@ public class NetworkAgent implements Agent {
       if (response == null) {
         // special case response == null means the stream has ended
         log.debug("Received null response from {}", agentName);
-        throw new SimulationException("Network connection closed by " + agentName);
+        throw new SimulationRuntimeException("Network connection closed by " + agentName);
       }
       // cast and return
       return responseType.cast(response);
@@ -186,11 +186,11 @@ public class NetworkAgent implements Agent {
              ClassCastException e) {
       log.error("Error decoding message from {}, expecting {}", agentName,
           responseType.getSimpleName(), e);
-      throw new SimulationException(
+      throw new SimulationRuntimeException(
           "Error decoding generated message from " + agentName + " expecting "
               + responseType.getSimpleName());
     } catch (InterruptedException e) {
-      throw new SimulationException("Reading message while shutting down");
+      throw new SimulationRuntimeException("Reading message while shutting down");
     }
   }
 

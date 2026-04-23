@@ -6,7 +6,8 @@
 
 package dev.aisandbox.server.engine;
 
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +72,7 @@ public class SimulationRunner extends Thread {
       stepCount++;
       try {
         simulation.step(outputRenderer);
-      } catch (SimulationException e) {
+      } catch (SimulationRuntimeException | IllegalActionException e) {
         log.error(e.getMessage());
         running = false;
         outputRenderer.write(e.getMessage() + " stopping simulation.");

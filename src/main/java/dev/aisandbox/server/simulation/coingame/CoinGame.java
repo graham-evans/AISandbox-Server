@@ -21,7 +21,8 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -122,7 +123,7 @@ public final class CoinGame implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) throws SimulationException {
+  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
     // draw the current state
     output.display();
     // get the current player
@@ -207,7 +208,7 @@ public final class CoinGame implements Simulation {
    * @throws IllegalCoinAction if the move is illegal (always wrong)
    * @throws InvalidCoinAction if the move is invalid (wrong for this state)
    */
-  private int[] makeMove(int row, int amount) throws SimulationException {
+  private int[] makeMove(int row, int amount) throws IllegalCoinAction, InvalidCoinAction {
     // is the amount out of the allowed range
     if (amount < 1 || amount > scenario.getMaximumTake()) {
       throw new IllegalCoinAction(
@@ -255,9 +256,9 @@ public final class CoinGame implements Simulation {
    * <p>Only send messages to players who have made moves.
    *
    * @param winner the agent index of the winner
-   * @throws SimulationException if there is an error sending the result messages
+   * @throws SimulationRuntimeException if there is an error sending the result messages
    */
-  private void informResult(int winner) throws SimulationException {
+  private void informResult(int winner) throws SimulationRuntimeException {
     if (agentMoved[0]) {
       agents[0].send(CoinGameResult.newBuilder()
           .setStatus(winner == 0 ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());

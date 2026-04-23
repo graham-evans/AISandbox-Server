@@ -27,9 +27,9 @@ import java.io.Serial;
  * <p>This is separate from an {@link InvalidActionException}, which signals a context-specific
  * rule violation that may incur a penalty but allows the simulation to continue.
  *
- * @see SimulationException
+ * @see SimulationRuntimeException
  */
-public class IllegalActionException extends SimulationException {
+public class IllegalActionException extends Exception {
 
   @Serial
   private static final long serialVersionUID = -8042532409067545774L;

@@ -8,7 +8,7 @@ package dev.aisandbox.server.simulation.coingame;
 
 import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.MockAgent;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameAction;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameResult;
 import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
@@ -34,7 +34,7 @@ public class MockPlayer extends MockAgent {
   long messageCounter = 0;
 
   @Override
-  public void send(GeneratedMessage o) throws SimulationException {
+  public void send(GeneratedMessage o) throws SimulationRuntimeException {
     if (o == null) {
       log.warn("{} received null object", agentName);
     } else {
@@ -63,7 +63,7 @@ public class MockPlayer extends MockAgent {
       // make sure the queue is empty
       if (!getOutputQueue().isEmpty()) {
         log.error("Writing to non empty output queue");
-        throw new SimulationException("Writing to non empty queue.");
+        throw new SimulationRuntimeException("Writing to non empty queue.");
       } else {
         log.info("{} sending action {}", agentName, action.toString().replaceAll("\n\r", ""));
         getOutputQueue().add(action);

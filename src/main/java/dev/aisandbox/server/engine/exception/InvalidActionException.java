@@ -27,9 +27,9 @@ import java.io.Serial;
  * <p>Generally it is caught and processed within the {@link dev.aisandbox.server.engine.Simulation#step(dev.aisandbox.server.engine.output.OutputRenderer) Simulation#step()} method
  *
  * @see IllegalActionException
- * @see SimulationException
+ * @see SimulationRuntimeException
  */
-public class InvalidActionException extends SimulationException {
+public class InvalidActionException extends Exception {
 
   @Serial
   private static final long serialVersionUID = -2249273169805566707L;

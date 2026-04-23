@@ -22,7 +22,7 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
@@ -239,7 +239,7 @@ public final class BanditRuntime implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) throws SimulationException {
+  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
     sessionStep++;
     log.debug("Starting step {}", sessionStep);
     // work out the 'best' bandit to pull

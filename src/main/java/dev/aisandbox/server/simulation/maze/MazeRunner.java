@@ -21,7 +21,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
@@ -161,7 +161,7 @@ public final class MazeRunner implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) throws SimulationException {
+  public void step(OutputRenderer output) throws SimulationRuntimeException {
     // draw the current position
     output.display();
     // save the starting positions

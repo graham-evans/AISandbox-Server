@@ -22,7 +22,8 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.Theme;
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -120,7 +121,7 @@ public final class MancalaGame implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) throws SimulationException {
+  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
     output.display();
 
     Agent currentAgent = agents[currentPlayer];
@@ -138,8 +139,6 @@ public final class MancalaGame implements Simulation {
     // Validate move
     try {
       validateMove(pit, validMoves);
-    } catch (IllegalMancalaAction e) {
-      throw e;
     } catch (InvalidMancalaAction e) {
       log.error(e.getMessage());
       logWidget.addText(currentAgent.getAgentName() + " makes an invalid move.");
@@ -201,9 +200,9 @@ public final class MancalaGame implements Simulation {
    * Handles end-of-game: determines winner, informs agents, and resets.
    *
    * @param output the output renderer
-   * @throws SimulationException if there is an error sending results
+   * @throws SimulationRuntimeException if there is an error sending results
    */
-  private void handleGameOver(OutputRenderer output) throws SimulationException {
+  private void handleGameOver(OutputRenderer output) throws SimulationRuntimeException {
     int winner = board.getWinner();
     if (winner == -1) {
       logWidget.addText("Game ends in a draw! ("
@@ -241,9 +240,9 @@ public final class MancalaGame implements Simulation {
    * Informs both players of the game result (win/lose).
    *
    * @param winner the winning player index
-   * @throws SimulationException if there is an error sending results
+   * @throws SimulationRuntimeException if there is an error sending results
    */
-  private void informResult(int winner) throws SimulationException {
+  private void informResult(int winner) throws SimulationRuntimeException {
     List<Integer> finalStores = List.of(board.getStore(0), board.getStore(1));
     if (agentMoved[0]) {
       agents[0].send(MancalaResult.newBuilder()
@@ -260,9 +259,9 @@ public final class MancalaGame implements Simulation {
   /**
    * Informs both players of a draw.
    *
-   * @throws SimulationException if there is an error sending results
+   * @throws SimulationRuntimeException if there is an error sending results
    */
-  private void informDraw() throws SimulationException {
+  private void informDraw() throws SimulationRuntimeException {
     List<Integer> finalStores = List.of(board.getStore(0), board.getStore(1));
     for (int i = 0; i < 2; i++) {
       if (agentMoved[i]) {

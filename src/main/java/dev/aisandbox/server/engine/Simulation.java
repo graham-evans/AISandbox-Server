@@ -6,7 +6,8 @@
 
 package dev.aisandbox.server.engine;
 
-import dev.aisandbox.server.engine.exception.SimulationException;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
+import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.awt.Graphics2D;
 
@@ -66,10 +67,12 @@ public interface Simulation {
    * </p>
    *
    * @param output the {@link OutputRenderer} to trigger visual updates
-   * @throws SimulationException if an error occurs that requires the simulation to be stopped, such
-   *                             as agent communication failures or invalid actions
+   * @throws SimulationRuntimeException if an error occurs that requires the simulation to be stopped, such
+   *                             as agent communication failure
+   * @throws IllegalActionException if an agent tries a nonsensical action that could never be valid, stopping
+   *                             the simulation
    */
-  void step(OutputRenderer output) throws SimulationException;
+  void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException;
 
   /**
    * Visualise the current state of the simulation.
