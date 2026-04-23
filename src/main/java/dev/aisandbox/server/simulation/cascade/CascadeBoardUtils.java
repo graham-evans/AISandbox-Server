@@ -696,7 +696,8 @@ public class CascadeBoardUtils {
    * @return the board after the swap and any immediate effects have been applied
    * @throws InvalidCascadeAction if the move is not valid
    */
-  public static CascadeBoard makeMove(CascadeBoard board, int x1, int y1, int x2, int y2) {
+  public static CascadeBoard makeMove(CascadeBoard board, int x1, int y1, int x2, int y2)
+      throws InvalidCascadeAction {
     // Step 1: adjacency check
     if (Math.abs(x2 - x1) + Math.abs(y2 - y1) != 1) {
       throw new InvalidCascadeAction("Cells are not adjacent");
