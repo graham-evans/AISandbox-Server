@@ -12,6 +12,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.EpisodeLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -26,6 +28,7 @@ import dev.aisandbox.server.simulation.cascade.proto.CascadeState;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.time.Instant;
 import java.util.Random;
 import java.util.UUID;
 
@@ -96,6 +99,7 @@ public final class CascadeRuntime implements Simulation {
   private final Agent agent;
   private final Random random;
   private final Theme theme;
+  private final TelemetryEngine telemetryEngine;
 
   private final String sessionID = UUID.randomUUID().toString();
   private String episodeID;
@@ -112,15 +116,16 @@ public final class CascadeRuntime implements Simulation {
   /**
    * Constructs a new Cascade runtime.
    *
-   * @param agent  the agent that will play the game
-   * @param theme  the visual theme for rendering
-   * @param random the source of randomness for board generation and tile refill
+   * @param agent           the agent that will play the game
+   * @param theme           the visual theme for rendering
+   * @param random          the source of randomness for board generation and tile refill
+   * @param telemetryEngine
    */
-  public CascadeRuntime(Agent agent, Theme theme, Random random) {
+  public CascadeRuntime(Agent agent, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.theme = theme;
     this.random = random;
-
+    this.telemetryEngine = telemetryEngine;
     titleWidget = TitleWidget.builder().title("Cascade").theme(theme).build();
     logWidget = TextWidget.builder()
         .width(PANEL_W).height(WIDGET_H).font(LOG_FONT).theme(theme).build();
@@ -197,6 +202,8 @@ public final class CascadeRuntime implements Simulation {
       long finalScore = board.getScore();
       logWidget.addText("Episode ended. Final score: " + finalScore);
       scoreChart.addValue((double) finalScore);
+      telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(CascadeScenario.CASCADE_NAME,sessionID,episodeID
+              , Instant.now(), finalScore));
     }
 
     output.display();

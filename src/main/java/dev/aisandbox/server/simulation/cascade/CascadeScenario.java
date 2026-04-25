@@ -27,6 +27,8 @@ import java.util.Random;
  */
 public final class CascadeScenario implements SimulationBuilder {
 
+  public static final String CASCADE_NAME = "Cascade";
+
   /**
    * Returns the name of this simulation.
    *
@@ -34,7 +36,7 @@ public final class CascadeScenario implements SimulationBuilder {
    */
   @Override
   public String getSimulationName() {
-    return "Cascade";
+    return CASCADE_NAME;
   }
 
   /**
@@ -98,11 +100,11 @@ public final class CascadeScenario implements SimulationBuilder {
    * @param agents          the list of agents (only the first is used)
    * @param theme           the visual theme for rendering
    * @param random          the source of randomness for board generation and tile refill
-   * @param telemetryEngine
+   * @param telemetryEngine the external logger
    * @return a new {@link CascadeRuntime} instance ready for play
    */
   @Override
   public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
-    return new CascadeRuntime(agents.getFirst(), theme, random);
+    return new CascadeRuntime(agents.getFirst(), theme, random, telemetryEngine);
   }
 }
