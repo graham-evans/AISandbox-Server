@@ -6,8 +6,11 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
+import java.time.Instant;
+
 public record EpisodeLongScoreEvent(String simulationName,
                                     String sessionID,
                                     String episodeID,
+                                    Instant episodeFinishedTime,
                                     long score) implements TelemetryEvent {
 }
