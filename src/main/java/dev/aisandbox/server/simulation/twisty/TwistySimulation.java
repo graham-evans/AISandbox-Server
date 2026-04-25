@@ -24,6 +24,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.EpisodeLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
 import dev.aisandbox.server.engine.widget.RollingSuccessStatisticsWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -35,6 +37,7 @@ import dev.aisandbox.server.simulation.twisty.proto.TwistyResult;
 import dev.aisandbox.server.simulation.twisty.proto.TwistySignal;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyState;
 import java.awt.Graphics2D;
+import java.time.Instant;
 import java.util.Random;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +92,7 @@ public final class TwistySimulation implements Simulation {
    * Visual theme for rendering.
    */
   private final Theme theme;
+  private final TelemetryEngine telemetryEngine;
   /**
    * Random number generator for puzzle scrambling.
    */
@@ -135,12 +139,13 @@ public final class TwistySimulation implements Simulation {
    * @param random      Random number generator for puzzle scrambling
    */
   public TwistySimulation(Agent agent, TwistyPuzzle puzzle, boolean startSolved, Theme theme,
-      Random random) {
+      Random random, TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.puzzle = puzzle;
     this.startSolved = startSolved;
     this.theme = theme;
     this.random = random;
+    this.telemetryEngine = telemetryEngine;
 
     // Setup UI components
     titleWidget = TitleWidget.builder().title("Twisty Puzzle - " + puzzle.getPuzzleName())
@@ -223,6 +228,7 @@ public final class TwistySimulation implements Simulation {
       agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
           .build());
       statsWidget.addFailure();
+      // TODO: do we log failure to telemetry?
       initialisePuzzle();
     } else {
       // Apply the regular move
@@ -237,6 +243,8 @@ public final class TwistySimulation implements Simulation {
         agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN)
             .build());
         statsWidget.addSuccess(obtmMoves);
+        telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,
+                Instant.now(),obtmMoves));
         output.display();
         initialisePuzzle();
       } else if (moves == MAX_STEPS) {

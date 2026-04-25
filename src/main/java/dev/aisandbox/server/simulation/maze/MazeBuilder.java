@@ -44,6 +44,7 @@ import lombok.Setter;
  */
 public final class MazeBuilder implements SimulationBuilder {
 
+  public static final String MAZE_NAME = "Maze";
   /**
    * The size of the maze, defaults to MEDIUM.
    */
@@ -62,7 +63,7 @@ public final class MazeBuilder implements SimulationBuilder {
    */
   @Override
   public String getSimulationName() {
-    return "Maze";
+    return MAZE_NAME;
   }
 
   /**
@@ -136,6 +137,6 @@ public final class MazeBuilder implements SimulationBuilder {
    */
   @Override
   public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
-    return new MazeRunner(agents.getFirst(), mazeSize, mazeType, theme, random);
+    return new MazeRunner(agents.getFirst(), mazeSize, mazeType, theme, random,telemetryEngine);
   }
 }

@@ -27,6 +27,7 @@ import lombok.Setter;
  */
 public final class MancalaBuilder implements SimulationBuilder {
 
+  public static final String MANCALA_NAME = "Mancala";
   /**
    * The number of seeds placed in each pit at the start of a game. Default is 4, which is the
    * standard Kalah configuration (48 seeds total).
@@ -37,7 +38,7 @@ public final class MancalaBuilder implements SimulationBuilder {
 
   @Override
   public String getSimulationName() {
-    return "Mancala";
+    return MANCALA_NAME;
   }
 
   @Override
@@ -73,6 +74,6 @@ public final class MancalaBuilder implements SimulationBuilder {
 
   @Override
   public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
-    return new MancalaGame(agents, seedsPerPit.getSeeds(), theme);
+    return new MancalaGame(agents, seedsPerPit.getSeeds(), theme,telemetryEngine);
   }
 }

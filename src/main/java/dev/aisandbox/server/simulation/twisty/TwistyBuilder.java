@@ -14,6 +14,7 @@ import dev.aisandbox.server.engine.Theme;
 import java.util.List;
 import java.util.Random;
 
+import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class TwistyBuilder implements SimulationBuilder {
 
+  public static final String TWISTY_NAME = "Twisty";
   /**
    * The type of puzzle to create in the simulation. Defaults to a standard 3x3 Rubik's Cube.
    */
@@ -52,7 +54,7 @@ public final class TwistyBuilder implements SimulationBuilder {
    */
   @Override
   public String getSimulationName() {
-    return "Twisty";
+    return TWISTY_NAME;
   }
 
   /**
@@ -136,7 +138,7 @@ public final class TwistyBuilder implements SimulationBuilder {
   public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     try {
       return new TwistySimulation(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved,
-          theme, random);
+          theme, random,telemetryEngine);
     } catch (Exception e) {
       log.error("Error while building Twisty Runtime.", e);
       return null;
