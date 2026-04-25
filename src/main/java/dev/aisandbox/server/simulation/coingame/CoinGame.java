@@ -24,6 +24,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.EpisodeAgentWinLossEvent;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -34,6 +36,7 @@ import dev.aisandbox.server.simulation.coingame.proto.CoinGameState;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -68,6 +71,7 @@ public final class CoinGame implements Simulation {
   private final CoinScenario scenario;
   private int firstPlayer = 1;
   private int currentPlayer = 0;
+  private final TelemetryEngine telemetryEngine;
   // UI Images
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;
@@ -78,16 +82,18 @@ public final class CoinGame implements Simulation {
   /**
    * Simulation constructor.
    *
-   * @param agents   List of {@link dev.aisandbox.server.engine.Agent} to run the simulation with.
-   * @param scenario The specific {@link CoinScenario} to run - defines the number of piles.
-   * @param theme    The {@link dev.aisandbox.server.engine.Theme} to use while drawing.
+   * @param agents          List of {@link Agent} to run the simulation with.
+   * @param scenario        The specific {@link CoinScenario} to run - defines the number of piles.
+   * @param theme           The {@link Theme} to use while drawing.
+   * @param telemetryEngine The external logger
    */
-  public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme) {
+  public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme, TelemetryEngine telemetryEngine) {
     assert agents.size() == 2;
     this.agents[0] = agents.get(0);
     this.agents[1] = agents.get(1);
     this.scenario = scenario;
     this.theme = theme;
+    this.telemetryEngine = telemetryEngine;
     // build the coin pile
     coins = new int[scenario.getRows().length];
     // set up the widgets
@@ -269,6 +275,13 @@ public final class CoinGame implements Simulation {
     }
     logWidget.addText(agents[winner].getAgentName() + " wins");
     pieChartWidget.addValue(agents[winner].getAgentName(), theme.getPrimary());
+    telemetryEngine.writeTelementryEvent(new EpisodeAgentWinLossEvent(CoinGameBuilder.COIN_GAME_NAME,sessionId,
+            episodeId, Instant.now(),List.of(
+                    new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),winner==0?
+                            EpisodeAgentWinLossEvent.Result.WIN:EpisodeAgentWinLossEvent.Result.LOSE),
+            new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(),winner==1?
+                    EpisodeAgentWinLossEvent.Result.WIN:EpisodeAgentWinLossEvent.Result.LOSE)
+            )));
   }
 
   /**

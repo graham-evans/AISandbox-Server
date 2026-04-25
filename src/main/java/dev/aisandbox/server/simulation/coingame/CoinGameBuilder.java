@@ -29,6 +29,7 @@ import lombok.Setter;
  */
 public final class CoinGameBuilder implements SimulationBuilder {
 
+  public static final String COIN_GAME_NAME = "CoinGame";
   /**
    * The selected scenario for this coin game. Default is SINGLE_21_2, which represents a single
    * pile of 21 coins where players can take 1 or 2 coins per turn.
@@ -44,7 +45,7 @@ public final class CoinGameBuilder implements SimulationBuilder {
    */
   @Override
   public String getSimulationName() {
-    return "CoinGame";
+    return COIN_GAME_NAME;
   }
 
   /**
@@ -114,6 +115,6 @@ public final class CoinGameBuilder implements SimulationBuilder {
    */
   @Override
   public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
-    return new CoinGame(agents, scenario, theme);
+    return new CoinGame(agents, scenario, theme, telemetryEngine);
   }
 }
