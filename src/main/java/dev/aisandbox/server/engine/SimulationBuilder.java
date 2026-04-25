@@ -96,7 +96,7 @@ public interface SimulationBuilder {
    * @param agents          A list of player objects
    * @param theme           The theme for any visualisations.
    * @param random          A random number generator.
-   * @param telemetryEngine
+   * @param telemetryEngine The external logger
    * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner}
    * or stepped through manually.
    */
