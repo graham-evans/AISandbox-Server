@@ -124,10 +124,15 @@ dependencies {
     implementation 'commons-cli:commons-cli:1.11.0'
     implementation 'org.apache.commons:commons-statistics-descriptive:1.2'
     implementation 'org.apache.commons:commons-lang3:3.20.0'
+    implementation 'org.apache.commons:commons-text:1.15.0'
     // logging
     implementation 'ch.qos.logback:logback-core:1.5.32'
     testImplementation 'org.slf4j:slf4j-api:2.1.0-alpha1'
     implementation 'ch.qos.logback:logback-classic:1.5.32'
+    // external telemetry
+    implementation 'io.opentelemetry:opentelemetry-api:1.61.0'
+    implementation 'io.opentelemetry:opentelemetry-sdk:1.61.0'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.61.0'
     // test libs
     testImplementation(platform('org.junit:junit-bom:6.0.3'))
     testImplementation('org.junit.jupiter:junit-jupiter')
