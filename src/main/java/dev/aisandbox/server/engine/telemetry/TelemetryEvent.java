@@ -6,5 +6,10 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
+import java.util.List;
+import io.opentelemetry.api.logs.Logger;
+
 public interface TelemetryEvent {
+    public List<String> toJSON();
+    public void emit(Logger logger);
 }
