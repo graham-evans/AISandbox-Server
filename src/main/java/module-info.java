@@ -10,4 +10,5 @@ module AISandbox.Server.main {
   requires org.apache.commons.statistics.descriptive;
   requires org.slf4j;
   requires javafx.swing;
+  requires io.opentelemetry.api;
 }
