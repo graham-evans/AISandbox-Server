@@ -6,11 +6,23 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
+import io.opentelemetry.api.logs.Logger;
+
 import java.time.Instant;
+import java.util.List;
 
 public record EpisodeWinEvent(String simulationName,
                               String sessionID,
                               String episodeID,
                               Instant episodeFinishedTime,
                               boolean win) implements TelemetryEvent{
+    @Override
+    public List<String> toJSON() {
+        return List.of();
+    }
+
+    @Override
+    public void emit(Logger logger) {
+
+    }
 }

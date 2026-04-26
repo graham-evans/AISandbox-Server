@@ -6,11 +6,24 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
+import io.opentelemetry.api.logs.Logger;
+
 import java.time.Instant;
+import java.util.List;
 
 public record EpisodeDoubleScoreEvent(String simulationName,
                                       String sessionID,
                                       String episodeID,
                                       Instant episodeFinishedTime,
                                       double score) implements TelemetryEvent {
+    @Override
+    public List<String> toJSON() {
+        return List.of();
+    }
+
+    @Override
+    public void emit(Logger logger) {
+
+    }
 }
+

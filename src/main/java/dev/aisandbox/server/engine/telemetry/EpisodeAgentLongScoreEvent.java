@@ -6,6 +6,8 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
+import io.opentelemetry.api.logs.Logger;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -17,4 +19,13 @@ public record EpisodeAgentLongScoreEvent(String simulationName,
 
     public record AgentLongScore(String agentName, long score) {}
 
+    @Override
+    public List<String> toJSON() {
+        return List.of();
+    }
+
+    @Override
+    public void emit(Logger logger) {
+
+    }
 }
