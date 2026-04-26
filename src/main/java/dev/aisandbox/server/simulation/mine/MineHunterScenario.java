@@ -29,6 +29,7 @@ import lombok.Setter;
  */
 public final class MineHunterScenario implements SimulationBuilder {
 
+  public static final String MINE_HUNTER_NAME = "MineHunter";
   /**
    * The size configuration for the mine field.
    *
@@ -46,7 +47,7 @@ public final class MineHunterScenario implements SimulationBuilder {
    */
   @Override
   public String getSimulationName() {
-    return "MineHunter";
+    return MINE_HUNTER_NAME;
   }
 
   /**
@@ -117,11 +118,11 @@ public final class MineHunterScenario implements SimulationBuilder {
    * @param agents          The list of agents participating in the simulation (only the first one is used)
    * @param theme           The visual theme to use for the simulation
    * @param random          A random number generator for creating the mine field
-   * @param telemetryEngine
+   * @param telemetryEngine External logger
    * @return A new {@link MineHunterRuntime} instance
    */
   @Override
   public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
-    return new MineHunterRuntime(agents.getFirst(), mineSize, theme, random);
+    return new MineHunterRuntime(agents.getFirst(), mineSize, theme, random,telemetryEngine);
   }
 }

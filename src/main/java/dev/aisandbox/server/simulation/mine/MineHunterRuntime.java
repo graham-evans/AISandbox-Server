@@ -26,6 +26,8 @@ import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
+import dev.aisandbox.server.engine.telemetry.EpisodeWinEvent;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -37,6 +39,7 @@ import dev.aisandbox.server.simulation.mine.proto.MineSignal;
 import dev.aisandbox.server.simulation.mine.proto.MineState;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.time.Instant;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -105,6 +108,10 @@ public final class MineHunterRuntime implements Simulation {
   private final Theme theme;
 
   /**
+   * Telemetry Engine for external logging
+   */
+  private final TelemetryEngine telemetryEngine;
+  /**
    * Unique identifier for this simulation session.
    */
   private final String sessionID = UUID.randomUUID().toString();
@@ -167,11 +174,12 @@ public final class MineHunterRuntime implements Simulation {
    * @param theme    The visual theme for rendering
    * @param random   A random number generator for creating the board
    */
-  public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme, Random random) {
+  public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme, Random random,TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.random = random;
     this.mineSize = mineSize;
     this.theme = theme;
+    this.telemetryEngine = telemetryEngine;
 
     // Load cell sprite images from resources
     sprites = SpriteLoader.loadSpritesFromResources("/images/mine/grid.png", 40, 40);
@@ -249,9 +257,13 @@ public final class MineHunterRuntime implements Simulation {
     if (board.getState() == GameState.WON) {
       logWidget.addText(agent.getAgentName() + ": won");
       pieChartWidget.addValue("win", theme.getPrimary());
+      telemetryEngine.writeTelementryEvent(new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME,sessionID,
+              episodeID, Instant.now(),true));
     } else if (board.getState() == GameState.LOST) {
       logWidget.addText(agent.getAgentName() + ": lost");
       pieChartWidget.addValue("loss", theme.getSecondary());
+      telemetryEngine.writeTelementryEvent(new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME,sessionID,
+              episodeID, Instant.now(),false));
     }
 
     // Render the current state

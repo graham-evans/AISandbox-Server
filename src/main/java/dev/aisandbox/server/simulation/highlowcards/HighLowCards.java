@@ -26,6 +26,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.maths.bins.IntegerBinner;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.EpisodeLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.RollingValueHistogramWidget;
@@ -41,6 +43,7 @@ import dev.aisandbox.server.simulation.highlowcards.proto.Signal;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,6 +148,11 @@ public final class HighLowCards implements Simulation {
   private final Random random;
 
   /**
+   * external logger
+   */
+  private final TelemetryEngine telemetryEngine;
+
+  /**
    * List of cards that have been revealed face-up.
    */
   private final List<Card> faceUpCards = new ArrayList<>();
@@ -203,11 +211,12 @@ public final class HighLowCards implements Simulation {
    * @param theme     The visual theme to apply to the simulation
    * @param random    Random number generator for shuffling cards
    */
-  public HighLowCards(Agent agent, int cardCount, Theme theme, Random random) {
+  public HighLowCards(Agent agent, int cardCount, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.cardCount = cardCount;
     this.theme = theme;
     this.random = random;
+    this.telemetryEngine = telemetryEngine;
 
     // setup widgets
     titleWidget = TitleWidget.builder().title("High / Low Cards").theme(theme).build();
@@ -311,6 +320,8 @@ public final class HighLowCards implements Simulation {
       statisticsWidget.addScore(score);
       scoreHistogramWidget.addValue(score);
       agent.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
+      telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
+              sessionID,episodeID, Instant.now(),score));
       reset();
     } else {
       // play continues - send signal to agent

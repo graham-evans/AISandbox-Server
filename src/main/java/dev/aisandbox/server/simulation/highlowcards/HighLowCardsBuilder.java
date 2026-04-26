@@ -25,6 +25,8 @@ import java.util.Random;
  */
 public final class HighLowCardsBuilder implements SimulationBuilder {
 
+  public static final String HIGH_LOW_CARDS_NAME = "HighLowCards";
+
   /**
    * Returns the name of this simulation.
    *
@@ -32,7 +34,7 @@ public final class HighLowCardsBuilder implements SimulationBuilder {
    */
   @Override
   public String getSimulationName() {
-    return "HighLowCards";
+    return HIGH_LOW_CARDS_NAME;
   }
 
   /**
@@ -103,6 +105,6 @@ public final class HighLowCardsBuilder implements SimulationBuilder {
   public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
     // Create a new simulation with the first agent, 9 cards, the specified theme, and the random
     // seed
-    return new HighLowCards(agents.getFirst(), 9, theme, random);
+    return new HighLowCards(agents.getFirst(), 9, theme, random, telemetryEngine);
   }
 }

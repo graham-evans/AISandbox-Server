@@ -24,7 +24,7 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.EpisodeDounbleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.EpisodeDoubleScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
@@ -39,6 +39,7 @@ import dev.aisandbox.server.simulation.bandit.proto.BanditResult;
 import dev.aisandbox.server.simulation.bandit.proto.BanditState;
 import dev.aisandbox.server.simulation.bandit.proto.Signal;
 import java.awt.Graphics2D;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -282,7 +283,8 @@ public final class BanditRuntime implements Simulation {
       episodeScoreWidget.addValue(episodeScore);
       episodeSuccessWidget.addValue(episodeBestMoveCount / pullCount);
       statisticsWidget.addScore(episodeScore);
-      telemetryEngine.writeTelementryEvent(new EpisodeDounbleScoreEvent(BanditScenario.BANDIT_NAME,sessionID,episodeID,episodeScore));
+      telemetryEngine.writeTelementryEvent(new EpisodeDoubleScoreEvent(BanditScenario.BANDIT_NAME,sessionID,episodeID,
+              Instant.now(), episodeScore));
     }
     // update the screen
     output.display();

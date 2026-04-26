@@ -7,10 +7,14 @@
 package dev.aisandbox.server.engine.telemetry;
 
 import java.time.Instant;
+import java.util.List;
 
-public record EpisodeLongScoreEvent(String simulationName,
+public record EpisodeAgentRankEvent(String simulationName,
                                     String sessionID,
                                     String episodeID,
                                     Instant episodeFinishedTime,
-                                    long score) implements TelemetryEvent {
+                                    List<AgentRank> agentRankList) implements TelemetryEvent {
+
+    public record AgentRank(String agentName, int rank) {}
+
 }
