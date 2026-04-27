@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -41,7 +41,7 @@ public class TestRunCoinGame {
       List<Agent> agents = Arrays.stream(simulationBuilder.getAgentNames(2))
           .map(s -> (Agent) new MockPlayer(s)).toList();
       // create simulation
-      Simulation sim = simulationBuilder.build(agents, theme, new Random(), new NullTelementryEngine());
+      Simulation sim = simulationBuilder.build(agents, theme, new Random(), new NullTelemetryEngine());
       // create output directory
       File outputDirectory = new File("build/test/coingame/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();

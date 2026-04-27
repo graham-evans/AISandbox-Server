@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -66,7 +66,7 @@ public class TestRunCascade {
           .map(name -> (Agent) new MockCascadeAgent(name))
           .toList();
 
-      Simulation sim = builder.build(agents, theme, new Random(), new NullTelementryEngine());
+      Simulation sim = builder.build(agents, theme, new Random(), new NullTelemetryEngine());
 
       File targetDir = new File(OUTPUT_DIR, theme.name().toLowerCase());
       targetDir.mkdirs();

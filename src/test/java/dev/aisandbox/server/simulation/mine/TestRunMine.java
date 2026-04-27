@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -68,7 +68,7 @@ public class TestRunMine {
       List<Agent> agents = Arrays.stream(builder.getAgentNames(1))
           .map(s -> (Agent) new MockMineAgent(s)).toList();
       // create simulation
-      Simulation sim = builder.build(agents, theme, new Random(), new NullTelementryEngine());
+      Simulation sim = builder.build(agents, theme, new Random(), new NullTelemetryEngine());
       // create output
       File targetDir = new File(outputDirectory,
           mineSize.name() + "-" + theme.name().toLowerCase());

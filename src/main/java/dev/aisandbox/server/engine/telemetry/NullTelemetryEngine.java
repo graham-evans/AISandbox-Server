@@ -6,15 +6,15 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
-public class NullTelementryEngine implements TelemetryEngine {
+public class NullTelemetryEngine implements TelemetryEngine {
 
     @Override
-    public void initialise() {
+    public void initialise(String SessionID) {
 
     }
 
     @Override
-    public void writeTelementryEvent(TelemetryEvent event) {
+    public void writeTelemetryEvent(TelemetryEvent event) {
 
     }
 

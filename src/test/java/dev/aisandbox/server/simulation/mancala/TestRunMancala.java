@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -43,7 +43,7 @@ public class TestRunMancala {
       List<Agent> agents = Arrays.stream(builder.getAgentNames(2))
           .map(s -> (Agent) new MockMancalaPlayer(s)).toList();
       // create simulation
-      Simulation sim = builder.build(agents, theme, new Random(), new NullTelementryEngine());
+      Simulation sim = builder.build(agents, theme, new Random(), new NullTelemetryEngine());
       // create output directory
       File outputDirectory = new File("build/test/mancala/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();
