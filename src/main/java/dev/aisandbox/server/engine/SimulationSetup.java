@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -63,11 +63,11 @@ public class SimulationSetup {
   public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents,
       OutputRenderer renderer, Theme theme, long maxStepCount) throws SimulationSetupException {
     // create simulation
-    Simulation sim = builder.build(agents, theme, new Random(), new NullTelementryEngine());
+    Simulation sim = builder.build(agents, theme, new Random(), new NullTelemetryEngine());
     // start output
     renderer.setup(sim);
     // create simulation runner thread
-    return new SimulationRunner(sim, renderer, agents, maxStepCount, new NullTelementryEngine());
+    return new SimulationRunner(sim, renderer, agents, maxStepCount, new NullTelemetryEngine());
   }
 
 }
