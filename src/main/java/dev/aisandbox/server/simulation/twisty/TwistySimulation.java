@@ -41,6 +41,8 @@ import java.awt.Graphics2D;
 import java.time.Instant;
 import java.util.Random;
 import java.util.UUID;
+
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -101,7 +103,8 @@ public final class TwistySimulation implements Simulation {
   /**
    * Unique identifier for this simulation session.
    */
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
 
   // UI elements
   /**
@@ -213,7 +216,7 @@ public final class TwistySimulation implements Simulation {
     builder.setSteps(moves);
     builder.setObtmMoves(obtmMoves);
     builder.setEpisodeID(episodeID);
-    builder.setSessionID(sessionID);
+    builder.setSessionID(sessionId);
     builder.setState(puzzle.getState());
     builder.setPuzzleName(puzzle.getPuzzleName());
     builder.addAllValidMoves(puzzle.getMoveList());
@@ -229,7 +232,7 @@ public final class TwistySimulation implements Simulation {
       agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
           .build());
       statsWidget.addFailure();
-      telemetryEngine.writeTelementryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,Instant.now()));
+      telemetryEngine.writeTelemetryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId,episodeID,Instant.now()));
       initialisePuzzle();
     } else {
       // Apply the regular move
@@ -244,7 +247,7 @@ public final class TwistySimulation implements Simulation {
         agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN)
             .build());
         statsWidget.addSuccess(obtmMoves);
-        telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,
+        telemetryEngine.writeTelemetryEvent(new EpisodeLongScoreEvent(TwistyBuilder.TWISTY_NAME, sessionId,episodeID,
                 Instant.now(),obtmMoves));
         output.display();
         initialisePuzzle();
@@ -255,7 +258,7 @@ public final class TwistySimulation implements Simulation {
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
                 .build());
         statsWidget.addFailure();
-        telemetryEngine.writeTelementryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,Instant.now()));
+        telemetryEngine.writeTelemetryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId,episodeID,Instant.now()));
         output.display();
         initialisePuzzle();
       } else {
