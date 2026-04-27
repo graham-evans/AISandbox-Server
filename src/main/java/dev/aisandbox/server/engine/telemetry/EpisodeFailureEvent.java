@@ -8,8 +8,8 @@ package dev.aisandbox.server.engine.telemetry;
 
 import java.time.Instant;
 
-public record EpisodeFailEvent(String simulationName,
-                               String sessionID,
-                               String episodeID,
-                               Instant episodeFinishedTime) implements TelemetryEvent {
+public record EpisodeFailureEvent(String simulationName,
+                                  String sessionID,
+                                  String episodeID,
+                                  Instant episodeFinishedTime) implements TelemetryEvent {
 }
