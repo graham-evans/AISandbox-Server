@@ -24,6 +24,7 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.EpisodeFailureEvent;
 import dev.aisandbox.server.engine.telemetry.EpisodeLongScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
@@ -228,7 +229,7 @@ public final class TwistySimulation implements Simulation {
       agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
           .build());
       statsWidget.addFailure();
-      // TODO: do we log failure to telemetry?
+      telemetryEngine.writeTelementryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,Instant.now()));
       initialisePuzzle();
     } else {
       // Apply the regular move
@@ -254,6 +255,7 @@ public final class TwistySimulation implements Simulation {
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
                 .build());
         statsWidget.addFailure();
+        telemetryEngine.writeTelementryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,Instant.now()));
         output.display();
         initialisePuzzle();
       } else {
