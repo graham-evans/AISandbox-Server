@@ -65,7 +65,7 @@ public class SimulationRunner extends Thread {
   public void run() {
     log.info("Writing output to {}", outputRenderer.getName());
     log.info("Starting telemetry engine {}",telemetryEngine.getClass().getName());
-    telemetryEngine.initialise();
+    telemetryEngine.initialise(simulation.getSessionId());
     log.info("Starting simulation...");
     if (maxStepCount > -1) {
       log.info("Max step count {}", maxStepCount);
