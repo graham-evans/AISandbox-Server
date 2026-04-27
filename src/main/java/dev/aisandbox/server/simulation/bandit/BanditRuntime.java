@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
+
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -136,7 +138,8 @@ public final class BanditRuntime implements Simulation {
   /**
    * Unique identifier for this simulation session.
    */
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
   /**
    * List of all bandits with their reward distributions.
    */
@@ -283,7 +286,7 @@ public final class BanditRuntime implements Simulation {
       episodeScoreWidget.addValue(episodeScore);
       episodeSuccessWidget.addValue(episodeBestMoveCount / pullCount);
       statisticsWidget.addScore(episodeScore);
-      telemetryEngine.writeTelementryEvent(new EpisodeDoubleScoreEvent(BanditScenario.BANDIT_NAME,sessionID,episodeID,
+      telemetryEngine.writeTelemetryEvent(new EpisodeDoubleScoreEvent(BanditScenario.BANDIT_NAME, sessionId,episodeID,
               Instant.now(), episodeScore));
     }
     // update the screen
@@ -320,7 +323,7 @@ public final class BanditRuntime implements Simulation {
    */
   private BanditState getState() {
     BanditState.Builder builder = BanditState.newBuilder();
-    builder.setSessionID(sessionID);
+    builder.setSessionID(sessionId);
     builder.setEpisodeID(episodeID);
     builder.setBanditCount(bandits.size());
     builder.setPull(sessionStep);

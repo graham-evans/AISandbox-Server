@@ -40,6 +40,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -65,6 +67,7 @@ public final class CoinGame implements Simulation {
   private final TextWidget logWidget;
   private final RollingPieChartWidget pieChartWidget;
   // Agent & Game elements
+  @Getter
   private final String sessionId = UUID.randomUUID().toString();
   private final Agent[] agents = new Agent[2];
   private final boolean[] agentMoved = new boolean[2];
@@ -275,7 +278,7 @@ public final class CoinGame implements Simulation {
     }
     logWidget.addText(agents[winner].getAgentName() + " wins");
     pieChartWidget.addValue(agents[winner].getAgentName(), theme.getPrimary());
-    telemetryEngine.writeTelementryEvent(new EpisodeAgentWinLossEvent(CoinGameBuilder.COIN_GAME_NAME,sessionId,
+    telemetryEngine.writeTelemetryEvent(new EpisodeAgentWinLossEvent(CoinGameBuilder.COIN_GAME_NAME,sessionId,
             episodeId, Instant.now(),List.of(
                     new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),winner==0?
                             EpisodeAgentWinLossEvent.Result.WIN:EpisodeAgentWinLossEvent.Result.LOSE),

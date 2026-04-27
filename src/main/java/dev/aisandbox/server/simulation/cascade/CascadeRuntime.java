@@ -25,6 +25,7 @@ import dev.aisandbox.server.simulation.cascade.proto.CascadeAction;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeResult;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeSignal;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeState;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
@@ -100,8 +101,8 @@ public final class CascadeRuntime implements Simulation {
   private final Random random;
   private final Theme theme;
   private final TelemetryEngine telemetryEngine;
-
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
   private String episodeID;
 
   private CascadeBoard board;
@@ -202,7 +203,7 @@ public final class CascadeRuntime implements Simulation {
       long finalScore = board.getScore();
       logWidget.addText("Episode ended. Final score: " + finalScore);
       scoreChart.addValue((double) finalScore);
-      telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(CascadeScenario.CASCADE_NAME,sessionID,episodeID
+      telemetryEngine.writeTelemetryEvent(new EpisodeLongScoreEvent(CascadeScenario.CASCADE_NAME, sessionId,episodeID
               , Instant.now(), finalScore));
     }
 
@@ -262,7 +263,7 @@ public final class CascadeRuntime implements Simulation {
 
   private CascadeState buildState() {
     return CascadeState.newBuilder()
-        .setSessionID(sessionID)
+        .setSessionID(sessionId)
         .setEpisodeID(episodeID)
         .setMovesRemaining(board.getMovesRemaining())
         .setScore(board.getScore())

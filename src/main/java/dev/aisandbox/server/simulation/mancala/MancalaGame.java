@@ -42,6 +42,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -78,6 +80,7 @@ public final class MancalaGame implements Simulation {
   private final RollingPieChartWidget pieChartWidget;
 
   // Game state
+  @Getter
   private final String sessionId = UUID.randomUUID().toString();
   private final Agent[] agents = new Agent[2];
   private final boolean[] agentMoved = new boolean[2];
@@ -214,7 +217,7 @@ public final class MancalaGame implements Simulation {
           + board.getStore(0) + "-" + board.getStore(1) + ")");
       informDraw();
       pieChartWidget.addValue("Draw", theme.getAccent());
-      telemetryEngine.writeTelementryEvent(new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME,sessionId,
+      telemetryEngine.writeTelemetryEvent(new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME,sessionId,
               episodeId, Instant.now(),List.of(
                       new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),
                               EpisodeAgentWinLossEvent.Result.DRAW),
@@ -227,7 +230,7 @@ public final class MancalaGame implements Simulation {
       informResult(winner);
       pieChartWidget.addValue(agents[winner].getAgentName(),
           winner == 0 ? theme.getPrimary() : theme.getSecondary());
-      telemetryEngine.writeTelementryEvent(new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME,sessionId,
+      telemetryEngine.writeTelemetryEvent(new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME,sessionId,
               episodeId, Instant.now(),List.of(
               new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),
                       winner==0?EpisodeAgentWinLossEvent.Result.WIN:EpisodeAgentWinLossEvent.Result.LOSE),

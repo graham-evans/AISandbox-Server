@@ -33,6 +33,8 @@ import java.awt.Graphics2D;
  */
 public interface Simulation {
 
+  String getSessionId();
+
   /**
    * Finish the simulation, closing any resources as required.
    *

@@ -52,6 +52,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -165,7 +167,8 @@ public final class HighLowCards implements Simulation {
   /**
    * Unique ID for the entire session.
    */
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
 
   // statistics and reporting elements
   /**
@@ -287,7 +290,7 @@ public final class HighLowCards implements Simulation {
     log.debug("Sending current state to agent");
     agent.send(HighLowCardsState.newBuilder().setCardCount(cardCount)
         .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
-        .setScore(score).setSessionID(sessionID).setEpisodeID(episodeID).build());
+        .setScore(score).setSessionID(sessionId).setEpisodeID(episodeID).build());
     log.debug("Asking agent for action");
     HighLowCardsAction action = agent.receive(HighLowCardsAction.class);
     log.debug("Client action: {}", action.getAction().name());
@@ -320,8 +323,8 @@ public final class HighLowCards implements Simulation {
       statisticsWidget.addScore(score);
       scoreHistogramWidget.addValue(score);
       agent.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
-      telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
-              sessionID,episodeID, Instant.now(),score));
+      telemetryEngine.writeTelemetryEvent(new EpisodeLongScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
+              sessionId,episodeID, Instant.now(),score));
       reset();
     } else {
       // play continues - send signal to agent

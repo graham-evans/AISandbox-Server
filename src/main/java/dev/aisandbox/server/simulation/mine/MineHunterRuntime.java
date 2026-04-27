@@ -43,6 +43,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -114,7 +116,8 @@ public final class MineHunterRuntime implements Simulation {
   /**
    * Unique identifier for this simulation session.
    */
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
 
   /**
    * Sprite images for the game board cells.
@@ -257,12 +260,12 @@ public final class MineHunterRuntime implements Simulation {
     if (board.getState() == GameState.WON) {
       logWidget.addText(agent.getAgentName() + ": won");
       pieChartWidget.addValue("win", theme.getPrimary());
-      telemetryEngine.writeTelementryEvent(new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME,sessionID,
+      telemetryEngine.writeTelemetryEvent(new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME, sessionId,
               episodeID, Instant.now(),true));
     } else if (board.getState() == GameState.LOST) {
       logWidget.addText(agent.getAgentName() + ": lost");
       pieChartWidget.addValue("loss", theme.getSecondary());
-      telemetryEngine.writeTelementryEvent(new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME,sessionID,
+      telemetryEngine.writeTelemetryEvent(new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME, sessionId,
               episodeID, Instant.now(),false));
     }
 
@@ -284,7 +287,7 @@ public final class MineHunterRuntime implements Simulation {
   public MineState getState() {
     MineState.Builder builder = MineState.newBuilder();
     builder.setEpisodeID(episodeID);
-    builder.setSessionID(sessionID);
+    builder.setSessionID(sessionId);
     builder.setHeight(mineSize.getHeight());
     builder.setWidth(mineSize.getWidth());
     builder.setFlagsLeft(flagsLeft);

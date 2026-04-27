@@ -20,6 +20,7 @@ import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.maze.proto.MazeAction;
 import dev.aisandbox.server.simulation.maze.proto.MazeResult;
 import dev.aisandbox.server.simulation.maze.proto.MazeState;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
@@ -66,7 +67,8 @@ public final class MazeRunner implements Simulation {
   private final List<BufferedImage> sprites;
   private final Random random;
   private final Agent agent;
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
   private int stepsLeft;
   private Maze maze;
   private BufferedImage mazeImage = null;
@@ -163,7 +165,7 @@ public final class MazeRunner implements Simulation {
     int startX = currentCell.getPositionX();
     int startY = currentCell.getPositionY();
     // ask for a direction to move in
-    MazeState state = MazeState.newBuilder().setSessionID(sessionID).setEpisodeID(episodeID)
+    MazeState state = MazeState.newBuilder().setSessionID(sessionId).setEpisodeID(episodeID)
         .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).setWidth(maze.getWidth())
         .setHeight(maze.getHeight()).build();
     agent.send(state);
@@ -204,7 +206,7 @@ public final class MazeRunner implements Simulation {
     if (stepsLeft == 0) {
       logWidget.addText("Episode finished, resetting maze");
       episodeScoreWidget.addValue(episodeScore);
-      telemetryEngine.writeTelementryEvent(new EpisodeDoubleScoreEvent(MazeBuilder.MAZE_NAME,sessionID,episodeID,
+      telemetryEngine.writeTelemetryEvent(new EpisodeDoubleScoreEvent(MazeBuilder.MAZE_NAME, sessionId,episodeID,
               Instant.now(),episodeScore));
       initialiseMaze();
     }
