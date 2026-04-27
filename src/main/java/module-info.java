@@ -11,4 +11,7 @@ module AISandbox.Server.main {
   requires org.slf4j;
   requires javafx.swing;
   requires io.opentelemetry.api;
+  requires io.opentelemetry.sdk;
+  requires io.opentelemetry.exporter.otlp;
+  requires io.opentelemetry.sdk.logs;
 }
