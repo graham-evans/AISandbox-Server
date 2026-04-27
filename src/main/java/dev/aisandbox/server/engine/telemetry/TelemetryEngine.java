@@ -8,7 +8,7 @@ package dev.aisandbox.server.engine.telemetry;
 
 public interface TelemetryEngine {
 
-    void initialise();
-    void writeTelementryEvent(TelemetryEvent event);
+    void initialise(String SessionID);
+    void writeTelemetryEvent(TelemetryEvent event);
     void close();
 }
