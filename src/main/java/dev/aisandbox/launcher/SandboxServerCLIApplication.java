@@ -17,6 +17,7 @@ import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
 import java.io.File;
 import java.io.IOException;
@@ -178,7 +179,7 @@ public class SandboxServerCLIApplication {
       // setup simulation & runner
       try {
         SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents,
-            options.startPort(), options.openExternal(), out, Theme.LIGHT, options.maxStepCount());
+            options.startPort(), options.openExternal(), out, Theme.LIGHT, options.maxStepCount(), new NullTelemetryEngine());
         // start simulation
         runner.start();
       } catch (SimulationSetupException e) {
