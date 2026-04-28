@@ -13,6 +13,8 @@ import dev.aisandbox.server.engine.output.FXRenderer;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -91,7 +93,7 @@ public class RuntimeController {
       SimulationRunner runner = SimulationSetup.setupSimulation(
           model.getSelectedSimulationBuilder().get(), model.getAgentCount().get(),
           model.getDefaultPort().get(), model.getExternalNetwork().get(), renderer,
-          model.getSelectedTheme().get(), -1L);
+          model.getSelectedTheme().get(), -1L, new NullTelemetryEngine());
       runner.start();
       model.setRunner(runner);
       log.debug("Initialized RuntimeController");
