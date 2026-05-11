@@ -19,7 +19,10 @@ run {
 
 application {
     mainClass = 'dev.aisandbox.launcher.SandboxServerLauncher'
-    applicationDefaultJvmArgs = ['--sun-misc-unsafe-memory-access=allow']
+    applicationDefaultJvmArgs = [
+            '--sun-misc-unsafe-memory-access=allow',
+            '--enable-native-access=ALL-UNNAMED'
+    ]
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(25)
