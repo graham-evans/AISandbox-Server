@@ -15,7 +15,7 @@ pipeline {
         // Run Gradle build with all tasks
         stage('Build & Test') {
             steps {
-                sh './gradlew distZip pmdMain test checkstyleMain checkstyleTest'
+                sh './gradlew test pmdMain checkstyleMain checkstyleTest'
             }
         }
     }
