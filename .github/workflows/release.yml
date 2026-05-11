@@ -1,0 +1,93 @@
+name: Release
+
+# Triggered when a tag matching v* is pushed (e.g. v1.2.0).
+# Also supports manual runs via the Actions tab — manual runs build the
+# three platform images but skip the release-publishing step.
+
+# How to test:
+#
+#  1. Commit changes on a branch, push, open a PR (the workflow won't run until merged — it only triggers on tags/dispatch).
+#  2. After merging, run the workflow manually from the Actions tab — that exercises the build matrix without making a real release. You'll get three downloadable artifacts on the run page.
+#  3. Once the manual run is green, push a test tag like v0.0.1-rc1 to validate the full pipeline including the draft release. Delete the tag + draft afterwards.
+#
+#  Things worth knowing:
+#
+#    - The release is created as a draft so you can review it before publishing. If you'd rather have it go live immediately, flip draft: true to false.
+#    - generate_release_notes: true produces notes from commits/PRs since the previous tag — works best once you have a previous tag in the repo.
+#    - fail-fast: false means a failure on, say, Windows won't abort Linux/macOS — you'll get partial artifacts to debug from.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-x64
+          - os: windows-latest
+            platform: windows-x64
+          - os: macos-latest
+            platform: macos-aarch64
+          # To add an Intel macOS build, append:
+          # - os: macos-13
+          #   platform: macos-x64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build jlink zip
+        shell: bash
+        run: ./gradlew jlinkZip --no-daemon
+
+      - name: Rename artifact
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME}"
+          mv build/image.zip "build/AISandbox-Server-${{ matrix.platform }}-${version}.zip"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AISandbox-Server-${{ matrix.platform }}
+          path: build/AISandbox-Server-${{ matrix.platform }}-*.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create draft GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip
+          draft: true
+          generate_release_notes: true
