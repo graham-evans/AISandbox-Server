@@ -8,21 +8,20 @@ package dev.aisandbox.launcher.options;
 
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.engine.setup.SimulationSettings;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
+import lombok.Getter;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.cli.*;
+import org.apache.commons.lang3.EnumUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.lang3.EnumUtils;
 
 /**
  * Utility class providing command-line parsing and parameter handling for the AI Sandbox CLI.
@@ -40,95 +39,25 @@ import org.apache.commons.lang3.EnumUtils;
  * and custom parameter validation. It uses Apache Commons CLI for robust argument parsing
  * and provides comprehensive error handling and user feedback.
  *
- * @see RuntimeOptions
+ * @see SimulationSettings
  * @see SimulationParameter
  */
 @Slf4j
 @UtilityClass
 public class RuntimeUtils {
 
-  /**
-   * Parse a set of strings from the command line and populate a RuntimeOptions POJO.
-   *
-   * <p>Converts raw command-line arguments into a structured {@link RuntimeOptions} object
-   * with validated parameters, default values, and error handling for invalid arguments.
-   *
-   * @param args the strings from the command line
-   * @return the RuntimeOptions POJO containing parsed command-line options
-   */
-  public static RuntimeOptions parseCommandLine(String[] args) {
-    RuntimeOptions options = null;
-    try {
-      CommandLineParser parser = new DefaultParser();
-      CommandLine cmd = parser.parse(getOptions(), args);
-      // build runtime options
-      RuntimeOptions.RuntimeOptionsBuilder workBuilder = RuntimeOptions.builder();
-      // help ?
-      if (cmd.hasOption('h')) {
-        workBuilder.help(true);
-      }
-      // choose simulation
-      if (cmd.hasOption('s')) {
-        workBuilder.simulation(cmd.getOptionValue("s"));
-      }
-      // write images to PNG
-      if (cmd.hasOption('i')) {
-        workBuilder.outputImage(true);
-      }
-      // write images to dir
-      workBuilder.outputDirectory(".");
-      if (cmd.hasOption('d')) {
-        workBuilder.outputDirectory(cmd.getOptionValue("d"));
-      }
-      // skip frames
-      if (cmd.hasOption('k')) {
-        workBuilder.skip(Integer.parseInt(cmd.getOptionValue("k")));
-      }
-      // choose the number of  agents
-      if (cmd.hasOption('a')) {
-        workBuilder.agents(Integer.parseInt(cmd.getOptionValue('a')));
-      }
-      if (cmd.hasOption('e')) {
-        workBuilder.maxStepCount(Long.parseLong(cmd.getOptionValue('e')));
-      } else {
-        workBuilder.maxStepCount(-1);
-      }
-      // open to network connections
-      if (cmd.hasOption('n')) {
-        workBuilder.openExternal(true);
-      }
-      // choose default port
-      if (cmd.hasOption('t')) {
-        workBuilder.startPort(Integer.parseInt(cmd.getOptionValue('t')));
-      } else {
-        workBuilder.startPort(9000);
-      }
-      // read parameters
-      if (cmd.hasOption('p')) {
-        Arrays.stream(cmd.getOptionValues('p')).forEach(workBuilder::parameter);
-      }
-      options = workBuilder.build();
-    } catch (ParseException e) {
-      System.err.println("Error parsing command line arguments: " + e.getMessage());
-      System.exit(-1); // NOPMD: allowed as we're running from the command line.
-    }
-    return options;
-  }
+  @Getter
+  private static Options options;
 
-  /**
-   * Get the options available for the CLI.
-   *
-   * @return the populated Options class from Apache Commons CLI
-   */
-  public static Options getOptions() {
-    final Options options = new Options();
+  static {
+    options = new Options();
     // add help option
     options.addOption("h", "help", false, "Print an overview");
     // add simulation selector
     options.addOption("s", "simulation", true,
-        "Simulation to run [" + Arrays.stream(SimulationEnumeration.values())
-            .map(simulationEnumeration -> simulationEnumeration.getBuilder().getSimulationName())
-            .collect(Collectors.joining(" | ")) + "]");
+            "Simulation to run [" + Arrays.stream(SimulationEnumeration.values())
+                    .map(simulationEnumeration -> simulationEnumeration.getBuilder().getSimulationName())
+                    .collect(Collectors.joining(" | ")) + "]");
     // add output
     options.addOption("i", "png", false, "Write output to PNG files");
     options.addOption("d", "dir", true, "Output directory");
@@ -139,12 +68,105 @@ public class RuntimeUtils {
     options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
     // simulation options
     options.addOption("p", "parameter", true,
-        "Simulation specific parameter in the format key:value");
+            "Simulation specific parameter in the format key:value");
     // network options
     options.addOption("n", "network", false,
-        "Allow connections from the network (default localhost only)");
+            "Allow connections from the network (default localhost only)");
     options.addOption("t", "port", true, "Starting port (default 9000)");
-    return options;
+  }
+
+  /**
+   * Check if the user is asking for help.
+   *
+   * @param args the command line
+   * @return
+   */
+  public static boolean isParseHelp(String[] args) throws ParseException {
+    CommandLineParser parser = new DefaultParser();
+    CommandLine cmd = parser.parse(options, args);
+    return cmd.hasOption('h');
+  }
+
+  /**
+   * Get the simulation the user is calling (-s option).
+   *
+   * @param args the command line
+   * @return the simulation or empty if none or invalid.
+   */
+  public static Optional<SimulationBuilder> getSimulation(String[] args) throws ParseException {
+    CommandLineParser parser = new DefaultParser();
+    CommandLine cmd = parser.parse(options, args);
+    if (!cmd.hasOption('s')) {
+      return Optional.empty();
+    } else {
+      return getSimulation(cmd.getOptionValue('s'));
+    }
+  }
+
+  public static Optional<SimulationBuilder> getSimulation(String simulationName) {
+      return Arrays.stream(SimulationEnumeration.values())
+              .map(SimulationEnumeration::getBuilder).filter(
+                      simulationBuilder -> simulationBuilder.getSimulationName()
+                              .equalsIgnoreCase(simulationName)).findFirst();
+  }
+
+  /**
+   * Parse a set of strings from the command line and populate a SimulationSettings objectO.
+   *
+   * <p>Converts raw command-line arguments into a structured {@link SimulationSettings} object
+   * with validated parameters, default values, and error handling for invalid arguments.
+   *
+   * @param args the strings from the command line
+   * @return the RuntimeOptions POJO containing parsed command-line options
+   */
+  public static SimulationSettings parseCommandLine(String[] args) {
+    SimulationSettings simulation = new SimulationSettings();
+    try {
+      CommandLineParser parser = new DefaultParser();
+      CommandLine cmd = parser.parse(options, args);
+      // choose simulation
+      if (cmd.hasOption('s')) {
+        simulation.selectedSimulationBuilder().set(getSimulation(cmd.getOptionValue('s')).orElse(null));
+      }
+      // setup output - Default to none for CLI
+      simulation.outputNone().set(true);
+      // write images to PNG
+      if (cmd.hasOption('i')) {
+        simulation.outputPNG().set(true);
+      }
+      // write images to dir
+      if (cmd.hasOption('d')) {
+        simulation.outputPNGPath().set(cmd.getOptionValue("d"));
+      }
+      // skip frames
+      if (cmd.hasOption('k')) {
+        simulation.outputSkipFrames().set(Integer.parseInt(cmd.getOptionValue("k")));
+      }
+      // choose the number of  agents
+      if (cmd.hasOption('a')) {
+        simulation.agentCount().set(Integer.parseInt(cmd.getOptionValue('a')));
+      }
+      // how long to run the simluation
+      if (cmd.hasOption('e')) {
+        simulation.maxStepCount().set(Long.parseLong(cmd.getOptionValue('e')));
+      }
+      // open to network connections
+      if (cmd.hasOption('n')) {
+        simulation.externalNetwork().set(true);
+      }
+      // choose default port
+      if (cmd.hasOption('t')) {
+        simulation.defaultPort().set(Integer.parseInt(cmd.getOptionValue('t')));
+      }
+      // read parameters
+      if (cmd.hasOption('p')) {
+        Arrays.stream(cmd.getOptionValues('p')).forEach(s -> setParameterValue(simulation.selectedSimulationBuilder().get(),s));
+      }
+    } catch (ParseException e) {
+      System.err.println("Error parsing command line arguments: " + e.getMessage());
+      System.exit(-1); // NOPMD: allowed as we're running from the command line.
+    }
+    return simulation;
   }
 
   /**
@@ -193,6 +215,21 @@ public class RuntimeUtils {
       log.warn("Error getting method information for parameter '{}' on class {}", parameter,
           simulationBuilder.getClass().getName(), e);
       return null;
+    }
+  }
+
+  /**
+   * Sets a simulation parameter using a parameter name:value string.
+   *
+   * @param simulationBuilder the builder to set the parameter on
+   * @param parameter the name of the parameter and value in the form "name:value" or "name=value"
+   */
+  public void setParameterValue(SimulationBuilder simulationBuilder, String parameter) {
+    String[] keyValue = parameter.split("[=:]");
+    if (keyValue.length != 2) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
+      System.err.printf("Invalid parameter: '%s', use format key:value\n", parameter);
+    } else {
+      setParameterValue(simulationBuilder,keyValue[0],keyValue[1]);
     }
   }
 

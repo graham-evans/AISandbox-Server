@@ -6,26 +6,21 @@
 
 package dev.aisandbox.launcher;
 
-import dev.aisandbox.launcher.options.RuntimeOptions;
 import dev.aisandbox.launcher.options.RuntimeUtils;
-import dev.aisandbox.server.engine.SimulationBuilder;
-import dev.aisandbox.server.engine.SimulationParameter;
-import dev.aisandbox.server.engine.SimulationRunner;
-import dev.aisandbox.server.engine.SimulationSetup;
-import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.*;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
-import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
-import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.setup.SimulationSettings;
 import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
-import dev.aisandbox.server.simulation.SimulationEnumeration;
-import java.io.File;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.help.HelpFormatter;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.cli.help.HelpFormatter;
 
 /**
  * Command-line interface application for running AI Sandbox simulations.
@@ -49,24 +44,11 @@ import org.apache.commons.cli.help.HelpFormatter;
  * </ul>
  *
  * @see SandboxServerLauncher
- * @see RuntimeOptions
+ * @see dev.aisandbox.server.engine.setup.SimulationSettings
  * @see SimulationBuilder
  */
 @Slf4j
 public class SandboxServerCLIApplication {
-
-  /**
-   * List of all available simulation builders loaded from the enumeration.
-   */
-  private final List<SimulationBuilder> simulationBuilders;
-
-  /**
-   * Constructs a new CLI application instance and initializes the available simulations.
-   */
-  public SandboxServerCLIApplication() {
-    simulationBuilders = Arrays.stream(SimulationEnumeration.values())
-        .map(SimulationEnumeration::getBuilder).toList();
-  }
 
   /**
    * Main execution method for the CLI application.
@@ -79,13 +61,24 @@ public class SandboxServerCLIApplication {
   public void run(String... args) {
     System.out.println("AISandbox Server CLI Application");
     System.out.println();
-    // parse the command line
-    RuntimeOptions runtimeOptions = RuntimeUtils.parseCommandLine(args);
-    // are we asking for help or trying to run a simulation
-    if (runtimeOptions.help()) {
-      help(runtimeOptions);
-    } else {
-      runSimulation(runtimeOptions);
+    try {
+      if (RuntimeUtils.isParseHelp(args)) { // is the user asking for help
+        // is the user asking for help for a specific simulation or just general
+        help(RuntimeUtils.getSimulation(args));
+      } else {
+        // try to build and run the simulation
+        SimulationSettings settings = RuntimeUtils.parseCommandLine(args);
+        // has a simulation been selected
+        if (settings.selectedSimulationBuilder().get()!=null) {
+          // try and run the simulation
+          runSimulation(settings);
+        } else {
+          // tell the user they MUST select a simulation
+          System.err.println("Please select a simulation with -s <name>. Use -h to show help and list simulations.");
+        }
+      }
+    } catch (ParseException e) {
+      System.err.println("Error parsing command line. Use -h for help.");
     }
   }
 
@@ -95,12 +88,31 @@ public class SandboxServerCLIApplication {
    * <p>If a specific simulation is specified, shows detailed help for that simulation including
    * parameters and options. Otherwise, displays general application help.
    *
-   * @param runtimeOptions the parsed runtime options containing help request details
+   * @param helpOptions the simulation to show help for
    */
-  private void help(RuntimeOptions runtimeOptions) {
-    if (runtimeOptions.simulation() != null) {
-      // we are looking for help on a particular simulation?
-      helpSimulation(runtimeOptions.simulation());
+  private void help(Optional<SimulationBuilder> helpOptions) {
+    if (helpOptions.isPresent()) {
+      SimulationBuilder sim = helpOptions.get();
+      System.out.printf("Help for simulation %s\n\n", sim.getSimulationName());
+      System.out.printf(" Minimum agents: %d\n", sim.getMinAgentCount());
+      System.out.printf(" Maximum agents: %d\n", sim.getMaxAgentCount());
+
+          List<SimulationParameter> parameters = sim.getParameters();
+          if (!parameters.isEmpty()) {
+            System.out.println("Options (use -o key:value to set)");
+            for (SimulationParameter parameter : parameters) {
+              // test if this is an enum
+              if (parameter.parameterType().isEnum()) {
+                System.out.printf(" %s (%s) - %s %s", parameter.name(),
+                        RuntimeUtils.getParameterValue(sim, parameter), parameter.description(),
+                        Arrays.toString(parameter.parameterType().getEnumConstants()));
+              } else {
+                System.out.printf(" %s (%s) - %s", parameter.name(),
+                        RuntimeUtils.getParameterValue(sim, parameter), parameter.description());
+              }
+            }
+          }
+
     } else {
       // show generic help
       HelpFormatter formatter = HelpFormatter.builder().get();
@@ -127,17 +139,15 @@ public class SandboxServerCLIApplication {
    *
    * @param options the parsed runtime options containing simulation configuration
    */
-  private void runSimulation(RuntimeOptions options) {
+  private void runSimulation(SimulationSettings options) {
     // create simulation
-    Optional<SimulationBuilder> oBuilder = simulationBuilders.stream().filter(
-        simulationBuilder -> simulationBuilder.getSimulationName()
-            .equalsIgnoreCase(options.simulation())).findFirst();
-    if (oBuilder.isEmpty()) {
+    SimulationBuilder builder = options.selectedSimulationBuilder().get();
+    if (builder==null) {
       System.err.println(
-          "Can't find simulation with that name, use --help to show all simulations");
+          "You must select a simulation to run, use --help to show all simulations or -s <name> to select one.");
     } else {
-      SimulationBuilder simulationBuilder = oBuilder.get();
-      // apply parameters (if any)
+
+ /*     // apply parameters (if any)
       for (String parameter : options.parameters()) {
         String[] keyValue = parameter.split("[=:]");
         if (keyValue.length != 2) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
@@ -155,31 +165,24 @@ public class SandboxServerCLIApplication {
           }
         }
       }
-      int agents = simulationBuilder.getMaxAgentCount();
-      if ((options.agents() >= simulationBuilder.getMinAgentCount()) && (options.agents()
-          <= simulationBuilder.getMaxAgentCount())) {
-        agents = options.agents();
-      }
+   */
+
+      int agents = capInteger(options.agentCount().get(),builder.getMinAgentCount(),builder.getMaxAgentCount());
       // create output
-      OutputRenderer out = new NullOutputRenderer();
-      if (options.outputImage()) {
-        out = new BitmapOutputRenderer();
-        out.setOutputDirectory(new File(options.outputDirectory()));
-      }
-      if (options.skip() > 0) {
-        out.setSkipFrames(options.skip());
-      }
+      OutputRenderer out = options.createRenderer();
+      // create telemetry
+      TelemetryEngine telemetryEngine = options.createTelemetryEngine();
       // write summary
       System.out.println(
-          "Running simulation '" + simulationBuilder.getSimulationName() + "' with " + agents
+          "Running simulation '" +builder.getSimulationName() + "' with " + agents
               + " agents.");
       System.out.println("Output sent to " + out.getName());
-      System.out.println("Listening on " + (options.openExternal() ? " all interfaces"
-          : "loopback interface" + " starting on port " + options.startPort()));
+      System.out.println("Listening on " + (options.externalNetwork().get() ? " all interfaces"
+          : "loopback interface" + " starting on port " + options.defaultPort().get()));
       // setup simulation & runner
       try {
-        SimulationRunner runner = SimulationSetup.setupSimulation(simulationBuilder, agents,
-            options.startPort(), options.openExternal(), out, Theme.LIGHT, options.maxStepCount(), new NullTelemetryEngine());
+        SimulationRunner runner = SimulationSetup.setupSimulation(builder, agents,
+            options.defaultPort().get(), options.externalNetwork().get(), out, Theme.LIGHT, options.maxStepCount().get(), new NullTelemetryEngine());
         // start simulation
         runner.start();
       } catch (SimulationSetupException e) {
@@ -188,48 +191,19 @@ public class SandboxServerCLIApplication {
     }
   }
 
-  private void helpSimulation(String simulationName) {
-    System.out.printf("Help for simulation %s\n\n", simulationName);
-    Optional<SimulationBuilder> oSim = findBuilder(simulationName);
-    if (oSim.isPresent()) {
-      SimulationBuilder sim = oSim.get();
-      System.out.printf(" Minimum agents: %d\n", sim.getMinAgentCount());
-      System.out.printf(" Maximum agents: %d\n", sim.getMaxAgentCount());
-      try {
-        List<SimulationParameter> parameters = sim.getParameters();
-        if (!parameters.isEmpty()) {
-          System.out.println("Options (use -o key:value to set)");
-          for (SimulationParameter parameter : parameters) {
-            // test if this is an enum
-            if (parameter.parameterType().isEnum()) {
-              System.out.printf(" %s (%s) - %s %s", parameter.name(),
-                  RuntimeUtils.getParameterValue(sim, parameter), parameter.description(),
-                  Arrays.toString(parameter.parameterType().getEnumConstants()));
-            } else {
-              System.out.printf(" %s (%s) - %s", parameter.name(),
-                  RuntimeUtils.getParameterValue(sim, parameter), parameter.description());
-            }
-          }
-        }
-      } catch (Exception e) {
-        log.error("Error during describe simulation", e);
-      }
-    } else {
-      System.out.println("Can't find simulation with that name");
-    }
-    System.out.println();
+
+  /**
+   * Cap an integer between two min/max values
+   * @param value
+   * @param min
+   * @param max
+   * @return
+   */
+  static int capInteger(int value, int min,int max) {
+    return Math.min(Math.max(value,min),max);
   }
 
-  private Optional<SimulationBuilder> findBuilder(String name) {
-    for (SimulationBuilder simulationBuilder : simulationBuilders) {
-      if (simulationBuilder.getSimulationName().equalsIgnoreCase(name)) {
-        return Optional.of(simulationBuilder);
-      }
-    }
-    System.err.println(
-        "No simulation of that name exists, use the --help option to list all simulations");
-    return Optional.empty();
-  }
+/*
 
   private void listOptions(RuntimeOptions options) {
     if (options.simulation() == null) {
@@ -250,5 +224,5 @@ public class SandboxServerCLIApplication {
       helpSimulation(options.simulation());
     }
   }
-
+*/
 }

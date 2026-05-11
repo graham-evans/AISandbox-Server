@@ -22,6 +22,7 @@ import lombok.experimental.UtilityClass;
  * Utility class for setting up simulation environments. Provides methods to configure simulations
  * with different agent types.
  */
+@Deprecated
 @UtilityClass
 public class SimulationSetup {
 
@@ -39,6 +40,7 @@ public class SimulationSetup {
    * @return A configured SimulationRunner ready to start
    * @throws SimulationSetupException If there's an error during simulation setup
    */
+  @Deprecated
   public static SimulationRunner setupSimulation(SimulationBuilder builder, int agentCount,
                                                  int defaultPort, boolean openExternal, OutputRenderer renderer, Theme theme,
                                                  long maxStepCount, TelemetryEngine telemetryEngine) throws SimulationSetupException {
@@ -63,6 +65,7 @@ public class SimulationSetup {
    * @param telemetryEngine The external logger to use
    * @return A configured SimulationRunner ready to start
    */
+  @Deprecated
   public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents,
                                                  OutputRenderer renderer, Theme theme, long maxStepCount, TelemetryEngine telemetryEngine) throws SimulationSetupException {
     // create simulation

@@ -91,9 +91,9 @@ public class RuntimeController {
       FXRenderer renderer = new FXRenderer(this);
 
       SimulationRunner runner = SimulationSetup.setupSimulation(
-          model.getSelectedSimulationBuilder().get(), model.getAgentCount().get(),
-          model.getDefaultPort().get(), model.getExternalNetwork().get(), renderer,
-          model.getSelectedTheme().get(), -1L, new NullTelemetryEngine());
+          model.getSettings().selectedSimulationBuilder().get(), model.getSettings().agentCount().get(),
+          model.getSettings().defaultPort().get(), model.getSettings().externalNetwork().get(), renderer,
+          model.getSettings().selectedTheme().get(), -1L, new NullTelemetryEngine());
       runner.start();
       model.setRunner(runner);
       log.debug("Initialized RuntimeController");

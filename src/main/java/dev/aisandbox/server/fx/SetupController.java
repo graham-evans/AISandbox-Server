@@ -70,7 +70,7 @@ public class SetupController {
     // bind simulation list to model
     simulationList.setItems(model.getSimulations());
     simulationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    model.getSelectedSimulationBuilder()
+    model.getSettings().selectedSimulationBuilder()
         .bind(simulationList.getSelectionModel().selectedItemProperty());
     // disable agent counter until builder is selected
     agentCounter.setDisable(true);
@@ -84,14 +84,14 @@ public class SetupController {
             // update description
             simDescription.setText(newValue.getDescription());
             // update agent count options
-            model.getAgentCount().unbind();
+            model.getSettings().agentCount().unbind();
             agentCounter.setValueFactory(
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(newValue.getMinAgentCount(),
                     newValue.getMaxAgentCount(),
                     getValueInRange(agentCounter.getValue(), newValue.getMinAgentCount(),
                         newValue.getMaxAgentCount())));
             agentCounter.setDisable(false);
-            model.getAgentCount().bind(agentCounter.valueProperty());
+            model.getSettings().agentCount().bind(agentCounter.valueProperty());
             // populate the parameters with editor boxes
             parameterBox.getChildren().clear();
             for (SimulationParameter parameter : newValue.getParameters()) {
@@ -99,7 +99,7 @@ public class SetupController {
             }
           } else {
             simDescription.setText("");
-            model.getAgentCount().unbind();
+            model.getSettings().agentCount().unbind();
             agentCounter.setDisable(true);
             parameterBox.getChildren().clear();
           }
@@ -108,10 +108,10 @@ public class SetupController {
     simulationList.getSelectionModel().select(0);
     // setup theme chooser
     themeChoice.getItems().addAll(Theme.values());
-    model.getSelectedTheme().bind(themeChoice.valueProperty());
+    model.getSettings().selectedTheme().bind(themeChoice.valueProperty());
     themeChoice.getSelectionModel().select(Theme.LIGHT);
     // bind network choice
-    model.getExternalNetwork().bind(externalCheckBox.selectedProperty());
+    model.getSettings().externalNetwork().bind(externalCheckBox.selectedProperty());
   }
 
   /**
@@ -178,7 +178,7 @@ public class SetupController {
 
   @FXML
   void startSimulation(ActionEvent event) {
-    if (model.getSelectedSimulationBuilder().get() != null) {
+    if (model.getSettings().selectedSimulationBuilder().get() != null) {
       // flip to runtime screen
       try {
         FXMLLoader loader = new FXMLLoader(SetupController.class.getResource("/fx/runtime.fxml"));
