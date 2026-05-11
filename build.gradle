@@ -19,15 +19,16 @@ run {
 
 application {
     mainClass = 'dev.aisandbox.launcher.SandboxServerLauncher'
+    applicationDefaultJvmArgs = ['--sun-misc-unsafe-memory-access=allow']
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
         }
     }
 }
 
 javafx {
-    version = '21.0.8'
+    version = '25.0.3'
     modules = ['javafx.controls', 'javafx.fxml', 'javafx.swing']
     if (System.properties.containsKey('env')) {
         platform = System.properties['env']
