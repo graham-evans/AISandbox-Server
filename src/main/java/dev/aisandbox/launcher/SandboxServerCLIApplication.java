@@ -88,11 +88,11 @@ public class SandboxServerCLIApplication {
    * <p>If a specific simulation is specified, shows detailed help for that simulation including
    * parameters and options. Otherwise, displays general application help.
    *
-   * @param helpOptions the simulation to show help for
+   * @param helpSimulation the simulation to show help for
    */
-  private void help(Optional<SimulationBuilder> helpOptions) {
-    if (helpOptions.isPresent()) {
-      SimulationBuilder sim = helpOptions.get();
+  private void help(Optional<SimulationBuilder> helpSimulation) {
+    if (helpSimulation.isPresent()) {
+      SimulationBuilder sim = helpSimulation.get();
       System.out.printf("Help for simulation %s\n\n", sim.getSimulationName());
       System.out.printf(" Minimum agents: %d\n", sim.getMinAgentCount());
       System.out.printf(" Maximum agents: %d\n", sim.getMaxAgentCount());
