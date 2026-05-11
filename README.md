@@ -8,15 +8,15 @@ Full documentation is available at [aisandbox.dev](https://aisandbox.dev).
 
 ## Implemented Simulations
 
-| Simulation | Description |
-|---|---|
+| Simulation              | Description                                                                                |
+|-------------------------|--------------------------------------------------------------------------------------------|
 | **Multi Armed Bandits** | Repeatedly select from a series of one-armed bandits to achieve the best return over time. |
-| **The Coin Game** | Two-player puzzles where the aim is to force your opponent to take the last coin. |
-| **High / Low Cards** | Choose whether the next card will be higher or lower than the last. |
-| **Maze** | Explore a maze to find the exit, then exploit the biases in the generator. |
-| **Mine Hunter** | Use logic to defuse a minefield. |
-| **Twisty Puzzles** | Traditional logic puzzles of various sizes. |
-| **Mancala** | Two-player game collecting seeds (version 2.1) |
+| **The Coin Game**       | Two-player puzzles where the aim is to force your opponent to take the last coin.          |
+| **High / Low Cards**    | Choose whether the next card will be higher or lower than the last.                        |
+| **Maze**                | Explore a maze to find the exit, then exploit the biases in the generator.                 |
+| **Mine Hunter**         | Use logic to defuse a minefield.                                                           |
+| **Twisty Puzzles**      | Traditional logic puzzles of various sizes.                                                |
+| **Mancala**             | Two-player game collecting seeds (version 2.1)                                             |
 
 ## Getting Started
 
@@ -26,7 +26,7 @@ Platform-specific installers and archives are available from the [downloads page
 
 ### Run from Source
 
-Requires JDK 21 or higher ([Adoptium](https://adoptium.net/), [Oracle](https://www.oracle.com/java/technologies/downloads), or [Microsoft OpenJDK](https://learn.microsoft.com/en-us/java/openjdk/download)).
+Requires JDK 25 or higher ([Adoptium](https://adoptium.net/), [Oracle](https://www.oracle.com/java/technologies/downloads), or [Microsoft OpenJDK](https://learn.microsoft.com/en-us/java/openjdk/download)).
 
 ```bash
 ./gradlew run
@@ -53,18 +53,10 @@ Run simulations headlessly by passing command-line arguments:
 
 ```bash
 ./gradlew build       # Compile, test, and run static analysis
+./gradlew jlink       # Build executable in build/image/
 ./gradlew test        # Run tests only
-./gradlew distZip     # Create distribution archive
 ```
-
-Cross-compile for other platforms with:
-
-```bash
-./gradlew clean distZip -Denv=win
-```
-
-Supported platforms: `win`, `linux`, `linux-aarch64`, `mac`, `osx`, `osx-aarch64`.
 
 ## Licence
 
-This project is licensed under the [GNU General Public License v3.0](LICENCE).
+This project is licensed under the [GNU General Public Licence v3.0](LICENCE).
