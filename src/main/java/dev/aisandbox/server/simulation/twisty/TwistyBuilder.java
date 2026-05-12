@@ -133,6 +133,7 @@ public final class TwistyBuilder implements SimulationBuilder {
    * @return A new TwistySimulation instance, or null if an error occurs during creation
    */
   @Override
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public Simulation build(List<Agent> agents, Theme theme, Random random,
       TelemetryEngine telemetryEngine) {
     try {
