@@ -75,12 +75,20 @@ public class SandboxServerCLIApplication {
    * @param args command-line arguments passed from the launcher
    */
   public void run(String... args) {
+    System.out.println();
     System.out.println("AISandbox Server CLI Application");
+    System.out.println("================================");
     System.out.println();
     try {
       if (RuntimeUtils.isParseHelp(args)) { // is the user asking for help
         // is the user asking for help for a specific simulation or just general
-        help(RuntimeUtils.getSimulation(args));
+        Optional<SimulationBuilder> oSim = RuntimeUtils.getSimulation(args);
+        if (oSim.isPresent()) {
+          help(oSim.get());
+        } else {
+          help();
+        }
+
       } else {
         // try to build and run the simulation
         SimulationSettings settings = RuntimeUtils.parseCommandLine(args);
@@ -102,43 +110,46 @@ public class SandboxServerCLIApplication {
   /**
    * Displays help information based on the runtime options provided.
    *
-   * <p>If a specific simulation is specified, shows detailed help for that simulation including
-   * parameters and options. Otherwise, displays general application help.
+   * <p>Shows detailed help for a specific simulation
    *
-   * @param helpSimulation the simulation to show help for
+   * @param sim the simulation to show help for
    */
-  private void help(Optional<SimulationBuilder> helpSimulation) {
-    if (helpSimulation.isPresent()) {
-      SimulationBuilder sim = helpSimulation.get();
-      System.out.printf("Help for simulation %s\n\n", sim.getSimulationName());
-      System.out.printf(" Minimum agents: %d\n", sim.getMinAgentCount());
-      System.out.printf(" Maximum agents: %d\n", sim.getMaxAgentCount());
-
-      List<SimulationParameter> parameters = sim.getParameters();
-      if (!parameters.isEmpty()) {
-        System.out.println("Options (use -o key:value to set)");
-        for (SimulationParameter parameter : parameters) {
-          // test if this is an enum
-          if (parameter.parameterType().isEnum()) {
-            System.out.printf(" %s (%s) - %s %s", parameter.name(),
-                RuntimeUtils.getParameterValue(sim, parameter), parameter.description(),
-                Arrays.toString(parameter.parameterType().getEnumConstants()));
-          } else {
-            System.out.printf(" %s (%s) - %s", parameter.name(),
-                RuntimeUtils.getParameterValue(sim, parameter), parameter.description());
-          }
+  private void help(SimulationBuilder sim) {
+    System.out.printf(" Help for simulation %s\n\n", sim.getSimulationName());
+    System.out.printf(" Minimum agents: %d\n", sim.getMinAgentCount());
+    System.out.printf(" Maximum agents: %d\n", sim.getMaxAgentCount());
+    System.out.println();
+    List<SimulationParameter> parameters = sim.getParameters();
+    if (!parameters.isEmpty()) {
+      System.out.println(" Options (use -o key:value to set)");
+      System.out.println();
+      for (SimulationParameter parameter : parameters) {
+        // test if this is an enum
+        if (parameter.parameterType().isEnum()) {
+          System.out.printf("   %s (%s) - %s %s\n", parameter.name(),
+              RuntimeUtils.getParameterValue(sim, parameter), parameter.description(),
+              Arrays.toString(parameter.parameterType().getEnumConstants()));
+        } else {
+          System.out.printf("   %s (%s) - %s\n", parameter.name(),
+              RuntimeUtils.getParameterValue(sim, parameter), parameter.description());
         }
       }
-
-    } else {
-      // show generic help
-      HelpFormatter formatter = HelpFormatter.builder().get();
       System.out.println();
-      try {
-        formatter.printHelp("AISandboxServer", null, RuntimeUtils.getOptions(), null, true);
-      } catch (IOException e) {
-        log.error("Error printing help", e);
-      }
+    }
+  }
+
+  /**
+   * Displays help information based on the runtime options provided.
+   *
+   * <p>Shows generalised help.
+   */
+  private void help() {
+    // show generic help
+    HelpFormatter formatter = HelpFormatter.builder().setShowSince(false).get();
+    try {
+      formatter.printHelp("AISandboxServer", null, RuntimeUtils.getOptions(), null, true);
+    } catch (IOException e) {
+      log.error("Error printing help", e);
     }
   }
 
@@ -203,7 +214,7 @@ public class SandboxServerCLIApplication {
       try {
         SimulationRunner runner = SimulationSetup.setupSimulation(builder, agents,
             options.defaultPort().get(), options.externalNetwork().get(), out, Theme.LIGHT,
-            options.maxStepCount().get(), randomProvider,new NullTelemetryEngine());
+            options.maxStepCount().get(), randomProvider, new NullTelemetryEngine());
         // start simulation
         runner.start();
       } catch (SimulationSetupException e) {
