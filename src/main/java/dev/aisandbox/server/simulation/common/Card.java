@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.simulation.common;
 
+import java.util.Locale;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -60,7 +61,7 @@ public record Card(CardValue cardValue, CardSuite cardSuite) {
    * @return A string with the full value name and suit name
    */
   public String getLongDescription() {
-    return cardValue.getLongValue() + " of " + cardSuite.name().toLowerCase();
+    return cardValue.getLongValue() + " of " + cardSuite.name().toLowerCase(Locale.ENGLISH);
   }
 
   /**
