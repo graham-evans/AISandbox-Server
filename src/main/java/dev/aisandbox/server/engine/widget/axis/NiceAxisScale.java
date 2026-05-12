@@ -69,7 +69,7 @@ public class NiceAxisScale implements AxisScale {
     double niceFraction; // nice, rounded fraction
 
     exponent = Math.floor(Math.log10(value));
-    fraction = value / Math.pow(10, exponent);
+    fraction = value / StrictMath.pow(10, exponent);
 
     if (round) {
       if (fraction < 1.5) {
@@ -92,7 +92,7 @@ public class NiceAxisScale implements AxisScale {
         niceFraction = 10;
       }
     }
-    return niceFraction * Math.pow(10, exponent);
+    return niceFraction * StrictMath.pow(10, exponent);
   }
 
   @Override
