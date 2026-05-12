@@ -20,4 +20,15 @@ module AISandbox.Server.main {
 
   opens dev.aisandbox.launcher to javafx.graphics;
   opens dev.aisandbox.server.fx to javafx.fxml;
+
+  // Protobuf-generated classes require reflective access from com.google.protobuf.
+  // Unqualified opens are used because jlink merges com.google.protobuf into dev.aisandbox.merged.module.
+  opens dev.aisandbox.server.simulation.bandit.proto;
+  opens dev.aisandbox.server.simulation.cascade.proto;
+  opens dev.aisandbox.server.simulation.coingame.proto;
+  opens dev.aisandbox.server.simulation.highlowcards.proto;
+  opens dev.aisandbox.server.simulation.mancala.proto;
+  opens dev.aisandbox.server.simulation.maze.proto;
+  opens dev.aisandbox.server.simulation.mine.proto;
+  opens dev.aisandbox.server.simulation.twisty.proto;
 }
