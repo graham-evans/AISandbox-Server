@@ -129,9 +129,19 @@ public class SimulationSettings {
    * @throws SimulationSetupException an error occurred while setting up the simulation.
    */
   public SimulationRunner build() throws SimulationSetupException {
-    // generate renderer
-    OutputRenderer renderer = new NullOutputRenderer();
-    // generate agents
+    return build(createRenderer(), List.of());
+  }
+
+  /**
+   * Create a SimulationRunner based on the current setting but forcing the renderer to be used.
+   *
+   * <p>This is used by the JavaFX launcher
+   *
+   * @param renderer the renderer to use (overrides the class choice).
+   * @return The simulation runner to control the simulation
+   * @throws SimulationSetupException an error occurred while setting up the simulation.
+   */
+  public SimulationRunner build(OutputRenderer renderer) throws SimulationSetupException {
     return build(renderer, List.of());
   }
 
@@ -148,6 +158,16 @@ public class SimulationSettings {
     return build(createRenderer(), agentList);
   }
 
+  /**
+   * Create a SimulationRunner based on the given renderer and prebuilt agents.
+   *
+   * <p>This is the main method that all versions calls
+   *
+   * @param renderer the renderer to use
+   * @param prebuiltAgents a list of prebuilt agents
+   * @return the SimulationRunner plumbed into the renderer / agents / telemetry etc.
+   * @throws SimulationSetupException when there is an error setting up the simulation.
+   */
   private SimulationRunner build(OutputRenderer renderer, List<Agent> prebuiltAgents)
       throws SimulationSetupException {
     // create the list of agents
