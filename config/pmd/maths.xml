@@ -32,7 +32,7 @@
 
   <rule name="NoJavaUtilRandom"
     language="java"
-    message="Use MersenneTwister instead of java.util.Random"
+    message="Use SimulationRandomNumberGenerator instead of java.util.Random"
     class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
     <description>
       java.util.Random is not guaranteed to be consistent across JVM versions.
