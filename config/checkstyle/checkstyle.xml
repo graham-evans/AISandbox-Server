@@ -86,7 +86,7 @@
 
     <!-- Bans specific static method calls via regex -->
     <module name="RegexpSinglelineJava">
-      <property name="format" value="Math\.(sin|cos|tan|exp|log|pow)\("/>
+      <property name="format" value="(?&lt;!Strict)Math\.(sin|cos|tan|exp|log|pow)\("/>
       <property name="message" value="Use StrictMath instead of Math for transcendental functions in simulations"/>
       <property name="ignoreComments" value="true"/>
       <property name="severity" value="error"/>
