@@ -10,7 +10,6 @@ import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +46,7 @@ public class MazeGenerator {
       }
       case RECURSIVEBACKTRACKER -> applyRecursiveBacktracker(rand, maze);
     }
-    findFurthestPoints(maze);
+    findFurthestPoints(maze,rand);
     return maze;
   }
 
@@ -191,8 +190,8 @@ public class MazeGenerator {
    *
    * @param maze The maze to find the furthest points in.
    */
-  public static void findFurthestPoints(Maze maze) {
-    applyDijkstra(maze);
+  public static void findFurthestPoints(Maze maze,SimulationRandomNumberGenerator rand) {
+    applyDijkstra(maze,rand);
     Cell start = getHighestVelueCell(maze);
     maze.setStartCell(start);
     applyDijkstra(maze, start);
@@ -210,10 +209,9 @@ public class MazeGenerator {
    *
    * @param maze The maze to apply the Dijkstra algorithm to.
    */
-  public static void applyDijkstra(Maze maze) {
+  public static void applyDijkstra(Maze maze,SimulationRandomNumberGenerator rand) {
     log.info("Applying dijkstra - picking random start cell from maze with {} cells",
         maze.getCellList().size());
-    Random rand = new Random(System.currentTimeMillis());
     applyDijkstra(maze, maze.getCellList().get(rand.nextInt(maze.getCellList().size())));
   }
 
