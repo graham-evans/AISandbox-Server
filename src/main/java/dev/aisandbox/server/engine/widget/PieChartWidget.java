@@ -112,8 +112,8 @@ public class PieChartWidget {
       double angle = value * 360.0 * Math.PI / 180.0;
       // Draw the value in the middle of the arc
       double midAngle = startAngle + (angle / 2);
-      int textX = (int) (startX + pieDiameter / 2 + Math.cos(midAngle) * pieDiameter / 3);
-      int textY = (int) (startY + pieDiameter / 2 + Math.sin(midAngle) * pieDiameter / 3);
+      int textX = (int) (startX + pieDiameter / 2 + StrictMath.cos(midAngle) * pieDiameter / 3);
+      int textY = (int) (startY + pieDiameter / 2 + StrictMath.sin(midAngle) * pieDiameter / 3);
 
       //     g.fillOval(textX-3,textY-3,6,6);
       GraphicsUtils.drawCenteredText(g, textX - 20, textY - 10, 40, 20, slice.title,
