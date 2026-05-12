@@ -22,17 +22,10 @@ pipeline {
 
     post {
         always {
-            // Record JUnit results (all branches - useful for PR feedback)
+            // Record JUnit / checkStyle & PMD  results (all branches - useful for PR feedback)
             junit '**/build/test-results/test/*.xml'
-        }
-        success {
-            // Record PMD and Checkstyle results (main branch only)
-            script {
-                if (env.BRANCH_NAME == 'main') {
-                    recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/build/reports/pmd/*.xml')
-                    recordIssues enabledForFailure: true, tool: checkStyle(pattern: '**/build/reports/checkstyle/*.xml')
-                }
-            }
+            recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/build/reports/pmd/*.xml')
+            recordIssues enabledForFailure: true, tool: checkStyle(pattern: '**/build/reports/checkstyle/*.xml')
         }
     }
 }
