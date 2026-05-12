@@ -28,7 +28,7 @@ public enum FXModel {
   private final ObservableList<SimulationBuilder> simulations = FXCollections.observableArrayList();
 
   @Getter
-  private final SimulationSettings settings = new SimulationSettings();
+  private final transient SimulationSettings settings = new SimulationSettings();
 
   @Getter
   @Setter
