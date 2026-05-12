@@ -20,6 +20,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
@@ -39,7 +40,6 @@ import dev.aisandbox.server.simulation.twisty.proto.TwistySignal;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyState;
 import java.awt.Graphics2D;
 import java.time.Instant;
-import java.util.Random;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -98,7 +98,7 @@ public final class TwistySimulation implements Simulation {
   /**
    * Random number generator for puzzle scrambling.
    */
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
   /**
    * Unique identifier for this simulation session.
    */
@@ -142,7 +142,7 @@ public final class TwistySimulation implements Simulation {
    * @param random      Random number generator for puzzle scrambling
    */
   public TwistySimulation(Agent agent, TwistyPuzzle puzzle, boolean startSolved, Theme theme,
-      Random random, TelemetryEngine telemetryEngine) {
+      SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.puzzle = puzzle;
     this.startSolved = startSolved;

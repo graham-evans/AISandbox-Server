@@ -13,7 +13,6 @@ import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.experimental.UtilityClass;
 
@@ -42,7 +41,7 @@ public class SimulationSetup {
   @Deprecated
   public static SimulationRunner setupSimulation(SimulationBuilder builder, int agentCount,
       int defaultPort, boolean openExternal, OutputRenderer renderer, Theme theme,
-      long maxStepCount, TelemetryEngine telemetryEngine) throws SimulationSetupException {
+      long maxStepCount, SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine) throws SimulationSetupException {
     AtomicInteger port = new AtomicInteger(defaultPort);
     String[] agentNames = builder.getAgentNames(agentCount);
     List<Agent> agents = new ArrayList<>();
@@ -50,7 +49,7 @@ public class SimulationSetup {
       agents.add(new NetworkAgent(agentName, port.getAndIncrement(), openExternal, renderer));
     }
     return setupSimulation(builder, agents, renderer, theme, maxStepCount,
-        new NullTelemetryEngine());
+       random, new NullTelemetryEngine());
   }
 
   /**
@@ -67,10 +66,10 @@ public class SimulationSetup {
    */
   @Deprecated
   public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents,
-      OutputRenderer renderer, Theme theme, long maxStepCount, TelemetryEngine telemetryEngine)
+      OutputRenderer renderer, Theme theme, long maxStepCount, SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine)
       throws SimulationSetupException {
     // create simulation
-    Simulation sim = builder.build(agents, theme, new Random(), new NullTelemetryEngine());
+    Simulation sim = builder.build(agents, theme, random, new NullTelemetryEngine());
     // start output
     renderer.setup(sim);
     // create simulation runner thread

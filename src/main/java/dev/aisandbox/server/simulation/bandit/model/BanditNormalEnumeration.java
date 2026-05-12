@@ -6,7 +6,7 @@
 
 package dev.aisandbox.server.simulation.bandit.model;
 
-import java.util.Random;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -60,8 +60,9 @@ public enum BanditNormalEnumeration {
    * @param random the random number generator to use for sampling
    * @return a value sampled from this distribution
    */
-  public double getNormalValue(Random random) {
+  public double getNormalValue(SimulationRandomNumberGenerator random) {
     return switch (this) {
+
       case NORMAL_0_1 -> random.nextGaussian(0.0, 1.0);
       case NORMAL_0_5 -> random.nextGaussian(0.0, 5.0);
       case UNIFORM_1_1 -> random.nextDouble(-1.0, 1.0);

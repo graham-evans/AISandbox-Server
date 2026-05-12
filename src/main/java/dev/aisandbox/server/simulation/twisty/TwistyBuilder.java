@@ -10,10 +10,10 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
-import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -134,7 +134,7 @@ public final class TwistyBuilder implements SimulationBuilder {
    */
   @Override
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
-  public Simulation build(List<Agent> agents, Theme theme, Random random,
+  public Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random,
       TelemetryEngine telemetryEngine) {
     try {
       return new TwistySimulation(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved,

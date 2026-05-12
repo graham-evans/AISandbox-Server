@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.simulation.maze;
 
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +36,7 @@ public class MazeGenerator {
    * @param rand     A random number generator used for generating the maze.
    * @return The generated maze.
    */
-  public static Maze generateMaze(MazeSize size, MazeType mazeType, Random rand) {
+  public static Maze generateMaze(MazeSize size, MazeType mazeType, SimulationRandomNumberGenerator rand) {
     Maze maze = new Maze(size.getWidth(), size.getHeight(), size.getZoomLevel());
     switch (mazeType) {
       case BINARYTREE -> applyBinaryTree(rand, maze);
@@ -60,7 +61,7 @@ public class MazeGenerator {
    * @param rand A random number generator used for generating the maze.
    * @param maze The maze to apply the Binary Tree algorithm to.
    */
-  public static void applyBinaryTree(Random rand, Maze maze) {
+  public static void applyBinaryTree(SimulationRandomNumberGenerator rand, Maze maze) {
     log.debug("Applying binary tree to maze");
     for (Cell c : maze.getCellList()) {
       List<Cell> targets = new ArrayList<>();
@@ -87,7 +88,7 @@ public class MazeGenerator {
    * @param rand A random number generator used for generating the maze.
    * @param maze The maze to apply the Sidewinder algorithm to.
    */
-  public static void applySidewinder(Random rand, Maze maze) {
+  public static void applySidewinder(SimulationRandomNumberGenerator rand, Maze maze) {
     log.debug("Applying sidewinder to maze");
     // special case, join the top row
     for (int x = 0; x < maze.getWidth() - 1; x++) {
@@ -124,7 +125,7 @@ public class MazeGenerator {
    * @param rand A random number generator used for generating the maze.
    * @param maze The maze to apply the Recursive Backtracker algorithm to.
    */
-  public static void applyRecursiveBacktracker(Random rand, Maze maze) {
+  public static void applyRecursiveBacktracker(SimulationRandomNumberGenerator rand, Maze maze) {
     log.debug("Applying recursive backtracker");
     List<Cell> stack = new ArrayList<>();
     List<Cell> unvisited = new ArrayList<>(maze.getCellList());
@@ -163,7 +164,7 @@ public class MazeGenerator {
    * @param rand A random number generator used for generating the maze.
    * @param maze The maze to remove dead ends from.
    */
-  public static void removeDeadEnds(Random rand, Maze maze) {
+  public static void removeDeadEnds(SimulationRandomNumberGenerator rand, Maze maze) {
     // check each cell
     for (Cell current : maze.getCellList()) {
       // work out how many paths if less than two, add a new one

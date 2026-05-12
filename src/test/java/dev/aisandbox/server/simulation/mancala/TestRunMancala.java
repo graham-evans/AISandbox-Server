@@ -10,13 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,7 +43,7 @@ public class TestRunMancala {
       List<Agent> agents = Arrays.stream(builder.getAgentNames(2))
           .map(s -> (Agent) new MockMancalaPlayer(s)).toList();
       // create simulation
-      Simulation sim = builder.build(agents, theme, new Random(), new NullTelemetryEngine());
+      Simulation sim = builder.build(agents, theme, new SimulationRandomNumberGenerator(0), new NullTelemetryEngine());
       // create output directory
       File outputDirectory = new File("build/test/mancala/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();

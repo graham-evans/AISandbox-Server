@@ -10,10 +10,10 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Builder class for the High-Low Cards game simulation. This class implements SimulationBuilder to
@@ -101,7 +101,7 @@ public final class HighLowCardsBuilder implements SimulationBuilder {
    * @return a new HighLowCards simulation instance
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random,
+  public Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random,
       TelemetryEngine telemetryEngine) {
     // Create a new simulation with the first agent, 9 cards, the specified theme, and the random
     // seed

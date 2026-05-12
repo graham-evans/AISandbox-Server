@@ -6,7 +6,7 @@
 
 package dev.aisandbox.server.simulation.bandit.model;
 
-import java.util.Random;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -68,7 +68,7 @@ public class Bandit {
    * @param rand the random number generator to use for sampling
    * @return a reward value sampled from the bandit's distribution
    */
-  public double pull(Random rand) {
+  public double pull(SimulationRandomNumberGenerator rand) {
     return rand.nextGaussian() * std + mean;
   }
 

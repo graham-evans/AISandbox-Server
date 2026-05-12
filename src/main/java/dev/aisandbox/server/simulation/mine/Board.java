@@ -6,10 +6,10 @@
 
 package dev.aisandbox.server.simulation.mine;
 
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -57,7 +57,7 @@ public class Board {
    * Creates a new mine board with the specified dimensions.
    *
    * <p>Initializes an empty board grid where all cells start uncovered and without mines.
-   * After construction, mines should be placed using {@link #placeMines(Random, int)} and neighbor
+   * After construction, mines should be placed using {@link #placeMines(SimulationRandomNumberGenerator, int)} and neighbor
    * counts calculated using {@link #countNeighbours()}.
    *
    * @param width  the width of the board in cells (must be positive)
@@ -87,7 +87,7 @@ public class Board {
    * @param rand  random number generator for mine placement
    * @param count the desired number of mines to place (will be capped at total cell count)
    */
-  public void placeMines(Random rand, int count) {
+  public void placeMines(SimulationRandomNumberGenerator rand, int count) {
     // check we dont have more mines than cells
     count = Math.min(count, width * height);
     // place the mines randomly

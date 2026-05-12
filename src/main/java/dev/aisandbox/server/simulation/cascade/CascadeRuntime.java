@@ -8,6 +8,7 @@ package dev.aisandbox.server.simulation.cascade;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
@@ -30,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.time.Instant;
-import java.util.Random;
 import java.util.UUID;
 
 import static dev.aisandbox.server.engine.output.OutputConstants.*;
@@ -98,7 +98,7 @@ public final class CascadeRuntime implements Simulation {
   // ── Instance state ───────────────────────────────────────────────────────────
 
   private final Agent agent;
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
   private final Theme theme;
   private final TelemetryEngine telemetryEngine;
   @Getter
@@ -122,7 +122,7 @@ public final class CascadeRuntime implements Simulation {
    * @param random          the source of randomness for board generation and tile refill
    * @param telemetryEngine
    */
-  public CascadeRuntime(Agent agent, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public CascadeRuntime(Agent agent, Theme theme, SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.theme = theme;
     this.random = random;

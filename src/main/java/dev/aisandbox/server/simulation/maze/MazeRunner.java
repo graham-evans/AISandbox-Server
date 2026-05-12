@@ -20,6 +20,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -36,7 +37,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +74,7 @@ public final class MazeRunner implements Simulation {
   private final MazeType mazeType;
   private final Theme theme;
   private final List<BufferedImage> sprites;
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
   private final Agent agent;
   @Getter
   private final String sessionId = UUID.randomUUID().toString();
@@ -95,7 +95,7 @@ public final class MazeRunner implements Simulation {
    * @param theme    the visual theme for the maze
    * @param random   the random number generator for maze generation
    */
-  public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme, Random random,
+  public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme, SimulationRandomNumberGenerator random,
       TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.mazeSize = mazeSize;

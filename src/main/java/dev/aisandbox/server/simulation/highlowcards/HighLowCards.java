@@ -22,6 +22,7 @@ import static dev.aisandbox.server.simulation.common.Card.CARD_WIDTH;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.maths.bins.IntegerBinner;
@@ -48,7 +49,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
@@ -146,7 +146,7 @@ public final class HighLowCards implements Simulation {
   /**
    * Random number generator for shuffling.
    */
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
 
   /**
    * external logger
@@ -213,7 +213,7 @@ public final class HighLowCards implements Simulation {
    * @param theme     The visual theme to apply to the simulation
    * @param random    Random number generator for shuffling cards
    */
-  public HighLowCards(Agent agent, int cardCount, Theme theme, Random random,
+  public HighLowCards(Agent agent, int cardCount, Theme theme, SimulationRandomNumberGenerator random,
       TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.cardCount = cardCount;

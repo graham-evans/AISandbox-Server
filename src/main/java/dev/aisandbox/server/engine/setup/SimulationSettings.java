@@ -9,6 +9,7 @@ package dev.aisandbox.server.engine.setup;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
@@ -21,7 +22,6 @@ import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.fx.RuntimeController;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -156,7 +156,7 @@ public class SimulationSettings {
     TelemetryEngine telemetryEngine = new NullTelemetryEngine();
     // create simulation
     Simulation sim = selectedSimulationBuilder.get()
-        .build(agentList, selectedTheme.get(), new Random(), new NullTelemetryEngine());
+        .build(agentList, selectedTheme.get(), createRandom(), new NullTelemetryEngine());
     // start output
     renderer.setup(sim);
     // create simulation runner thread
@@ -169,6 +169,12 @@ public class SimulationSettings {
 
   public OutputRenderer createRenderer() {
     return new NullOutputRenderer();
+  }
+
+  public SimulationRandomNumberGenerator createRandom() {
+    // TODO get seed from settings
+    long randomSeed = System.currentTimeMillis();
+    return new SimulationRandomNumberGenerator(randomSeed);
   }
 
   private List<Agent> createAgents(OutputRenderer renderer, List<Agent> prebuiltAgents)

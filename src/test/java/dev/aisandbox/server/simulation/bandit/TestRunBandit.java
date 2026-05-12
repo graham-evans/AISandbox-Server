@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -19,7 +20,6 @@ import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -43,7 +43,7 @@ public class TestRunBandit {
       List<Agent> agents = Arrays.stream(banditBuilder.getAgentNames(1))
           .map(s -> (Agent) new MockBanditPlayer(s)).toList();
       // create simulation
-      Simulation sim = banditBuilder.build(agents, theme, new Random(), new NullTelemetryEngine());
+      Simulation sim = banditBuilder.build(agents, theme, new SimulationRandomNumberGenerator(0), new NullTelemetryEngine());
       // create output directory
       File outputDirectory = new File("build/test/bandit/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();

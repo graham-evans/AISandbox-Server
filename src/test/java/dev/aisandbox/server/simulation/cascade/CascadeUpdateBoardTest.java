@@ -10,6 +10,7 @@ import static dev.aisandbox.server.simulation.cascade.CascadeBoardAssert.assertM
 import static dev.aisandbox.server.simulation.cascade.CascadeBoardAssert.board;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.simulation.cascade.model.CascadeBoard;
 import java.io.IOException;
 import java.util.Random;
@@ -40,8 +41,8 @@ public class CascadeUpdateBoardTest {
   }
 
   // Helper to reset random seed for deterministic refill tests
-  private static Random seededRandom() {
-    return new Random(42);
+  private static SimulationRandomNumberGenerator seededRandom() {
+    return new SimulationRandomNumberGenerator(42);
   }
 
   private static void recordAndAssert(String name, boolean passed, CascadeBoard input,

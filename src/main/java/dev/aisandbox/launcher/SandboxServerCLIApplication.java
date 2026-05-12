@@ -9,6 +9,7 @@ package dev.aisandbox.launcher;
 import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.SimulationSetup;
 import dev.aisandbox.server.engine.Theme;
@@ -189,6 +190,8 @@ public class SandboxServerCLIApplication {
       OutputRenderer out = options.createRenderer();
       // create telemetry
       TelemetryEngine telemetryEngine = options.createTelemetryEngine();
+      // create random
+      SimulationRandomNumberGenerator randomProvider = options.createRandom();
       // write summary
       System.out.println(
           "Running simulation '" + builder.getSimulationName() + "' with " + agents
@@ -200,7 +203,7 @@ public class SandboxServerCLIApplication {
       try {
         SimulationRunner runner = SimulationSetup.setupSimulation(builder, agents,
             options.defaultPort().get(), options.externalNetwork().get(), out, Theme.LIGHT,
-            options.maxStepCount().get(), new NullTelemetryEngine());
+            options.maxStepCount().get(), randomProvider,new NullTelemetryEngine());
         // start simulation
         runner.start();
       } catch (SimulationSetupException e) {

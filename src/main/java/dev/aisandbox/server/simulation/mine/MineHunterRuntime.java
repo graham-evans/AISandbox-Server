@@ -21,6 +21,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputConstants;
@@ -41,7 +42,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -96,7 +96,7 @@ public final class MineHunterRuntime implements Simulation {
   /**
    * Random number generator for mine placement.
    */
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
 
   /**
    * Configuration for the mine field dimensions and density.
@@ -176,7 +176,7 @@ public final class MineHunterRuntime implements Simulation {
    * @param theme    The visual theme for rendering
    * @param random   A random number generator for creating the board
    */
-  public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme, Random random,
+  public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme, SimulationRandomNumberGenerator random,
       TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.random = random;

@@ -20,6 +20,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
@@ -43,7 +44,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import lombok.Getter;
@@ -107,7 +107,7 @@ public final class BanditRuntime implements Simulation {
   /**
    * Random number generator for bandit reward generation.
    */
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
   /**
    * Number of bandits available for the agent to choose from.
    */
@@ -205,7 +205,7 @@ public final class BanditRuntime implements Simulation {
    * @param theme           the visual theme for rendering
    * @param telemetryEngine engine for logging and metrics
    */
-  public BanditRuntime(Agent agent, Random random, int banditCount, int pullCount,
+  public BanditRuntime(Agent agent, SimulationRandomNumberGenerator random, int banditCount, int pullCount,
       BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule,
       Theme theme, TelemetryEngine telemetryEngine) {
     // store parameters

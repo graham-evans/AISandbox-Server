@@ -8,7 +8,6 @@ package dev.aisandbox.server.engine;
 
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Builder class for setting up simulations.
@@ -97,5 +96,5 @@ public interface SimulationBuilder {
    * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner} or
    * stepped through manually.
    */
-  Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine);
+  Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine);
 }

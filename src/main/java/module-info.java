@@ -14,6 +14,9 @@ module AISandbox.Server.main {
   requires io.opentelemetry.sdk;
   requires io.opentelemetry.exporter.otlp;
   requires io.opentelemetry.sdk.logs;
+  requires org.apache.commons.rng.api;
+  requires org.apache.commons.rng.simple;
+  requires org.apache.commons.rng.sampling;
 
   opens dev.aisandbox.launcher to javafx.graphics;
   opens dev.aisandbox.server.fx to javafx.fxml;

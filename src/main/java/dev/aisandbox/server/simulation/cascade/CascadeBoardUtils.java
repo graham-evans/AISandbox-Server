@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.simulation.cascade;
 
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.simulation.cascade.model.CascadeBoard;
 import dev.aisandbox.server.simulation.cascade.model.CascadeCell;
 import dev.aisandbox.server.simulation.cascade.model.TileColour;
@@ -43,7 +44,7 @@ public class CascadeBoardUtils {
    * @param board  the board to populate (existing contents are overwritten)
    * @param random the source of randomness used for colour selection
    */
-  public static void initialise(CascadeBoard board, Random random) {
+  public static void initialise(CascadeBoard board, SimulationRandomNumberGenerator random) {
     for (int x = 0; x < CascadeBoard.WIDTH; x++) {
       for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
         if (!board.getCell(x, y).isOccupied()) {
@@ -70,7 +71,7 @@ public class CascadeBoardUtils {
    * @return a {@link TileColour} that does not extend an existing run of two at
    * ({@code x},{@code y})
    */
-  private static TileColour pickNonMatchingColour(CascadeBoard board, int x, int y, Random random) {
+  private static TileColour pickNonMatchingColour(CascadeBoard board, int x, int y, SimulationRandomNumberGenerator random) {
     TileColour[] candidates = COLOURS.clone();
     // Fisher-Yates shuffle
     for (int i = candidates.length - 1; i > 0; i--) {
@@ -379,7 +380,7 @@ public class CascadeBoardUtils {
    * @param random the source of randomness used for tile refill
    * @return the total points scored during this resolution
    */
-  public static long resolveBoard(CascadeBoard board, Random random) {
+  public static long resolveBoard(CascadeBoard board, SimulationRandomNumberGenerator random) {
     long totalScore = 0;
     int multiplier = 1;
     while (true) {
@@ -415,7 +416,7 @@ public class CascadeBoardUtils {
    * @param board  the board to reshuffle (modified in place)
    * @param random the source of randomness
    */
-  public static void reshuffleBoard(CascadeBoard board, Random random) {
+  public static void reshuffleBoard(CascadeBoard board, SimulationRandomNumberGenerator random) {
     for (int x = 0; x < CascadeBoard.WIDTH; x++) {
       for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
         if (board.getCell(x, y).isFallable()) {
@@ -545,7 +546,7 @@ public class CascadeBoardUtils {
    * @param board  the board to refill (modified in place)
    * @param random the source of randomness
    */
-  private static void refill(CascadeBoard board, Random random) {
+  private static void refill(CascadeBoard board, SimulationRandomNumberGenerator random) {
     for (int x = 0; x < CascadeBoard.WIDTH; x++) {
       for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
         if (!board.getCell(x, y).isOccupied()) {
@@ -909,7 +910,7 @@ public class CascadeBoardUtils {
    * @param random the source of randomness for tile refill
    * @return the updated board
    */
-  public static CascadeBoard updateBoard(CascadeBoard board, Random random) {
+  public static CascadeBoard updateBoard(CascadeBoard board, SimulationRandomNumberGenerator random) {
     // Priority 1: Gravity and refill
     if (applyGravityAndSmartRefill(board, random)) {
       board.setMultiplier(board.getMultiplier() * 2);
@@ -930,7 +931,7 @@ public class CascadeBoardUtils {
    * Applies gravity and refills open column segments. Returns {@code true} if any tile moved or was
    * created.
    */
-  private static boolean applyGravityAndSmartRefill(CascadeBoard board, Random random) {
+  private static boolean applyGravityAndSmartRefill(CascadeBoard board, SimulationRandomNumberGenerator random) {
     boolean changed = false;
     // Apply gravity: compact fallable tiles downward
     for (int x = 0; x < CascadeBoard.WIDTH; x++) {
