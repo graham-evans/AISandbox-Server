@@ -263,6 +263,7 @@ public class RuntimeUtils {
    * @param parameter         the name of the field
    * @param value             the new value
    */
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public void setParameterValue(SimulationBuilder simulationBuilder, SimulationParameter parameter,
       String value) {
     try {
