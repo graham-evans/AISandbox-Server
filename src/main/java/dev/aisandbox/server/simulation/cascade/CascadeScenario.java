@@ -12,7 +12,6 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
-
 import java.util.List;
 import java.util.Random;
 
@@ -104,7 +103,8 @@ public final class CascadeScenario implements SimulationBuilder {
    * @return a new {@link CascadeRuntime} instance ready for play
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random,
+      TelemetryEngine telemetryEngine) {
     return new CascadeRuntime(agents.getFirst(), theme, random, telemetryEngine);
   }
 }

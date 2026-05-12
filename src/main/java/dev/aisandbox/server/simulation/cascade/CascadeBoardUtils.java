@@ -23,7 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 @UtilityClass
 public class CascadeBoardUtils {
 
-  /** The playable colours. Stored as a local reference to avoid repeated array allocation. */
+  /**
+   * The playable colours. Stored as a local reference to avoid repeated array allocation.
+   */
   private static final TileColour[] COLOURS = TileColour.playableValues();
 
   /**
@@ -51,19 +53,20 @@ public class CascadeBoardUtils {
   }
 
   /**
-   * Chooses a random colour for position ({@code x},{@code y}) that does not create a horizontal
-   * or vertical match of three with the already-placed neighbours.
+   * Chooses a random colour for position ({@code x},{@code y}) that does not create a horizontal or
+   * vertical match of three with the already-placed neighbours.
    *
    * <p>The method shuffles through the five colours in a random order and returns the first one
-   * that is safe. Because there are always at most two colours that would form a match (one for
-   * the horizontal direction, one for the vertical), a valid colour will always be found in at
-   * most five attempts.
+   * that is safe. Because there are always at most two colours that would form a match (one for the
+   * horizontal direction, one for the vertical), a valid colour will always be found in at most
+   * five attempts.
    *
    * @param board  the board being populated (cells to the left and above are already placed)
    * @param x      column of the cell being placed
    * @param y      row of the cell being placed
    * @param random source of randomness
-   * @return a {@link TileColour} that does not extend an existing run of two at ({@code x},{@code y})
+   * @return a {@link TileColour} that does not extend an existing run of two at
+   * ({@code x},{@code y})
    */
   private static TileColour pickNonMatchingColour(CascadeBoard board, int x, int y, Random random) {
     TileColour[] candidates = COLOURS.clone();
@@ -240,8 +243,8 @@ public class CascadeBoardUtils {
   }
 
   /**
-   * Returns {@code true} if the cell at ({@code x},{@code y}) may participate in a swap —
-   * i.e. it is neither a {@link TileType#ICE} block nor a {@link TileType#STONE}.
+   * Returns {@code true} if the cell at ({@code x},{@code y}) may participate in a swap — i.e. it
+   * is neither a {@link TileType#ICE} block nor a {@link TileType#STONE}.
    */
   private static boolean isSwappable(CascadeBoard board, int x, int y) {
     TileType type = board.getCell(x, y).getType();
@@ -404,8 +407,8 @@ public class CascadeBoardUtils {
    * Reshuffles all moveable tiles on the board when no valid moves remain.
    *
    * <p>All {@link CascadeCell#isFallable()} tiles are removed and the board is re-populated via
-   * {@link #initialise(CascadeBoard, Random)}, which guarantees no pre-existing matches. Stones
-   * and ice blocks remain in their original positions. Score and move count are unchanged.
+   * {@link #initialise(CascadeBoard, Random)}, which guarantees no pre-existing matches. Stones and
+   * ice blocks remain in their original positions. Score and move count are unchanged.
    *
    * @param board  the board to reshuffle (modified in place)
    * @param random the source of randomness
@@ -425,9 +428,9 @@ public class CascadeBoardUtils {
    * Scans {@code board} for all horizontal and vertical runs of three or more matchable tiles of
    * the same colour, marking each involved cell in {@code mark}.
    *
-   * @param board  the board to scan
-   * @param mark   a {@code WIDTH × HEIGHT} boolean array; cells to be removed are set to
-   *               {@code true}
+   * @param board the board to scan
+   * @param mark  a {@code WIDTH × HEIGHT} boolean array; cells to be removed are set to
+   *              {@code true}
    * @return the number of unique cells marked for removal
    */
   private static int findAllMatches(CascadeBoard board, boolean[][] mark) {
@@ -555,8 +558,8 @@ public class CascadeBoardUtils {
   // ---------------------------------------------------------------------------
 
   /**
-   * Triggers the prism colour effect: destroys all STANDARD tiles of {@code colour}, activates
-   * all BOMB/ROCKET tiles of that colour, and unfreezes all ICE tiles of that colour to STANDARD.
+   * Triggers the prism colour effect: destroys all STANDARD tiles of {@code colour}, activates all
+   * BOMB/ROCKET tiles of that colour, and unfreezes all ICE tiles of that colour to STANDARD.
    *
    * <p>The PRISM cell itself must be handled by the caller before invoking this method.
    *
@@ -584,14 +587,14 @@ public class CascadeBoardUtils {
 
   /**
    * Fires a rocket-style beam from ({@code startX},{@code startY}) in the direction
-   * ({@code dx},{@code dy}), processing one cell at a time. The starting cell itself is
-   * not processed — the caller must handle it.
+   * ({@code dx},{@code dy}), processing one cell at a time. The starting cell itself is not
+   * processed — the caller must handle it.
    *
-   * @param board       the board to modify
-   * @param startX      column of the origin (not processed)
-   * @param startY      row of the origin (not processed)
-   * @param dx          horizontal step (-1, 0, or 1)
-   * @param dy          vertical step (-1, 0, or 1)
+   * @param board         the board to modify
+   * @param startX        column of the origin (not processed)
+   * @param startY        row of the origin (not processed)
+   * @param dx            horizontal step (-1, 0, or 1)
+   * @param dy            vertical step (-1, 0, or 1)
    * @param triggerColour colour used when hitting a prism
    * @return the number of tiles destroyed (replaced with EMPTY)
    */
@@ -653,9 +656,9 @@ public class CascadeBoardUtils {
    * Processes a single cell during a bomb/explosion area effect. Handles activation of specials,
    * prism triggers, and destruction of other tile types.
    *
-   * @param board        the board to modify
-   * @param x            column of the cell to process
-   * @param y            row of the cell to process
+   * @param board         the board to modify
+   * @param x             column of the cell to process
+   * @param y             row of the cell to process
    * @param triggerColour colour used when hitting a prism
    * @return the number of tiles destroyed (replaced with EMPTY)
    */
@@ -684,8 +687,8 @@ public class CascadeBoardUtils {
   // ---------------------------------------------------------------------------
 
   /**
-   * Performs a move by swapping the two selected tiles and applying any immediate effects
-   * (prism interactions, special+special combos). Full logic is described in runtime.md.
+   * Performs a move by swapping the two selected tiles and applying any immediate effects (prism
+   * interactions, special+special combos). Full logic is described in runtime.md.
    *
    * @param board the current board (not modified for normal swaps; may be modified for
    *              prism/special interactions)
@@ -893,10 +896,10 @@ public class CascadeBoardUtils {
   // ---------------------------------------------------------------------------
 
   /**
-   * Advances an unstable board by one step: applies gravity and refill (priority 1),
-   * resolves activated specials (priority 2), or resolves matches and spawns specials
-   * (priority 3). Only the single highest-priority applicable action is performed per call.
-   * Full logic is described in runtime.md.
+   * Advances an unstable board by one step: applies gravity and refill (priority 1), resolves
+   * activated specials (priority 2), or resolves matches and spawns specials (priority 3). Only the
+   * single highest-priority applicable action is performed per call. Full logic is described in
+   * runtime.md.
    *
    * <p>Call this method repeatedly until {@link #isStable(CascadeBoard)} returns {@code true}.
    *
@@ -922,8 +925,8 @@ public class CascadeBoardUtils {
   }
 
   /**
-   * Applies gravity and refills open column segments. Returns {@code true} if any tile moved
-   * or was created.
+   * Applies gravity and refills open column segments. Returns {@code true} if any tile moved or was
+   * created.
    */
   private static boolean applyGravityAndSmartRefill(CascadeBoard board, Random random) {
     boolean changed = false;
@@ -981,8 +984,8 @@ public class CascadeBoardUtils {
   }
 
   /**
-   * Resolves all activated specials (bombs and rockets) with chain reactions.
-   * Returns {@code true} if any activated tiles were processed.
+   * Resolves all activated specials (bombs and rockets) with chain reactions. Returns {@code true}
+   * if any activated tiles were processed.
    */
   private static boolean resolveActivatedSpecials(CascadeBoard board) {
     boolean anyProcessed = false;
@@ -1062,9 +1065,9 @@ public class CascadeBoardUtils {
   }
 
   /**
-   * Unmarks ICE tiles that sit at the boundary of a run of 4+ and whose removal still leaves
-   * a valid run of 3+. These tiles will be unfrozen via adjacency (step 5) instead of being
-   * destroyed as part of the match.
+   * Unmarks ICE tiles that sit at the boundary of a run of 4+ and whose removal still leaves a
+   * valid run of 3+. These tiles will be unfrozen via adjacency (step 5) instead of being destroyed
+   * as part of the match.
    */
   private static void pruneNonEssentialIce(CascadeBoard board, boolean[][] mark) {
     for (int x = 0; x < CascadeBoard.WIDTH; x++) {
@@ -1120,8 +1123,8 @@ public class CascadeBoardUtils {
   }
 
   /**
-   * Resolves all matches on the board, spawns specials from match geometry, unfreezes adjacent
-   * ice, and scores. Does nothing if no matches exist.
+   * Resolves all matches on the board, spawns specials from match geometry, unfreezes adjacent ice,
+   * and scores. Does nothing if no matches exist.
    */
   private static void resolveMatchesAndSpawn(CascadeBoard board) {
     boolean[][] mark = new boolean[CascadeBoard.WIDTH][CascadeBoard.HEIGHT];
@@ -1159,7 +1162,8 @@ public class CascadeBoardUtils {
         if (len >= 5) {
           int centre = x + (len - 1) / 2;
           TileType candidate = len >= 6 ? TileType.PRISM : TileType.BOMB;
-          if (spawnType[centre][y] == null || spawnTier(candidate) > spawnTier(spawnType[centre][y])) {
+          if (spawnType[centre][y] == null || spawnTier(candidate) > spawnTier(
+              spawnType[centre][y])) {
             spawnType[centre][y] = candidate;
             spawnColour[centre][y] = colour;
           }
@@ -1333,8 +1337,8 @@ public class CascadeBoardUtils {
    * @param board the board whose cells will be replaced
    * @param rows  exactly {@value CascadeBoard#HEIGHT} strings, each containing exactly
    *              {@value CascadeBoard#WIDTH} space-separated two-character tokens
-   * @throws IllegalArgumentException if the row count is wrong, a row contains the wrong number
-   *         of tokens, or a token is unrecognised or malformed
+   * @throws IllegalArgumentException if the row count is wrong, a row contains the wrong number of
+   *                                  tokens, or a token is unrecognised or malformed
    */
   public static void deserialiseBoard(CascadeBoard board, List<String> rows) {
     if (rows.size() != CascadeBoard.HEIGHT) {
@@ -1353,7 +1357,9 @@ public class CascadeBoardUtils {
     }
   }
 
-  /** Converts a single {@link CascadeCell} to its two-character serialised token. */
+  /**
+   * Converts a single {@link CascadeCell} to its two-character serialised token.
+   */
   private static String serialiseCell(CascadeCell cell) {
     return switch (cell.getType()) {
       case EMPTY -> "..";

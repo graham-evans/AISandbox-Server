@@ -14,8 +14,8 @@ import lombok.Getter;
  * Represents a standard playing card with a value and suit.
  *
  * <p>This record encapsulates the immutable properties of a playing card, including its rank
- * (value) and suit. It provides convenience methods for different card representations and
- * supports both low-ace and high-ace scoring systems common in different card games.
+ * (value) and suit. It provides convenience methods for different card representations and supports
+ * both low-ace and high-ace scoring systems common in different card games.
  *
  * <p>The card system supports:
  * <ul>
@@ -39,7 +39,6 @@ import lombok.Getter;
  *
  * @param cardValue the rank/value of the card
  * @param cardSuite the suit of the card
- *
  * @see CardValue
  * @see CardSuite
  */

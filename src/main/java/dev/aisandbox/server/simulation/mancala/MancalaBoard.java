@@ -27,19 +27,29 @@ import lombok.Getter;
  */
 public class MancalaBoard {
 
-  /** Number of pits per player. */
+  /**
+   * Number of pits per player.
+   */
   static final int PITS_PER_PLAYER = 6;
 
-  /** Index of Player 1's store. */
+  /**
+   * Index of Player 1's store.
+   */
   static final int PLAYER1_STORE = 6;
 
-  /** Index of Player 2's store. */
+  /**
+   * Index of Player 2's store.
+   */
   static final int PLAYER2_STORE = 13;
 
-  /** Total number of positions on the board (12 pits + 2 stores). */
+  /**
+   * Total number of positions on the board (12 pits + 2 stores).
+   */
   static final int BOARD_SIZE = 14;
 
-  /** The board state: 12 pits and 2 stores. */
+  /**
+   * The board state: 12 pits and 2 stores.
+   */
   @Getter
   private final int[] board;
 
@@ -66,15 +76,6 @@ public class MancalaBoard {
    */
   private MancalaBoard(int[] source) {
     board = Arrays.copyOf(source, source.length);
-  }
-
-  /**
-   * Creates a deep copy of this board.
-   *
-   * @return a new MancalaBoard with identical state
-   */
-  public MancalaBoard copy() {
-    return new MancalaBoard(board);
   }
 
   /**
@@ -106,6 +107,15 @@ public class MancalaBoard {
    */
   static int pitIndex(int player, int pit) {
     return player == 0 ? pit : pit + PITS_PER_PLAYER + 1;
+  }
+
+  /**
+   * Creates a deep copy of this board.
+   *
+   * @return a new MancalaBoard with identical state
+   */
+  public MancalaBoard copy() {
+    return new MancalaBoard(board);
   }
 
   /**
@@ -307,11 +317,17 @@ public class MancalaBoard {
    * Enumeration of possible sow outcomes.
    */
   public enum SowResult {
-    /** The last seed landed in the player's store, granting an extra turn. */
+    /**
+     * The last seed landed in the player's store, granting an extra turn.
+     */
     EXTRA_TURN,
-    /** A normal move with no special outcome. */
+    /**
+     * A normal move with no special outcome.
+     */
     NORMAL,
-    /** The game has ended (one side's pits are all empty). */
+    /**
+     * The game has ended (one side's pits are all empty).
+     */
     GAME_OVER
   }
 }

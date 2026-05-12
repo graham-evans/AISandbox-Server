@@ -16,8 +16,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * Represents a single bandit (slot machine) in the multi-armed bandit problem.
  *
  * <p>Each bandit has an associated reward distribution defined by a mean and standard deviation.
- * When "pulled" by an agent, the bandit generates a reward value sampled from a normal
- * (Gaussian) distribution with these parameters.
+ * When "pulled" by an agent, the bandit generates a reward value sampled from a normal (Gaussian)
+ * distribution with these parameters.
  *
  * <p>The bandit's true reward parameters are typically unknown to the agent, who must learn
  * through experience which bandits provide the best rewards on average.

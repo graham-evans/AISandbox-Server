@@ -48,13 +48,13 @@ public class RollingIconWidget {
   /**
    * Creates a new rolling icon widget.
    *
-   * @param width the width of the widget in pixels
-   * @param height the height of the widget in pixels
-   * @param iconWidth the width of each icon
+   * @param width      the width of the widget in pixels
+   * @param height     the height of the widget in pixels
+   * @param iconWidth  the width of each icon
    * @param iconHeight the height of each icon
-   * @param useCache whether to cache the rendered image
-   * @param title the title of the widget
-   * @param theme the theme for colors and styling
+   * @param useCache   whether to cache the rendered image
+   * @param title      the title of the widget
+   * @param theme      the theme for colors and styling
    */
   public RollingIconWidget(int width, int height, int iconWidth, int iconHeight, boolean useCache,
       String title, Theme theme) {

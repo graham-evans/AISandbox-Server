@@ -10,6 +10,13 @@ import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,14 +24,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Controller for the simulation setup screen in the JavaFX GUI.
@@ -50,6 +64,56 @@ public class SetupController {
 
   @FXML
   private ListView<SimulationBuilder> simulationList;
+
+  /**
+   * Creates a UI node for editing a simulation parameter.
+   *
+   * @param builder   the simulation builder
+   * @param parameter the parameter to create an editor for
+   * @return a Node that can be used to edit the parameter
+   */
+  public static Node createParameterEditor(SimulationBuilder builder,
+      SimulationParameter parameter) {
+    BorderPane node = new BorderPane();
+    // add label
+    Label label = new Label(parameter.name());
+    label.setMaxWidth(Double.MAX_VALUE);
+    label.setAlignment(Pos.CENTER_LEFT);
+    node.setCenter(label);
+
+    // TODO - this assumes that all params are enums
+    if (parameter.parameterType().isEnum()) {
+      // create map of values and their string representation
+      Map<String, String> enumMap = new TreeMap<>();
+      List<String> enumList = new ArrayList<>();
+      Arrays.stream(parameter.parameterType().getEnumConstants()).forEach(o -> {
+        enumMap.put(o.toString(), ((Enum<?>) o).name());
+        enumList.add(o.toString());
+      });
+      // add editor
+      ComboBox<String> editor = new ComboBox<>();
+      editor.setItems(FXCollections.observableList(enumList));
+      editor.getSelectionModel().select(RuntimeUtils.getParameterValue(builder, parameter));
+      editor.valueProperty().addListener((observable, oldValue, newValue) -> {
+        RuntimeUtils.setParameterValue(builder, parameter, enumMap.get(newValue));
+      });
+      node.setRight(editor);
+    } else if (parameter.parameterType() == Boolean.class) {
+      CheckBox editor = new CheckBox();
+      editor.setSelected(
+          RuntimeUtils.getParameterValue(builder, parameter).equalsIgnoreCase("true"));
+      editor.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        RuntimeUtils.setParameterValue(builder, parameter, newValue ? "true" : "false");
+      });
+      node.setRight(editor);
+    } else {
+      log.error("Dont know how to build an editor for {}", parameter.parameterType().getName());
+    }
+    // install tooltip
+    Tooltip tooltip = new Tooltip(parameter.description());
+    Tooltip.install(node, tooltip);
+    return node;
+  }
 
   @FXML
   void initialize() {
@@ -124,56 +188,6 @@ public class SetupController {
    */
   private int getValueInRange(int value, int min, int max) {
     return Math.min(max, Math.max(min, value));
-  }
-
-  /**
-   * Creates a UI node for editing a simulation parameter.
-   *
-   * @param builder the simulation builder
-   * @param parameter the parameter to create an editor for
-   * @return a Node that can be used to edit the parameter
-   */
-  public static Node createParameterEditor(SimulationBuilder builder,
-      SimulationParameter parameter) {
-    BorderPane node = new BorderPane();
-    // add label
-    Label label = new Label(parameter.name());
-    label.setMaxWidth(Double.MAX_VALUE);
-    label.setAlignment(Pos.CENTER_LEFT);
-    node.setCenter(label);
-
-    // TODO - this assumes that all params are enums
-    if (parameter.parameterType().isEnum()) {
-      // create map of values and their string representation
-      Map<String, String> enumMap = new TreeMap<>();
-      List<String> enumList = new ArrayList<>();
-      Arrays.stream(parameter.parameterType().getEnumConstants()).forEach(o -> {
-        enumMap.put(o.toString(), ((Enum<?>) o).name());
-        enumList.add(o.toString());
-      });
-      // add editor
-      ComboBox<String> editor = new ComboBox<>();
-      editor.setItems(FXCollections.observableList(enumList));
-      editor.getSelectionModel().select(RuntimeUtils.getParameterValue(builder, parameter));
-      editor.valueProperty().addListener((observable, oldValue, newValue) -> {
-        RuntimeUtils.setParameterValue(builder, parameter, enumMap.get(newValue));
-      });
-      node.setRight(editor);
-    } else if (parameter.parameterType() == Boolean.class) {
-      CheckBox editor = new CheckBox();
-      editor.setSelected(
-          RuntimeUtils.getParameterValue(builder, parameter).equalsIgnoreCase("true"));
-      editor.selectedProperty().addListener((observable, oldValue, newValue) -> {
-        RuntimeUtils.setParameterValue(builder, parameter, newValue ? "true" : "false");
-      });
-      node.setRight(editor);
-    } else {
-      log.error("Dont know how to build an editor for {}", parameter.parameterType().getName());
-    }
-    // install tooltip
-    Tooltip tooltip = new Tooltip(parameter.description());
-    Tooltip.install(node, tooltip);
-    return node;
   }
 
   @FXML

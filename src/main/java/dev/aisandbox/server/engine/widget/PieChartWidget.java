@@ -44,10 +44,10 @@ public class PieChartWidget {
   /**
    * Creates a new pie chart widget.
    *
-   * @param width the width of the widget in pixels
+   * @param width  the width of the widget in pixels
    * @param height the height of the widget in pixels
-   * @param title the title of the pie chart
-   * @param theme the theme for colors and styling
+   * @param title  the title of the pie chart
+   * @param theme  the theme for colors and styling
    */
   public PieChartWidget(int width, int height, String title, Theme theme) {
     this.width = width;
@@ -55,6 +55,15 @@ public class PieChartWidget {
     this.title = title;
     this.theme = theme;
     image = drawGraph();
+  }
+
+  /**
+   * Creates a builder for constructing PieChartWidget instances.
+   *
+   * @return a new PieChartWidgetBuilder
+   */
+  public static PieChartWidgetBuilder builder() {
+    return new PieChartWidgetBuilder();
   }
 
   private BufferedImage drawGraph() {
@@ -112,15 +121,6 @@ public class PieChartWidget {
       startAngle += angle;
     }
     return image;
-  }
-
-  /**
-   * Creates a builder for constructing PieChartWidget instances.
-   *
-   * @return a new PieChartWidgetBuilder
-   */
-  public static PieChartWidgetBuilder builder() {
-    return new PieChartWidgetBuilder();
   }
 
   /**

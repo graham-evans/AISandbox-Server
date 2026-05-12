@@ -19,39 +19,39 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OtelTelemetryEngine implements TelemetryEngine {
 
-    private final OpenTelemetrySdk openTelemetry;
-    private final SdkLoggerProvider loggerProvider;
-    private final Logger logger;
+  private final OpenTelemetrySdk openTelemetry;
+  private final SdkLoggerProvider loggerProvider;
+  private final Logger logger;
 
-    public OtelTelemetryEngine(String collectorUrl) {
-        OtlpHttpLogRecordExporter exporter = OtlpHttpLogRecordExporter.builder()
-                .setEndpoint(collectorUrl)
-                // .addHeader("Authorization", "Bearer <token>")
-                .build();
+  public OtelTelemetryEngine(String collectorUrl) {
+    OtlpHttpLogRecordExporter exporter = OtlpHttpLogRecordExporter.builder()
+        .setEndpoint(collectorUrl)
+        // .addHeader("Authorization", "Bearer <token>")
+        .build();
 
-        loggerProvider = SdkLoggerProvider.builder()
-                .addLogRecordProcessor(BatchLogRecordProcessor.builder(exporter).build())
-                .build();
+    loggerProvider = SdkLoggerProvider.builder()
+        .addLogRecordProcessor(BatchLogRecordProcessor.builder(exporter).build())
+        .build();
 
-        openTelemetry = OpenTelemetrySdk.builder()
-                .setLoggerProvider(loggerProvider)
-                .build();
+    openTelemetry = OpenTelemetrySdk.builder()
+        .setLoggerProvider(loggerProvider)
+        .build();
 
-        logger = openTelemetry.getLogsBridge().get("dev.aisandbox.server");
-    }
+    logger = openTelemetry.getLogsBridge().get("dev.aisandbox.server");
+  }
 
-    @Override
-    public void initialise(String sessionID) {
-    }
+  @Override
+  public void initialise(String sessionID) {
+  }
 
-    @Override
-    public void writeTelemetryEvent(TelemetryEvent event) {
-        event.emit(logger);
-    }
+  @Override
+  public void writeTelemetryEvent(TelemetryEvent event) {
+    event.emit(logger);
+  }
 
-    @Override
-    public void close() {
-        loggerProvider.forceFlush().join(10, java.util.concurrent.TimeUnit.SECONDS);
-        openTelemetry.close();
-    }
+  @Override
+  public void close() {
+    loggerProvider.forceFlush().join(10, java.util.concurrent.TimeUnit.SECONDS);
+    openTelemetry.close();
+  }
 }

@@ -40,7 +40,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,9 +71,9 @@ public final class CoinGame implements Simulation {
   private final Agent[] agents = new Agent[2];
   private final boolean[] agentMoved = new boolean[2];
   private final CoinScenario scenario;
+  private final TelemetryEngine telemetryEngine;
   private int firstPlayer = 1;
   private int currentPlayer = 0;
-  private final TelemetryEngine telemetryEngine;
   // UI Images
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;
@@ -90,7 +89,8 @@ public final class CoinGame implements Simulation {
    * @param theme           The {@link Theme} to use while drawing.
    * @param telemetryEngine The external logger
    */
-  public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme, TelemetryEngine telemetryEngine) {
+  public CoinGame(final List<Agent> agents, final CoinScenario scenario, final Theme theme,
+      TelemetryEngine telemetryEngine) {
     assert agents.size() == 2;
     this.agents[0] = agents.get(0);
     this.agents[1] = agents.get(1);
@@ -132,7 +132,8 @@ public final class CoinGame implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
+  public void step(OutputRenderer output)
+      throws SimulationRuntimeException, IllegalActionException {
     // draw the current state
     output.display();
     // get the current player
@@ -206,7 +207,8 @@ public final class CoinGame implements Simulation {
   /**
    * Attempts to make a move in the game by removing coins from a selected row.
    *
-   * <p>The method checks if the move is legal according to the game rules: - The number of coins to
+   * <p>The method checks if the move is legal according to the game rules: - The number of coins
+   * to
    * remove must be between 1 and the maximum allowed. - The selected row must be valid and contain
    * enough coins. - The move must not exceed the maximum number of coins that can be taken in one
    * turn.
@@ -242,7 +244,8 @@ public final class CoinGame implements Simulation {
   /**
    * Checks if the game has reached a terminal state, returning true if this is the case.
    *
-   * <p>The game is finished when all rows have zero coins left. According to the rules, the player who
+   * <p>The game is finished when all rows have zero coins left. According to the rules, the player
+   * who
    * takes the last coin loses.
    *
    * @return true if all piles are empty, false otherwise
@@ -278,19 +281,21 @@ public final class CoinGame implements Simulation {
     }
     logWidget.addText(agents[winner].getAgentName() + " wins");
     pieChartWidget.addValue(agents[winner].getAgentName(), theme.getPrimary());
-    telemetryEngine.writeTelemetryEvent(new EpisodeAgentWinLossEvent(CoinGameBuilder.COIN_GAME_NAME,sessionId,
-            episodeId, Instant.now(),List.of(
-                    new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),winner==0?
-                            EpisodeAgentWinLossEvent.Result.WIN:EpisodeAgentWinLossEvent.Result.LOSE),
-            new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(),winner==1?
-                    EpisodeAgentWinLossEvent.Result.WIN:EpisodeAgentWinLossEvent.Result.LOSE)
-            )));
+    telemetryEngine.writeTelemetryEvent(
+        new EpisodeAgentWinLossEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId,
+            episodeId, Instant.now(), List.of(
+            new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(), winner == 0 ?
+                EpisodeAgentWinLossEvent.Result.WIN : EpisodeAgentWinLossEvent.Result.LOSE),
+            new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(), winner == 1 ?
+                EpisodeAgentWinLossEvent.Result.WIN : EpisodeAgentWinLossEvent.Result.LOSE)
+        )));
   }
 
   /**
    * Renders the visual representation of the game.
    *
-   * <p>This method is called by the output renderer to draw the game state, including the coin piles,
+   * <p>This method is called by the output renderer to draw the game state, including the coin
+   * piles,
    * UI widgets, and game information.
    *
    * @param graphics2D The graphics context to draw on

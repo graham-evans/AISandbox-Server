@@ -17,7 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Utility class for generating and manipulating mazes using various algorithms.
  *
- * <p>Provides static methods to generate mazes using different algorithms (Binary Tree, Sidewinder,
+ * <p>Provides static methods to generate mazes using different algorithms (Binary Tree,
+ * Sidewinder,
  * Recursive Backtracker) and utility methods for maze operations (finding paths, normalizing
  * values, etc.).
  */
@@ -156,8 +157,8 @@ public class MazeGenerator {
    * Removes dead ends from a given maze.
    *
    * <p>A dead end is a cell with only one path leading out of it. This method works by checking
-   * each cell in the maze and, if it has only one path, selecting a random neighbor to create a
-   * new path to.
+   * each cell in the maze and, if it has only one path, selecting a random neighbor to create a new
+   * path to.
    *
    * @param rand A random number generator used for generating the maze.
    * @param maze The maze to remove dead ends from.

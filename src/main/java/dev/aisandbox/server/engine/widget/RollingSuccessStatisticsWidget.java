@@ -24,9 +24,8 @@ import org.apache.commons.statistics.descriptive.Statistic;
  * Widget that displays statistics for a rolling window of success/failure events.
  *
  * <p>This widget maintains a rolling window of success/failure results along with associated
- * values for successful events. It renders statistical information including success rate and,
- * for successful events, minimum, maximum, mean, standard deviation, and variance of their
- * values.
+ * values for successful events. It renders statistical information including success rate and, for
+ * successful events, minimum, maximum, mean, standard deviation, and variance of their values.
  *
  * <p>The widget supports custom sizing, padding, window size, and theming through its builder.
  * It implements caching to avoid unnecessary re-rendering of unchanged statistics.

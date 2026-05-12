@@ -10,11 +10,10 @@ import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.SimulationSetup;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.output.FXRenderer;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -91,8 +90,10 @@ public class RuntimeController {
       FXRenderer renderer = new FXRenderer(this);
 
       SimulationRunner runner = SimulationSetup.setupSimulation(
-          model.getSettings().selectedSimulationBuilder().get(), model.getSettings().agentCount().get(),
-          model.getSettings().defaultPort().get(), model.getSettings().externalNetwork().get(), renderer,
+          model.getSettings().selectedSimulationBuilder().get(),
+          model.getSettings().agentCount().get(),
+          model.getSettings().defaultPort().get(), model.getSettings().externalNetwork().get(),
+          renderer,
           model.getSettings().selectedTheme().get(), -1L, new NullTelemetryEngine());
       runner.start();
       model.setRunner(runner);

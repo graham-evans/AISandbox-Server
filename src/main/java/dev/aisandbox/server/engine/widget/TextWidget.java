@@ -21,8 +21,8 @@ import lombok.experimental.Accessors;
  *
  * <p>This widget provides a text display area with automatic line wrapping and scrolling
  * functionality. New text lines are added at the bottom while older lines scroll upward and are
- * eventually removed when they scroll out of view. This makes it ideal for displaying logs,
- * status messages, or streaming text content in simulations.
+ * eventually removed when they scroll out of view. This makes it ideal for displaying logs, status
+ * messages, or streaming text content in simulations.
  *
  * <p>Key features:
  * <ul>
@@ -70,8 +70,8 @@ public class TextWidget {
    * Creates a new TextWidget with the specified configuration.
    *
    * <p>This constructor initializes the widget with a blank image of the specified dimensions,
-   * sets up the graphics context with the provided font and theme, and prepares the internal
-   * state for text rendering and scrolling.
+   * sets up the graphics context with the provided font and theme, and prepares the internal state
+   * for text rendering and scrolling.
    *
    * @param width  the width of the widget in pixels
    * @param height the height of the widget in pixels
@@ -115,8 +115,8 @@ public class TextWidget {
    * Adds a line of text to the widget.
    *
    * <p>If the text fits on a single line within the widget's width, it will be added as-is. If
-   * the text is too long, it will be automatically wrapped at word boundaries. Each complete
-   * line causes the existing content to scroll upward.
+   * the text is too long, it will be automatically wrapped at word boundaries. Each complete line
+   * causes the existing content to scroll upward.
    *
    * <p>Word wrapping strategy:
    * <ul>
@@ -182,8 +182,7 @@ public class TextWidget {
    * Clears all text from the widget and resets it to a blank state.
    *
    * <p>This method fills the entire widget area with the background color, effectively removing
-   * all previously displayed text. The text color is then restored for subsequent text
-   * rendering.
+   * all previously displayed text. The text color is then restored for subsequent text rendering.
    */
   public void reset() {
     graphics.setColor(theme.getBackground());

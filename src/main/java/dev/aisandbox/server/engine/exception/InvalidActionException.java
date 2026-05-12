@@ -12,10 +12,10 @@ import java.io.Serial;
  * Exception thrown when an agent attempts an action that violates a context-specific rule.
  *
  * <p>Unlike {@link IllegalActionException}, this exception does <em>not</em> terminate the
- * simulation. The simulation may apply a penalty and continue to the next step, or it may send feedback
- * and retry the step. Use this when the action is structurally well-formed but breaks a rule that only applies
- * in the current game state — for example, trying to move in a direction that is blocked,
- * or playing out of turn.
+ * simulation. The simulation may apply a penalty and continue to the next step, or it may send
+ * feedback and retry the step. Use this when the action is structurally well-formed but breaks a
+ * rule that only applies in the current game state — for example, trying to move in a direction
+ * that is blocked, or playing out of turn.
  *
  * <p>Example scenarios:
  * <ul>
@@ -50,7 +50,7 @@ public class InvalidActionException extends Exception {
    * Creates a new InvalidActionException with the specified error message and cause.
    *
    * @param message a descriptive error message explaining the invalid action
-   * @param cause the underlying cause of this exception
+   * @param cause   the underlying cause of this exception
    */
   public InvalidActionException(String message, Throwable cause) {
     super(message, cause);

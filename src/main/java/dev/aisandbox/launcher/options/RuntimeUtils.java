@@ -10,23 +10,27 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.setup.SimulationSettings;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
-import lombok.Getter;
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.cli.*;
-import org.apache.commons.lang3.EnumUtils;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.EnumUtils;
 
 /**
  * Utility class providing command-line parsing and parameter handling for the AI Sandbox CLI.
  *
- * <p>This utility class handles all aspects of command-line argument processing, parameter validation,
+ * <p>This utility class handles all aspects of command-line argument processing, parameter
+ * validation,
  * and runtime option management for the AI Sandbox CLI application. It provides methods for:
  * <ul>
  *   <li>Parsing command-line arguments into structured options</li>
@@ -47,7 +51,7 @@ import java.util.stream.Collectors;
 public class RuntimeUtils {
 
   @Getter
-  private static Options options;
+  private static final Options options;
 
   static {
     options = new Options();
@@ -55,9 +59,9 @@ public class RuntimeUtils {
     options.addOption("h", "help", false, "Print an overview");
     // add simulation selector
     options.addOption("s", "simulation", true,
-            "Simulation to run [" + Arrays.stream(SimulationEnumeration.values())
-                    .map(simulationEnumeration -> simulationEnumeration.getBuilder().getSimulationName())
-                    .collect(Collectors.joining(" | ")) + "]");
+        "Simulation to run [" + Arrays.stream(SimulationEnumeration.values())
+            .map(simulationEnumeration -> simulationEnumeration.getBuilder().getSimulationName())
+            .collect(Collectors.joining(" | ")) + "]");
     // add output
     options.addOption("i", "png", false, "Write output to PNG files");
     options.addOption("d", "dir", true, "Output directory");
@@ -68,10 +72,10 @@ public class RuntimeUtils {
     options.addOption("a", "agents", true, "Number of agents (within the range for a simulation)");
     // simulation options
     options.addOption("p", "parameter", true,
-            "Simulation specific parameter in the format key:value");
+        "Simulation specific parameter in the format key:value");
     // network options
     options.addOption("n", "network", false,
-            "Allow connections from the network (default localhost only)");
+        "Allow connections from the network (default localhost only)");
     options.addOption("t", "port", true, "Starting port (default 9000)");
   }
 
@@ -104,10 +108,10 @@ public class RuntimeUtils {
   }
 
   public static Optional<SimulationBuilder> getSimulation(String simulationName) {
-      return Arrays.stream(SimulationEnumeration.values())
-              .map(SimulationEnumeration::getBuilder).filter(
-                      simulationBuilder -> simulationBuilder.getSimulationName()
-                              .equalsIgnoreCase(simulationName)).findFirst();
+    return Arrays.stream(SimulationEnumeration.values())
+        .map(SimulationEnumeration::getBuilder).filter(
+            simulationBuilder -> simulationBuilder.getSimulationName()
+                .equalsIgnoreCase(simulationName)).findFirst();
   }
 
   /**
@@ -126,7 +130,8 @@ public class RuntimeUtils {
       CommandLine cmd = parser.parse(options, args);
       // choose simulation
       if (cmd.hasOption('s')) {
-        simulation.selectedSimulationBuilder().set(getSimulation(cmd.getOptionValue('s')).orElse(null));
+        simulation.selectedSimulationBuilder()
+            .set(getSimulation(cmd.getOptionValue('s')).orElse(null));
       }
       // setup output - Default to none for CLI
       simulation.outputNone().set(true);
@@ -160,7 +165,8 @@ public class RuntimeUtils {
       }
       // read parameters
       if (cmd.hasOption('p')) {
-        Arrays.stream(cmd.getOptionValues('p')).forEach(s -> setParameterValue(simulation.selectedSimulationBuilder().get(),s));
+        Arrays.stream(cmd.getOptionValues('p'))
+            .forEach(s -> setParameterValue(simulation.selectedSimulationBuilder().get(), s));
       }
     } catch (ParseException e) {
       System.err.println("Error parsing command line arguments: " + e.getMessage());
@@ -172,10 +178,10 @@ public class RuntimeUtils {
   /**
    * Retrieves enumeration options for a given parameter from a bean object.
    *
-   * @param bean the object containing the parameter
+   * @param bean      the object containing the parameter
    * @param parameter the parameter name to retrieve options for
-   * @return an Optional containing comma-separated enum values if the parameter is an enum,
-   *         or empty Optional if not
+   * @return an Optional containing comma-separated enum values if the parameter is an enum, or
+   * empty Optional if not
    * @deprecated Use simulation parameter validation through SimulationBuilder instead
    */
   @Deprecated
@@ -201,7 +207,7 @@ public class RuntimeUtils {
    * Retrieves the current value of a simulation parameter from a SimulationBuilder.
    *
    * @param simulationBuilder the simulation builder instance
-   * @param parameter the parameter to retrieve
+   * @param parameter         the parameter to retrieve
    * @return the string representation of the parameter value, or null if retrieval fails
    */
   public String getParameterValue(SimulationBuilder simulationBuilder,
@@ -222,14 +228,15 @@ public class RuntimeUtils {
    * Sets a simulation parameter using a parameter name:value string.
    *
    * @param simulationBuilder the builder to set the parameter on
-   * @param parameter the name of the parameter and value in the form "name:value" or "name=value"
+   * @param parameter         the name of the parameter and value in the form "name:value" or
+   *                          "name=value"
    */
   public void setParameterValue(SimulationBuilder simulationBuilder, String parameter) {
     String[] keyValue = parameter.split("[=:]");
     if (keyValue.length != 2) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
       System.err.printf("Invalid parameter: '%s', use format key:value\n", parameter);
     } else {
-      setParameterValue(simulationBuilder,keyValue[0],keyValue[1]);
+      setParameterValue(simulationBuilder, keyValue[0], keyValue[1]);
     }
   }
 
@@ -237,8 +244,8 @@ public class RuntimeUtils {
    * Sets a simulation parameter value by parameter name.
    *
    * @param simulationBuilder the simulation builder instance to update
-   * @param name the name of the parameter to set
-   * @param value the string value to set
+   * @param name              the name of the parameter to set
+   * @param value             the string value to set
    */
   public void setParameterValue(SimulationBuilder simulationBuilder, String name, String value) {
     Optional<SimulationParameter> oParam = simulationBuilder.getParameters().stream()

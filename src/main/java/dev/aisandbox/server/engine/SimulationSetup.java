@@ -9,13 +9,12 @@ package dev.aisandbox.server.engine;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.network.NetworkAgent;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
-import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -42,15 +41,16 @@ public class SimulationSetup {
    */
   @Deprecated
   public static SimulationRunner setupSimulation(SimulationBuilder builder, int agentCount,
-                                                 int defaultPort, boolean openExternal, OutputRenderer renderer, Theme theme,
-                                                 long maxStepCount, TelemetryEngine telemetryEngine) throws SimulationSetupException {
+      int defaultPort, boolean openExternal, OutputRenderer renderer, Theme theme,
+      long maxStepCount, TelemetryEngine telemetryEngine) throws SimulationSetupException {
     AtomicInteger port = new AtomicInteger(defaultPort);
     String[] agentNames = builder.getAgentNames(agentCount);
     List<Agent> agents = new ArrayList<>();
     for (String agentName : agentNames) {
       agents.add(new NetworkAgent(agentName, port.getAndIncrement(), openExternal, renderer));
     }
-    return setupSimulation(builder, agents, renderer, theme, maxStepCount, new NullTelemetryEngine());
+    return setupSimulation(builder, agents, renderer, theme, maxStepCount,
+        new NullTelemetryEngine());
   }
 
   /**
@@ -67,7 +67,8 @@ public class SimulationSetup {
    */
   @Deprecated
   public static SimulationRunner setupSimulation(SimulationBuilder builder, List<Agent> agents,
-                                                 OutputRenderer renderer, Theme theme, long maxStepCount, TelemetryEngine telemetryEngine) throws SimulationSetupException {
+      OutputRenderer renderer, Theme theme, long maxStepCount, TelemetryEngine telemetryEngine)
+      throws SimulationSetupException {
     // create simulation
     Simulation sim = builder.build(agents, theme, new Random(), new NullTelemetryEngine());
     // start output

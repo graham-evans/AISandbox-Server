@@ -24,26 +24,26 @@ package dev.aisandbox.server.simulation.maze;
  */
 public enum MazeType {
   /**
-   * A biased binary tree algorithm that creates mazes with passages trending toward
-   * the northeast corner, resulting in predictable but varied maze structures.
+   * A biased binary tree algorithm that creates mazes with passages trending toward the northeast
+   * corner, resulting in predictable but varied maze structures.
    */
   BINARYTREE("Binary Tree (Biased)"),
-  
+
   /**
-   * Sidewinder algorithm that creates mazes with long horizontal corridors connected
-   * by occasional vertical passages, producing distinctive horizontal emphasis.
+   * Sidewinder algorithm that creates mazes with long horizontal corridors connected by occasional
+   * vertical passages, producing distinctive horizontal emphasis.
    */
   SIDEWINDER("Sidewinder"),
-  
+
   /**
-   * Recursive backtracker algorithm that generates mazes with long, winding passages
-   * and relatively few dead ends, creating engaging exploration challenges.
+   * Recursive backtracker algorithm that generates mazes with long, winding passages and relatively
+   * few dead ends, creating engaging exploration challenges.
    */
   RECURSIVEBACKTRACKER("Recursive Backtracker"),
-  
+
   /**
-   * Braided maze algorithm that includes loops and multiple solution paths,
-   * creating more complex navigation scenarios with interconnected routes.
+   * Braided maze algorithm that includes loops and multiple solution paths, creating more complex
+   * navigation scenarios with interconnected routes.
    */
   BRAIDED("Braided (includes loops)");
 

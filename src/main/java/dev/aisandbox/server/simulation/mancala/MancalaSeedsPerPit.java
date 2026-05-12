@@ -20,18 +20,28 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum MancalaSeedsPerPit {
 
-  /** Three seeds per pit (36 total seeds). Shorter games. */
+  /**
+   * Three seeds per pit (36 total seeds). Shorter games.
+   */
   THREE(3),
 
-  /** Four seeds per pit (48 total seeds). Standard Kalah configuration. */
+  /**
+   * Four seeds per pit (48 total seeds). Standard Kalah configuration.
+   */
   FOUR(4),
 
-  /** Five seeds per pit (60 total seeds). Longer, more strategic games. */
+  /**
+   * Five seeds per pit (60 total seeds). Longer, more strategic games.
+   */
   FIVE(5),
 
-  /** Six seeds per pit (72 total seeds). Extended games with more captures. */
+  /**
+   * Six seeds per pit (72 total seeds). Extended games with more captures.
+   */
   SIX(6);
 
-  /** The number of seeds placed in each pit at game start. */
+  /**
+   * The number of seeds placed in each pit at game start.
+   */
   private final int seeds;
 }

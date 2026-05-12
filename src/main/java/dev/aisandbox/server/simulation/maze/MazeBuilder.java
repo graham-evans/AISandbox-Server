@@ -11,10 +11,9 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
 import java.util.Random;
-
-import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -129,14 +128,15 @@ public final class MazeBuilder implements SimulationBuilder {
    *
    * <p>Creates a MazeRunner simulation with the specified agents, maze size, maze type, and theme.
    *
-   * @param agents          The list of agents to use in the simulation (always contains at least one
-   *                        agent).
+   * @param agents          The list of agents to use in the simulation (always contains at least
+   *                        one agent).
    * @param theme           The theme for the simulation.
    * @param random          The random number generator to use in the simulation.
    * @param telemetryEngine
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
-    return new MazeRunner(agents.getFirst(), mazeSize, mazeType, theme, random,telemetryEngine);
+  public Simulation build(List<Agent> agents, Theme theme, Random random,
+      TelemetryEngine telemetryEngine) {
+    return new MazeRunner(agents.getFirst(), mazeSize, mazeType, theme, random, telemetryEngine);
   }
 }

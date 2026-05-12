@@ -27,32 +27,39 @@ import lombok.Setter;
  */
 public class CascadeBoard {
 
-  /** Number of columns on the board. */
+  /**
+   * Number of columns on the board.
+   */
   public static final int WIDTH = 8;
 
-  /** Number of rows on the board. */
+  /**
+   * Number of rows on the board.
+   */
   public static final int HEIGHT = 8;
 
-  /** Standard number of moves in a full game. */
+  /**
+   * Standard number of moves in a full game.
+   */
   public static final int DEFAULT_MOVES = 30;
-
-  /** The grid of cells. Indexed as {@code grid[x][y]} (column-major, origin top-left). */
+  public static final long TILE_SCORE = 10;
+  /**
+   * The grid of cells. Indexed as {@code grid[x][y]} (column-major, origin top-left).
+   */
   private final CascadeCell[][] grid;
-
-  /** Moves remaining before the game ends. */
+  /**
+   * Moves remaining before the game ends.
+   */
   @Getter
   private int movesRemaining;
-
-  /** Accumulated score for the current game. */
+  /**
+   * Accumulated score for the current game.
+   */
   @Getter
   @Setter
   private long score;
-
   @Getter
   @Setter
   private long multiplier = 1;
-
-  public static final long TILE_SCORE = 10;
 
   /**
    * Creates a new, empty board with the default move budget.

@@ -52,7 +52,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -214,7 +213,8 @@ public final class HighLowCards implements Simulation {
    * @param theme     The visual theme to apply to the simulation
    * @param random    Random number generator for shuffling cards
    */
-  public HighLowCards(Agent agent, int cardCount, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public HighLowCards(Agent agent, int cardCount, Theme theme, Random random,
+      TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.cardCount = cardCount;
     this.theme = theme;
@@ -323,8 +323,9 @@ public final class HighLowCards implements Simulation {
       statisticsWidget.addScore(score);
       scoreHistogramWidget.addValue(score);
       agent.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
-      telemetryEngine.writeTelemetryEvent(new EpisodeLongScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
-              sessionId,episodeID, Instant.now(),score));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeLongScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
+              sessionId, episodeID, Instant.now(), score));
       reset();
     } else {
       // play continues - send signal to agent

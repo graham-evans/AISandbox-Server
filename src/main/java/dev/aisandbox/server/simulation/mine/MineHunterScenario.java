@@ -11,10 +11,9 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
 import java.util.Random;
-
-import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,7 +32,8 @@ public final class MineHunterScenario implements SimulationBuilder {
   /**
    * The size configuration for the mine field.
    *
-   * <p>This property determines the dimensions of the board and number of mines. Defaults to MEDIUM
+   * <p>This property determines the dimensions of the board and number of mines. Defaults to
+   * MEDIUM
    * size (16x16 with 40 mines).
    */
   @Getter
@@ -112,17 +112,20 @@ public final class MineHunterScenario implements SimulationBuilder {
   /**
    * Creates a new instance of the Mine Hunter simulation.
    *
-   * <p>This method builds a runtime instance of the simulation with the provided agent, theme, and a
+   * <p>This method builds a runtime instance of the simulation with the provided agent, theme, and
+   * a
    * random number generator for game state generation.
    *
-   * @param agents          The list of agents participating in the simulation (only the first one is used)
+   * @param agents          The list of agents participating in the simulation (only the first one
+   *                        is used)
    * @param theme           The visual theme to use for the simulation
    * @param random          A random number generator for creating the mine field
    * @param telemetryEngine External logger
    * @return A new {@link MineHunterRuntime} instance
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
-    return new MineHunterRuntime(agents.getFirst(), mineSize, theme, random,telemetryEngine);
+  public Simulation build(List<Agent> agents, Theme theme, Random random,
+      TelemetryEngine telemetryEngine) {
+    return new MineHunterRuntime(agents.getFirst(), mineSize, theme, random, telemetryEngine);
   }
 }

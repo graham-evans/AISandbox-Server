@@ -7,7 +7,6 @@
 package dev.aisandbox.server.engine;
 
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
-
 import java.util.List;
 import java.util.Random;
 
@@ -15,15 +14,13 @@ import java.util.Random;
  * Builder class for setting up simulations.
  *
  * <p>Any parameters that need to be configured for the simulation should be exposed as POJO
- * getters
- * and setters. In addition, the getParameters method should return their details so they can be
- * exposed via the UI and CLI.
+ * getters and setters. In addition, the getParameters method should return their details so they
+ * can be exposed via the UI and CLI.
  * </p>
  *
  * <p>SimulationBuilder implementations act as factories and configuration containers for
- * simulations.
- * They define the metadata about a simulation (name, description, parameter definitions) and
- * provide the logic to construct configured Simulation instances.
+ * simulations. They define the metadata about a simulation (name, description, parameter
+ * definitions) and provide the logic to construct configured Simulation instances.
  * </p>
  *
  * <p>The builder pattern allows for flexible configuration of simulations through:
@@ -97,8 +94,8 @@ public interface SimulationBuilder {
    * @param theme           The theme for any visualisations.
    * @param random          A random number generator.
    * @param telemetryEngine The external logger
-   * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner}
-   * or stepped through manually.
+   * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner} or
+   * stepped through manually.
    */
   Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine);
 }

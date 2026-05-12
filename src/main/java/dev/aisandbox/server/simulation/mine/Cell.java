@@ -11,11 +11,13 @@ import lombok.Data;
 /**
  * Represents a single cell in a Minesweeper game board.
  *
- * <p>Each cell can contain a mine, be covered/uncovered, be flagged by the player, and have a count
+ * <p>Each cell can contain a mine, be covered/uncovered, be flagged by the player, and have a
+ * count
  * of neighboring mines. This class models the state and behavior of individual cells in the Mine
  * Hunter simulation.
  *
- * <p>The cell's state determines how it is displayed to the player and how it affects gameplay when
+ * <p>The cell's state determines how it is displayed to the player and how it affects gameplay
+ * when
  * interacted with.
  */
 @Data
@@ -39,7 +41,8 @@ public class Cell {
   /**
    * Indicates whether this cell has been flagged by the player.
    *
-   * <p>Flagged cells cannot be uncovered until the flag is removed. Correctly flagging all mines is
+   * <p>Flagged cells cannot be uncovered until the flag is removed. Correctly flagging all mines
+   * is
    * one way to win the game.
    */
   private boolean flagged;
@@ -47,7 +50,8 @@ public class Cell {
   /**
    * Stores the number of neighboring cells that contain mines.
    *
-   * <p>This value ranges from 0 to 8, representing the count of mines in the eight surrounding cells
+   * <p>This value ranges from 0 to 8, representing the count of mines in the eight surrounding
+   * cells
    * (horizontally, vertically, and diagonally).
    */
   private int neighbours;

@@ -41,7 +41,6 @@ import java.awt.Graphics2D;
 import java.time.Instant;
 import java.util.Random;
 import java.util.UUID;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -205,7 +204,8 @@ public final class TwistySimulation implements Simulation {
    * @throws NotExistentMoveException If the agent attempts an invalid move
    */
   @Override
-  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
+  public void step(OutputRenderer output)
+      throws SimulationRuntimeException, IllegalActionException {
     // Special case - call display if this is the start of an episode
     if (moves == 0) {
       output.display();
@@ -232,7 +232,8 @@ public final class TwistySimulation implements Simulation {
       agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
           .build());
       statsWidget.addFailure();
-      telemetryEngine.writeTelemetryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId,episodeID,Instant.now()));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, Instant.now()));
       initialisePuzzle();
     } else {
       // Apply the regular move
@@ -247,8 +248,9 @@ public final class TwistySimulation implements Simulation {
         agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN)
             .build());
         statsWidget.addSuccess(obtmMoves);
-        telemetryEngine.writeTelemetryEvent(new EpisodeLongScoreEvent(TwistyBuilder.TWISTY_NAME, sessionId,episodeID,
-                Instant.now(),obtmMoves));
+        telemetryEngine.writeTelemetryEvent(
+            new EpisodeLongScoreEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID,
+                Instant.now(), obtmMoves));
         output.display();
         initialisePuzzle();
       } else if (moves == MAX_STEPS) {
@@ -258,7 +260,9 @@ public final class TwistySimulation implements Simulation {
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
                 .build());
         statsWidget.addFailure();
-        telemetryEngine.writeTelemetryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId,episodeID,Instant.now()));
+        telemetryEngine.writeTelemetryEvent(
+            new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID,
+                Instant.now()));
         output.display();
         initialisePuzzle();
       } else {

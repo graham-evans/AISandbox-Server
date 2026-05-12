@@ -8,47 +8,49 @@ package dev.aisandbox.server.engine.telemetry;
 
 import io.opentelemetry.api.logs.Logger;
 import io.opentelemetry.api.logs.Severity;
-
 import java.time.Instant;
 import java.util.List;
 
 /**
  * Telemetry event to denote a single agent failing to complete a task.
  *
- * @param simulationName The name of the simulation
- * @param sessionID The session identifier
- * @param episodeID The episode identifier
+ * @param simulationName      The name of the simulation
+ * @param sessionID           The session identifier
+ * @param episodeID           The episode identifier
  * @param episodeFinishedTime The time the event was created
  */
 public record EpisodeFailureEvent(String simulationName,
                                   String sessionID,
                                   String episodeID,
                                   Instant episodeFinishedTime) implements TelemetryEvent {
-    private static final String jsonTemplate = """
-        {
-            "timestamp":"%s",
-            "event":"episode_failure",
-            "simulation_name":"%s",
-            "session_id":"%s",
-            "episode_id":"%s"
-        }
-        """;
+
+  private static final String jsonTemplate = """
+      {
+          "timestamp":"%s",
+          "event":"episode_failure",
+          "simulation_name":"%s",
+          "session_id":"%s",
+          "episode_id":"%s"
+      }
+      """;
 
 
-    @Override
-    public List<String> toJSON() {
-        return List.of(String.format(jsonTemplate,episodeFinishedTime.toString(),simulationName, sessionID, episodeID));
-    }
+  @Override
+  public List<String> toJSON() {
+    return List.of(
+        String.format(jsonTemplate, episodeFinishedTime.toString(), simulationName, sessionID,
+            episodeID));
+  }
 
-    @Override
-    public void emit(Logger logger) {
-        logger.logRecordBuilder()
-                .setBody("Episode Failure")
-                .setSeverity(Severity.INFO)
-                .setAttribute("simulation_name", simulationName)
-                .setAttribute("session_id", sessionID)
-                .setAttribute("episode_id", episodeID)
-                .setTimestamp(episodeFinishedTime)
-                .emit();
-    }
+  @Override
+  public void emit(Logger logger) {
+    logger.logRecordBuilder()
+        .setBody("Episode Failure")
+        .setSeverity(Severity.INFO)
+        .setAttribute("simulation_name", simulationName)
+        .setAttribute("session_id", sessionID)
+        .setAttribute("episode_id", episodeID)
+        .setTimestamp(episodeFinishedTime)
+        .emit();
+  }
 }

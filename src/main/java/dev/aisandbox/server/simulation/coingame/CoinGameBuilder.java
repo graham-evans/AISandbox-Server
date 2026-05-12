@@ -11,17 +11,17 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
 import java.util.Random;
-
-import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * Simulation builder for the Coin game simulation, as explained in the book AlphaGo Simplified.
  *
- * <p>The Coin Game is a classic mathematical game where players take turns to remove coins from piles.
+ * <p>The Coin Game is a classic mathematical game where players take turns to remove coins from
+ * piles.
  * This implementation supports different scenarios (defined by {@link CoinScenario}) that vary in
  * the number of piles and coins, as well as allowed moves.
  *
@@ -114,7 +114,8 @@ public final class CoinGameBuilder implements SimulationBuilder {
    * @return A new CoinGame simulation instance
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random,
+      TelemetryEngine telemetryEngine) {
     return new CoinGame(agents, scenario, theme, telemetryEngine);
   }
 }

@@ -25,8 +25,8 @@ import lombok.extern.slf4j.Slf4j;
  * data coordinates to screen coordinates and provides a clean API for adding graphical elements.
  *
  * <p>The graph automatically scales data to fit within the available drawing area and includes
- * proper margins for axes labels and titles. Both X and Y axes support configurable scaling
- * through the AxisScale interface.
+ * proper margins for axes labels and titles. Both X and Y axes support configurable scaling through
+ * the AxisScale interface.
  *
  * <p>Common usage pattern:
  * <pre>
@@ -157,8 +157,8 @@ public class BaseGraph {
    * Creates a new BaseGraph with the specified dimensions, labels, and scaling.
    *
    * <p>This constructor initializes the graph with a background, calculates the plotting area
-   * dimensions, and draws the gridlines. The resulting graph is ready for adding data through
-   * the various add methods.
+   * dimensions, and draws the gridlines. The resulting graph is ready for adding data through the
+   * various add methods.
    *
    * <p>The constructor automatically:
    * <ul>
@@ -241,11 +241,11 @@ public class BaseGraph {
   /**
    * Adds a rectangular box to the graph at the specified coordinates.
    *
-   * @param startX the starting X coordinate in data space
-   * @param startY the starting Y coordinate in data space
-   * @param endX the ending X coordinate in data space
-   * @param endY the ending Y coordinate in data space
-   * @param fillColour the color to fill the box with, or null for no fill
+   * @param startX        the starting X coordinate in data space
+   * @param startY        the starting Y coordinate in data space
+   * @param endX          the ending X coordinate in data space
+   * @param endY          the ending Y coordinate in data space
+   * @param fillColour    the color to fill the box with, or null for no fill
    * @param outlineColour the color of the box outline
    */
   public void addBox(double startX, double startY, double endX, double endY, Color fillColour,

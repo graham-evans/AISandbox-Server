@@ -11,7 +11,8 @@ import java.io.Serial;
 /**
  * Exception thrown when an agent attempts to perform an illegal action during simulation.
  *
- * <p>This exception is used to signal that an agent has requested an action that violates the rules
+ * <p>This exception is used to signal that an agent has requested an action that violates the
+ * rules
  * of the current simulation and could **never** be a legal move. Common scenarios include:
  * <ul>
  *   <li>Moving to invalid coordinates or out-of-bounds positions</li>
@@ -38,8 +39,7 @@ public class IllegalActionException extends Exception {
    * Creates a new IllegalActionException with the specified error message.
    *
    * <p>The message should clearly describe what illegal action was attempted,
-   * providing context for debugging and understanding why the simulation
-   * was terminated.
+   * providing context for debugging and understanding why the simulation was terminated.
    *
    * @param message a descriptive error message explaining the illegal action
    */
@@ -51,7 +51,7 @@ public class IllegalActionException extends Exception {
    * Creates a new IllegalActionException with the specified error message and cause.
    *
    * @param message a descriptive error message explaining the illegal action
-   * @param cause the underlying cause of this exception
+   * @param cause   the underlying cause of this exception
    */
   public IllegalActionException(String message, Throwable cause) {
     super(message, cause);

@@ -7,20 +7,23 @@
 package dev.aisandbox.launcher;
 
 import dev.aisandbox.launcher.options.RuntimeUtils;
-import dev.aisandbox.server.engine.*;
+import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.engine.SimulationRunner;
+import dev.aisandbox.server.engine.SimulationSetup;
+import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.setup.SimulationSettings;
 import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.help.HelpFormatter;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.help.HelpFormatter;
 
 /**
  * Command-line interface application for running AI Sandbox simulations.
@@ -51,10 +54,22 @@ import java.util.Optional;
 public class SandboxServerCLIApplication {
 
   /**
+   * Cap an integer between two min/max values
+   *
+   * @param value The number to be capped.
+   * @param min   The minimum value
+   * @param max   The maximum value
+   * @return number between min and max, exclusive.
+   */
+  static int capInteger(int value, int min, int max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  /**
    * Main execution method for the CLI application.
    *
-   * <p>Parses command-line arguments and determines whether to display help information or execute a
-   * simulation based on the provided options.
+   * <p>Parses command-line arguments and determines whether to display help information or execute
+   * a simulation based on the provided options.
    *
    * @param args command-line arguments passed from the launcher
    */
@@ -69,12 +84,13 @@ public class SandboxServerCLIApplication {
         // try to build and run the simulation
         SimulationSettings settings = RuntimeUtils.parseCommandLine(args);
         // has a simulation been selected
-        if (settings.selectedSimulationBuilder().get()!=null) {
+        if (settings.selectedSimulationBuilder().get() != null) {
           // try and run the simulation
           runSimulation(settings);
         } else {
           // tell the user they MUST select a simulation
-          System.err.println("Please select a simulation with -s <name>. Use -h to show help and list simulations.");
+          System.err.println(
+              "Please select a simulation with -s <name>. Use -h to show help and list simulations.");
         }
       }
     } catch (ParseException e) {
@@ -97,21 +113,21 @@ public class SandboxServerCLIApplication {
       System.out.printf(" Minimum agents: %d\n", sim.getMinAgentCount());
       System.out.printf(" Maximum agents: %d\n", sim.getMaxAgentCount());
 
-          List<SimulationParameter> parameters = sim.getParameters();
-          if (!parameters.isEmpty()) {
-            System.out.println("Options (use -o key:value to set)");
-            for (SimulationParameter parameter : parameters) {
-              // test if this is an enum
-              if (parameter.parameterType().isEnum()) {
-                System.out.printf(" %s (%s) - %s %s", parameter.name(),
-                        RuntimeUtils.getParameterValue(sim, parameter), parameter.description(),
-                        Arrays.toString(parameter.parameterType().getEnumConstants()));
-              } else {
-                System.out.printf(" %s (%s) - %s", parameter.name(),
-                        RuntimeUtils.getParameterValue(sim, parameter), parameter.description());
-              }
-            }
+      List<SimulationParameter> parameters = sim.getParameters();
+      if (!parameters.isEmpty()) {
+        System.out.println("Options (use -o key:value to set)");
+        for (SimulationParameter parameter : parameters) {
+          // test if this is an enum
+          if (parameter.parameterType().isEnum()) {
+            System.out.printf(" %s (%s) - %s %s", parameter.name(),
+                RuntimeUtils.getParameterValue(sim, parameter), parameter.description(),
+                Arrays.toString(parameter.parameterType().getEnumConstants()));
+          } else {
+            System.out.printf(" %s (%s) - %s", parameter.name(),
+                RuntimeUtils.getParameterValue(sim, parameter), parameter.description());
           }
+        }
+      }
 
     } else {
       // show generic help
@@ -142,7 +158,7 @@ public class SandboxServerCLIApplication {
   private void runSimulation(SimulationSettings options) {
     // create simulation
     SimulationBuilder builder = options.selectedSimulationBuilder().get();
-    if (builder==null) {
+    if (builder == null) {
       System.err.println(
           "You must select a simulation to run, use --help to show all simulations or -s <name> to select one.");
     } else {
@@ -167,14 +183,15 @@ public class SandboxServerCLIApplication {
       }
    */
 
-      int agents = capInteger(options.agentCount().get(),builder.getMinAgentCount(),builder.getMaxAgentCount());
+      int agents = capInteger(options.agentCount().get(), builder.getMinAgentCount(),
+          builder.getMaxAgentCount());
       // create output
       OutputRenderer out = options.createRenderer();
       // create telemetry
       TelemetryEngine telemetryEngine = options.createTelemetryEngine();
       // write summary
       System.out.println(
-          "Running simulation '" +builder.getSimulationName() + "' with " + agents
+          "Running simulation '" + builder.getSimulationName() + "' with " + agents
               + " agents.");
       System.out.println("Output sent to " + out.getName());
       System.out.println("Listening on " + (options.externalNetwork().get() ? " all interfaces"
@@ -182,25 +199,14 @@ public class SandboxServerCLIApplication {
       // setup simulation & runner
       try {
         SimulationRunner runner = SimulationSetup.setupSimulation(builder, agents,
-            options.defaultPort().get(), options.externalNetwork().get(), out, Theme.LIGHT, options.maxStepCount().get(), new NullTelemetryEngine());
+            options.defaultPort().get(), options.externalNetwork().get(), out, Theme.LIGHT,
+            options.maxStepCount().get(), new NullTelemetryEngine());
         // start simulation
         runner.start();
       } catch (SimulationSetupException e) {
         log.error("Error setting up simulation", e);
       }
     }
-  }
-
-
-  /**
-   * Cap an integer between two min/max values
-   * @param value
-   * @param min
-   * @param max
-   * @return
-   */
-  static int capInteger(int value, int min,int max) {
-    return Math.min(Math.max(value,min),max);
   }
 
 /*

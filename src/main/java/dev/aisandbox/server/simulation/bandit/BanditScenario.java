@@ -97,7 +97,8 @@ public final class BanditScenario implements SimulationBuilder {
   }
 
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random,
+      TelemetryEngine telemetryEngine) {
     return new BanditRuntime(agents.getFirst(), random, banditCount.getNumber(),
         banditPulls.getNumber(), banditNormal, banditStd, banditUpdate, theme, telemetryEngine);
   }

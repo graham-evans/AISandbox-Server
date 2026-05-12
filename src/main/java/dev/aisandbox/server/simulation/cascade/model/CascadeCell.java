@@ -14,8 +14,8 @@ import lombok.Setter;
  * Represents a single cell on the 8×8 Cascade game board.
  *
  * <p>A cell holds a {@link TileType}, a {@link TileColour}, and an {@code activated} flag used
- * during match resolution to mark special objects (Bombs, Rockets, Prisms) that have been
- * triggered and are waiting to fire in the current wave.
+ * during match resolution to mark special objects (Bombs, Rockets, Prisms) that have been triggered
+ * and are waiting to fire in the current wave.
  *
  * <p>Cells are mutable so that the board can update them in place during the match → gravity →
  * refill → cascade loop without allocating a new object on every state change.
@@ -37,18 +37,22 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class CascadeCell {
 
-  /** What kind of object occupies this cell. */
+  /**
+   * What kind of object occupies this cell.
+   */
   private TileType type;
 
-  /** The colour of this cell's tile; {@link TileColour#NONE} for Prisms, Stones, and empty cells. */
+  /**
+   * The colour of this cell's tile; {@link TileColour#NONE} for Prisms, Stones, and empty cells.
+   */
   private TileColour colour;
 
   /**
    * Whether this special tile has been triggered in the current resolution wave.
    *
    * <p>Only meaningful for {@link TileType#BOMB}, {@link TileType#ROCKET_H},
-   * {@link TileType#ROCKET_V}, and {@link TileType#PRISM}. The activation loop checks this flag
-   * to decide which specials still need to fire before the board is re-evaluated.
+   * {@link TileType#ROCKET_V}, and {@link TileType#PRISM}. The activation loop checks this flag to
+   * decide which specials still need to fire before the board is re-evaluated.
    */
   private boolean activated;
 
@@ -63,89 +67,8 @@ public class CascadeCell {
   // -------------------------------------------------------------------------
 
   /**
-   * Returns {@code true} if this cell is occupied by any tile or object.
-   *
-   * @return {@code true} when {@code type != EMPTY}
+   * Returns a new empty (unoccupied) cell.
    */
-  public boolean isOccupied() {
-    return type != TileType.EMPTY;
-  }
-
-  /**
-   * Returns {@code true} if this cell participates in three-in-a-row colour checks.
-   *
-   * <p>Standard tiles, Bombs, and Rockets all carry a colour and can form or extend a match.
-   * Prisms, Ice, Stones, and empty cells do not.
-   *
-   * @return {@code true} when the type is {@link TileType#STANDARD}, {@link TileType#BOMB},
-   *     {@link TileType#ROCKET_H}, or {@link TileType#ROCKET_V}
-   */
-  public boolean isMatchable() {
-    return type == TileType.STANDARD
-        || type == TileType.BOMB
-        || type == TileType.ROCKET_H
-        || type == TileType.ROCKET_V
-        || type == TileType.ICE;
-  }
-
-  /**
-   * Returns {@code true} if this cell is subject to gravity (will fall into empty cells below it).
-   *
-   * <p>Stones and Ice Blocks are fixed obstacles that do not fall.
-   *
-   * @return {@code true} when the cell is occupied, and its type is not {@link TileType#STONE}
-   *     or {@link TileType#ICE}
-   */
-  public boolean isFallable() {
-    return isOccupied() && type != TileType.STONE && type != TileType.ICE;
-  }
-
-  /**
-   * Returns {@code type} if this cell can be swapped with an adjacent cell.
-   * @return {@code true} when the sell is standard / bomb / rocket / prism.
-   */
-  public boolean isSwappable() {
-    return type == TileType.STANDARD
-            || type == TileType.BOMB
-            || type == TileType.ROCKET_H
-            || type == TileType.ROCKET_V
-            || type == TileType.PRISM;
-  }
-
-  /**
-   * Marks this tile as activated if it is a Bomb or Rocket, ready to fire in the current
-   * resolution wave.
-   *
-   * <p>Has no effect on any other tile type.
-   */
-  public void activate() {
-    if (type == TileType.BOMB || type == TileType.ROCKET_H || type == TileType.ROCKET_V) {
-      this.activated = true;
-    }
-  }
-
-  // -------------------------------------------------------------------------
-  // Copy
-  // -------------------------------------------------------------------------
-
-  /**
-   * Returns a new {@link CascadeCell} that is an independent copy of this one.
-   *
-   * <p>Used by {@link CascadeBoard#copy()} to produce a fully independent board clone.
-   *
-   * @return a new cell with the same type, colour, and activated state
-   */
-  public CascadeCell copy() {
-    CascadeCell c = new CascadeCell(this.type, this.colour);
-    c.activated = this.activated;
-    return c;
-  }
-
-  // -------------------------------------------------------------------------
-  // Static factories
-  // -------------------------------------------------------------------------
-
-  /** Returns a new empty (unoccupied) cell. */
   public static CascadeCell empty() {
     return new CascadeCell(TileType.EMPTY, TileColour.NONE);
   }
@@ -186,6 +109,10 @@ public class CascadeCell {
     return new CascadeCell(TileType.ROCKET_V, colour);
   }
 
+  // -------------------------------------------------------------------------
+  // Copy
+  // -------------------------------------------------------------------------
+
   /**
    * Returns a new prism (rainbow) special tile.
    *
@@ -195,6 +122,10 @@ public class CascadeCell {
   public static CascadeCell prism() {
     return new CascadeCell(TileType.PRISM, TileColour.NONE);
   }
+
+  // -------------------------------------------------------------------------
+  // Static factories
+  // -------------------------------------------------------------------------
 
   /**
    * Returns a new ice-block cell encasing a tile of the given colour.
@@ -212,5 +143,81 @@ public class CascadeCell {
    */
   public static CascadeCell stone() {
     return new CascadeCell(TileType.STONE, TileColour.NONE);
+  }
+
+  /**
+   * Returns {@code true} if this cell is occupied by any tile or object.
+   *
+   * @return {@code true} when {@code type != EMPTY}
+   */
+  public boolean isOccupied() {
+    return type != TileType.EMPTY;
+  }
+
+  /**
+   * Returns {@code true} if this cell participates in three-in-a-row colour checks.
+   *
+   * <p>Standard tiles, Bombs, and Rockets all carry a colour and can form or extend a match.
+   * Prisms, Ice, Stones, and empty cells do not.
+   *
+   * @return {@code true} when the type is {@link TileType#STANDARD}, {@link TileType#BOMB},
+   * {@link TileType#ROCKET_H}, or {@link TileType#ROCKET_V}
+   */
+  public boolean isMatchable() {
+    return type == TileType.STANDARD
+        || type == TileType.BOMB
+        || type == TileType.ROCKET_H
+        || type == TileType.ROCKET_V
+        || type == TileType.ICE;
+  }
+
+  /**
+   * Returns {@code true} if this cell is subject to gravity (will fall into empty cells below it).
+   *
+   * <p>Stones and Ice Blocks are fixed obstacles that do not fall.
+   *
+   * @return {@code true} when the cell is occupied, and its type is not {@link TileType#STONE} or
+   * {@link TileType#ICE}
+   */
+  public boolean isFallable() {
+    return isOccupied() && type != TileType.STONE && type != TileType.ICE;
+  }
+
+  /**
+   * Returns {@code type} if this cell can be swapped with an adjacent cell.
+   *
+   * @return {@code true} when the sell is standard / bomb / rocket / prism.
+   */
+  public boolean isSwappable() {
+    return type == TileType.STANDARD
+        || type == TileType.BOMB
+        || type == TileType.ROCKET_H
+        || type == TileType.ROCKET_V
+        || type == TileType.PRISM;
+  }
+
+  /**
+   * Marks this tile as activated if it is a Bomb or Rocket, ready to fire in the current resolution
+   * wave.
+   *
+   * <p>Has no effect on any other tile type.
+   */
+  public void activate() {
+    if (type == TileType.BOMB || type == TileType.ROCKET_H || type == TileType.ROCKET_V) {
+      this.activated = true;
+    }
+  }
+
+  /**
+   * Returns a new {@link CascadeCell} that is an independent copy of this one.
+   *
+   * <p>Used by {@link CascadeBoard#copy()} to produce a fully independent board clone.
+   *
+   * @return a new cell with the same type, colour, and activated state
+   */
+  public CascadeCell copy() {
+    CascadeCell c = new CascadeCell(this.type, this.colour);
+    c.activated = this.activated;
+    return c;
   }
 }

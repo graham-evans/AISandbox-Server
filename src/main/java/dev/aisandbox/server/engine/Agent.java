@@ -56,7 +56,7 @@ public interface Agent {
    * @param <T>          The message type to be returned.
    * @return The agents response message.
    * @throws SimulationRuntimeException Can be thrown if the wrong object is returned, if the agent
-   *                             disconnects, or if there are communication errors.
+   *                                    disconnects, or if there are communication errors.
    */
   <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationRuntimeException;
 

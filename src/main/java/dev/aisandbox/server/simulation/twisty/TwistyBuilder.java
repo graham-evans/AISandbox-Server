@@ -11,11 +11,9 @@ import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
 import java.util.Random;
-
-import dev.aisandbox.server.engine.exception.SimulationSetupException;
-import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -135,10 +133,11 @@ public final class TwistyBuilder implements SimulationBuilder {
    * @return A new TwistySimulation instance, or null if an error occurs during creation
    */
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public Simulation build(List<Agent> agents, Theme theme, Random random,
+      TelemetryEngine telemetryEngine) {
     try {
       return new TwistySimulation(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved,
-          theme, random,telemetryEngine);
+          theme, random, telemetryEngine);
     } catch (Exception e) {
       log.error("Error while building Twisty Runtime.", e);
       return null;

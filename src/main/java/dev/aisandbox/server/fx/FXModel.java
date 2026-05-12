@@ -11,7 +11,6 @@ import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.setup.SimulationSettings;
 import dev.aisandbox.server.simulation.SimulationEnumeration;
 import java.util.Arrays;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lombok.Getter;

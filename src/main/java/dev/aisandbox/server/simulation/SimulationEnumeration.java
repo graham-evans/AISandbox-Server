@@ -61,8 +61,8 @@ public enum SimulationEnumeration {
    * Multi-armed Bandit problem - exploration vs exploitation.
    *
    * <p>Classic reinforcement learning scenario where an agent must choose between multiple slot
-   * machines (bandits) to maximize reward over time. Tests the fundamental explore-exploit
-   * tradeoff in sequential decision making.
+   * machines (bandits) to maximize reward over time. Tests the fundamental explore-exploit tradeoff
+   * in sequential decision making.
    */
   MULTI_BANDIT(new BanditScenario()),
 
@@ -94,8 +94,8 @@ public enum SimulationEnumeration {
    * Mancala (Kalah variant) - two-player seed-sowing strategy game.
    *
    * <p>Players take turns sowing seeds counter-clockwise around a board of 2x6 pits plus two
-   * stores. Landing in your own store grants an extra turn; landing in an empty pit on your
-   * side captures the opponent's opposite seeds. The player with the most seeds wins.
+   * stores. Landing in your own store grants an extra turn; landing in an empty pit on your side
+   * captures the opponent's opposite seeds. The player with the most seeds wins.
    */
   MANCALA(new MancalaBuilder()),
 
