@@ -9,7 +9,9 @@
 
     Authors: Max Vetrenko, Mauryan Kansara, Ruslan Diachenko, Roman Ivanov.
 
-    Additions made to check each source file references the GPL
+    Additions made to:
+     - check each source file references the GPL
+     - Check no uses of Java random or non-strict transcendental
  -->
 
 <module name="Checker">
@@ -80,6 +82,23 @@
   </module>
 
   <module name="TreeWalker">
+
+
+    <!-- Bans specific static method calls via regex -->
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="Math\.(sin|cos|tan|exp|log|pow)\("/>
+      <property name="message" value="Use StrictMath instead of Math for transcendental functions in simulations"/>
+      <property name="ignoreComments" value="true"/>
+      <property name="severity" value="error"/>
+    </module>
+
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="new\s+java\.util\.Random\("/>
+      <property name="message" value="Use MersenneTwister instead of java.util.Random"/>
+      <property name="ignoreComments" value="true"/>
+      <property name="severity" value="error"/>
+    </module>
+
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
