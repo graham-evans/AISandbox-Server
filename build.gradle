@@ -59,6 +59,7 @@ pmd {
     consoleOutput = true
     ignoreFailures = false
     sourceSets = [project.sourceSets.main]
+    ruleSetFiles = files("config/pmd/maths.xml")
 
     pmdMain {
         excludes = [

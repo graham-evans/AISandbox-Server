@@ -1,0 +1,52 @@
+<ruleset name="Maths Simulation Rules"
+  xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
+             https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>Simulation determinism rules</description>
+
+  <rule name="UseStrictMath"
+    language="java"
+    message="Use StrictMath instead of Math for transcendental functions"
+    class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+    <description>
+      Math transcendental methods are not bit-identical across platforms.
+      Use StrictMath instead.
+    </description>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+                //MethodCall
+                  [@MethodName = ('sin','cos','tan','asin','acos','atan','atan2',
+                                  'exp','log','log10','log1p','pow',
+                                  'sinh','cosh','tanh','expm1','cbrt','hypot')]
+                  [TypeExpression/ClassType[@SimpleName = 'Math']]
+                ]]>
+        </value>
+      </property>
+    </properties>
+    <priority>1</priority>
+  </rule>
+
+  <rule name="NoJavaUtilRandom"
+    language="java"
+    message="Use MersenneTwister instead of java.util.Random"
+    class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+    <description>
+      java.util.Random is not guaranteed to be consistent across JVM versions.
+    </description>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+                //ConstructorCall/ClassType[@SimpleName = 'Random']
+                ]]>
+        </value>
+      </property>
+    </properties>
+    <priority>1</priority>
+  </rule>
+
+</ruleset>
