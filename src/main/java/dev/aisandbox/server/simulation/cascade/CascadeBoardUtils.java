@@ -12,6 +12,7 @@ import dev.aisandbox.server.simulation.cascade.model.TileColour;
 import dev.aisandbox.server.simulation.cascade.model.TileType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @UtilityClass
+@SuppressWarnings("PMD.AvoidLiteralsInIfCondition") // lots of instances of n=3 causes false positives.
 public class CascadeBoardUtils {
 
   /**
@@ -1422,7 +1424,7 @@ public class CascadeBoardUtils {
     }
     boolean activated = Character.isUpperCase(token.charAt(0))
         && Character.isUpperCase(token.charAt(1));
-    String lower = token.toLowerCase();
+    String lower = token.toLowerCase(Locale.ENGLISH);
     if (lower.equals("xx")) {
       CascadeCell cell = CascadeCell.prism();
       if (activated) {
