@@ -11,7 +11,6 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.SimulationRunner;
-import dev.aisandbox.server.engine.SimulationSetup;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -174,47 +173,14 @@ public class SandboxServerCLIApplication {
       System.err.println(
           "You must select a simulation to run, use --help to show all simulations or -s <name> to select one.");
     } else {
-
- /*     // apply parameters (if any)
-      for (String parameter : options.parameters()) {
-        String[] keyValue = parameter.split("[=:]");
-        if (keyValue.length != 2) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
-          System.err.printf("Invalid parameter: '%s', use format key:value\n", parameter);
-        } else {
-          String key = keyValue[0];
-          String value = keyValue[1];
-          // map this to a simulation parameter
-          Optional<SimulationParameter> oParam = simulationBuilder.getParameters().stream()
-              .filter(param -> param.name().equalsIgnoreCase(key)).findFirst();
-          if (oParam.isPresent()) {
-            RuntimeUtils.setParameterValue(simulationBuilder, oParam.get(), value);
-          } else {
-            System.err.printf("Can't set '%s' to '%s'%n\n", key, value);
-          }
-        }
-      }
-   */
-
-      int agents = capInteger(options.agentCount().get(), builder.getMinAgentCount(),
-          builder.getMaxAgentCount());
-      // create output
-      OutputRenderer out = options.createRenderer();
-      // create telemetry
-      TelemetryEngine telemetryEngine = options.createTelemetryEngine();
-      // create random
-      SimulationRandomNumberGenerator randomProvider = options.createRandom();
-      // write summary
-      System.out.println(
-          "Running simulation '" + builder.getSimulationName() + "' with " + agents
-              + " agents.");
-      System.out.println("Output sent to " + out.getName());
-      System.out.println("Listening on " + (options.externalNetwork().get() ? " all interfaces"
-          : "loopback interface" + " starting on port " + options.defaultPort().get()));
-      // setup simulation & runner
       try {
-        SimulationRunner runner = SimulationSetup.setupSimulation(builder, agents,
-            options.defaultPort().get(), options.externalNetwork().get(), out, Theme.LIGHT,
-            options.maxStepCount().get(), randomProvider, new NullTelemetryEngine());
+        // setup simulation & runner
+        SimulationRunner runner = options.build();
+        System.out.println(
+            "Running simulation '" + options.selectedSimulationBuilder().getName() + "' with " + options.agentCount()
+                + " agents.");
+        System.out.println("Listening on " + (options.externalNetwork().get() ? " all interfaces"
+            : "loopback interface" + " starting on port " + options.defaultPort().get()));
         // start simulation
         runner.start();
       } catch (SimulationSetupException e) {
@@ -223,26 +189,4 @@ public class SandboxServerCLIApplication {
     }
   }
 
-/*
-
-  private void listOptions(RuntimeOptions options) {
-    if (options.simulation() == null) {
-      // list the available simulations
-      System.out.println("Available simulations:");
-      for (SimulationBuilder simulationBuilder : simulationBuilders) {
-        if (simulationBuilder.getMinAgentCount() == simulationBuilder.getMaxAgentCount()) {
-          System.out.printf("%s (%d agents, %s)", simulationBuilder.getSimulationName(),
-              simulationBuilder.getMinAgentCount(), simulationBuilder.getDescription());
-        } else {
-          System.out.printf("%s (%d-%d agents, %s)", simulationBuilder.getSimulationName(),
-              simulationBuilder.getMinAgentCount(), simulationBuilder.getMaxAgentCount(),
-              simulationBuilder.getDescription());
-        }
-      }
-    } else {
-      // show the help for the simulation
-      helpSimulation(options.simulation());
-    }
-  }
-*/
 }
