@@ -52,43 +52,43 @@ public class BaseGraph {
   /**
    * Pixel spacing around the outside of the graph.
    */
-  private final static int PADDING = 16;
+  private static final int PADDING = 16;
   /**
    * Pixel spacing between graph elements.
    */
-  private final static int MARGIN = 3;
+  private static final int MARGIN = 3;
   /**
    * Font size for the main graph title.
    */
-  private final static int TITLE_FONT_SIZE = 18;
+  private static final int TITLE_FONT_SIZE = 18;
   /**
    * Font used for the main graph title.
    */
-  private final static Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
+  private static final Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
   /**
    * Font size for axis labels.
    */
-  private final static int AXIS_FONT_SIZE = 12;
+  private static final int AXIS_FONT_SIZE = 12;
   /**
    * Font used for axis labels.
    */
-  private final static Font AXIS_FONT = new Font("Open Sans", Font.PLAIN, AXIS_FONT_SIZE);
+  private static final Font AXIS_FONT = new Font("Open Sans", Font.PLAIN, AXIS_FONT_SIZE);
   /**
    * Font size for tick mark labels.
    */
-  private final static int TICK_FONT_SIZE = 10;
+  private static final int TICK_FONT_SIZE = 10;
   /**
    * Font used for tick mark labels.
    */
-  private final static Font TICK_FONT = new Font("Open Sans", Font.PLAIN, TICK_FONT_SIZE);
+  private static final Font TICK_FONT = new Font("Open Sans", Font.PLAIN, TICK_FONT_SIZE);
   /**
    * Dash pattern for gridlines.
    */
-  private final static float[] dash1 = {10.0f};
+  private static final float[] dash1 = {10.0f};
   /**
    * Dashed stroke style for gridlines.
    */
-  private final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
+  private static final BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
       BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
 
   // Graph configuration

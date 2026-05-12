@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings("PMD.NullAssignment") // null is used to invalidate a cached object - this is ok.
 public class RollingIconWidget {
 
-  private final static int PADDING = 16;
+  private static final int PADDING = 16;
   private final int width;
   private final int height;
   private final int iconWidth;

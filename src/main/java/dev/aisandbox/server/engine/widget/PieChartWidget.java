@@ -30,9 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PieChartWidget {
 
-  private final static int PADDING = 16; // pixel spacing around the outside
-  private final static int TITLE_FONT_SIZE = 18;
-  private final static Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
+  private static final int PADDING = 16; // pixel spacing around the outside
+  private static final int TITLE_FONT_SIZE = 18;
+  private static final Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
   private final int width;
   private final int height;
   private final String title;
