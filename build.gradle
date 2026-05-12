@@ -55,9 +55,9 @@ checkstyle {
 }
 
 pmd {
-    toolVersion = "7.0.0"
+    toolVersion = "7.22.0"
     consoleOutput = true
-    ignoreFailures = true
+    ignoreFailures = false
     sourceSets = [project.sourceSets.main]
 
     pmdMain {
