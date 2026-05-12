@@ -19,12 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OtelTelemetryEngine implements TelemetryEngine {
 
+  private final OtlpHttpLogRecordExporter exporter;
   private final OpenTelemetrySdk openTelemetry;
   private final SdkLoggerProvider loggerProvider;
   private final Logger logger;
 
   public OtelTelemetryEngine(String collectorUrl) {
-    OtlpHttpLogRecordExporter exporter = OtlpHttpLogRecordExporter.builder()
+    exporter = OtlpHttpLogRecordExporter.builder()
         .setEndpoint(collectorUrl)
         // .addHeader("Authorization", "Bearer <token>")
         .build();
@@ -53,5 +54,6 @@ public class OtelTelemetryEngine implements TelemetryEngine {
   public void close() {
     loggerProvider.forceFlush().join(10, java.util.concurrent.TimeUnit.SECONDS);
     openTelemetry.close();
+    exporter.close();
   }
 }
