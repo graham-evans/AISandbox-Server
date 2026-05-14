@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.EnumUtils;
@@ -56,7 +57,7 @@ public class RuntimeUtils {
   static {
     options = new Options();
     // add help option
-    options.addOption("h", "help", false, "Print an overview");
+    options.addOption("h", "help", false, "Print command line options, or simulation options if selected");
     // add simulation selector
     options.addOption("s", "simulation", true,
         "Simulation to run [" + Arrays.stream(SimulationEnumeration.values())
@@ -77,6 +78,9 @@ public class RuntimeUtils {
     options.addOption("n", "network", false,
         "Allow connections from the network (default localhost only)");
     options.addOption("t", "port", true, "Starting port (default 9000)");
+    // telemetry options
+    options.addOption(null,"json", false,"Output telemetry information to JSON file");
+    options.addOption(null,"json-dir",true,"Output directory for JSON files");
   }
 
   /**
@@ -167,6 +171,13 @@ public class RuntimeUtils {
       if (cmd.hasOption('p')) {
         Arrays.stream(cmd.getOptionValues('p'))
             .forEach(s -> setParameterValue(simulation.selectedSimulationBuilder().get(), s));
+      }
+      // read telemetry
+      if (cmd.hasOption('j')) {
+        simulation.selectedTelemetryJson().set(true);
+        if (cmd.hasOption("json-dir")) {
+          simulation.telemetryJsonPath().set(cmd.getOptionValue("json-dir"));
+        }
       }
     } catch (ParseException e) {
       System.err.println("Error parsing command line arguments: " + e.getMessage());

@@ -174,11 +174,14 @@ public class SandboxServerCLIApplication {
           "You must select a simulation to run, use --help to show all simulations or -s <name> to select one.");
     } else {
       try {
+        // report setup
+        System.out.println(options.toReport());
         // setup simulation & runner
-        SimulationRunner runner = options.build();
         System.out.println(
-            "Running simulation '" + options.selectedSimulationBuilder().getName() + "' with " + options.agentCount()
+            "Running simulation '" + options.selectedSimulationBuilder().get().getSimulationName() + "' with " + options.agentCount()
                 + " agents.");
+        SimulationRunner runner = options.build();
+
         System.out.println("Listening on " + (options.externalNetwork().get() ? " all interfaces"
             : "loopback interface" + " starting on port " + options.defaultPort().get()));
         // start simulation

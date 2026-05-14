@@ -17,9 +17,11 @@ import dev.aisandbox.server.engine.network.NetworkAgent;
 import dev.aisandbox.server.engine.output.FXRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.FileTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.fx.RuntimeController;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,6 +38,7 @@ import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Class that represents the requested settings for a simulation.
@@ -69,8 +72,9 @@ public class SimulationSettings {
   private final LongProperty maxStepCount = new SimpleLongProperty(-1);
   // telemetry types - these will be linked in the constructor
   private final BooleanProperty selectedTelemetryNone = new SimpleBooleanProperty(true);
-  private final BooleanProperty selectedTelemetryJon = new SimpleBooleanProperty(false);
+  private final BooleanProperty selectedTelemetryJson = new SimpleBooleanProperty(false);
   private final BooleanProperty selectedTelemetryOtel = new SimpleBooleanProperty(false);
+  private final StringProperty telemetryJsonPath = new SimpleStringProperty(".");
   // output types - linked in constructor
   private final BooleanProperty outputNone = new SimpleBooleanProperty(false);
   private final BooleanProperty outputScreen = new SimpleBooleanProperty(true);
@@ -81,7 +85,7 @@ public class SimulationSettings {
 
   public SimulationSettings() {
     // link mutually exclusive
-    linkMutuallyExclusive(selectedTelemetryNone, selectedTelemetryJon, selectedTelemetryOtel);
+    linkMutuallyExclusive(selectedTelemetryNone, selectedTelemetryJson, selectedTelemetryOtel);
     linkMutuallyExclusive(outputNone, outputPNG, outputScreen);
   }
 
@@ -97,6 +101,33 @@ public class SimulationSettings {
         }
       });
     }
+  }
+
+  public String toReport() {
+    final StringBuilder sb = new StringBuilder("Simulation Settings\n");
+    sb.append(" selected simulation - ").append(selectedSimulationBuilder==null?"None":selectedSimulationBuilder.get().getSimulationName());
+    sb.append("\n number of agents - ").append(agentCount.get());
+    sb.append("\n maxStepCount-").append(maxStepCount.get()==-1?"infinite":maxStepCount.get());
+
+    sb.append("\n selected theme - ").append(selectedTheme.get());
+
+    sb.append("\n default network port - ").append(defaultPort.get());
+    sb.append("\n allow external connections - ").append(externalNetwork.get());
+
+
+    sb.append("\n outputNone=").append(outputNone);
+    sb.append("\n outputScreen=").append(outputScreen);
+    sb.append("\n outputPNG=").append(outputPNG);
+    sb.append("\n outputPNGPath=").append(outputPNGPath);
+    sb.append("\n outputSkipFrames=").append(outputSkipFrames);
+
+
+    sb.append("\n selectedTelemetryNone=").append(selectedTelemetryNone);
+    sb.append("\n selectedTelemetryJson=").append(selectedTelemetryJson);
+    sb.append("\n selectedTelemetryOtel=").append(selectedTelemetryOtel);
+    sb.append("\n telemetryJsonPath=").append(telemetryJsonPath);
+    sb.append('}');
+    return sb.toString();
   }
 
   /**
@@ -184,7 +215,13 @@ public class SimulationSettings {
   }
 
   public TelemetryEngine createTelemetryEngine() {
-    return new NullTelemetryEngine();
+    // initialise a null engine
+    TelemetryEngine telemetryEngine = new NullTelemetryEngine();
+    // check for JSON engine
+    if (selectedTelemetryJson.get()) {
+      telemetryEngine = new FileTelemetryEngine(new File(telemetryJsonPath.get()));
+    }
+    return telemetryEngine;
   }
 
   public OutputRenderer createRenderer() {
