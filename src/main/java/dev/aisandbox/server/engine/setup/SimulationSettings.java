@@ -105,21 +105,26 @@ public class SimulationSettings {
 
   public String toReport() {
     final StringBuilder sb = new StringBuilder("Simulation Settings\n");
-    sb.append(" selected simulation - ").append(selectedSimulationBuilder==null?"None":selectedSimulationBuilder.get().getSimulationName());
+    sb.append("\n selected simulation - ").append(selectedSimulationBuilder==null?"None":
+            selectedSimulationBuilder.get().getSimulationName());
     sb.append("\n number of agents - ").append(agentCount.get());
-    sb.append("\n maxStepCount-").append(maxStepCount.get()==-1?"infinite":maxStepCount.get());
+    sb.append("\n max number of steps -").append(maxStepCount.get()==-1?"infinite":maxStepCount.get());
 
     sb.append("\n selected theme - ").append(selectedTheme.get());
-
-    sb.append("\n default network port - ").append(defaultPort.get());
+    sb.append("\n\nNetwork Settings");
+    sb.append("\n\n default network port - ").append(defaultPort.get());
     sb.append("\n allow external connections - ").append(externalNetwork.get());
-
-
-    sb.append("\n outputNone=").append(outputNone);
-    sb.append("\n outputScreen=").append(outputScreen);
-    sb.append("\n outputPNG=").append(outputPNG);
-    sb.append("\n outputPNGPath=").append(outputPNGPath);
-    sb.append("\n outputSkipFrames=").append(outputSkipFrames);
+    sb.append("\n\nOutput Settings");
+    sb.append("\n\noutput mode - ");
+    if (outputNone.get()) {
+      sb.append("none");
+    } else if (outputScreen.get()) {
+      sb.append("screen");
+    } else if (outputPNG.get()) {
+      sb.append("png\noutput directory - ");
+      sb.append(outputPNGPath.get());
+    }
+    sb.append("\n skip frames - ").append(outputSkipFrames.get()==-1?"none":outputSkipFrames.get());
 
 
     sb.append("\n selectedTelemetryNone=").append(selectedTelemetryNone);
