@@ -173,7 +173,7 @@ public class RuntimeUtils {
             .forEach(s -> setParameterValue(simulation.selectedSimulationBuilder().get(), s));
       }
       // read telemetry
-      if (cmd.hasOption('j')) {
+      if (cmd.hasOption("json")) {
         simulation.selectedTelemetryJson().set(true);
         if (cmd.hasOption("json-dir")) {
           simulation.telemetryJsonPath().set(cmd.getOptionValue("json-dir"));
