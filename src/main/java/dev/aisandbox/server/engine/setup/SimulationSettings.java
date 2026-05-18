@@ -14,13 +14,12 @@ import dev.aisandbox.server.engine.SimulationRunner;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.network.NetworkAgent;
-import dev.aisandbox.server.engine.output.FXRenderer;
+import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.telemetry.FileTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
-import dev.aisandbox.server.fx.RuntimeController;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,6 @@ import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Class that represents the requested settings for a simulation.
@@ -115,45 +113,30 @@ public class SimulationSettings {
     sb.append("\n\n default network port - ").append(defaultPort.get());
     sb.append("\n allow external connections - ").append(externalNetwork.get());
     sb.append("\n\nOutput Settings");
-    sb.append("\n\noutput mode - ");
+    sb.append("\n\n output mode - ");
     if (outputNone.get()) {
       sb.append("none");
     } else if (outputScreen.get()) {
       sb.append("screen");
     } else if (outputPNG.get()) {
-      sb.append("png\noutput directory - ");
+      sb.append("png\n output directory - ");
       sb.append(outputPNGPath.get());
     }
     sb.append("\n skip frames - ").append(outputSkipFrames.get()==-1?"none":outputSkipFrames.get());
 
-
-    sb.append("\n selectedTelemetryNone=").append(selectedTelemetryNone);
-    sb.append("\n selectedTelemetryJson=").append(selectedTelemetryJson);
-    sb.append("\n selectedTelemetryOtel=").append(selectedTelemetryOtel);
-    sb.append("\n telemetryJsonPath=").append(telemetryJsonPath);
-    sb.append('}');
+    sb.append("\n\nTelemetry\n\n telemetry output - ");
+    if (selectedTelemetryNone.get()) {
+      sb.append("none\n");
+    } else if (selectedTelemetryJson.get()) {
+      sb.append("JSON\n output directory - ");
+      sb.append(telemetryJsonPath.get());
+      sb.append("\n");
+    } else if (selectedTelemetryOtel.get()) {
+      sb.append("OTel\n");
+    } else {
+      sb.append("Error\n");
+    }
     return sb.toString();
-  }
-
-  /**
-   * Create a SimulationRunner based on the currently held settings, overriding the renderer with a
-   * FXRenderer based on the runtimeController.
-   *
-   * <p>This is used by the FX launcher.
-   *
-   * @param runtimeController The existing FX runtime controller, which can be used to setup the
-   *                          FXRenderer.
-   * @return The simulation runner to control the simulation
-   * @throws SimulationSetupException an error occurred while setting up the simulation.
-   */
-  public SimulationRunner build(RuntimeController runtimeController)
-      throws SimulationSetupException {
-    // generate renderer based on FX and ignore current settings
-    OutputRenderer renderer = new FXRenderer(runtimeController);
-    // generate agents
-    List<Agent> agentList = createAgents(renderer, List.of());
-    // return simulation based on these renderer and agents
-    return build(renderer, agentList);
   }
 
   /**
@@ -209,10 +192,10 @@ public class SimulationSettings {
     // create the list of agents
     List<Agent> agentList = createAgents(renderer, prebuiltAgents);
     // generate the telemetry
-    TelemetryEngine telemetryEngine = new NullTelemetryEngine();
+    TelemetryEngine telemetryEngine = createTelemetryEngine();
     // create simulation
     Simulation sim = selectedSimulationBuilder.get()
-        .build(agentList, selectedTheme.get(), createRandom(), new NullTelemetryEngine());
+        .build(agentList, selectedTheme.get(), createRandom(), telemetryEngine);
     // start output
     renderer.setup(sim);
     // create simulation runner thread
@@ -230,7 +213,19 @@ public class SimulationSettings {
   }
 
   public OutputRenderer createRenderer() {
-    return new NullOutputRenderer();
+    if (outputPNG.get()) {
+    // setup a PNG output renderer
+      BitmapOutputRenderer bRenderer = new BitmapOutputRenderer();
+      // skip frames
+      if (outputSkipFrames.get()>0) {
+        bRenderer.setSkipFrames(outputSkipFrames.get());
+      }
+      // output directory
+      bRenderer.setOutputDirectory(new File(outputPNGPath.get()));
+      return bRenderer;
+    } else {
+      return new NullOutputRenderer();
+    }
   }
 
   public SimulationRandomNumberGenerator createRandom() {
