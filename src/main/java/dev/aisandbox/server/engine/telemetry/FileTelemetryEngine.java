@@ -41,8 +41,10 @@ public class FileTelemetryEngine implements TelemetryEngine {
     for (String line : event.toJSON()) {
       try {
         writer.write(line);
+        writer.write("\n");
       } catch (IOException e) {
         log.error("Failed to write telemetry event", e);
+        writer=null;
       }
     }
   }
