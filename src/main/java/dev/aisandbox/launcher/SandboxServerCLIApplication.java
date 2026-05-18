@@ -178,8 +178,7 @@ public class SandboxServerCLIApplication {
         System.out.println(options.toReport());
         // setup simulation & runner
         System.out.println(
-            "Running simulation '" + options.selectedSimulationBuilder().get().getSimulationName() + "' with " + options.agentCount()
-                + " agents.");
+            "\nRunning simulation:\n\n");
         SimulationRunner runner = options.build();
 
         System.out.println("Listening on " + (options.externalNetwork().get() ? " all interfaces"
