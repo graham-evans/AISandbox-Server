@@ -27,17 +27,7 @@ public record EpisodeAgentWinLossEvent(String simulationName,
                                        List<AgentResult> agentResultList) implements
     TelemetryEvent {
 
-  private static final String jsonTemplate = """
-      {
-          "timestamp":"%s",
-          "event":"episode_agent_win_loss",
-          "simulation_name":"%s",
-          "session_id":"%s",
-          "episode_id":"%s",
-          "agent_name":"%s",
-          "result":"%s"
-      }
-      """;
+  private static final String jsonTemplate = "{\"@timestamp\":\"%s\",\"log.level\":\"info\",\"event.action\":\"episode_agent_win_loss\",\"service.name\":\"%s\",\"session_id\":\"%s\",\"episode_id\":\"%s\",\"labels.agent_name\":\"%s\",\"result\":\"%s\"}";
 
   @Override
   public List<String> toJSON() {
