@@ -7,6 +7,7 @@
 package dev.aisandbox.server.engine.telemetry;
 
 import io.opentelemetry.api.logs.Logger;
+import java.time.Instant;
 import java.util.List;
 
 public interface TelemetryEvent {
@@ -14,4 +15,6 @@ public interface TelemetryEvent {
   List<String> toJSON();
 
   void emit(Logger logger);
+
+  Instant timestamp();
 }

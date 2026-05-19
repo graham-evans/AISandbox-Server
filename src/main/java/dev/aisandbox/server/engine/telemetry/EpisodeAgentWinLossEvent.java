@@ -17,13 +17,14 @@ import java.util.List;
  * @param simulationName      The name of the simulation
  * @param sessionID           The session identifier
  * @param episodeID           The episode identifier
- * @param episodeFinishedTime The time the event was created
+ * @param timestamp           The time the event was created
  * @param agentResultList     The list of agents and their results
  */
+
 public record EpisodeAgentWinLossEvent(String simulationName,
                                        String sessionID,
                                        String episodeID,
-                                       Instant episodeFinishedTime,
+                                       Instant timestamp,
                                        List<AgentResult> agentResultList) implements
     TelemetryEvent {
 
@@ -32,7 +33,7 @@ public record EpisodeAgentWinLossEvent(String simulationName,
   @Override
   public List<String> toJSON() {
     return agentResultList.stream()
-        .map(a -> String.format(jsonTemplate, episodeFinishedTime.toString(), simulationName,
+        .map(a -> String.format(jsonTemplate, timestamp.toString(), simulationName,
             sessionID, episodeID, a.agentName(), a.result().name()))
         .toList();
   }
@@ -48,7 +49,7 @@ public record EpisodeAgentWinLossEvent(String simulationName,
           .setAttribute("episode_id", episodeID)
           .setAttribute("agent_name", agent.agentName())
           .setAttribute("result", agent.result().name())
-          .setTimestamp(episodeFinishedTime)
+          .setTimestamp(timestamp)
           .emit();
     }
   }

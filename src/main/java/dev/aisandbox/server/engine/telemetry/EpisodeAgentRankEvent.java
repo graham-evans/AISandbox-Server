@@ -17,13 +17,13 @@ import java.util.List;
  * @param simulationName      The name of the simulation
  * @param sessionID           The session identifier
  * @param episodeID           The episode identifier
- * @param episodeFinishedTime The time the event was created
+ * @param timestamp The time the event was created
  * @param agentRankList       The list of agents and their ranks
  */
 public record EpisodeAgentRankEvent(String simulationName,
                                     String sessionID,
                                     String episodeID,
-                                    Instant episodeFinishedTime,
+                                    Instant timestamp,
                                     List<AgentRank> agentRankList) implements TelemetryEvent {
 
   private static final String jsonTemplate = """
@@ -41,7 +41,7 @@ public record EpisodeAgentRankEvent(String simulationName,
   @Override
   public List<String> toJSON() {
     return agentRankList.stream()
-        .map(a -> String.format(jsonTemplate, episodeFinishedTime.toString(), simulationName,
+        .map(a -> String.format(jsonTemplate, timestamp.toString(), simulationName,
             sessionID, episodeID, a.agentName(), a.rank()))
         .toList();
   }
@@ -57,7 +57,7 @@ public record EpisodeAgentRankEvent(String simulationName,
           .setAttribute("episode_id", episodeID)
           .setAttribute("agent_name", agent.agentName())
           .setAttribute("rank", String.valueOf(agent.rank()))
-          .setTimestamp(episodeFinishedTime)
+          .setTimestamp(timestamp)
           .emit();
     }
   }

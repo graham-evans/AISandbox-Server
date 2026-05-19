@@ -18,13 +18,13 @@ import java.util.List;
  * @param simulationName      The name of the simulation
  * @param sessionID           The session identifier
  * @param episodeID           The episode identifier
- * @param episodeFinishedTime The time the event was created
+ * @param timestamp The time the event was created
  * @param agentScoreList      The list of agents and their scores
  */
 public record EpisodeAgentDoubleScoreEvent(String simulationName,
                                            String sessionID,
                                            String episodeID,
-                                           Instant episodeFinishedTime,
+                                           Instant timestamp,
                                            List<AgentDoubleScore> agentScoreList) implements
     TelemetryEvent {
 
@@ -43,7 +43,7 @@ public record EpisodeAgentDoubleScoreEvent(String simulationName,
   @Override
   public List<String> toJSON() {
     return agentScoreList.stream()
-        .map(a -> String.format(jsonTemplate, episodeFinishedTime.toString(), simulationName,
+        .map(a -> String.format(jsonTemplate, timestamp.toString(), simulationName,
             sessionID, episodeID, a.agentName(), a.score()))
         .toList();
   }
@@ -59,7 +59,7 @@ public record EpisodeAgentDoubleScoreEvent(String simulationName,
           .setAttribute("episode_id", episodeID)
           .setAttribute("agent_name", agent.agentName())
           .setAttribute("score", String.valueOf(agent.score()))
-          .setTimestamp(episodeFinishedTime)
+          .setTimestamp(timestamp)
           .emit();
     }
   }

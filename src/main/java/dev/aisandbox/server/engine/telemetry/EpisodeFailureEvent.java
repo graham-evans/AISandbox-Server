@@ -17,12 +17,12 @@ import java.util.List;
  * @param simulationName      The name of the simulation
  * @param sessionID           The session identifier
  * @param episodeID           The episode identifier
- * @param episodeFinishedTime The time the event was created
+ * @param timestamp The time the event was created
  */
 public record EpisodeFailureEvent(String simulationName,
                                   String sessionID,
                                   String episodeID,
-                                  Instant episodeFinishedTime) implements TelemetryEvent {
+                                  Instant timestamp) implements TelemetryEvent {
 
   private static final String jsonTemplate = """
       {
@@ -38,7 +38,7 @@ public record EpisodeFailureEvent(String simulationName,
   @Override
   public List<String> toJSON() {
     return List.of(
-        String.format(jsonTemplate, episodeFinishedTime.toString(), simulationName, sessionID,
+        String.format(jsonTemplate, timestamp.toString(), simulationName, sessionID,
             episodeID));
   }
 
@@ -50,7 +50,7 @@ public record EpisodeFailureEvent(String simulationName,
         .setAttribute("simulation_name", simulationName)
         .setAttribute("session_id", sessionID)
         .setAttribute("episode_id", episodeID)
-        .setTimestamp(episodeFinishedTime)
+        .setTimestamp(timestamp)
         .emit();
   }
 }

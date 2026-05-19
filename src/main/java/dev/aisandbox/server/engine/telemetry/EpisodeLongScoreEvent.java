@@ -17,13 +17,13 @@ import java.util.List;
  * @param simulationName      The name of the simulation
  * @param sessionID           The session identifier
  * @param episodeID           The episode identifier
- * @param episodeFinishedTime The time the event was created
+ * @param timestamp The time the event was created
  * @param score               The score for the episode
  */
 public record EpisodeLongScoreEvent(String simulationName,
                                     String sessionID,
                                     String episodeID,
-                                    Instant episodeFinishedTime,
+                                    Instant timestamp,
                                     long score) implements TelemetryEvent {
 
   private static final String jsonTemplate = """
@@ -40,7 +40,7 @@ public record EpisodeLongScoreEvent(String simulationName,
   @Override
   public List<String> toJSON() {
     return List.of(
-        String.format(jsonTemplate, episodeFinishedTime.toString(), simulationName, sessionID,
+        String.format(jsonTemplate, timestamp.toString(), simulationName, sessionID,
             episodeID, score));
   }
 
@@ -53,7 +53,7 @@ public record EpisodeLongScoreEvent(String simulationName,
         .setAttribute("session_id", sessionID)
         .setAttribute("episode_id", episodeID)
         .setAttribute("score", String.valueOf(score))
-        .setTimestamp(episodeFinishedTime)
+        .setTimestamp(timestamp)
         .emit();
   }
 }
