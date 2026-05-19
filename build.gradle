@@ -10,9 +10,32 @@ plugins {
     id 'org.beryx.jlink' version '4.0.0'
 }
 
+// declare version numbers
+
 group = 'dev.aisandbox'
 
 def protobufVersion = '4.34.1'
+
+// Determine the version from git: an exact tag on HEAD, or "snapshot" otherwise.
+def gitVersion = {
+    try {
+        def stdout = new ByteArrayOutputStream()
+        def result = exec {
+            commandLine 'git', 'describe', '--tags', '--exact-match', 'HEAD'
+            standardOutput = stdout
+            errorOutput = new ByteArrayOutputStream()
+            ignoreExitValue = true
+        }
+        return result.exitValue == 0 ? stdout.toString().trim() : 'snapshot'
+    } catch (Exception ignored) {
+        return 'snapshot'
+    }
+}()
+
+// Keep this as an extension property rather than project.version — the beryx
+// jlink plugin can bake project.version into the merged module's metadata,
+// and non-semver strings like "snapshot" sometimes break createMergedModule.
+ext.appVersion = gitVersion
 
 run {
     enableAssertions = true
@@ -88,6 +111,31 @@ tasks.register('copyDocs', Copy) {
     description = "Copies documentation into the build tree."
     from 'documentation'
     into 'build/docs'
+}
+
+// Generate version.properties and feed it into processResources directly.
+// We avoid adding a new resources srcDir so the jlink plugin's source-set
+// scan does not pick this up while building the merged module-info.
+tasks.register('generateVersionProperties') {
+    group = "build"
+    description = "Generates version.properties from the current git tag."
+
+    def outputFile = layout.buildDirectory.file("generated/version/version.properties")
+    def versionString = project.ext.appVersion
+
+    inputs.property("version", versionString)
+    outputs.file(outputFile)
+
+    doLast {
+        def f = outputFile.get().asFile
+        f.parentFile.mkdirs()
+        f.text = "version=${versionString}\n"
+    }
+}
+
+processResources {
+    from(tasks.named('generateVersionProperties'))
+    // Lands at the classpath root as /version.properties
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -166,6 +214,35 @@ jlink {
         requires 'java.naming'
         requires 'java.sql'
         requires 'java.xml'
+    }
+}
+
+// Beryx's jlinkZip writes build/image.zip via ant.zip without preserving Unix
+// execute bits on the generated launcher scripts in bin/, so extracting on
+// Linux/macOS leaves bin/AISandbox-Server non-executable. After the default
+// action runs, overwrite build/image.zip with one that has the right filemode
+// on the launcher. The stray build/image-zip/ dir is removed so only the
+// corrected zip remains.
+tasks.named('jlinkZip').configure {
+    doLast {
+        def imageDir = layout.buildDirectory.dir("image").get().asFile
+        def imageZip = layout.buildDirectory.file("image.zip").get().asFile
+        def strayZipDir = layout.buildDirectory.dir("image-zip").get().asFile
+        imageZip.delete()
+        strayZipDir.deleteDir()
+        ant.zip(destfile: imageZip) {
+            zipfileset(dir: imageDir.parentFile) {
+                include(name: "${imageDir.name}/**")
+                exclude(name: "${imageDir.name}/bin/**")
+            }
+            zipfileset(dir: imageDir.parentFile, filemode: '755') {
+                include(name: "${imageDir.name}/bin/**")
+                exclude(name: "${imageDir.name}/bin/*.bat")
+            }
+            zipfileset(dir: imageDir.parentFile) {
+                include(name: "${imageDir.name}/bin/*.bat")
+            }
+        }
     }
 }
 
