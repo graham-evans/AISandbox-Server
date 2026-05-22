@@ -36,6 +36,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
   private ObjectNode createCommon(TelemetryEvent event) {
     ObjectNode node = mapper.createObjectNode();
     node.put("@timestamp", event.timestamp().toString());
+    node.put("message", event.description());
     node.putObject("ecs").put("version", "8.11");
     node.putObject("service").put("name", "AISandbox");
     ObjectNode eventNode = node.putObject("event");
@@ -99,6 +100,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
         case EpisodeAgentDoubleScoreEvent agentScores -> {
           for (AgentDoubleScore agentScore : agentScores.agentScoreList()) {
             ObjectNode root = createCommon(event);
+            root.put("message", agentScore.description());
             ObjectNode simulation = (ObjectNode) root.get("simulation");
             simulation.putObject("agent").put("name", agentScore.agentName());
             simulation.put("score", agentScore.score());
@@ -109,6 +111,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
         case EpisodeAgentLongScoreEvent agentScores -> {
           for (AgentLongScore agentScore : agentScores.agentScoreList()) {
             ObjectNode root = createCommon(event);
+            root.put("message", agentScore.description());
             ObjectNode simulation = (ObjectNode) root.get("simulation");
             simulation.putObject("agent").put("name", agentScore.agentName());
             simulation.put("score", agentScore.score());
@@ -119,6 +122,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
         case EpisodeAgentRankEvent agentRanks -> {
           for (AgentRank agentRank : agentRanks.agentRankList()) {
             ObjectNode root = createCommon(event);
+            root.put("message", agentRank.description());
             ObjectNode simulation = (ObjectNode) root.get("simulation");
             simulation.putObject("agent").put("name", agentRank.agentName());
             simulation.put("rank", agentRank.rank());
@@ -129,6 +133,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
         case EpisodeAgentWinLossEvent agentWin -> {
           for (AgentResult agentResult : agentWin.agentResultList()) {
             ObjectNode root = createCommon(event);
+            root.put("message", agentResult.description());
             ObjectNode simulation = (ObjectNode) root.get("simulation");
             simulation.putObject("agent").put("name", agentResult.agentName());
             simulation.put("result", agentResult.result().name());

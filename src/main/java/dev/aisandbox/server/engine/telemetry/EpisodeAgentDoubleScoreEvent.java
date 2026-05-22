@@ -28,5 +28,8 @@ public record EpisodeAgentDoubleScoreEvent(String simulationName,
 
   public record AgentDoubleScore(String agentName, double score) {
 
+    public String description() {
+      return "Agent " + agentName + " scored " + score;
+    }
   }
 }

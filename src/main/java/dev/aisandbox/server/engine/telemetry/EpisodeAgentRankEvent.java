@@ -26,5 +26,8 @@ public record EpisodeAgentRankEvent(String simulationName,
 
   public record AgentRank(String agentName, int rank) {
 
+    public String description() {
+      return "Agent " + agentName + " ranked " + rank;
+    }
   }
 }

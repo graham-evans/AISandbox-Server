@@ -27,5 +27,8 @@ public record EpisodeAgentLongScoreEvent(String simulationName,
 
   public record AgentLongScore(String agentName, long score) {
 
+    public String description() {
+      return "Agent " + agentName + " scored " + score;
+    }
   }
 }

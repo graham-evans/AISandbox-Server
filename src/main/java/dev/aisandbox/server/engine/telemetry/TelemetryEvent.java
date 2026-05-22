@@ -22,4 +22,8 @@ public sealed interface TelemetryEvent
   String episodeID();
 
   Instant timestamp();
+
+  default String description() {
+    return "undefined";
+  }
 }
