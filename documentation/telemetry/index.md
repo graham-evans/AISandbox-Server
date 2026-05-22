@@ -6,15 +6,15 @@ AISandbox-Server emits structured telemetry about every simulation it runs. Each
 
 Two telemetry implementations ship with the server. They emit the same underlying events but differ in transport, schema, and the ecosystem they slot into. They can be used independently or together.
 
-| Aspect | [**JSONL file output**](json.md) | [**OTLP/HTTP stream**](otel.md) |
-|---|---|---|
-| Transport | Append-only file on disk | HTTP POST to an OTLP receiver |
-| Schema | [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/current/index.html) | [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/) |
-| Encoding | UTF-8 JSON Lines (`.jsonl`) | Protobuf or JSON over HTTP |
-| Typical consumers | Filebeat, Fluent Bit, Vector, Logstash, Promtail | OTel Collector, Datadog, Honeycomb, Grafana Cloud, New Relic, SigNoz |
-| Best when | Logs land on disk first; offline analysis; air-gapped runs | A collector or vendor backend already exists; live streaming |
+| Aspect | [**JSONL file output**](json.md)                                                      | [**OTLP/HTTP stream**](otel.md)                                                         |
+|---|---------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| Transport | Write file on disk                                                               | HTTP POST to an OTLP receiver                                                           |
+| Schema | [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/current/index.html) | [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/)      |
+| Encoding | UTF-8 JSON Lines (`.jsonl`)                                                           | Protobuf or JSON over HTTP                                                              |
+| Typical consumers | Filebeat, Fluent Bit, Vector, Logstash, Promtail                                      | OTel Collector, Datadog, Honeycomb, Grafana Cloud, New Relic, SigNoz                    |
+| Best when | Logs land on disk first; offline analysis; air-gapped runs                            | A collector or vendor backend already exists; live streaming; multiple parralel servers |
 
-The two formats are **not byte-identical**. Field names and nesting differ because each follows the conventions of its own ecosystem (for example, the in-simulation agent is `player.name` in ECS but `simulation.agent.name` in OTel, to avoid colliding with each schema's reserved `agent.*` namespace). Pick whichever matches the pipeline you already run — there is no need to align them.
+The two formats are **not byte-identical**. Field names and nesting differ because each follows the conventions of its own ecosystem. Pick whichever matches the pipeline you already run — there is no need to align them.
 
 ## Event model
 
@@ -22,14 +22,21 @@ Every event carries the same core context: a `session.id` (one per run of the se
 
 Both implementations share the same set of event classes, defined under `dev.aisandbox.server.engine.telemetry`:
 
-- `EpisodeWinEvent` — an episode finished with a clear winner
+### Single Agent Simulations
+
+- `EpisodeWinEvent` — an episode finished with a Win / Lose result
+- `EpisodeLongScoreEvent` / `EpisodeDoubleScoreEvent` — episode-level numeric score
+
+### Multi Agent Simulations
+
 - `EpisodeAgentWinLossEvent` — per-agent WIN / LOSE / DRAW outcome
 - `EpisodeAgentRankEvent` — per-agent finishing rank in a multi-agent episode
 - `EpisodeAgentLongScoreEvent` / `EpisodeAgentDoubleScoreEvent` — per-agent numeric score
-- `EpisodeLongScoreEvent` / `EpisodeDoubleScoreEvent` — episode-level numeric score
-- `EpisodeFailureEvent` — the episode aborted or failed to complete
 
-The `TelemetryEngine` interface is the integration point: simulations call into it and the configured engine (`FileTelemetryEngine`, `OtelTelemetryEngine`, or `NullTelemetryEngine` to disable) decides how the event is serialised and delivered.
+### Administration events
+
+- `EpisodeStartEvent` - the simulation is starting
+- `EpisodeFailureEvent` — the episode aborted or failed to complete
 
 ## Choosing a format
 
