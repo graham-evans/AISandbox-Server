@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.simulation.common;
 
+import java.util.Locale;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +15,8 @@ import lombok.Getter;
  * Represents a standard playing card with a value and suit.
  *
  * <p>This record encapsulates the immutable properties of a playing card, including its rank
- * (value) and suit. It provides convenience methods for different card representations and
- * supports both low-ace and high-ace scoring systems common in different card games.
+ * (value) and suit. It provides convenience methods for different card representations and supports
+ * both low-ace and high-ace scoring systems common in different card games.
  *
  * <p>The card system supports:
  * <ul>
@@ -39,7 +40,6 @@ import lombok.Getter;
  *
  * @param cardValue the rank/value of the card
  * @param cardSuite the suit of the card
- *
  * @see CardValue
  * @see CardSuite
  */
@@ -61,7 +61,7 @@ public record Card(CardValue cardValue, CardSuite cardSuite) {
    * @return A string with the full value name and suit name
    */
   public String getLongDescription() {
-    return cardValue.getLongValue() + " of " + cardSuite.name().toLowerCase();
+    return cardValue.getLongValue() + " of " + cardSuite.name().toLowerCase(Locale.ENGLISH);
   }
 
   /**

@@ -6,8 +6,21 @@
 
 package dev.aisandbox.server.simulation.maze;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
+import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
+import static dev.aisandbox.server.engine.output.OutputConstants.LOG_FONT;
+import static dev.aisandbox.server.engine.output.OutputConstants.RIGHT_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.TITLE_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.TOP_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
+
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -20,20 +33,17 @@ import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.maze.proto.MazeAction;
 import dev.aisandbox.server.simulation.maze.proto.MazeResult;
 import dev.aisandbox.server.simulation.maze.proto.MazeState;
-import lombok.extern.slf4j.Slf4j;
-
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
-
-import static dev.aisandbox.server.engine.output.OutputConstants.*;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Simulation runner for the Maze game, where an AI agent navigates through a procedurally
- * generated maze to reach a goal.
+ * Simulation runner for the Maze game, where an AI agent navigates through a procedurally generated
+ * maze to reach a goal.
  */
 @Slf4j
 public final class MazeRunner implements Simulation {
@@ -64,27 +74,29 @@ public final class MazeRunner implements Simulation {
   private final MazeType mazeType;
   private final Theme theme;
   private final List<BufferedImage> sprites;
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
   private final Agent agent;
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
+  private final TelemetryEngine telemetryEngine;
   private int stepsLeft;
   private Maze maze;
   private BufferedImage mazeImage = null;
   private Cell currentCell;
   private String episodeID;
-  private final TelemetryEngine telemetryEngine;
   private double episodeScore;
 
   /**
    * Creates a MazeRunner simulation with the specified configuration.
    *
-   * @param agent the AI agent playing the game
+   * @param agent    the AI agent playing the game
    * @param mazeSize the size of the maze to generate
    * @param mazeType the type of maze generation algorithm
-   * @param theme the visual theme for the maze
-   * @param random the random number generator for maze generation
+   * @param theme    the visual theme for the maze
+   * @param random   the random number generator for maze generation
    */
-  public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme, Random random,TelemetryEngine telemetryEngine) {
+  public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme, SimulationRandomNumberGenerator random,
+      TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.mazeSize = mazeSize;
     this.mazeType = mazeType;
@@ -163,7 +175,7 @@ public final class MazeRunner implements Simulation {
     int startX = currentCell.getPositionX();
     int startY = currentCell.getPositionY();
     // ask for a direction to move in
-    MazeState state = MazeState.newBuilder().setSessionID(sessionID).setEpisodeID(episodeID)
+    MazeState state = MazeState.newBuilder().setSessionID(sessionId).setEpisodeID(episodeID)
         .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).setWidth(maze.getWidth())
         .setHeight(maze.getHeight()).build();
     agent.send(state);
@@ -204,8 +216,9 @@ public final class MazeRunner implements Simulation {
     if (stepsLeft == 0) {
       logWidget.addText("Episode finished, resetting maze");
       episodeScoreWidget.addValue(episodeScore);
-      telemetryEngine.writeTelementryEvent(new EpisodeDoubleScoreEvent(MazeBuilder.MAZE_NAME,sessionID,episodeID,
-              Instant.now(),episodeScore));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeDoubleScoreEvent(MazeBuilder.MAZE_NAME, sessionId, episodeID,
+              Instant.now(), episodeScore));
       initialiseMaze();
     }
 

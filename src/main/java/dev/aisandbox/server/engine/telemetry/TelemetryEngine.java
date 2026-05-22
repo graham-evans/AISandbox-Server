@@ -8,7 +8,22 @@ package dev.aisandbox.server.engine.telemetry;
 
 public interface TelemetryEngine {
 
-    void initialise();
-    void writeTelementryEvent(TelemetryEvent event);
-    void close();
+  /**
+   * Initialise the telemetry stream and write a
+   * @param SessionID
+   */
+  void initialise(String SessionID);
+
+  /**
+   * Write a single telemetry event.
+   *
+   * <p>Note: events may be buffered before writing.
+   * @param event the event to be written
+   */
+  void writeTelemetryEvent(TelemetryEvent event);
+
+  /**
+   * End the telemetry session and close any resources, may be called multiple times.
+   */
+  void close();
 }

@@ -10,16 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Stream;
-
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -66,7 +65,7 @@ public class TestRunCascade {
           .map(name -> (Agent) new MockCascadeAgent(name))
           .toList();
 
-      Simulation sim = builder.build(agents, theme, new Random(), new NullTelementryEngine());
+      Simulation sim = builder.build(agents, theme, new SimulationRandomNumberGenerator(0), new NullTelemetryEngine());
 
       File targetDir = new File(OUTPUT_DIR, theme.name().toLowerCase());
       targetDir.mkdirs();

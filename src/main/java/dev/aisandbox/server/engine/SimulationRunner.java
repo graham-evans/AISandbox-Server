@@ -9,9 +9,8 @@ package dev.aisandbox.server.engine;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import java.util.List;
-
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,8 +63,8 @@ public class SimulationRunner extends Thread {
   @Override
   public void run() {
     log.info("Writing output to {}", outputRenderer.getName());
-    log.info("Starting telemetry engine {}",telemetryEngine.getClass().getName());
-    telemetryEngine.initialise();
+    log.info("Starting telemetry engine {}", telemetryEngine.getClass().getName());
+    telemetryEngine.initialise(simulation.getSessionId());
     log.info("Starting simulation...");
     if (maxStepCount > -1) {
       log.info("Max step count {}", maxStepCount);

@@ -7,7 +7,6 @@
 package dev.aisandbox.server.simulation.bandit.model;
 
 import lombok.Getter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Enumeration of available pull counts for the multi-armed bandit simulation.

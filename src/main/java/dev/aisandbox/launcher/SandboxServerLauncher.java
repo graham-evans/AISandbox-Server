@@ -12,7 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Main entry point for the AI Sandbox Server application.
  *
- * <p>This launcher class determines whether to start the application in command-line interface (CLI)
+ * <p>This launcher class determines whether to start the application in command-line interface
+ * (CLI)
  * mode or graphical user interface (GUI) mode based on the presence of command-line arguments.
  * <ul>
  *   <li>If command-line arguments are provided, launches the CLI version</li>
@@ -40,7 +41,7 @@ public class SandboxServerLauncher {
    *
    * @param args command-line arguments passed to the application
    */
-  public static void main(String[] args) {
+  static void main(String[] args) {
     log.info("Launching AISandbox");
     if (args.length > 0) {
       // launch CLI

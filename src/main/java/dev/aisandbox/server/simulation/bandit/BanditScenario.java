@@ -10,6 +10,7 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.simulation.bandit.model.BanditCountEnumeration;
@@ -18,7 +19,6 @@ import dev.aisandbox.server.simulation.bandit.model.BanditPullEnumeration;
 import dev.aisandbox.server.simulation.bandit.model.BanditStdEnumeration;
 import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
 import java.util.List;
-import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -97,7 +97,8 @@ public final class BanditScenario implements SimulationBuilder {
   }
 
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random,
+      TelemetryEngine telemetryEngine) {
     return new BanditRuntime(agents.getFirst(), random, banditCount.getNumber(),
         banditPulls.getNumber(), banditNormal, banditStd, banditUpdate, theme, telemetryEngine);
   }

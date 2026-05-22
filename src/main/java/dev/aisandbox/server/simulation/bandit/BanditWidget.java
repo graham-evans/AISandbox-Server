@@ -51,7 +51,7 @@ public class BanditWidget {
   /**
    * Sets the list of bandits to display and marks the active bandit.
    *
-   * @param bandits the list of bandits to display
+   * @param bandits      the list of bandits to display
    * @param activeBandit the index of the active bandit
    */
   public void setBandits(List<Bandit> bandits, int activeBandit) {

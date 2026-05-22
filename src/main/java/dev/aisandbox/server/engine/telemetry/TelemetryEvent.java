@@ -6,5 +6,24 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
-public interface TelemetryEvent {
+import java.time.Instant;
+
+public sealed interface TelemetryEvent
+    permits EpisodeAgentDoubleScoreEvent, EpisodeAgentLongScoreEvent, EpisodeAgentRankEvent,
+    EpisodeAgentWinLossEvent, EpisodeDoubleScoreEvent, EpisodeLongScoreEvent, EpisodeWinEvent,
+    SessionFailureEvent, SessionStartEvent {
+
+  // define the common fields, so they can be accessed without casting the event.
+
+  String simulationName();
+
+  String sessionID();
+
+  String episodeID();
+
+  Instant timestamp();
+
+  default String description() {
+    return "undefined";
+  }
 }

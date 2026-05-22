@@ -51,8 +51,8 @@ public class FXLogbackAppender extends AppenderBase<ILoggingEvent> {
    * Appends a formatted log message to the configured TextArea.
    *
    * <p>This method is called by the Logback framework whenever a log event needs to be processed.
-   * It extracts the formatted message from the log event and adds it to the TextArea, followed by
-   * a platform-specific line separator.
+   * It extracts the formatted message from the log event and adds it to the TextArea, followed by a
+   * platform-specific line separator.
    *
    * <p>The method runs on the JavaFX Application Thread to ensure thread-safe UI updates.
    *

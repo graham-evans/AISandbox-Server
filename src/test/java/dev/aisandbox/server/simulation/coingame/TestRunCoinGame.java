@@ -10,15 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -41,7 +41,7 @@ public class TestRunCoinGame {
       List<Agent> agents = Arrays.stream(simulationBuilder.getAgentNames(2))
           .map(s -> (Agent) new MockPlayer(s)).toList();
       // create simulation
-      Simulation sim = simulationBuilder.build(agents, theme, new Random(), new NullTelementryEngine());
+      Simulation sim = simulationBuilder.build(agents, theme, new SimulationRandomNumberGenerator(0), new NullTelemetryEngine());
       // create output directory
       File outputDirectory = new File("build/test/coingame/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();

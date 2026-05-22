@@ -16,28 +16,41 @@ package dev.aisandbox.server.simulation.cascade.model;
  */
 public enum TileColour {
 
-  /** No colour — used for empty cells, Stones, and Prisms (which are colour-agnostic). */
+  /**
+   * No colour — used for empty cells, Stones, and Prisms (which are colour-agnostic).
+   */
   NONE,
 
-  /** Red. */
+  /**
+   * Red.
+   */
   RED,
 
-  /** Blue. */
+  /**
+   * Blue.
+   */
   BLUE,
 
-  /** Green. */
+  /**
+   * Green.
+   */
   GREEN,
 
-  /** Yellow. */
+  /**
+   * Yellow.
+   */
   YELLOW,
 
-  /** Purple. */
+  /**
+   * Purple.
+   */
   PURPLE;
 
   /**
    * Returns an array containing only the five playable colours (excluding {@link #NONE}).
    *
-   * <p>This is a convenience method for use during board initialisation and random tile generation,
+   * <p>This is a convenience method for use during board initialisation and random tile
+   * generation,
    * where selecting {@code NONE} would be meaningless.
    *
    * @return array of the five coloured values: RED, BLUE, GREEN, YELLOW, PURPLE

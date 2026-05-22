@@ -6,14 +6,15 @@
 
 package dev.aisandbox.server.simulation.bandit.model;
 
-import java.util.Random;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Enumeration of different probability distributions for bandit mean values.
  *
- * <p>This enumeration defines various probability distributions that can be used to generate the mean
+ * <p>This enumeration defines various probability distributions that can be used to generate the
+ * mean
  * reward values for bandits in the multi-armed bandit simulation. Each distribution provides a
  * different challenge and learning scenario for the agent.
  *
@@ -52,14 +53,16 @@ public enum BanditNormalEnumeration {
   /**
    * Generates a random value from this distribution.
    *
-   * <p>Samples a value from the probability distribution represented by this enumeration value. This
+   * <p>Samples a value from the probability distribution represented by this enumeration value.
+   * This
    * value is typically used as the mean reward for a bandit in the simulation.
    *
    * @param random the random number generator to use for sampling
    * @return a value sampled from this distribution
    */
-  public double getNormalValue(Random random) {
+  public double getNormalValue(SimulationRandomNumberGenerator random) {
     return switch (this) {
+
       case NORMAL_0_1 -> random.nextGaussian(0.0, 1.0);
       case NORMAL_0_5 -> random.nextGaussian(0.0, 5.0);
       case UNIFORM_1_1 -> random.nextDouble(-1.0, 1.0);

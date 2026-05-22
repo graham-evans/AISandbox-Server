@@ -9,7 +9,6 @@ package dev.aisandbox.server.engine;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Test simulation builder that provides invalid parameters for negative testing.
@@ -48,7 +47,7 @@ public class BadSimulation implements SimulationBuilder {
   }
 
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine) {
     return null;
   }
 }

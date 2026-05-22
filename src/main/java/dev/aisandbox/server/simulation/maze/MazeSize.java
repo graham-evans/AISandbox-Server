@@ -49,7 +49,8 @@ public enum MazeSize {
   /**
    * The zoom level for rendering the maze.
    *
-   * <p>Higher values make the maze appear larger on screen. Lower values allow fitting larger mazes in
+   * <p>Higher values make the maze appear larger on screen. Lower values allow fitting larger mazes
+   * in
    * the same display area.
    */
   @Getter

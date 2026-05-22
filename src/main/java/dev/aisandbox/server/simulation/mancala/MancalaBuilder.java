@@ -10,11 +10,10 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
-import java.util.List;
-import java.util.Random;
-
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +21,8 @@ import lombok.Setter;
  * Builder for the Mancala (Kalah variant) simulation.
  *
  * <p>Mancala is a two-player strategy board game played on a board with two rows of six pits
- * and two stores. Players take turns sowing seeds counter-clockwise, with rules for extra
- * turns and captures. The player with the most seeds in their store wins.
+ * and two stores. Players take turns sowing seeds counter-clockwise, with rules for extra turns and
+ * captures. The player with the most seeds in their store wins.
  */
 public final class MancalaBuilder implements SimulationBuilder {
 
@@ -73,7 +72,8 @@ public final class MancalaBuilder implements SimulationBuilder {
   }
 
   @Override
-  public Simulation build(List<Agent> agents, Theme theme, Random random, TelemetryEngine telemetryEngine) {
-    return new MancalaGame(agents, seedsPerPit.getSeeds(), theme,telemetryEngine);
+  public Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random,
+      TelemetryEngine telemetryEngine) {
+    return new MancalaGame(agents, seedsPerPit.getSeeds(), theme, telemetryEngine);
   }
 }

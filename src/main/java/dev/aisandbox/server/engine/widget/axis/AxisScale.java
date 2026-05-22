@@ -59,8 +59,8 @@ public interface AxisScale {
    * Scales a raw data value to a normalized position within the axis range.
    *
    * <p>This method converts a data value to a position value typically between 0.0 and 1.0, where
-   * 0.0 represents the minimum axis value and 1.0 represents the maximum. The scaled value can
-   * then be used to position visual elements on the axis.
+   * 0.0 represents the minimum axis value and 1.0 represents the maximum. The scaled value can then
+   * be used to position visual elements on the axis.
    *
    * @param value the raw data value to scale
    * @return the scaled value (typically 0.0 to 1.0) representing the position on the axis

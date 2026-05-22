@@ -30,7 +30,7 @@ public class SimulationRuntimeException extends Exception {
    * Creates a simulation exception with the given message and cause.
    *
    * @param message a descriptive message about the exception
-   * @param cause the underlying cause of this exception
+   * @param cause   the underlying cause of this exception
    */
   public SimulationRuntimeException(String message, Throwable cause) {
     super(message, cause);

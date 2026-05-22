@@ -22,6 +22,7 @@ import static dev.aisandbox.server.simulation.common.Card.CARD_WIDTH;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.maths.bins.IntegerBinner;
@@ -48,10 +49,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -145,7 +146,7 @@ public final class HighLowCards implements Simulation {
   /**
    * Random number generator for shuffling.
    */
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
 
   /**
    * external logger
@@ -165,7 +166,8 @@ public final class HighLowCards implements Simulation {
   /**
    * Unique ID for the entire session.
    */
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
 
   // statistics and reporting elements
   /**
@@ -211,7 +213,8 @@ public final class HighLowCards implements Simulation {
    * @param theme     The visual theme to apply to the simulation
    * @param random    Random number generator for shuffling cards
    */
-  public HighLowCards(Agent agent, int cardCount, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public HighLowCards(Agent agent, int cardCount, Theme theme, SimulationRandomNumberGenerator random,
+      TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.cardCount = cardCount;
     this.theme = theme;
@@ -287,7 +290,7 @@ public final class HighLowCards implements Simulation {
     log.debug("Sending current state to agent");
     agent.send(HighLowCardsState.newBuilder().setCardCount(cardCount)
         .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
-        .setScore(score).setSessionID(sessionID).setEpisodeID(episodeID).build());
+        .setScore(score).setSessionID(sessionId).setEpisodeID(episodeID).build());
     log.debug("Asking agent for action");
     HighLowCardsAction action = agent.receive(HighLowCardsAction.class);
     log.debug("Client action: {}", action.getAction().name());
@@ -320,8 +323,9 @@ public final class HighLowCards implements Simulation {
       statisticsWidget.addScore(score);
       scoreHistogramWidget.addValue(score);
       agent.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
-      telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
-              sessionID,episodeID, Instant.now(),score));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeLongScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
+              sessionId, episodeID, Instant.now(), score));
       reset();
     } else {
       // play continues - send signal to agent

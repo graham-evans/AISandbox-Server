@@ -12,7 +12,8 @@ import java.io.Serial;
 /**
  * Exception thrown when an invalid action is attempted in the coin game.
  *
- * <p>This is a move that (in other circumstances) would be allowed, but is not possible with the game
+ * <p>This is a move that (in other circumstances) would be allowed, but is not possible with the
+ * game
  * in its current state.
  *
  * <p>This will result in the player losing the game, but won't result in the simulation stopping.
@@ -39,7 +40,7 @@ public class InvalidCoinAction extends InvalidActionException {
    * Creates a new InvalidCoinAction with the specified error message and cause.
    *
    * @param message a descriptive error message
-   * @param cause the underlying cause of this exception
+   * @param cause   the underlying cause of this exception
    */
   public InvalidCoinAction(String message, Throwable cause) {
     super(message, cause);

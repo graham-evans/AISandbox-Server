@@ -48,8 +48,8 @@ public enum Direction {
    * Converts a Protocol Buffer Direction enum to this Direction enum.
    *
    * <p>This method provides interoperability between the generated Protocol Buffer direction enum
-   * and this internal representation. It handles the UNRECOGNIZED value by defaulting to NORTH
-   * for safety.
+   * and this internal representation. It handles the UNRECOGNIZED value by defaulting to NORTH for
+   * safety.
    *
    * @param direction the Protocol Buffer direction enum value to convert
    * @return the corresponding Direction enum value, defaulting to NORTH for unrecognized values

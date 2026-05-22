@@ -14,7 +14,8 @@ import java.awt.Graphics2D;
 /**
  * Interface which all simulations must implement.
  *
- * <p>This interface defines the core contract for all AI Sandbox simulations. A simulation represents
+ * <p>This interface defines the core contract for all AI Sandbox simulations. A simulation
+ * represents
  * a specific environment or game where AI agents can interact and be evaluated. Each simulation is
  * responsible for managing its own state, processing agent actions, and providing visual output.
  * </p>
@@ -33,10 +34,13 @@ import java.awt.Graphics2D;
  */
 public interface Simulation {
 
+  String getSessionId();
+
   /**
    * Finish the simulation, closing any resources as required.
    *
-   * <p>This method is called when the simulation is ending, either because it has completed naturally
+   * <p>This method is called when the simulation is ending, either because it has completed
+   * naturally
    * or because it has been manually stopped. Implementations should clean up any resources such as
    * network connections, file handles, or background threads.
    * </p>
@@ -51,7 +55,8 @@ public interface Simulation {
   /**
    * Perform a step in the simulation.
    *
-   * <p>This method advances the simulation by one logical unit, which could be a turn, a time step, or
+   * <p>This method advances the simulation by one logical unit, which could be a turn, a time step,
+   * or
    * any other meaningful progression depending on the simulation type. During this step, the
    * simulation may:
    * </p>
@@ -67,10 +72,10 @@ public interface Simulation {
    * </p>
    *
    * @param output the {@link OutputRenderer} to trigger visual updates
-   * @throws SimulationRuntimeException if an error occurs that requires the simulation to be stopped, such
-   *                             as agent communication failure
-   * @throws IllegalActionException if an agent tries a nonsensical action that could never be valid, stopping
-   *                             the simulation
+   * @throws SimulationRuntimeException if an error occurs that requires the simulation to be
+   *                                    stopped, such as agent communication failure
+   * @throws IllegalActionException     if an agent tries a nonsensical action that could never be
+   *                                    valid, stopping the simulation
    */
   void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException;
 

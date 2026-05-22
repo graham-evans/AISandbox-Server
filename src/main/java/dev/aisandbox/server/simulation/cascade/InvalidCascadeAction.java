@@ -10,8 +10,8 @@ import dev.aisandbox.server.engine.exception.InvalidActionException;
 import java.io.Serial;
 
 /**
- * Exception thrown when an agent attempts an action that violates a context-specific rule
- * in the Cascade simulation.
+ * Exception thrown when an agent attempts an action that violates a context-specific rule in the
+ * Cascade simulation.
  *
  * <p>This exception does not terminate the simulation — the move is counted as wasted and
  * play continues. Thrown by {@link CascadeBoardUtils#makeMove} in three cases:

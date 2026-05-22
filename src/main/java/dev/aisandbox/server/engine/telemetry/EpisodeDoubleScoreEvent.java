@@ -8,9 +8,18 @@ package dev.aisandbox.server.engine.telemetry;
 
 import java.time.Instant;
 
+/**
+ * Telemetry event to denote a simulation episode completing with a double precision score.
+ *
+ * @param simulationName      The name of the simulation
+ * @param sessionID           The session identifier
+ * @param episodeID           The episode identifier
+ * @param timestamp The time the event was created
+ * @param score               The score for the episode
+ */
 public record EpisodeDoubleScoreEvent(String simulationName,
                                       String sessionID,
                                       String episodeID,
-                                      Instant episodeFinishedTime,
+                                      Instant timestamp,
                                       double score) implements TelemetryEvent {
 }

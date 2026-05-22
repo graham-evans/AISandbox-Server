@@ -10,6 +10,13 @@ import dev.aisandbox.launcher.options.RuntimeUtils;
 import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.Theme;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,14 +24,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Controller for the simulation setup screen in the JavaFX GUI.
@@ -51,85 +65,10 @@ public class SetupController {
   @FXML
   private ListView<SimulationBuilder> simulationList;
 
-  @FXML
-  void initialize() {
-    // FX assertions
-    assert agentCounter
-        != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation.fxml'.";
-    assert externalCheckBox
-        != null : "fx:id=\"externalCheckBox\" was not injected: check your FXML file 'simulation.fxml'.";
-    assert parameterBox
-        != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation.fxml'.";
-    assert simDescription
-        != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation.fxml'.";
-    assert simulationList
-        != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation.fxml'.";
-    assert themeChoice
-        != null : "fx:id=\"themeChoice\" was not injected: check your FXML file 'simulation.fxml'.";
-
-    // bind simulation list to model
-    simulationList.setItems(model.getSimulations());
-    simulationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    model.getSelectedSimulationBuilder()
-        .bind(simulationList.getSelectionModel().selectedItemProperty());
-    // disable agent counter until builder is selected
-    agentCounter.setDisable(true);
-    agentCounter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
-    // set builder list renderer
-    simulationList.setCellFactory(new SimulationBuilderRenderer());
-    // update when selecting a new builder
-    simulationList.getSelectionModel().selectedItemProperty()
-        .addListener((observableValue, oldValue, newValue) -> {
-          if (newValue != null) {
-            // update description
-            simDescription.setText(newValue.getDescription());
-            // update agent count options
-            model.getAgentCount().unbind();
-            agentCounter.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(newValue.getMinAgentCount(),
-                    newValue.getMaxAgentCount(),
-                    getValueInRange(agentCounter.getValue(), newValue.getMinAgentCount(),
-                        newValue.getMaxAgentCount())));
-            agentCounter.setDisable(false);
-            model.getAgentCount().bind(agentCounter.valueProperty());
-            // populate the parameters with editor boxes
-            parameterBox.getChildren().clear();
-            for (SimulationParameter parameter : newValue.getParameters()) {
-              parameterBox.getChildren().add(createParameterEditor(newValue, parameter));
-            }
-          } else {
-            simDescription.setText("");
-            model.getAgentCount().unbind();
-            agentCounter.setDisable(true);
-            parameterBox.getChildren().clear();
-          }
-        });
-    // select the first simulation in the list
-    simulationList.getSelectionModel().select(0);
-    // setup theme chooser
-    themeChoice.getItems().addAll(Theme.values());
-    model.getSelectedTheme().bind(themeChoice.valueProperty());
-    themeChoice.getSelectionModel().select(Theme.LIGHT);
-    // bind network choice
-    model.getExternalNetwork().bind(externalCheckBox.selectedProperty());
-  }
-
-  /**
-   * Return a value, adapted to fit within an existing range.
-   *
-   * @param value the original value
-   * @param min   the minimum new value
-   * @param max   the maximum new value
-   * @return the adapted value.
-   */
-  private int getValueInRange(int value, int min, int max) {
-    return Math.min(max, Math.max(min, value));
-  }
-
   /**
    * Creates a UI node for editing a simulation parameter.
    *
-   * @param builder the simulation builder
+   * @param builder   the simulation builder
    * @param parameter the parameter to create an editor for
    * @return a Node that can be used to edit the parameter
    */
@@ -177,8 +116,83 @@ public class SetupController {
   }
 
   @FXML
+  void initialize() {
+    // FX assertions
+    assert agentCounter
+        != null : "fx:id=\"agentCounter\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert externalCheckBox
+        != null : "fx:id=\"externalCheckBox\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert parameterBox
+        != null : "fx:id=\"parameterBox\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert simDescription
+        != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert simulationList
+        != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert themeChoice
+        != null : "fx:id=\"themeChoice\" was not injected: check your FXML file 'simulation.fxml'.";
+
+    // bind simulation list to model
+    simulationList.setItems(model.getSimulations());
+    simulationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    model.getSettings().selectedSimulationBuilder()
+        .bind(simulationList.getSelectionModel().selectedItemProperty());
+    // disable agent counter until builder is selected
+    agentCounter.setDisable(true);
+    agentCounter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
+    // set builder list renderer
+    simulationList.setCellFactory(new SimulationBuilderRenderer());
+    // update when selecting a new builder
+    simulationList.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (newValue != null) {
+            // update description
+            simDescription.setText(newValue.getDescription());
+            // update agent count options
+            model.getSettings().agentCount().unbind();
+            agentCounter.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(newValue.getMinAgentCount(),
+                    newValue.getMaxAgentCount(),
+                    getValueInRange(agentCounter.getValue(), newValue.getMinAgentCount(),
+                        newValue.getMaxAgentCount())));
+            agentCounter.setDisable(false);
+            model.getSettings().agentCount().bind(agentCounter.valueProperty());
+            // populate the parameters with editor boxes
+            parameterBox.getChildren().clear();
+            for (SimulationParameter parameter : newValue.getParameters()) {
+              parameterBox.getChildren().add(createParameterEditor(newValue, parameter));
+            }
+          } else {
+            simDescription.setText("");
+            model.getSettings().agentCount().unbind();
+            agentCounter.setDisable(true);
+            parameterBox.getChildren().clear();
+          }
+        });
+    // select the first simulation in the list
+    simulationList.getSelectionModel().select(0);
+    // setup theme chooser
+    themeChoice.getItems().addAll(Theme.values());
+    model.getSettings().selectedTheme().bind(themeChoice.valueProperty());
+    themeChoice.getSelectionModel().select(Theme.LIGHT);
+    // bind network choice
+    model.getSettings().externalNetwork().bind(externalCheckBox.selectedProperty());
+  }
+
+  /**
+   * Return a value, adapted to fit within an existing range.
+   *
+   * @param value the original value
+   * @param min   the minimum new value
+   * @param max   the maximum new value
+   * @return the adapted value.
+   */
+  private int getValueInRange(int value, int min, int max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  @FXML
   void startSimulation(ActionEvent event) {
-    if (model.getSelectedSimulationBuilder().get() != null) {
+    if (model.getSettings().selectedSimulationBuilder().get() != null) {
       // flip to runtime screen
       try {
         FXMLLoader loader = new FXMLLoader(SetupController.class.getResource("/fx/runtime.fxml"));

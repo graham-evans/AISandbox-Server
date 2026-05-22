@@ -20,11 +20,12 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.EpisodeFailureEvent;
+import dev.aisandbox.server.engine.telemetry.SessionFailureEvent;
 import dev.aisandbox.server.engine.telemetry.EpisodeLongScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
@@ -39,8 +40,8 @@ import dev.aisandbox.server.simulation.twisty.proto.TwistySignal;
 import dev.aisandbox.server.simulation.twisty.proto.TwistyState;
 import java.awt.Graphics2D;
 import java.time.Instant;
-import java.util.Random;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -97,11 +98,12 @@ public final class TwistySimulation implements Simulation {
   /**
    * Random number generator for puzzle scrambling.
    */
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
   /**
    * Unique identifier for this simulation session.
    */
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
 
   // UI elements
   /**
@@ -140,7 +142,7 @@ public final class TwistySimulation implements Simulation {
    * @param random      Random number generator for puzzle scrambling
    */
   public TwistySimulation(Agent agent, TwistyPuzzle puzzle, boolean startSolved, Theme theme,
-      Random random, TelemetryEngine telemetryEngine) {
+      SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.puzzle = puzzle;
     this.startSolved = startSolved;
@@ -202,7 +204,8 @@ public final class TwistySimulation implements Simulation {
    * @throws NotExistentMoveException If the agent attempts an invalid move
    */
   @Override
-  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
+  public void step(OutputRenderer output)
+      throws SimulationRuntimeException, IllegalActionException {
     // Special case - call display if this is the start of an episode
     if (moves == 0) {
       output.display();
@@ -213,7 +216,7 @@ public final class TwistySimulation implements Simulation {
     builder.setSteps(moves);
     builder.setObtmMoves(obtmMoves);
     builder.setEpisodeID(episodeID);
-    builder.setSessionID(sessionID);
+    builder.setSessionID(sessionId);
     builder.setState(puzzle.getState());
     builder.setPuzzleName(puzzle.getPuzzleName());
     builder.addAllValidMoves(puzzle.getMoveList());
@@ -229,7 +232,8 @@ public final class TwistySimulation implements Simulation {
       agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
           .build());
       statsWidget.addFailure();
-      telemetryEngine.writeTelementryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,Instant.now()));
+      telemetryEngine.writeTelemetryEvent(
+          new SessionFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, Instant.now()));
       initialisePuzzle();
     } else {
       // Apply the regular move
@@ -244,8 +248,9 @@ public final class TwistySimulation implements Simulation {
         agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN)
             .build());
         statsWidget.addSuccess(obtmMoves);
-        telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,
-                Instant.now(),obtmMoves));
+        telemetryEngine.writeTelemetryEvent(
+            new EpisodeLongScoreEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID,
+                Instant.now(), obtmMoves));
         output.display();
         initialisePuzzle();
       } else if (moves == MAX_STEPS) {
@@ -255,7 +260,9 @@ public final class TwistySimulation implements Simulation {
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
                 .build());
         statsWidget.addFailure();
-        telemetryEngine.writeTelementryEvent(new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME,sessionID,episodeID,Instant.now()));
+        telemetryEngine.writeTelemetryEvent(
+            new SessionFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID,
+                Instant.now()));
         output.display();
         initialisePuzzle();
       } else {

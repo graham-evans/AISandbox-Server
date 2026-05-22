@@ -9,7 +9,8 @@ package dev.aisandbox.server.simulation.cascade.model;
 /**
  * Classifies what kind of object occupies a cell on the Cascade game board.
  *
- * <p>Each value determines both how the cell participates in match resolution and what happens when
+ * <p>Each value determines both how the cell participates in match resolution and what happens
+ * when
  * it is destroyed or triggered.
  *
  * <ul>
@@ -94,8 +95,8 @@ public enum TileType {
    * A stone obstacle.
    *
    * <p>Inert — does not match, does not fall under gravity. Can only be removed by a direct Bomb
-   * or Rocket explosion. A Bomb destroys any Stone within its 3×3 blast area. A Rocket destroys
-   * the first Stone it reaches in each direction and stops there.
+   * or Rocket explosion. A Bomb destroys any Stone within its 3×3 blast area. A Rocket destroys the
+   * first Stone it reaches in each direction and stops there.
    */
   STONE
 

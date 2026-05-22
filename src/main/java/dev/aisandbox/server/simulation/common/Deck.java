@@ -6,10 +6,10 @@
 
 package dev.aisandbox.server.simulation.common;
 
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Represents a deck of playing cards. The deck can be created with a variable number of suits and
@@ -51,8 +51,11 @@ public class Deck {
    *
    * @param random The random number generator to use for shuffling
    */
-  public void shuffle(Random random) {
-    Collections.shuffle(cards, random);
+  public void shuffle(SimulationRandomNumberGenerator random) {
+    for (int i = cards.size() - 1; i > 0; i--) {
+      int j = random.nextInt(i + 1);
+      Collections.swap(cards, i, j);
+    }
   }
 
   /**

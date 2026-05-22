@@ -6,7 +6,7 @@
 
 package dev.aisandbox.server.simulation.bandit.model;
 
-import java.util.Random;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -16,8 +16,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * Represents a single bandit (slot machine) in the multi-armed bandit problem.
  *
  * <p>Each bandit has an associated reward distribution defined by a mean and standard deviation.
- * When "pulled" by an agent, the bandit generates a reward value sampled from a normal
- * (Gaussian) distribution with these parameters.
+ * When "pulled" by an agent, the bandit generates a reward value sampled from a normal (Gaussian)
+ * distribution with these parameters.
  *
  * <p>The bandit's true reward parameters are typically unknown to the agent, who must learn
  * through experience which bandits provide the best rewards on average.
@@ -68,7 +68,7 @@ public class Bandit {
    * @param rand the random number generator to use for sampling
    * @return a reward value sampled from the bandit's distribution
    */
-  public double pull(Random rand) {
+  public double pull(SimulationRandomNumberGenerator rand) {
     return rand.nextGaussian() * std + mean;
   }
 

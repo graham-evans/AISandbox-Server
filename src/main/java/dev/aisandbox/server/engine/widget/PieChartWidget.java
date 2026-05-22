@@ -30,9 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PieChartWidget {
 
-  private final static int PADDING = 16; // pixel spacing around the outside
-  private final static int TITLE_FONT_SIZE = 18;
-  private final static Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
+  private static final int PADDING = 16; // pixel spacing around the outside
+  private static final int TITLE_FONT_SIZE = 18;
+  private static final Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
   private final int width;
   private final int height;
   private final String title;
@@ -44,10 +44,10 @@ public class PieChartWidget {
   /**
    * Creates a new pie chart widget.
    *
-   * @param width the width of the widget in pixels
+   * @param width  the width of the widget in pixels
    * @param height the height of the widget in pixels
-   * @param title the title of the pie chart
-   * @param theme the theme for colors and styling
+   * @param title  the title of the pie chart
+   * @param theme  the theme for colors and styling
    */
   public PieChartWidget(int width, int height, String title, Theme theme) {
     this.width = width;
@@ -55,6 +55,15 @@ public class PieChartWidget {
     this.title = title;
     this.theme = theme;
     image = drawGraph();
+  }
+
+  /**
+   * Creates a builder for constructing PieChartWidget instances.
+   *
+   * @return a new PieChartWidgetBuilder
+   */
+  public static PieChartWidgetBuilder builder() {
+    return new PieChartWidgetBuilder();
   }
 
   private BufferedImage drawGraph() {
@@ -103,8 +112,8 @@ public class PieChartWidget {
       double angle = value * 360.0 * Math.PI / 180.0;
       // Draw the value in the middle of the arc
       double midAngle = startAngle + (angle / 2);
-      int textX = (int) (startX + pieDiameter / 2 + Math.cos(midAngle) * pieDiameter / 3);
-      int textY = (int) (startY + pieDiameter / 2 + Math.sin(midAngle) * pieDiameter / 3);
+      int textX = (int) (startX + pieDiameter / 2 + StrictMath.cos(midAngle) * pieDiameter / 3);
+      int textY = (int) (startY + pieDiameter / 2 + StrictMath.sin(midAngle) * pieDiameter / 3);
 
       //     g.fillOval(textX-3,textY-3,6,6);
       GraphicsUtils.drawCenteredText(g, textX - 20, textY - 10, 40, 20, slice.title,
@@ -112,15 +121,6 @@ public class PieChartWidget {
       startAngle += angle;
     }
     return image;
-  }
-
-  /**
-   * Creates a builder for constructing PieChartWidget instances.
-   *
-   * @return a new PieChartWidgetBuilder
-   */
-  public static PieChartWidgetBuilder builder() {
-    return new PieChartWidgetBuilder();
   }
 
   /**

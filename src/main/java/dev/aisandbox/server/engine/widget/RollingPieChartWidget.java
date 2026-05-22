@@ -51,7 +51,7 @@ public class RollingPieChartWidget {
   /**
    * Adds a value to the rolling window.
    *
-   * @param value the value to add
+   * @param value       the value to add
    * @param valueColour the color to use for this value in the pie chart
    */
   public void addValue(String value, Color valueColour) {

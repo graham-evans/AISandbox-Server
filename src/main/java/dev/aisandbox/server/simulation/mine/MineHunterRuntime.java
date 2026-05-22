@@ -21,6 +21,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputConstants;
@@ -41,16 +42,16 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Runtime implementation for the Mine Hunter simulation.
  *
  * <p>This class handles the execution of the Mine Hunter game, including board generation,
- * processing agent actions, updating game state, and visualizing the current state. It
- * implements the {@link Simulation} interface to integrate with the AI Sandbox framework.
+ * processing agent actions, updating game state, and visualizing the current state. It implements
+ * the {@link Simulation} interface to integrate with the AI Sandbox framework.
  */
 @Slf4j
 public final class MineHunterRuntime implements Simulation {
@@ -95,7 +96,7 @@ public final class MineHunterRuntime implements Simulation {
   /**
    * Random number generator for mine placement.
    */
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
 
   /**
    * Configuration for the mine field dimensions and density.
@@ -114,7 +115,8 @@ public final class MineHunterRuntime implements Simulation {
   /**
    * Unique identifier for this simulation session.
    */
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
 
   /**
    * Sprite images for the game board cells.
@@ -174,7 +176,8 @@ public final class MineHunterRuntime implements Simulation {
    * @param theme    The visual theme for rendering
    * @param random   A random number generator for creating the board
    */
-  public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme, Random random,TelemetryEngine telemetryEngine) {
+  public MineHunterRuntime(Agent agent, MineSize mineSize, Theme theme, SimulationRandomNumberGenerator random,
+      TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.random = random;
     this.mineSize = mineSize;
@@ -257,13 +260,15 @@ public final class MineHunterRuntime implements Simulation {
     if (board.getState() == GameState.WON) {
       logWidget.addText(agent.getAgentName() + ": won");
       pieChartWidget.addValue("win", theme.getPrimary());
-      telemetryEngine.writeTelementryEvent(new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME,sessionID,
-              episodeID, Instant.now(),true));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME, sessionId,
+              episodeID, Instant.now(), true));
     } else if (board.getState() == GameState.LOST) {
       logWidget.addText(agent.getAgentName() + ": lost");
       pieChartWidget.addValue("loss", theme.getSecondary());
-      telemetryEngine.writeTelementryEvent(new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME,sessionID,
-              episodeID, Instant.now(),false));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeWinEvent(MineHunterScenario.MINE_HUNTER_NAME, sessionId,
+              episodeID, Instant.now(), false));
     }
 
     // Render the current state
@@ -284,7 +289,7 @@ public final class MineHunterRuntime implements Simulation {
   public MineState getState() {
     MineState.Builder builder = MineState.newBuilder();
     builder.setEpisodeID(episodeID);
-    builder.setSessionID(sessionID);
+    builder.setSessionID(sessionId);
     builder.setHeight(mineSize.getHeight());
     builder.setWidth(mineSize.getWidth());
     builder.setFlagsLeft(flagsLeft);

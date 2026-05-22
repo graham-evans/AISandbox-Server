@@ -11,14 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationBuilder;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import java.io.File;
 import java.util.List;
-import java.util.Random;
-
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -39,7 +38,7 @@ public class TestRunHighLowCards {
       // create players
       List<Agent> agents = List.of(new MockPlayer());
       // create simulation
-      Simulation sim = simulationBuilder.build(agents, theme, new Random(), new NullTelementryEngine());
+      Simulation sim = simulationBuilder.build(agents, theme, new SimulationRandomNumberGenerator(0), new NullTelemetryEngine());
       // create output directory
       File outputDirectory = new File("build/test/highLowCards/" + theme.name().toLowerCase());
       outputDirectory.mkdirs();

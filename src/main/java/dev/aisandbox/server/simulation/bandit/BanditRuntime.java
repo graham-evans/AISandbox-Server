@@ -20,6 +20,7 @@ import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
@@ -43,17 +44,17 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Runtime implementation for the Multi-armed Bandit simulation.
  *
  * <p>The Multi-armed Bandit problem is a classic reinforcement learning scenario where an agent
- * must choose between multiple slot machines (bandits), each with unknown reward distributions.
- * The goal is to maximize total reward over a series of pulls by balancing exploration of unknown
+ * must choose between multiple slot machines (bandits), each with unknown reward distributions. The
+ * goal is to maximize total reward over a series of pulls by balancing exploration of unknown
  * bandits with exploitation of seemingly good ones.
  *
  * <p>This implementation provides:
@@ -106,7 +107,7 @@ public final class BanditRuntime implements Simulation {
   /**
    * Random number generator for bandit reward generation.
    */
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
   /**
    * Number of bandits available for the agent to choose from.
    */
@@ -136,7 +137,8 @@ public final class BanditRuntime implements Simulation {
   /**
    * Unique identifier for this simulation session.
    */
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
   /**
    * List of all bandits with their reward distributions.
    */
@@ -170,6 +172,10 @@ public final class BanditRuntime implements Simulation {
 
   // Episode state tracking
   /**
+   * Telemetry engine for logging and metrics
+   */
+  private final TelemetryEngine telemetryEngine;
+  /**
    * Current step number within the simulation session.
    */
   private int sessionStep = 0;
@@ -185,10 +191,6 @@ public final class BanditRuntime implements Simulation {
    * Unique identifier for the current episode.
    */
   private String episodeID = UUID.randomUUID().toString();
-  /**
-   * Telemetry engine for logging and metrics
-   */
-  private final TelemetryEngine telemetryEngine;
 
   /**
    * Constructs a new Bandit simulation runtime with the specified configuration.
@@ -203,9 +205,9 @@ public final class BanditRuntime implements Simulation {
    * @param theme           the visual theme for rendering
    * @param telemetryEngine engine for logging and metrics
    */
-  public BanditRuntime(Agent agent, Random random, int banditCount, int pullCount,
-                       BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule,
-                       Theme theme, TelemetryEngine telemetryEngine) {
+  public BanditRuntime(Agent agent, SimulationRandomNumberGenerator random, int banditCount, int pullCount,
+      BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule,
+      Theme theme, TelemetryEngine telemetryEngine) {
     // store parameters
     this.agent = agent;
     this.random = random;
@@ -248,7 +250,8 @@ public final class BanditRuntime implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
+  public void step(OutputRenderer output)
+      throws SimulationRuntimeException, IllegalActionException {
     sessionStep++;
     log.debug("Starting step {}", sessionStep);
     // work out the 'best' bandit to pull
@@ -283,7 +286,8 @@ public final class BanditRuntime implements Simulation {
       episodeScoreWidget.addValue(episodeScore);
       episodeSuccessWidget.addValue(episodeBestMoveCount / pullCount);
       statisticsWidget.addScore(episodeScore);
-      telemetryEngine.writeTelementryEvent(new EpisodeDoubleScoreEvent(BanditScenario.BANDIT_NAME,sessionID,episodeID,
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeDoubleScoreEvent(BanditScenario.BANDIT_NAME, sessionId, episodeID,
               Instant.now(), episodeScore));
     }
     // update the screen
@@ -320,7 +324,7 @@ public final class BanditRuntime implements Simulation {
    */
   private BanditState getState() {
     BanditState.Builder builder = BanditState.newBuilder();
-    builder.setSessionID(sessionID);
+    builder.setSessionID(sessionId);
     builder.setEpisodeID(episodeID);
     builder.setBanditCount(bandits.size());
     builder.setPull(sessionStep);

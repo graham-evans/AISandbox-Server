@@ -8,6 +8,7 @@ package dev.aisandbox.server.simulation.cascade;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
@@ -25,11 +26,11 @@ import dev.aisandbox.server.simulation.cascade.proto.CascadeAction;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeResult;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeSignal;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeState;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.time.Instant;
-import java.util.Random;
 import java.util.UUID;
 
 import static dev.aisandbox.server.engine.output.OutputConstants.*;
@@ -97,11 +98,11 @@ public final class CascadeRuntime implements Simulation {
   // ── Instance state ───────────────────────────────────────────────────────────
 
   private final Agent agent;
-  private final Random random;
+  private final SimulationRandomNumberGenerator random;
   private final Theme theme;
   private final TelemetryEngine telemetryEngine;
-
-  private final String sessionID = UUID.randomUUID().toString();
+  @Getter
+  private final String sessionId = UUID.randomUUID().toString();
   private String episodeID;
 
   private CascadeBoard board;
@@ -121,7 +122,7 @@ public final class CascadeRuntime implements Simulation {
    * @param random          the source of randomness for board generation and tile refill
    * @param telemetryEngine
    */
-  public CascadeRuntime(Agent agent, Theme theme, Random random, TelemetryEngine telemetryEngine) {
+  public CascadeRuntime(Agent agent, Theme theme, SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.theme = theme;
     this.random = random;
@@ -202,7 +203,7 @@ public final class CascadeRuntime implements Simulation {
       long finalScore = board.getScore();
       logWidget.addText("Episode ended. Final score: " + finalScore);
       scoreChart.addValue((double) finalScore);
-      telemetryEngine.writeTelementryEvent(new EpisodeLongScoreEvent(CascadeScenario.CASCADE_NAME,sessionID,episodeID
+      telemetryEngine.writeTelemetryEvent(new EpisodeLongScoreEvent(CascadeScenario.CASCADE_NAME, sessionId,episodeID
               , Instant.now(), finalScore));
     }
 
@@ -262,7 +263,7 @@ public final class CascadeRuntime implements Simulation {
 
   private CascadeState buildState() {
     return CascadeState.newBuilder()
-        .setSessionID(sessionID)
+        .setSessionID(sessionId)
         .setEpisodeID(episodeID)
         .setMovesRemaining(board.getMovesRemaining())
         .setScore(board.getScore())

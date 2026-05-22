@@ -163,7 +163,8 @@ public class NetworkAgent implements Agent {
   }
 
   @Override
-  public <T extends GeneratedMessage> T receive(Class<T> responseType) throws SimulationRuntimeException {
+  public <T extends GeneratedMessage> T receive(Class<T> responseType)
+      throws SimulationRuntimeException {
     try {
       if (connectionPair == null) {
         // wait for a connection

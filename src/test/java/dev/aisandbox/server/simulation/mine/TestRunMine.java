@@ -10,16 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Stream;
-
-import dev.aisandbox.server.engine.telemetry.NullTelementryEngine;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -68,7 +67,7 @@ public class TestRunMine {
       List<Agent> agents = Arrays.stream(builder.getAgentNames(1))
           .map(s -> (Agent) new MockMineAgent(s)).toList();
       // create simulation
-      Simulation sim = builder.build(agents, theme, new Random(), new NullTelementryEngine());
+      Simulation sim = builder.build(agents, theme, new SimulationRandomNumberGenerator(0), new NullTelemetryEngine());
       // create output
       File targetDir = new File(outputDirectory,
           mineSize.name() + "-" + theme.name().toLowerCase());

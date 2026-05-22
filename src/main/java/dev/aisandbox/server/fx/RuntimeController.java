@@ -7,9 +7,9 @@
 package dev.aisandbox.server.fx;
 
 import dev.aisandbox.server.engine.SimulationRunner;
-import dev.aisandbox.server.engine.SimulationSetup;
 import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.output.FXRenderer;
+import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -86,12 +86,10 @@ public class RuntimeController {
 
     // start the simulation
     try {
-      FXRenderer renderer = new FXRenderer(this);
-
-      SimulationRunner runner = SimulationSetup.setupSimulation(
-          model.getSelectedSimulationBuilder().get(), model.getAgentCount().get(),
-          model.getDefaultPort().get(), model.getExternalNetwork().get(), renderer,
-          model.getSelectedTheme().get(), -1L);
+      // generate a FX renderer
+      OutputRenderer renderer = new FXRenderer(this);
+      // generate the runner, forcing the FX renderer
+      SimulationRunner runner = model.getSettings().build(renderer);
       runner.start();
       model.setRunner(runner);
       log.debug("Initialized RuntimeController");

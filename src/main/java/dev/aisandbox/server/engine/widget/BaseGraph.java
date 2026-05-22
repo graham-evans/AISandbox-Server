@@ -25,8 +25,8 @@ import lombok.extern.slf4j.Slf4j;
  * data coordinates to screen coordinates and provides a clean API for adding graphical elements.
  *
  * <p>The graph automatically scales data to fit within the available drawing area and includes
- * proper margins for axes labels and titles. Both X and Y axes support configurable scaling
- * through the AxisScale interface.
+ * proper margins for axes labels and titles. Both X and Y axes support configurable scaling through
+ * the AxisScale interface.
  *
  * <p>Common usage pattern:
  * <pre>
@@ -52,43 +52,43 @@ public class BaseGraph {
   /**
    * Pixel spacing around the outside of the graph.
    */
-  private final static int PADDING = 16;
+  private static final int PADDING = 16;
   /**
    * Pixel spacing between graph elements.
    */
-  private final static int MARGIN = 3;
+  private static final int MARGIN = 3;
   /**
    * Font size for the main graph title.
    */
-  private final static int TITLE_FONT_SIZE = 18;
+  private static final int TITLE_FONT_SIZE = 18;
   /**
    * Font used for the main graph title.
    */
-  private final static Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
+  private static final Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
   /**
    * Font size for axis labels.
    */
-  private final static int AXIS_FONT_SIZE = 12;
+  private static final int AXIS_FONT_SIZE = 12;
   /**
    * Font used for axis labels.
    */
-  private final static Font AXIS_FONT = new Font("Open Sans", Font.PLAIN, AXIS_FONT_SIZE);
+  private static final Font AXIS_FONT = new Font("Open Sans", Font.PLAIN, AXIS_FONT_SIZE);
   /**
    * Font size for tick mark labels.
    */
-  private final static int TICK_FONT_SIZE = 10;
+  private static final int TICK_FONT_SIZE = 10;
   /**
    * Font used for tick mark labels.
    */
-  private final static Font TICK_FONT = new Font("Open Sans", Font.PLAIN, TICK_FONT_SIZE);
+  private static final Font TICK_FONT = new Font("Open Sans", Font.PLAIN, TICK_FONT_SIZE);
   /**
    * Dash pattern for gridlines.
    */
-  private final static float[] dash1 = {10.0f};
+  private static final float[] dash1 = {10.0f};
   /**
    * Dashed stroke style for gridlines.
    */
-  private final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
+  private static final BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
       BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
 
   // Graph configuration
@@ -157,8 +157,8 @@ public class BaseGraph {
    * Creates a new BaseGraph with the specified dimensions, labels, and scaling.
    *
    * <p>This constructor initializes the graph with a background, calculates the plotting area
-   * dimensions, and draws the gridlines. The resulting graph is ready for adding data through
-   * the various add methods.
+   * dimensions, and draws the gridlines. The resulting graph is ready for adding data through the
+   * various add methods.
    *
    * <p>The constructor automatically:
    * <ul>
@@ -241,11 +241,11 @@ public class BaseGraph {
   /**
    * Adds a rectangular box to the graph at the specified coordinates.
    *
-   * @param startX the starting X coordinate in data space
-   * @param startY the starting Y coordinate in data space
-   * @param endX the ending X coordinate in data space
-   * @param endY the ending Y coordinate in data space
-   * @param fillColour the color to fill the box with, or null for no fill
+   * @param startX        the starting X coordinate in data space
+   * @param startY        the starting Y coordinate in data space
+   * @param endX          the ending X coordinate in data space
+   * @param endY          the ending Y coordinate in data space
+   * @param fillColour    the color to fill the box with, or null for no fill
    * @param outlineColour the color of the box outline
    */
   public void addBox(double startX, double startY, double endX, double endY, Color fillColour,

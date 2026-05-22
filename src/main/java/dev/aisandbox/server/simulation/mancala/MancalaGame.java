@@ -42,14 +42,15 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Mancala (Kalah variant) simulation implementation.
  *
  * <p>This simulation runs a two-player Mancala game where agents communicate using protocol
- * buffers. Each step sends the current state to the active player, receives their move,
- * executes the game logic, and handles extra turns, captures, and game-over conditions.
+ * buffers. Each step sends the current state to the active player, receives their move, executes
+ * the game logic, and handles extra turns, captures, and game-over conditions.
  */
 @Slf4j
 public final class MancalaGame implements Simulation {
@@ -78,15 +79,16 @@ public final class MancalaGame implements Simulation {
   private final RollingPieChartWidget pieChartWidget;
 
   // Game state
+  @Getter
   private final String sessionId = UUID.randomUUID().toString();
   private final Agent[] agents = new Agent[2];
   private final boolean[] agentMoved = new boolean[2];
   private final int seedsPerPit;
+  private final TelemetryEngine telemetryEngine;
   private MancalaBoard board;
   private int firstPlayer = 1;
   private int currentPlayer = 0;
   private String episodeId;
-  private final TelemetryEngine telemetryEngine;
 
   /**
    * Creates a new Mancala game simulation.
@@ -95,7 +97,8 @@ public final class MancalaGame implements Simulation {
    * @param seedsPerPit the initial number of seeds in each pit
    * @param theme       the visual theme
    */
-  public MancalaGame(List<Agent> agents, int seedsPerPit, Theme theme,TelemetryEngine telemetryEngine) {
+  public MancalaGame(List<Agent> agents, int seedsPerPit, Theme theme,
+      TelemetryEngine telemetryEngine) {
     assert agents.size() == 2;
     this.agents[0] = agents.get(0);
     this.agents[1] = agents.get(1);
@@ -114,6 +117,39 @@ public final class MancalaGame implements Simulation {
   }
 
   /**
+   * Returns a darker version of the given color.
+   *
+   * @param color  the original color
+   * @param factor the darkening factor (0.0 = black, 1.0 = original)
+   * @return the darker color
+   */
+  private static Color darker(Color color, float factor) {
+    return new Color(
+        Math.max((int) (color.getRed() * factor), 0),
+        Math.max((int) (color.getGreen() * factor), 0),
+        Math.max((int) (color.getBlue() * factor), 0),
+        color.getAlpha());
+  }
+
+  /**
+   * Returns a brighter version of the given color.
+   *
+   * @param color  the original color
+   * @param factor the brightening factor (0.0 = original, 1.0 = white)
+   * @return the brighter color
+   */
+  private static Color brighter(Color color, float factor) {
+    int r = color.getRed();
+    int g = color.getGreen();
+    int b = color.getBlue();
+    return new Color(
+        r + (int) ((255 - r) * factor),
+        g + (int) ((255 - g) * factor),
+        b + (int) ((255 - b) * factor),
+        color.getAlpha());
+  }
+
+  /**
    * Resets the game to a new episode.
    */
   private void reset() {
@@ -126,7 +162,8 @@ public final class MancalaGame implements Simulation {
   }
 
   @Override
-  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
+  public void step(OutputRenderer output)
+      throws SimulationRuntimeException, IllegalActionException {
     output.display();
 
     Agent currentAgent = agents[currentPlayer];
@@ -214,26 +251,30 @@ public final class MancalaGame implements Simulation {
           + board.getStore(0) + "-" + board.getStore(1) + ")");
       informDraw();
       pieChartWidget.addValue("Draw", theme.getAccent());
-      telemetryEngine.writeTelementryEvent(new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME,sessionId,
-              episodeId, Instant.now(),List.of(
-                      new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),
-                              EpisodeAgentWinLossEvent.Result.DRAW),
-                      new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(),
-                              EpisodeAgentWinLossEvent.Result.DRAW)
-              )));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME, sessionId,
+              episodeId, Instant.now(), List.of(
+              new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),
+                  EpisodeAgentWinLossEvent.Result.DRAW),
+              new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(),
+                  EpisodeAgentWinLossEvent.Result.DRAW)
+          )));
     } else {
       logWidget.addText(agents[winner].getAgentName() + " wins! ("
           + board.getStore(0) + "-" + board.getStore(1) + ")");
       informResult(winner);
       pieChartWidget.addValue(agents[winner].getAgentName(),
           winner == 0 ? theme.getPrimary() : theme.getSecondary());
-      telemetryEngine.writeTelementryEvent(new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME,sessionId,
-              episodeId, Instant.now(),List.of(
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME, sessionId,
+              episodeId, Instant.now(), List.of(
               new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),
-                      winner==0?EpisodeAgentWinLossEvent.Result.WIN:EpisodeAgentWinLossEvent.Result.LOSE),
+                  winner == 0 ? EpisodeAgentWinLossEvent.Result.WIN
+                      : EpisodeAgentWinLossEvent.Result.LOSE),
               new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(),
-                      winner==1?EpisodeAgentWinLossEvent.Result.WIN:EpisodeAgentWinLossEvent.Result.LOSE)
-      )));
+                  winner == 1 ? EpisodeAgentWinLossEvent.Result.WIN
+                      : EpisodeAgentWinLossEvent.Result.LOSE)
+          )));
     }
     output.display();
     reset();
@@ -400,10 +441,10 @@ public final class MancalaGame implements Simulation {
   /**
    * Draws a store (mancala) with its seed count.
    *
-   * @param g      the graphics context
-   * @param x      the x-coordinate
-   * @param y      the y-coordinate
-   * @param seeds  the number of seeds in the store
+   * @param g     the graphics context
+   * @param x     the x-coordinate
+   * @param y     the y-coordinate
+   * @param seeds the number of seeds in the store
    */
   private void drawStore(Graphics2D g, int x, int y, int seeds) {
     g.setColor(darker(theme.getBaize(), 0.7f));
@@ -475,38 +516,5 @@ public final class MancalaGame implements Simulation {
     FontMetrics fm = g.getFontMetrics();
     int textX = x + (width - fm.stringWidth(text)) / 2;
     g.drawString(text, textX, y + fm.getAscent());
-  }
-
-  /**
-   * Returns a darker version of the given color.
-   *
-   * @param color  the original color
-   * @param factor the darkening factor (0.0 = black, 1.0 = original)
-   * @return the darker color
-   */
-  private static Color darker(Color color, float factor) {
-    return new Color(
-        Math.max((int) (color.getRed() * factor), 0),
-        Math.max((int) (color.getGreen() * factor), 0),
-        Math.max((int) (color.getBlue() * factor), 0),
-        color.getAlpha());
-  }
-
-  /**
-   * Returns a brighter version of the given color.
-   *
-   * @param color  the original color
-   * @param factor the brightening factor (0.0 = original, 1.0 = white)
-   * @return the brighter color
-   */
-  private static Color brighter(Color color, float factor) {
-    int r = color.getRed();
-    int g = color.getGreen();
-    int b = color.getBlue();
-    return new Color(
-        r + (int) ((255 - r) * factor),
-        g + (int) ((255 - g) * factor),
-        b + (int) ((255 - b) * factor),
-        color.getAlpha());
   }
 }

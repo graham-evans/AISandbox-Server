@@ -6,10 +6,10 @@
 
 package dev.aisandbox.server.simulation.mine;
 
+import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -19,8 +19,8 @@ import lombok.extern.slf4j.Slf4j;
  * Represents the game board for the Mine Hunter simulation.
  *
  * <p>This class manages the state of a minesweeper-style game board, including mine placement,
- * cell uncovering, flag placement, and game state tracking. The board consists of a 2D grid
- * of cells, each of which may contain a mine and tracks its covered/uncovered state.
+ * cell uncovering, flag placement, and game state tracking. The board consists of a 2D grid of
+ * cells, each of which may contain a mine and tracks its covered/uncovered state.
  *
  * <p>Game mechanics handled by this class:
  * <ul>
@@ -57,8 +57,8 @@ public class Board {
    * Creates a new mine board with the specified dimensions.
    *
    * <p>Initializes an empty board grid where all cells start uncovered and without mines.
-   * After construction, mines should be placed using {@link #placeMines(Random, int)}
-   * and neighbor counts calculated using {@link #countNeighbours()}.
+   * After construction, mines should be placed using {@link #placeMines(SimulationRandomNumberGenerator, int)} and neighbor
+   * counts calculated using {@link #countNeighbours()}.
    *
    * @param width  the width of the board in cells (must be positive)
    * @param height the height of the board in cells (must be positive)
@@ -78,8 +78,8 @@ public class Board {
    * Randomly places the specified number of mines on the board.
    *
    * <p>Mines are placed randomly across the board using the provided random number generator.
-   * If the requested count exceeds the total number of cells, only as many mines as there
-   * are cells will be placed (one per cell maximum).
+   * If the requested count exceeds the total number of cells, only as many mines as there are cells
+   * will be placed (one per cell maximum).
    *
    * <p>Each successfully placed mine increments the {@code unfoundMines} counter, which is
    * used to track game completion.
@@ -87,7 +87,7 @@ public class Board {
    * @param rand  random number generator for mine placement
    * @param count the desired number of mines to place (will be capped at total cell count)
    */
-  public void placeMines(Random rand, int count) {
+  public void placeMines(SimulationRandomNumberGenerator rand, int count) {
     // check we dont have more mines than cells
     count = Math.min(count, width * height);
     // place the mines randomly
@@ -120,8 +120,8 @@ public class Board {
    * Converts the current board state to a string array representation.
    *
    * <p>Each element in the returned array represents one row of the board from top to bottom.
-   * This representation shows the board from the player's perspective, with covered cells,
-   * flags, uncovered numbers, and mines displayed according to the current game state.
+   * This representation shows the board from the player's perspective, with covered cells, flags,
+   * uncovered numbers, and mines displayed according to the current game state.
    *
    * <p>The string format uses the character encoding defined by {@link Cell#getPlayerView()}.
    *
@@ -159,8 +159,8 @@ public class Board {
    * Calculates and stores the neighbor mine count for all cells on the board.
    *
    * <p>This method must be called after mine placement is complete and before the game begins.
-   * It iterates through all cells and counts the number of adjacent mines for each cell,
-   * storing the result in the cell's {@code neighbours} field.
+   * It iterates through all cells and counts the number of adjacent mines for each cell, storing
+   * the result in the cell's {@code neighbours} field.
    *
    * <p>After completion, the game state is set to {@link GameState#PLAYING}, indicating
    * the board is ready for player interaction.
@@ -209,9 +209,9 @@ public class Board {
    * Checks if the cell at the specified coordinates contains a mine.
    *
    * <p>This is a bounds-safe helper method that returns 1 if the specified position
-   * contains a mine and is within the board boundaries, or 0 otherwise. This method
-   * is used internally by {@link #countNeighbours(int, int)} to safely check
-   * neighboring cells without worrying about array bounds.
+   * contains a mine and is within the board boundaries, or 0 otherwise. This method is used
+   * internally by {@link #countNeighbours(int, int)} to safely check neighboring cells without
+   * worrying about array bounds.
    *
    * @param x the x-coordinate to check
    * @param y the y-coordinate to check
@@ -310,8 +310,8 @@ public class Board {
    * Performs flood-fill uncovering starting from the specified position.
    *
    * <p>This method implements the classic minesweeper flood-fill algorithm that automatically
-   * uncovers connected areas of cells with no adjacent mines. It uses a breadth-first
-   * search approach with a stack to iteratively process cells.
+   * uncovers connected areas of cells with no adjacent mines. It uses a breadth-first search
+   * approach with a stack to iteratively process cells.
    *
    * <p>The algorithm:
    * <ol>
@@ -356,8 +356,8 @@ public class Board {
    * Returns a list of all valid neighboring positions for the given cell location.
    *
    * <p>This method generates coordinates for all cells adjacent to the specified position,
-   * including diagonal neighbors, while ensuring all returned coordinates are within
-   * the board boundaries. Used by the flood-fill algorithm to find cells to process.
+   * including diagonal neighbors, while ensuring all returned coordinates are within the board
+   * boundaries. Used by the flood-fill algorithm to find cells to process.
    *
    * @param c the center cell location to find neighbors for
    * @return a list of CellLocation objects representing all valid adjacent positions
