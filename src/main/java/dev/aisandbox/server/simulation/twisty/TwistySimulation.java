@@ -25,7 +25,7 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.EpisodeFailureEvent;
+import dev.aisandbox.server.engine.telemetry.SessionFailureEvent;
 import dev.aisandbox.server.engine.telemetry.EpisodeLongScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
@@ -233,7 +233,7 @@ public final class TwistySimulation implements Simulation {
           .build());
       statsWidget.addFailure();
       telemetryEngine.writeTelemetryEvent(
-          new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, Instant.now()));
+          new SessionFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, Instant.now()));
       initialisePuzzle();
     } else {
       // Apply the regular move
@@ -261,7 +261,7 @@ public final class TwistySimulation implements Simulation {
                 .build());
         statsWidget.addFailure();
         telemetryEngine.writeTelemetryEvent(
-            new EpisodeFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID,
+            new SessionFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID,
                 Instant.now()));
         output.display();
         initialisePuzzle();
