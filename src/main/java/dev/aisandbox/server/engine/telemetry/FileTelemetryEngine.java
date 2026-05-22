@@ -39,6 +39,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
     node.putObject("ecs").put("version", "8.11");
     node.putObject("service").put("name", "AISandbox");
     ObjectNode eventNode = node.putObject("event");
+    eventNode.put("action", event.getClass().getSimpleName());
     eventNode.put("dataset", "aisandbox.episodes");
     eventNode.put("kind", "event");
     eventNode.putArray("category").add("process");
@@ -67,16 +68,70 @@ public class FileTelemetryEngine implements TelemetryEngine {
     // generate and write JSON objects
     try {
       switch (event) {
-        case EpisodeWinEvent win -> {
+        case SessionStartEvent ignored -> {
           ObjectNode root = createCommon(event);
-          // insert event specific fields into the "simulation" tree
           writer.write(mapper.writeValueAsString(root));
           writer.write("\n");
+        }
+        case SessionFailureEvent ignored -> {
+          ObjectNode root = createCommon(event);
+          writer.write(mapper.writeValueAsString(root));
+          writer.write("\n");
+        }
+        case EpisodeWinEvent win -> {
+          ObjectNode root = createCommon(event);
+          ((ObjectNode) root.get("simulation")).put("win", win.win());
+          writer.write(mapper.writeValueAsString(root));
+          writer.write("\n");
+        }
+        case EpisodeDoubleScoreEvent score -> {
+          ObjectNode root = createCommon(event);
+          ((ObjectNode) root.get("simulation")).put("score", score.score());
+          writer.write(mapper.writeValueAsString(root));
+          writer.write("\n");
+        }
+        case EpisodeLongScoreEvent score -> {
+          ObjectNode root = createCommon(event);
+          ((ObjectNode) root.get("simulation")).put("score", score.score());
+          writer.write(mapper.writeValueAsString(root));
+          writer.write("\n");
+        }
+        case EpisodeAgentDoubleScoreEvent agentScores -> {
+          for (AgentDoubleScore agentScore : agentScores.agentScoreList()) {
+            ObjectNode root = createCommon(event);
+            ObjectNode simulation = (ObjectNode) root.get("simulation");
+            simulation.putObject("agent").put("name", agentScore.agentName());
+            simulation.put("score", agentScore.score());
+            writer.write(mapper.writeValueAsString(root));
+            writer.write("\n");
+          }
+        }
+        case EpisodeAgentLongScoreEvent agentScores -> {
+          for (AgentLongScore agentScore : agentScores.agentScoreList()) {
+            ObjectNode root = createCommon(event);
+            ObjectNode simulation = (ObjectNode) root.get("simulation");
+            simulation.putObject("agent").put("name", agentScore.agentName());
+            simulation.put("score", agentScore.score());
+            writer.write(mapper.writeValueAsString(root));
+            writer.write("\n");
+          }
+        }
+        case EpisodeAgentRankEvent agentRanks -> {
+          for (AgentRank agentRank : agentRanks.agentRankList()) {
+            ObjectNode root = createCommon(event);
+            ObjectNode simulation = (ObjectNode) root.get("simulation");
+            simulation.putObject("agent").put("name", agentRank.agentName());
+            simulation.put("rank", agentRank.rank());
+            writer.write(mapper.writeValueAsString(root));
+            writer.write("\n");
+          }
         }
         case EpisodeAgentWinLossEvent agentWin -> {
           for (AgentResult agentResult : agentWin.agentResultList()) {
             ObjectNode root = createCommon(event);
-            // insert agent + event specificv fields
+            ObjectNode simulation = (ObjectNode) root.get("simulation");
+            simulation.putObject("agent").put("name", agentResult.agentName());
+            simulation.put("result", agentResult.result().name());
             writer.write(mapper.writeValueAsString(root));
             writer.write("\n");
           }
