@@ -17,6 +17,7 @@ module AISandbox.Server.main {
   requires org.apache.commons.rng.api;
   requires org.apache.commons.rng.simple;
   requires org.apache.commons.rng.sampling;
+  requires com.fasterxml.jackson.databind;
 
   opens dev.aisandbox.launcher to javafx.graphics;
   opens dev.aisandbox.server.fx to javafx.fxml;
