@@ -6,15 +6,20 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
-import io.opentelemetry.api.logs.Logger;
 import java.time.Instant;
-import java.util.List;
 
-public interface TelemetryEvent {
+public sealed interface TelemetryEvent
+    permits EpisodeAgentDoubleScoreEvent, EpisodeAgentLongScoreEvent, EpisodeAgentRankEvent,
+    EpisodeAgentWinLossEvent, EpisodeDoubleScoreEvent, EpisodeLongScoreEvent, EpisodeWinEvent,
+    SessionFailureEvent, SessionStartEvent {
 
-  List<String> toJSON();
+  // define the common fields, so they can be accessed without casting the event.
 
-  void emit(Logger logger);
+  String simulationName();
+
+  String sessionID();
+
+  String episodeID();
 
   Instant timestamp();
 }
