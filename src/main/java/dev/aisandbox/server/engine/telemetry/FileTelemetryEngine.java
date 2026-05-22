@@ -6,6 +6,9 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.aisandbox.server.engine.telemetry.EpisodeAgentDoubleScoreEvent.AgentDoubleScore;
 import dev.aisandbox.server.engine.telemetry.EpisodeAgentLongScoreEvent.AgentLongScore;
 import dev.aisandbox.server.engine.telemetry.EpisodeAgentRankEvent.AgentRank;
@@ -27,7 +30,23 @@ import lombok.extern.slf4j.Slf4j;
 public class FileTelemetryEngine implements TelemetryEngine {
 
   private final File directory;
+  private final ObjectMapper mapper = new ObjectMapper();
   private BufferedWriter writer;
+
+  private ObjectNode createCommon(TelemetryEvent event) {
+    ObjectNode node = mapper.createObjectNode();
+    node.put("@timestamp", event.timestamp().toString());
+    node.putObject("ecs").put("version", "8.11");
+    node.putObject("service").put("name", "AISandbox");
+    ObjectNode eventNode = node.putObject("event");
+    eventNode.put("dataset", "aisandbox.episodes");
+    eventNode.put("kind", "event");
+    eventNode.putArray("category").add("process");
+    node.putObject("simulation").put("name", event.simulationName());
+    node.putObject("session").put("id", event.sessionID());
+    node.putObject("episode").put("id", event.episodeID());
+    return node;
+  }
 
   @Override
   public void initialise(String sessionID) {
@@ -45,6 +64,30 @@ public class FileTelemetryEngine implements TelemetryEngine {
     if (writer == null) {
       return;
     }
+    // generate and write JSON objects
+    try {
+      switch (event) {
+        case EpisodeWinEvent win -> {
+          ObjectNode root = createCommon(event);
+          // insert event specific fields into the "simulation" tree
+          writer.write(mapper.writeValueAsString(root));
+          writer.write("\n");
+        }
+        case EpisodeAgentWinLossEvent agentWin -> {
+          for (AgentResult agentResult : agentWin.agentResultList()) {
+            ObjectNode root = createCommon(event);
+            // insert agent + event specificv fields
+            writer.write(mapper.writeValueAsString(root));
+            writer.write("\n");
+          }
+        }
+      }
+    } catch (JsonProcessingException e) {
+      log.error("Error writing event of type {}",event.getClass().getName(),e);
+    } catch (IOException e) {
+      log.error("Error writing event to file - stopping writer");
+      writer=null;
+    }
   }
 
 
@@ -61,7 +104,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
     }
   }
 
-  private List<String> format(TelemetryEvent event) {
+/*  private List<String> format(TelemetryEvent event) {
     return switch (event) {
       case EpisodeDoubleScoreEvent e -> List.of(
           common(e, "episode_double_score") + ",\"score\":" + e.score() + "}");
@@ -118,4 +161,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
         + ",\"session_id\":\"" + event.sessionID() + "\""
         + ",\"episode_id\":\"" + event.episodeID() + "\"";
   }
+
+
+ */
 }
