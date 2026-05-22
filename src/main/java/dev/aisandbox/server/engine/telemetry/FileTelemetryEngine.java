@@ -150,8 +150,6 @@ public class FileTelemetryEngine implements TelemetryEngine {
     }
   }
 
-
-
   @Override
   public void close() {
     if (writer == null) {
@@ -164,64 +162,4 @@ public class FileTelemetryEngine implements TelemetryEngine {
     }
   }
 
-/*  private List<String> format(TelemetryEvent event) {
-    return switch (event) {
-      case EpisodeDoubleScoreEvent e -> List.of(
-          common(e, "episode_double_score") + ",\"score\":" + e.score() + "}");
-      case EpisodeLongScoreEvent e -> List.of(
-          common(e, "episode_long_score") + ",\"score\":" + e.score() + "}");
-      case EpisodeWinEvent e -> List.of(
-          common(e, "episode_win") + ",\"win\":" + e.win() + "}");
-      case SessionFailureEvent e -> List.of(
-          common(e, "episode_failure") + "}");
-      case EpisodeAgentDoubleScoreEvent e -> {
-        List<String> lines = new ArrayList<>(e.agentScoreList().size());
-        String prefix = common(e, "episode_agent_double_score");
-        for (AgentDoubleScore agent : e.agentScoreList()) {
-          lines.add(prefix + ",\"labels.agent_name\":\"" + agent.agentName()
-              + "\",\"score\":" + agent.score() + "}");
-        }
-        yield lines;
-      }
-      case EpisodeAgentLongScoreEvent e -> {
-        List<String> lines = new ArrayList<>(e.agentScoreList().size());
-        String prefix = common(e, "episode_agent_long_score");
-        for (AgentLongScore agent : e.agentScoreList()) {
-          lines.add(prefix + ",\"labels.agent_name\":\"" + agent.agentName()
-              + "\",\"score\":" + agent.score() + "}");
-        }
-        yield lines;
-      }
-      case EpisodeAgentRankEvent e -> {
-        List<String> lines = new ArrayList<>(e.agentRankList().size());
-        String prefix = common(e, "episode_agent_rank");
-        for (AgentRank agent : e.agentRankList()) {
-          lines.add(prefix + ",\"labels.agent_name\":\"" + agent.agentName()
-              + "\",\"rank\":" + agent.rank() + "}");
-        }
-        yield lines;
-      }
-      case EpisodeAgentWinLossEvent e -> {
-        List<String> lines = new ArrayList<>(e.agentResultList().size());
-        String prefix = common(e, "episode_agent_win_loss");
-        for (AgentResult agent : e.agentResultList()) {
-          lines.add(prefix + ",\"labels.agent_name\":\"" + agent.agentName()
-              + "\",\"result\":\"" + agent.result().name() + "\"}");
-        }
-        yield lines;
-      }
-    };
-  }
-
-  private String common(TelemetryEvent event, String eventAction) {
-    return "{\"@timestamp\":\"" + event.timestamp().toString()
-        + "\",\"log.level\":\"info\""
-        + ",\"event.action\":\"" + eventAction + "\""
-        + ",\"service.name\":\"" + event.simulationName() + "\""
-        + ",\"session_id\":\"" + event.sessionID() + "\""
-        + ",\"episode_id\":\"" + event.episodeID() + "\"";
-  }
-
-
- */
 }
