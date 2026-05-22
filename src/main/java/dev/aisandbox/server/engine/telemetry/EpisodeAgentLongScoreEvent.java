@@ -6,8 +6,6 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
-import io.opentelemetry.api.logs.Logger;
-import io.opentelemetry.api.logs.Severity;
 import java.time.Instant;
 import java.util.List;
 
@@ -26,42 +24,6 @@ public record EpisodeAgentLongScoreEvent(String simulationName,
                                          Instant timestamp,
                                          List<AgentLongScore> agentScoreList) implements
     TelemetryEvent {
-
-  private static final String jsonTemplate = """
-      {
-          "timestamp":"%s",
-          "event":"episode_agent_long_score",
-          "simulation_name":"%s",
-          "session_id":"%s",
-          "episode_id":"%s",
-          "agent_name":"%s",
-          "score":%d
-      }
-      """;
-
-  @Override
-  public List<String> toJSON() {
-    return agentScoreList.stream()
-        .map(a -> String.format(jsonTemplate, timestamp.toString(), simulationName,
-            sessionID, episodeID, a.agentName(), a.score()))
-        .toList();
-  }
-
-  @Override
-  public void emit(Logger logger) {
-    for (AgentLongScore agent : agentScoreList) {
-      logger.logRecordBuilder()
-          .setBody("Episode Agent Long Score")
-          .setSeverity(Severity.INFO)
-          .setAttribute("simulation_name", simulationName)
-          .setAttribute("session_id", sessionID)
-          .setAttribute("episode_id", episodeID)
-          .setAttribute("agent_name", agent.agentName())
-          .setAttribute("score", String.valueOf(agent.score()))
-          .setTimestamp(timestamp)
-          .emit();
-    }
-  }
 
   public record AgentLongScore(String agentName, long score) {
 
