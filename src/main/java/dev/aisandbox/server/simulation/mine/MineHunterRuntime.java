@@ -27,7 +27,7 @@ import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
-import dev.aisandbox.server.engine.telemetry.EpisodeWinEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;

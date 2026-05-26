@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.engine.NullTelemetryEngine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 

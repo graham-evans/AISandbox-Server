@@ -14,7 +14,7 @@ import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.NullTelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.engine.NullTelemetryEngine;
 import dev.aisandbox.server.simulation.bandit.model.BanditPullEnumeration;
 import dev.aisandbox.server.simulation.bandit.model.BanditUpdateEnumeration;
 import java.io.File;

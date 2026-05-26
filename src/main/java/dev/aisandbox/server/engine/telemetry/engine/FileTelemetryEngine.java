@@ -1,24 +1,41 @@
 /*
+ *
+ *  * AI Sandbox - This program is free software: you can redistribute it and/or modify it under the
+ *  * terms of version 3 of the GNU General Public License. See the README and LICENCE files for
+ *  * more information.
+ *
+ */
+
+/*
  * AI Sandbox - This program is free software: you can redistribute it and/or modify it under the
  * terms of version 3 of the GNU General Public License. See the README and LICENCE files for
  * more information.
  */
 
-package dev.aisandbox.server.engine.telemetry;
+package dev.aisandbox.server.engine.telemetry.engine;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentDoubleScoreEvent.AgentDoubleScore;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentLongScoreEvent.AgentLongScore;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentRankEvent.AgentRank;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentWinLossEvent.AgentResult;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent.AgentDoubleScore;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent.AgentLongScore;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent.AgentRank;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent.AgentResult;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
+import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
+import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
