@@ -43,7 +43,7 @@ public record EpisodeAgentWinLossEvent(String simulationName,
   public record AgentResult(String agentName, Result result) {
 
     public String description() {
-      return "Agent " + agentName + " " + result.name();
+      return "Agent '" + agentName + "' " + result.name();
     }
   }
 }
