@@ -36,6 +36,10 @@ public interface Simulation {
 
   String getSessionId();
 
+  default String getSimulationName() {
+    return this.getClass().getSimpleName();
+  }
+
   /**
    * Finish the simulation, closing any resources as required.
    *
