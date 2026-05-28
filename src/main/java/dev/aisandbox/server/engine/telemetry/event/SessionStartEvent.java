@@ -17,17 +17,7 @@ package dev.aisandbox.server.engine.telemetry.event;
 import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
 import java.time.Instant;
 
-public record SessionStartEvent() implements TelemetryEvent {
-
-  @Override
-  public String simulationName() {
-    return "";
-  }
-
-  @Override
-  public String sessionID() {
-    return "";
-  }
+public record SessionStartEvent(String simulationName,String sessionID,Instant timestamp) implements TelemetryEvent {
 
   @Override
   public String episodeID() {
@@ -35,7 +25,7 @@ public record SessionStartEvent() implements TelemetryEvent {
   }
 
   @Override
-  public Instant timestamp() {
-    return null;
+  public String description() {
+    return "Simulation "+simulationName()+" started @ "+timestamp.toString();
   }
 }
