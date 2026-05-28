@@ -25,7 +25,13 @@ Records use nested JSON objects rather than dotted flat keys (i.e. `{"event": {"
     "category": ["process"]
   },
   "service": { "name": "AISandbox" },
-  "simulation": { "name": "CoinGame", "result": "LOSE" },
+  "simulation": { 
+    "name": "CoinGame",
+    "result": "LOSE",
+    "agent": {
+      "name": "Agent 1"
+    }
+  },
   "session": { "id": "c84387b5-683f-4074-8376-4e62dcaef3b3" },
   "episode": { "id": "f44c55e5-ca50-4584-89db-344512215b62" },
   "player": { "name": "Agent 1" }
