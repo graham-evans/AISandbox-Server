@@ -10,7 +10,11 @@ import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+
+import java.time.Instant;
 import java.util.List;
+
+import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +70,7 @@ public class SimulationRunner extends Thread {
     log.info("Starting telemetry engine {}", telemetryEngine.getClass().getName());
     telemetryEngine.initialise(simulation.getSessionId());
     log.info("Starting simulation...");
+    telemetryEngine.writeTelemetryEvent(new SessionStartEvent(simulation.getSimulationName(), simulation.getSessionId(), Instant.now()));
     if (maxStepCount > -1) {
       log.info("Max step count {}", maxStepCount);
     }

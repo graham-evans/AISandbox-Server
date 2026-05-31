@@ -4,21 +4,30 @@
  * more information.
  */
 
-package dev.aisandbox.server.engine.telemetry;
+package dev.aisandbox.server.engine.telemetry.engine;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentDoubleScoreEvent.AgentDoubleScore;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentLongScoreEvent.AgentLongScore;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentRankEvent.AgentRank;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentWinLossEvent.AgentResult;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent.AgentDoubleScore;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent.AgentLongScore;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent.AgentRank;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent.AgentResult;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
+import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
+import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -150,8 +159,6 @@ public class FileTelemetryEngine implements TelemetryEngine {
     }
   }
 
-
-
   @Override
   public void close() {
     if (writer == null) {
@@ -164,64 +171,4 @@ public class FileTelemetryEngine implements TelemetryEngine {
     }
   }
 
-/*  private List<String> format(TelemetryEvent event) {
-    return switch (event) {
-      case EpisodeDoubleScoreEvent e -> List.of(
-          common(e, "episode_double_score") + ",\"score\":" + e.score() + "}");
-      case EpisodeLongScoreEvent e -> List.of(
-          common(e, "episode_long_score") + ",\"score\":" + e.score() + "}");
-      case EpisodeWinEvent e -> List.of(
-          common(e, "episode_win") + ",\"win\":" + e.win() + "}");
-      case SessionFailureEvent e -> List.of(
-          common(e, "episode_failure") + "}");
-      case EpisodeAgentDoubleScoreEvent e -> {
-        List<String> lines = new ArrayList<>(e.agentScoreList().size());
-        String prefix = common(e, "episode_agent_double_score");
-        for (AgentDoubleScore agent : e.agentScoreList()) {
-          lines.add(prefix + ",\"labels.agent_name\":\"" + agent.agentName()
-              + "\",\"score\":" + agent.score() + "}");
-        }
-        yield lines;
-      }
-      case EpisodeAgentLongScoreEvent e -> {
-        List<String> lines = new ArrayList<>(e.agentScoreList().size());
-        String prefix = common(e, "episode_agent_long_score");
-        for (AgentLongScore agent : e.agentScoreList()) {
-          lines.add(prefix + ",\"labels.agent_name\":\"" + agent.agentName()
-              + "\",\"score\":" + agent.score() + "}");
-        }
-        yield lines;
-      }
-      case EpisodeAgentRankEvent e -> {
-        List<String> lines = new ArrayList<>(e.agentRankList().size());
-        String prefix = common(e, "episode_agent_rank");
-        for (AgentRank agent : e.agentRankList()) {
-          lines.add(prefix + ",\"labels.agent_name\":\"" + agent.agentName()
-              + "\",\"rank\":" + agent.rank() + "}");
-        }
-        yield lines;
-      }
-      case EpisodeAgentWinLossEvent e -> {
-        List<String> lines = new ArrayList<>(e.agentResultList().size());
-        String prefix = common(e, "episode_agent_win_loss");
-        for (AgentResult agent : e.agentResultList()) {
-          lines.add(prefix + ",\"labels.agent_name\":\"" + agent.agentName()
-              + "\",\"result\":\"" + agent.result().name() + "\"}");
-        }
-        yield lines;
-      }
-    };
-  }
-
-  private String common(TelemetryEvent event, String eventAction) {
-    return "{\"@timestamp\":\"" + event.timestamp().toString()
-        + "\",\"log.level\":\"info\""
-        + ",\"event.action\":\"" + eventAction + "\""
-        + ",\"service.name\":\"" + event.simulationName() + "\""
-        + ",\"session_id\":\"" + event.sessionID() + "\""
-        + ",\"episode_id\":\"" + event.episodeID() + "\"";
-  }
-
-
- */
 }

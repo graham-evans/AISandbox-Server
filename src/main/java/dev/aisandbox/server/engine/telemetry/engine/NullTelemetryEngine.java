@@ -4,7 +4,10 @@
  * more information.
  */
 
-package dev.aisandbox.server.engine.telemetry;
+package dev.aisandbox.server.engine.telemetry.engine;
+
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
 
 public class NullTelemetryEngine implements TelemetryEngine {
 

@@ -4,8 +4,9 @@
  * more information.
  */
 
-package dev.aisandbox.server.engine.telemetry;
+package dev.aisandbox.server.engine.telemetry.event;
 
+import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
 import java.time.Instant;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public record EpisodeAgentWinLossEvent(String simulationName,
   public record AgentResult(String agentName, Result result) {
 
     public String description() {
-      return "Agent " + agentName + " " + result.name();
+      return "Agent '" + agentName + "' " + result.name();
     }
   }
 }

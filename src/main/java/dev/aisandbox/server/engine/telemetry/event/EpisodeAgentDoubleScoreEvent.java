@@ -4,8 +4,9 @@
  * more information.
  */
 
-package dev.aisandbox.server.engine.telemetry;
+package dev.aisandbox.server.engine.telemetry.event;
 
+import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
 import java.time.Instant;
 import java.util.List;
 

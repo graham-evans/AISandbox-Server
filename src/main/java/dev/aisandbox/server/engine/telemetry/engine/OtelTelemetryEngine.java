@@ -4,13 +4,24 @@
  * more information.
  */
 
-package dev.aisandbox.server.engine.telemetry;
+package dev.aisandbox.server.engine.telemetry.engine;
 
 import dev.aisandbox.server.engine.SimulationVersion;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentDoubleScoreEvent.AgentDoubleScore;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentLongScoreEvent.AgentLongScore;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentRankEvent.AgentRank;
-import dev.aisandbox.server.engine.telemetry.EpisodeAgentWinLossEvent.AgentResult;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent.AgentDoubleScore;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent.AgentLongScore;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent.AgentRank;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent.AgentResult;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
+import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
+import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 import io.opentelemetry.api.logs.Logger;

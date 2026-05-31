@@ -6,6 +6,15 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
+import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
+import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
 import java.time.Instant;
 
 public sealed interface TelemetryEvent
