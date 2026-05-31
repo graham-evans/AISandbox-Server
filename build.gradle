@@ -6,7 +6,7 @@ plugins {
     id 'pmd'
     id 'checkstyle'
     id 'com.github.ben-manes.versions' version '0.54.0'
-    id 'org.beryx.jlink' version '4.0.0'
+    id 'org.beryx.jlink' version '4.0.1'
     id 'org.owasp.dependencycheck' version '12.2.2'
 }
 
@@ -14,7 +14,7 @@ plugins {
 
 group = 'dev.aisandbox'
 
-def protobufVersion = '4.34.1'
+def protobufVersion = '4.35.0'
 
 // Determine the version from git: an exact tag on HEAD, or "snapshot" otherwise.
 def gitVersion = {
@@ -183,13 +183,13 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-api:2.1.0-alpha1'
     implementation 'ch.qos.logback:logback-classic:1.5.32'
     // external telemetry
-    implementation 'io.opentelemetry:opentelemetry-api:1.61.0'
-    implementation 'io.opentelemetry:opentelemetry-sdk:1.61.0'
-    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.61.0'
+    implementation 'io.opentelemetry:opentelemetry-api:1.62.0'
+    implementation 'io.opentelemetry:opentelemetry-sdk:1.62.0'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.62.0'
     // JSON / JSONL
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.3'
     // test libs
-    testImplementation(platform('org.junit:junit-bom:6.0.3'))
+    testImplementation(platform('org.junit:junit-bom:6.1.0'))
     testImplementation('org.junit.jupiter:junit-jupiter')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
     testImplementation('com.samskivert:jmustache:1.16')
