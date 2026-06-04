@@ -45,6 +45,7 @@ public class OtelTelemetryEngine implements TelemetryEngine {
   private final Logger logger;
 
   public OtelTelemetryEngine(String collectorUrl) {
+    log.info("Setting up connection to {}",collectorUrl);
     exporter = OtlpHttpLogRecordExporter.builder()
         .setEndpoint(collectorUrl)
         // .addHeader("Authorization", "Bearer <token>")

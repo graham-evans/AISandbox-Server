@@ -81,6 +81,8 @@ public class RuntimeUtils {
     // telemetry options
     options.addOption(null,"json", false,"Output telemetry information to JSON file");
     options.addOption(null,"json-dir",true,"Output directory for JSON files");
+    options.addOption(null,"otel",false,"Output telemetry information op Open Telemetry collector");
+    options.addOption(null,"otel-url",true,"Output URL for Open Telemetry collector");
   }
 
   /**
@@ -177,6 +179,12 @@ public class RuntimeUtils {
         simulation.selectedTelemetryJson().set(true);
         if (cmd.hasOption("json-dir")) {
           simulation.telemetryJsonPath().set(cmd.getOptionValue("json-dir"));
+        }
+      }
+      if (cmd.hasOption("otel")) {
+        simulation.selectedTelemetryOtel().set(true);
+        if (cmd.hasOption("otel-url")) {
+          simulation.telemetryOtelUrl().set(cmd.getOptionValue("otel-url"));
         }
       }
     } catch (ParseException e) {
