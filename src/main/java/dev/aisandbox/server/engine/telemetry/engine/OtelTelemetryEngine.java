@@ -80,7 +80,8 @@ public class OtelTelemetryEngine implements TelemetryEngine {
         .setEventName(event.getClass().getSimpleName())
         .setAttribute("simulation.name", event.simulationName())
         .setAttribute("simulation.session.id", event.sessionID())
-        .setAttribute("simulation.episode.id", event.episodeID());
+        .setAttribute("simulation.episode.id", event.episodeID())
+        .setBody(event.description());
   }
 
   @Override
@@ -107,7 +108,6 @@ public class OtelTelemetryEngine implements TelemetryEngine {
       case EpisodeAgentDoubleScoreEvent agentScores -> {
         for (AgentDoubleScore agentScore : agentScores.agentScoreList()) {
           createCommon(event)
-              .setBody(agentScore.description())
               .setAttribute("simulation.agent.name", agentScore.agentName())
               .setAttribute("simulation.score", agentScore.score())
               .emit();
@@ -116,7 +116,6 @@ public class OtelTelemetryEngine implements TelemetryEngine {
       case EpisodeAgentLongScoreEvent agentScores -> {
         for (AgentLongScore agentScore : agentScores.agentScoreList()) {
           createCommon(event)
-              .setBody(agentScore.description())
               .setAttribute("simulation.agent.name", agentScore.agentName())
               .setAttribute("simulation.score", agentScore.score())
               .emit();
@@ -125,7 +124,6 @@ public class OtelTelemetryEngine implements TelemetryEngine {
       case EpisodeAgentRankEvent agentRanks -> {
         for (AgentRank agentRank : agentRanks.agentRankList()) {
           createCommon(event)
-              .setBody(agentRank.description())
               .setAttribute("simulation.agent.name", agentRank.agentName())
               .setAttribute("simulation.rank", agentRank.rank())
               .emit();
