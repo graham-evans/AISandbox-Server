@@ -21,4 +21,6 @@ public record SessionFailureEvent(String simulationName,
                                   String sessionID,
                                   String episodeID,
                                   Instant timestamp) implements TelemetryEvent {
+    @Override
+    public String description() { return "Simulation failure"; }
 }

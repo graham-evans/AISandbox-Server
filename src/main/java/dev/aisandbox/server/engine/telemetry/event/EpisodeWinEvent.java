@@ -23,4 +23,8 @@ public record EpisodeWinEvent(String simulationName,
                               String episodeID,
                               Instant timestamp,
                               boolean win) implements TelemetryEvent {
+    @Override
+    public String description() {
+        return "Episode ends with " + (win ? "win" : "loss");
+    }
 }

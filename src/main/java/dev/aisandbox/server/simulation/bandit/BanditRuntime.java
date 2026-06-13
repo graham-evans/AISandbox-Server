@@ -234,6 +234,11 @@ public final class BanditRuntime implements Simulation {
     initialise();
   }
 
+  @Override
+  public String getSimulationName() {
+    return BanditScenario.BANDIT_NAME;
+  }
+
   /**
    * Initializes or resets the bandit state, creating new bandits as needed.
    */

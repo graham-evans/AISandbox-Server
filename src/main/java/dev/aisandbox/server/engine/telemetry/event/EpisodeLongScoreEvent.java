@@ -23,4 +23,8 @@ public record EpisodeLongScoreEvent(String simulationName,
                                     String episodeID,
                                     Instant timestamp,
                                     long score) implements TelemetryEvent {
+    @Override
+    public String description() {
+        return "Episode ends with score " + score;
+    }
 }
