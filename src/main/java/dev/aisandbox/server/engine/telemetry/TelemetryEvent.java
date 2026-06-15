@@ -6,30 +6,24 @@
 
 package dev.aisandbox.server.engine.telemetry;
 
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
 import java.time.Instant;
 
-public interface TelemetryEvent {
+/**
+ * Base telemetry interface, defines fields that all events must implement.
+ */
+public sealed interface TelemetryEvent permits SessionStartEvent, SessionFailureEvent, TelemetryEpisodeEvent {
 
   // define the common fields, so they can be accessed without casting the event.
 
   String simulationName();
 
-  String sessionID();
+  String sessionId();
 
   Instant timestamp();
 
-  default String description() {
-    return "undefined";
-  }
+  String description();
 
   default String eventName() {
     return getClass().getSimpleName();
