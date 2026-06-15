@@ -17,10 +17,7 @@ import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
 import java.time.Instant;
 
-public sealed interface TelemetryEvent
-    permits EpisodeAgentDoubleScoreEvent, EpisodeAgentLongScoreEvent, EpisodeAgentRankEvent,
-    EpisodeAgentWinLossEvent, EpisodeDoubleScoreEvent, EpisodeLongScoreEvent, EpisodeWinEvent,
-    SessionFailureEvent, SessionStartEvent {
+public interface TelemetryEvent {
 
   // define the common fields, so they can be accessed without casting the event.
 
@@ -28,11 +25,13 @@ public sealed interface TelemetryEvent
 
   String sessionID();
 
-  String episodeID();
-
   Instant timestamp();
 
   default String description() {
     return "undefined";
+  }
+
+  default String eventName() {
+    return getClass().getSimpleName();
   }
 }
