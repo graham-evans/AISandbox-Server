@@ -12,11 +12,6 @@ import java.time.Instant;
 public record SessionStartEvent(String simulationName,String sessionID,Instant timestamp) implements TelemetryEvent {
 
   @Override
-  public String episodeID() {
-    return "";
-  }
-
-  @Override
   public String description() {
     return "Simulation "+simulationName()+" started @ "+timestamp.toString();
   }
