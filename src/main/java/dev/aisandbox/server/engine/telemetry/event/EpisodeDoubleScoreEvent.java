@@ -21,6 +21,7 @@ import java.time.Instant;
 public record EpisodeDoubleScoreEvent(String simulationName,
                                       String sessionID,
                                       String episodeID,
+                                      int episodeNumber,
                                       Instant timestamp,
                                       double score) implements TelemetryEvent {
 

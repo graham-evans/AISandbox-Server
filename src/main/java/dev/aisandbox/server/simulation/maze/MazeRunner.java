@@ -217,7 +217,7 @@ public final class MazeRunner implements Simulation {
       logWidget.addText("Episode finished, resetting maze");
       episodeScoreWidget.addValue(episodeScore);
       telemetryEngine.writeTelemetryEvent(
-          new EpisodeDoubleScoreEvent(MazeBuilder.MAZE_NAME, sessionId, episodeID,
+          new EpisodeDoubleScoreEvent(MazeBuilder.MAZE_NAME, sessionId, episodeID, 0,
               Instant.now(), episodeScore));
       initialiseMaze();
     }
