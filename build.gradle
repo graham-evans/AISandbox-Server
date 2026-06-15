@@ -14,7 +14,7 @@ plugins {
 
 group = 'dev.aisandbox'
 
-def protobufVersion = '4.35.0'
+def protobufVersion = '4.35.1'
 
 // Determine the version from git: an exact tag on HEAD, or "snapshot" otherwise.
 def gitVersion = {
