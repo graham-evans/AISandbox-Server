@@ -77,10 +77,9 @@ public class OtelTelemetryEngine implements TelemetryEngine {
         .setBody(event.description())
         .setSeverity(Severity.INFO)
         .setSeverityText("INFO")
-        .setEventName(event.getClass().getSimpleName())
         .setAttribute("simulation.name", event.simulationName())
         .setAttribute("simulation.session.id", event.sessionID())
-        .setAttribute("simulation.episode.id", event.episodeID())
+        .setEventName(event.eventName())
         .setBody(event.description());
   }
 
@@ -99,7 +98,8 @@ public class OtelTelemetryEngine implements TelemetryEngine {
       case EpisodeWinEvent win -> createCommon(event)
           .setAttribute("simulation.win", win.win())
           .emit();
-      case EpisodeDoubleScoreEvent score -> createCommon(event)
+      case EpisodeDoubleScoreEvent score -> createCommon(score)
+              .setAttribute("simulation.episode.id", score.episodeID())
           .setAttribute("simulation.score", score.score())
           .emit();
       case EpisodeLongScoreEvent score -> createCommon(event)
