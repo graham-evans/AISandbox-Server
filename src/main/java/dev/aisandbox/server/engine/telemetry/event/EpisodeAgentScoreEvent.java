@@ -11,24 +11,28 @@ import dev.aisandbox.server.engine.telemetry.TelemetryEpisodeEvent;
 import java.time.Instant;
 
 /**
- * Telemetry event to denote a simulation episode completing with a long integer score per agent.
+ * Telemetry event to denote a simulation episode completing with a double precision score per
+ * agent.
  *
  * @param simulationName The name of the simulation
  * @param sessionId      The session identifier
  * @param episodeId      The episode identifier
  * @param episodeNumber  The number of the episode
  * @param timestamp      The time the event was created
- * @param agentName      The agent being reported
- * @param agentScore     The final score for the agent
+ * @param agentName      The agent being reported on
+ * @param agentScore     The score of the agent at the end of the episode
+ *
  */
-public record EpisodeAgentLongScoreEvent(String simulationName,
-                                         String sessionId,
-                                         String episodeId,
-                                         int episodeNumber,
-                                         Instant timestamp,
-                                         String agentName,
-                                         long agentScore) implements TelemetryEpisodeEvent {
+public record EpisodeAgentScoreEvent(String simulationName,
+                                     String sessionId,
+                                     String episodeId,
+                                     int episodeNumber,
+                                     Instant timestamp,
+                                     String agentName,
+                                     double agentScore) implements TelemetryEpisodeEvent {
+
     public String description() {
         return "Agent " + agentName + " scored " + agentScore;
     }
+
 }

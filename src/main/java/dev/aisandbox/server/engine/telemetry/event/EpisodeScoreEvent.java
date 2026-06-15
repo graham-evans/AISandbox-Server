@@ -20,12 +20,12 @@ import java.time.Instant;
  * @param timestamp      The time the event was created
  * @param score          The score for the episode
  */
-public record EpisodeDoubleScoreEvent(String simulationName,
-                                      String sessionId,
-                                      String episodeId,
-                                      int episodeNumber,
-                                      Instant timestamp,
-                                      double score) implements TelemetryEpisodeEvent {
+public record EpisodeScoreEvent(String simulationName,
+                                String sessionId,
+                                String episodeId,
+                                int episodeNumber,
+                                Instant timestamp,
+                                double score) implements TelemetryEpisodeEvent {
 
     @Override
     public String description() {
