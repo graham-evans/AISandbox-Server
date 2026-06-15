@@ -25,7 +25,7 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -217,7 +217,7 @@ public final class MazeRunner implements Simulation {
       logWidget.addText("Episode finished, resetting maze");
       episodeScoreWidget.addValue(episodeScore);
       telemetryEngine.writeTelemetryEvent(
-          new EpisodeDoubleScoreEvent(MazeBuilder.MAZE_NAME, sessionId, episodeID, 0,
+          new EpisodeScoreEvent(MazeBuilder.MAZE_NAME, sessionId, episodeID, 0,
               Instant.now(), episodeScore));
       initialiseMaze();
     }

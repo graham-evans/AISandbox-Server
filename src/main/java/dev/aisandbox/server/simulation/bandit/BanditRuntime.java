@@ -25,7 +25,7 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
@@ -297,7 +297,7 @@ public final class BanditRuntime implements Simulation {
       episodeSuccessWidget.addValue(episodeBestMoveCount / pullCount);
       statisticsWidget.addScore(episodeScore);
       telemetryEngine.writeTelemetryEvent(
-          new EpisodeDoubleScoreEvent(BanditScenario.BANDIT_NAME, sessionId, episodeID, episodeNumber,
+          new EpisodeScoreEvent(BanditScenario.BANDIT_NAME, sessionId, episodeID, episodeNumber,
               Instant.now(), episodeScore));
     }
     // update the screen
