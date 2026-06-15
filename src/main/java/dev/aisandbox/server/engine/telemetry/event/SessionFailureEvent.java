@@ -7,20 +7,23 @@
 package dev.aisandbox.server.engine.telemetry.event;
 
 import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
+
 import java.time.Instant;
 
 /**
  * Telemetry event to denote a single agent failing to complete a task.
  *
- * @param simulationName      The name of the simulation
- * @param sessionID           The session identifier
- * @param episodeID           The episode identifier
- * @param timestamp The time the event was created
+ * @param simulationName The name of the simulation
+ * @param sessionId      The session identifier
+ * @param timestamp      The time the event was created
+ * @param reason         The reason the simulation terminated
  */
 public record SessionFailureEvent(String simulationName,
-                                  String sessionID,
-                                  String episodeID,
-                                  Instant timestamp) implements TelemetryEvent {
+                                  String sessionId,
+                                  Instant timestamp,
+                                  String reason) implements TelemetryEvent {
     @Override
-    public String description() { return "Simulation failure"; }
+    public String description() {
+        return "Simulation failure - " + reason;
+    }
 }

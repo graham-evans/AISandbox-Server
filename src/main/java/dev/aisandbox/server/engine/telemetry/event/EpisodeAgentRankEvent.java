@@ -6,29 +6,30 @@
 
 package dev.aisandbox.server.engine.telemetry.event;
 
-import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
+import dev.aisandbox.server.engine.telemetry.TelemetryEpisodeEvent;
+
 import java.time.Instant;
-import java.util.List;
 
 /**
  * Telemetry event to denote a simulation episode completing with a rank per agent.
  *
- * @param simulationName      The name of the simulation
- * @param sessionID           The session identifier
- * @param episodeID           The episode identifier
- * @param timestamp The time the event was created
- * @param agentRankList       The list of agents and their ranks
+ * @param simulationName The name of the simulation
+ * @param sessionId      The session identifier
+ * @param episodeId      The episode identifier
+ * @param episodeNumber  The number of the episode
+ * @param timestamp      The time the event was created
+ * @param agentName      The name of the agent being reported
+ * @param agentRank      The rank (1st being highest) of the agent
  */
 public record EpisodeAgentRankEvent(String simulationName,
-                                    String sessionID,
-                                    String episodeID,
+                                    String sessionId,
+                                    String episodeId,
+                                    int episodeNumber,
                                     Instant timestamp,
-                                    List<AgentRank> agentRankList) implements TelemetryEvent {
-
-  public record AgentRank(String agentName, int rank) {
+                                    String agentName,
+                                    int agentRank) implements TelemetryEpisodeEvent {
 
     public String description() {
-      return "Agent " + agentName + " ranked " + rank;
+        return "Agent " + agentName + " ranked " + agentRank;
     }
-  }
 }

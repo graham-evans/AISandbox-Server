@@ -6,23 +6,26 @@
 
 package dev.aisandbox.server.engine.telemetry.event;
 
-import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
+import dev.aisandbox.server.engine.telemetry.TelemetryEpisodeEvent;
+
 import java.time.Instant;
 
 /**
  * Telemetry event to denote a simulation episode completing with a long integer score.
  *
- * @param simulationName      The name of the simulation
- * @param sessionID           The session identifier
- * @param episodeID           The episode identifier
- * @param timestamp The time the event was created
- * @param score               The score for the episode
+ * @param simulationName The name of the simulation
+ * @param sessionId      The session identifier
+ * @param episodeId      The episode identifier
+ * @param episodeNumber  The number of the episode in this run
+ * @param timestamp      The time the event was created
+ * @param score          The score for the episode
  */
 public record EpisodeLongScoreEvent(String simulationName,
-                                    String sessionID,
-                                    String episodeID,
+                                    String sessionId,
+                                    String episodeId,
+                                    int episodeNumber,
                                     Instant timestamp,
-                                    long score) implements TelemetryEvent {
+                                    long score) implements TelemetryEpisodeEvent {
     @Override
     public String description() {
         return "Episode ends with score " + score;
