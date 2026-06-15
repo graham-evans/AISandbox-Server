@@ -25,8 +25,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -84,6 +84,7 @@ public final class MazeRunner implements Simulation {
   private BufferedImage mazeImage = null;
   private Cell currentCell;
   private String episodeID;
+  private int episodeNumber = 0;
   private double episodeScore;
 
   /**
@@ -95,7 +96,8 @@ public final class MazeRunner implements Simulation {
    * @param theme    the visual theme for the maze
    * @param random   the random number generator for maze generation
    */
-  public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme, SimulationRandomNumberGenerator random,
+  public MazeRunner(Agent agent, MazeSize mazeSize, MazeType mazeType, Theme theme,
+      SimulationRandomNumberGenerator random,
       TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.mazeSize = mazeSize;
@@ -128,6 +130,7 @@ public final class MazeRunner implements Simulation {
     currentCell = maze.getStartCell();
     // set episode ID
     episodeID = UUID.randomUUID().toString();
+    episodeNumber++;
   }
 
   /**
@@ -217,7 +220,7 @@ public final class MazeRunner implements Simulation {
       logWidget.addText("Episode finished, resetting maze");
       episodeScoreWidget.addValue(episodeScore);
       telemetryEngine.writeTelemetryEvent(
-          new EpisodeScoreEvent(MazeBuilder.MAZE_NAME, sessionId, episodeID, 0,
+          new EpisodeScoreEvent(MazeBuilder.MAZE_NAME, sessionId, episodeID, episodeNumber,
               Instant.now(), episodeScore));
       initialiseMaze();
     }

@@ -6,6 +6,18 @@
 
 package dev.aisandbox.server.simulation.cascade;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
+import static dev.aisandbox.server.engine.output.OutputConstants.LEFT_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.LOGO_WIDTH;
+import static dev.aisandbox.server.engine.output.OutputConstants.LOG_FONT;
+import static dev.aisandbox.server.engine.output.OutputConstants.RIGHT_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.TITLE_HEIGHT;
+import static dev.aisandbox.server.engine.output.OutputConstants.TOP_MARGIN;
+import static dev.aisandbox.server.engine.output.OutputConstants.WIDGET_SPACING;
+
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
@@ -13,8 +25,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -26,14 +38,14 @@ import dev.aisandbox.server.simulation.cascade.proto.CascadeAction;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeResult;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeSignal;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeState;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.time.Instant;
 import java.util.UUID;
-
-import static dev.aisandbox.server.engine.output.OutputConstants.*;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Runtime implementation of the Cascade match-3 simulation.
@@ -55,43 +67,61 @@ public final class CascadeRuntime implements Simulation {
 
   // ── Layout constants ────────────────────────────────────────────────────────
 
-  /** Pixel size of each board cell. */
+  /**
+   * Pixel size of each board cell.
+   */
   private static final int CELL_SIZE = 90;
 
-  /** Pixel gap between cells. */
+  /**
+   * Pixel gap between cells.
+   */
   private static final int CELL_GAP = 4;
 
-  /** Full board pixel width / height (8 cells). */
+  /**
+   * Full board pixel width / height (8 cells).
+   */
   private static final int BOARD_PX = CascadeBoard.WIDTH * (CELL_SIZE + CELL_GAP) - CELL_GAP;
 
-  /** X coordinate where the board grid starts. */
+  /**
+   * X coordinate where the board grid starts.
+   */
   private static final int BOARD_X = LEFT_MARGIN;
 
-  /** Y coordinate where the board grid starts. */
+  /**
+   * Y coordinate where the board grid starts.
+   */
   private static final int BOARD_Y = TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING;
 
-  /** X coordinate where the right panel starts. */
+  /**
+   * X coordinate where the right panel starts.
+   */
   private static final int PANEL_X = BOARD_X + BOARD_PX + WIDGET_SPACING;
 
-  /** Pixel width of the right panel. */
+  /**
+   * Pixel width of the right panel.
+   */
   private static final int PANEL_W = HD_WIDTH - PANEL_X - RIGHT_MARGIN;
 
-  /** Pixel height available below the title bar. */
+  /**
+   * Pixel height available below the title bar.
+   */
   private static final int CONTENT_H = HD_HEIGHT - BOARD_Y - BOTTOM_MARGIN;
 
-  /** Height of each right-panel widget. */
+  /**
+   * Height of each right-panel widget.
+   */
   private static final int WIDGET_H = (CONTENT_H - WIDGET_SPACING) / 2;
 
   // ── Tile colours ────────────────────────────────────────────────────────────
 
-  private static final Color COLOR_RED    = new Color(210, 50,  50);
-  private static final Color COLOR_BLUE   = new Color(50,  100, 210);
-  private static final Color COLOR_GREEN  = new Color(50,  175, 60);
+  private static final Color COLOR_RED = new Color(210, 50, 50);
+  private static final Color COLOR_BLUE = new Color(50, 100, 210);
+  private static final Color COLOR_GREEN = new Color(50, 175, 60);
   private static final Color COLOR_YELLOW = new Color(210, 190, 30);
-  private static final Color COLOR_PURPLE = new Color(150, 50,  200);
-  private static final Color COLOR_STONE  = new Color(110, 110, 110);
-  private static final Color COLOR_ICE    = new Color(160, 215, 235);
-  private static final Color COLOR_PRISM  = new Color(255, 255, 255);
+  private static final Color COLOR_PURPLE = new Color(150, 50, 200);
+  private static final Color COLOR_STONE = new Color(110, 110, 110);
+  private static final Color COLOR_ICE = new Color(160, 215, 235);
+  private static final Color COLOR_PRISM = new Color(255, 255, 255);
 
   private static final Font CELL_FONT = new Font("Arimo Regular", Font.BOLD, 20);
 
@@ -104,7 +134,7 @@ public final class CascadeRuntime implements Simulation {
   @Getter
   private final String sessionId = UUID.randomUUID().toString();
   private String episodeID;
-
+  private int episodeNumber = 0;
   private CascadeBoard board;
   private boolean gameOver = true; // triggers first episode creation in step()
 
@@ -122,7 +152,8 @@ public final class CascadeRuntime implements Simulation {
    * @param random          the source of randomness for board generation and tile refill
    * @param telemetryEngine
    */
-  public CascadeRuntime(Agent agent, Theme theme, SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine) {
+  public CascadeRuntime(Agent agent, Theme theme, SimulationRandomNumberGenerator random,
+      TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.theme = theme;
     this.random = random;
@@ -148,7 +179,8 @@ public final class CascadeRuntime implements Simulation {
    * @throws SimulationRuntimeException if agent communication fails
    */
   @Override
-  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
+  public void step(OutputRenderer output)
+      throws SimulationRuntimeException, IllegalActionException {
     if (gameOver) {
       startNewEpisode();
     }
@@ -203,8 +235,9 @@ public final class CascadeRuntime implements Simulation {
       long finalScore = board.getScore();
       logWidget.addText("Episode ended. Final score: " + finalScore);
       scoreChart.addValue((double) finalScore);
-      telemetryEngine.writeTelemetryEvent(new EpisodeLongScoreEvent(CascadeScenario.CASCADE_NAME, sessionId,episodeID
-              , Instant.now(), finalScore));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeScoreEvent(CascadeScenario.CASCADE_NAME, sessionId, episodeID, episodeNumber,
+              Instant.now(), finalScore));
     }
 
     output.display();
@@ -255,8 +288,9 @@ public final class CascadeRuntime implements Simulation {
 
   private void startNewEpisode() {
     episodeID = UUID.randomUUID().toString();
+    episodeNumber++;
     board = new CascadeBoard();
-    CascadeBoardUtils.initialise(board,random);
+    CascadeBoardUtils.initialise(board, random);
     gameOver = false;
     log.debug("New episode {} started", episodeID);
   }
@@ -311,12 +345,12 @@ public final class CascadeRuntime implements Simulation {
     }
     // Colour-bearing types (standard, bomb, rocket, ice)
     Color base = switch (cell.getColour()) {
-      case RED    -> COLOR_RED;
-      case BLUE   -> COLOR_BLUE;
-      case GREEN  -> COLOR_GREEN;
+      case RED -> COLOR_RED;
+      case BLUE -> COLOR_BLUE;
+      case GREEN -> COLOR_GREEN;
       case YELLOW -> COLOR_YELLOW;
       case PURPLE -> COLOR_PURPLE;
-      default     -> Color.GRAY;
+      default -> Color.GRAY;
     };
     if (cell.getType() == TileType.ICE) {
       // Blend base colour with ice tint
@@ -327,19 +361,19 @@ public final class CascadeRuntime implements Simulation {
 
   private static String typeLabel(TileType type) {
     return switch (type) {
-      case BOMB     -> "B";
+      case BOMB -> "B";
       case ROCKET_H -> "H";
       case ROCKET_V -> "V";
-      case PRISM    -> "P";
-      case ICE      -> "i";
-      default       -> "";
+      case PRISM -> "P";
+      case ICE -> "i";
+      default -> "";
     };
   }
 
   private static Color blend(Color a, Color b, float t) {
-    int r = (int) (a.getRed()   * (1 - t) + b.getRed()   * t);
+    int r = (int) (a.getRed() * (1 - t) + b.getRed() * t);
     int gr = (int) (a.getGreen() * (1 - t) + b.getGreen() * t);
-    int bl = (int) (a.getBlue()  * (1 - t) + b.getBlue()  * t);
+    int bl = (int) (a.getBlue() * (1 - t) + b.getBlue() * t);
     return new Color(r, gr, bl);
   }
 }
