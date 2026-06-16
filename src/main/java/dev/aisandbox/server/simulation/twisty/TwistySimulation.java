@@ -25,9 +25,9 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
 import dev.aisandbox.server.engine.widget.RollingSuccessStatisticsWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -131,6 +131,7 @@ public final class TwistySimulation implements Simulation {
    * Unique identifier for the current episode.
    */
   private String episodeID;
+  private int episodeNumber = 0;
 
   /**
    * Constructs a new TwistySimulation with the specified parameters.
@@ -176,6 +177,7 @@ public final class TwistySimulation implements Simulation {
     obtmMoves = 0;
     moveHistoryWidget.clearIcons();
     episodeID = UUID.randomUUID().toString();
+    episodeNumber++;
   }
 
   /**
@@ -233,7 +235,8 @@ public final class TwistySimulation implements Simulation {
           .build());
       statsWidget.addFailure();
       telemetryEngine.writeTelemetryEvent(
-          new SessionFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, Instant.now()));
+          new EpisodeWinEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, episodeNumber,
+              Instant.now(), false));
       initialisePuzzle();
     } else {
       // Apply the regular move
@@ -249,7 +252,10 @@ public final class TwistySimulation implements Simulation {
             .build());
         statsWidget.addSuccess(obtmMoves);
         telemetryEngine.writeTelemetryEvent(
-            new EpisodeLongScoreEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID,
+            new EpisodeWinEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, episodeNumber,
+                Instant.now(), true));
+        telemetryEngine.writeTelemetryEvent(
+            new EpisodeScoreEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, episodeNumber,
                 Instant.now(), obtmMoves));
         output.display();
         initialisePuzzle();
@@ -261,8 +267,8 @@ public final class TwistySimulation implements Simulation {
                 .build());
         statsWidget.addFailure();
         telemetryEngine.writeTelemetryEvent(
-            new SessionFailureEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID,
-                Instant.now()));
+            new EpisodeWinEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, episodeNumber,
+                Instant.now(), false));
         output.display();
         initialisePuzzle();
       } else {

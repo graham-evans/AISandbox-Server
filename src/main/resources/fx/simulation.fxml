@@ -6,14 +6,17 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="430.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.aisandbox.server.fx.SetupController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="430.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.aisandbox.server.fx.SetupController">
   <center>
     <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
       <children>
@@ -69,6 +72,11 @@
               <content>
                 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="4.0">
                   <children>
+                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Look and feel" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
                               <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <right>
                                     <ChoiceBox fx:id="themeChoice" prefWidth="150.0" BorderPane.alignment="CENTER" />
@@ -77,12 +85,33 @@
                                     <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Theme" BorderPane.alignment="CENTER" />
                                  </center>
                               </BorderPane>
+                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Network" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
                               <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <right>
                                     <CheckBox fx:id="externalCheckBox" mnemonicParsing="false" BorderPane.alignment="CENTER" />
                                  </right>
                                  <center>
                                     <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Allow external connections" BorderPane.alignment="CENTER" />
+                                 </center>
+                              </BorderPane>
+                              <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Telemetry">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <RadioButton fx:id="telemetryNone" mnemonicParsing="false" selected="true" text="None" />
+                              <RadioButton fx:id="telemetryJson" mnemonicParsing="false" text="JSONL File" />
+                              <RadioButton fx:id="telemetryOtel" mnemonicParsing="false" text="Open Telemetry" />
+                              <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                                 <left>
+                                    <Label text="URL" BorderPane.alignment="CENTER" />
+                                 </left>
+                                 <center>
+                                    <TextField fx:id="telemetryOtelUrl" BorderPane.alignment="CENTER" />
                                  </center>
                               </BorderPane>
                   </children>

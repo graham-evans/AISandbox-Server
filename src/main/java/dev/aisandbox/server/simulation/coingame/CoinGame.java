@@ -24,8 +24,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -74,10 +74,11 @@ public final class CoinGame implements Simulation {
   private final TelemetryEngine telemetryEngine;
   private int firstPlayer = 1;
   private int currentPlayer = 0;
+  private String episodeId;
+  private int episodeNumber = 0;
   // UI Images
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;
-  private String episodeId;
   private int[] coins;
 
 
@@ -123,6 +124,7 @@ public final class CoinGame implements Simulation {
     System.arraycopy(scenario.getRows(), 0, coins, 0, scenario.getRows().length);
     // change the episode ID
     episodeId = UUID.randomUUID().toString();
+    episodeNumber++;
     // mark that neither player has moved;
     agentMoved[0] = false;
     agentMoved[1] = false;
@@ -208,10 +210,9 @@ public final class CoinGame implements Simulation {
    * Attempts to make a move in the game by removing coins from a selected row.
    *
    * <p>The method checks if the move is legal according to the game rules: - The number of coins
-   * to
-   * remove must be between 1 and the maximum allowed. - The selected row must be valid and contain
-   * enough coins. - The move must not exceed the maximum number of coins that can be taken in one
-   * turn.
+   * to remove must be between 1 and the maximum allowed. - The selected row must be valid and
+   * contain enough coins. - The move must not exceed the maximum number of coins that can be taken
+   * in one turn.
    *
    * @param row    The row from which coins will be removed
    * @param amount The number of coins to remove
@@ -245,8 +246,7 @@ public final class CoinGame implements Simulation {
    * Checks if the game has reached a terminal state, returning true if this is the case.
    *
    * <p>The game is finished when all rows have zero coins left. According to the rules, the player
-   * who
-   * takes the last coin loses.
+   * who takes the last coin loses.
    *
    * @return true if all piles are empty, false otherwise
    */
@@ -281,22 +281,23 @@ public final class CoinGame implements Simulation {
     }
     logWidget.addText(agents[winner].getAgentName() + " wins");
     pieChartWidget.addValue(agents[winner].getAgentName(), theme.getPrimary());
+    // record agent 0 result
     telemetryEngine.writeTelemetryEvent(
         new EpisodeAgentWinLossEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId,
-            episodeId, Instant.now(), List.of(
-            new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(), winner == 0 ?
-                EpisodeAgentWinLossEvent.Result.WIN : EpisodeAgentWinLossEvent.Result.LOSE),
-            new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(), winner == 1 ?
-                EpisodeAgentWinLossEvent.Result.WIN : EpisodeAgentWinLossEvent.Result.LOSE)
-        )));
+            episodeId, episodeNumber, Instant.now(), agents[0].getAgentName(), winner == 0 ?
+            EpisodeAgentWinLossEvent.Result.WIN : EpisodeAgentWinLossEvent.Result.LOSE));
+    // record agent 1 result
+    telemetryEngine.writeTelemetryEvent(
+        new EpisodeAgentWinLossEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId,
+            episodeId, episodeNumber, Instant.now(), agents[1].getAgentName(), winner == 1 ?
+            EpisodeAgentWinLossEvent.Result.WIN : EpisodeAgentWinLossEvent.Result.LOSE));
   }
 
   /**
    * Renders the visual representation of the game.
    *
    * <p>This method is called by the output renderer to draw the game state, including the coin
-   * piles,
-   * UI widgets, and game information.
+   * piles, UI widgets, and game information.
    *
    * @param graphics2D The graphics context to draw on
    */

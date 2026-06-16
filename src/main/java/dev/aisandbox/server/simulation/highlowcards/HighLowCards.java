@@ -27,8 +27,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.maths.bins.IntegerBinner;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.RollingValueHistogramWidget;
@@ -199,6 +199,7 @@ public final class HighLowCards implements Simulation {
    * Unique ID for the current episode.
    */
   private String episodeID;
+  private int episodeNumber = 0;
 
   /**
    * Current score in the episode.
@@ -213,7 +214,8 @@ public final class HighLowCards implements Simulation {
    * @param theme     The visual theme to apply to the simulation
    * @param random    Random number generator for shuffling cards
    */
-  public HighLowCards(Agent agent, int cardCount, Theme theme, SimulationRandomNumberGenerator random,
+  public HighLowCards(Agent agent, int cardCount, Theme theme,
+      SimulationRandomNumberGenerator random,
       TelemetryEngine telemetryEngine) {
     this.agent = agent;
     this.cardCount = cardCount;
@@ -263,6 +265,7 @@ public final class HighLowCards implements Simulation {
     faceUpCards.add(faceDownCards.removeFirst());
     // create a new episode
     episodeID = UUID.randomUUID().toString();
+    episodeNumber++;
     // reset the score
     score = 0;
   }
@@ -324,8 +327,8 @@ public final class HighLowCards implements Simulation {
       scoreHistogramWidget.addValue(score);
       agent.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
       telemetryEngine.writeTelemetryEvent(
-          new EpisodeLongScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
-              sessionId, episodeID, Instant.now(), score));
+          new EpisodeScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
+              sessionId, episodeID, episodeNumber, Instant.now(), score));
       reset();
     } else {
       // play continues - send signal to agent

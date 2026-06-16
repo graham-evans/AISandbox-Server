@@ -8,17 +8,12 @@ package dev.aisandbox.server.engine.telemetry.engine;
 
 import dev.aisandbox.server.engine.SimulationVersion;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.TelemetryEpisodeEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentDoubleScoreEvent.AgentDoubleScore;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentLongScoreEvent.AgentLongScore;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentRankEvent.AgentRank;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentScoreEvent;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent.AgentResult;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeLongScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
@@ -45,6 +40,7 @@ public class OtelTelemetryEngine implements TelemetryEngine {
   private final Logger logger;
 
   public OtelTelemetryEngine(String collectorUrl) {
+    log.info("Setting up connection to {}", collectorUrl);
     exporter = OtlpHttpLogRecordExporter.builder()
         .setEndpoint(collectorUrl)
         // .addHeader("Authorization", "Bearer <token>")
@@ -76,11 +72,18 @@ public class OtelTelemetryEngine implements TelemetryEngine {
         .setBody(event.description())
         .setSeverity(Severity.INFO)
         .setSeverityText("INFO")
-        .setEventName(event.getClass().getSimpleName())
         .setAttribute("simulation.name", event.simulationName())
-        .setAttribute("simulation.session.id", event.sessionID())
-        .setAttribute("simulation.episode.id", event.episodeID());
+        .setAttribute("simulation.session.id", event.sessionId())
+        .setEventName(event.eventName())
+        .setBody(event.description());
   }
+
+  private LogRecordBuilder createCommon(TelemetryEpisodeEvent event) {
+    return createCommon((TelemetryEvent) event)
+        .setAttribute("simulation.episode.id", event.episodeId())
+        .setAttribute("simulation.episode.number", event.episodeNumber());
+  }
+
 
   @Override
   public void initialise(String sessionID) {
@@ -89,56 +92,29 @@ public class OtelTelemetryEngine implements TelemetryEngine {
   @Override
   public void writeTelemetryEvent(TelemetryEvent event) {
     switch (event) {
-      case SessionStartEvent ignored -> createCommon(event).emit();
-      case SessionFailureEvent ignored -> createCommon(event)
+      case SessionStartEvent startEvent -> createCommon(startEvent).emit();
+      case SessionFailureEvent failureEvent -> createCommon(failureEvent)
           .setSeverity(Severity.ERROR)
           .setSeverityText("ERROR")
           .emit();
-      case EpisodeWinEvent win -> createCommon(event)
-          .setAttribute("simulation.win", win.win())
+      case EpisodeWinEvent winEvent -> createCommon(winEvent)
+          .setAttribute("simulation.win", winEvent.win())
           .emit();
-      case EpisodeDoubleScoreEvent score -> createCommon(event)
-          .setAttribute("simulation.score", score.score())
+      case EpisodeScoreEvent scoreEvent -> createCommon(scoreEvent)
+          .setAttribute("simulation.score", scoreEvent.score())
           .emit();
-      case EpisodeLongScoreEvent score -> createCommon(event)
-          .setAttribute("simulation.score", score.score())
+      case EpisodeAgentScoreEvent agentScoreEvent -> createCommon(agentScoreEvent)
+          .setAttribute("simulation.agent.name", agentScoreEvent.agentName())
+          .setAttribute("simulation.score", agentScoreEvent.agentScore())
           .emit();
-      case EpisodeAgentDoubleScoreEvent agentScores -> {
-        for (AgentDoubleScore agentScore : agentScores.agentScoreList()) {
-          createCommon(event)
-              .setBody(agentScore.description())
-              .setAttribute("simulation.agent.name", agentScore.agentName())
-              .setAttribute("simulation.score", agentScore.score())
-              .emit();
-        }
-      }
-      case EpisodeAgentLongScoreEvent agentScores -> {
-        for (AgentLongScore agentScore : agentScores.agentScoreList()) {
-          createCommon(event)
-              .setBody(agentScore.description())
-              .setAttribute("simulation.agent.name", agentScore.agentName())
-              .setAttribute("simulation.score", agentScore.score())
-              .emit();
-        }
-      }
-      case EpisodeAgentRankEvent agentRanks -> {
-        for (AgentRank agentRank : agentRanks.agentRankList()) {
-          createCommon(event)
-              .setBody(agentRank.description())
-              .setAttribute("simulation.agent.name", agentRank.agentName())
-              .setAttribute("simulation.rank", agentRank.rank())
-              .emit();
-        }
-      }
-      case EpisodeAgentWinLossEvent agentWin -> {
-        for (AgentResult agentResult : agentWin.agentResultList()) {
-          createCommon(event)
-              .setBody(agentResult.description())
-              .setAttribute("simulation.agent.name", agentResult.agentName())
-              .setAttribute("simulation.result", agentResult.result().name())
-              .emit();
-        }
-      }
+      case EpisodeAgentRankEvent agentRankEvent -> createCommon(agentRankEvent)
+          .setAttribute("simulation.agent.name", agentRankEvent.agentName())
+          .setAttribute("simulation.rank", agentRankEvent.agentRank())
+          .emit();
+      case EpisodeAgentWinLossEvent agentWinEvent -> createCommon(agentWinEvent)
+          .setAttribute("simulation.agent.name", agentWinEvent.agentName())
+          .setAttribute("simulation.result", agentWinEvent.agentResult().name())
+          .emit();
     }
   }
 

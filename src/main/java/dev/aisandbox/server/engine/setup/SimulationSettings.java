@@ -20,6 +20,7 @@ import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.telemetry.engine.FileTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.engine.NullTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.engine.OtelTelemetryEngine;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,7 @@ public class SimulationSettings {
   private final BooleanProperty selectedTelemetryJson = new SimpleBooleanProperty(false);
   private final BooleanProperty selectedTelemetryOtel = new SimpleBooleanProperty(false);
   private final StringProperty telemetryJsonPath = new SimpleStringProperty(".");
+  private final StringProperty telemetryOtelUrl = new SimpleStringProperty("http://localhost/");
   // output types - linked in constructor
   private final BooleanProperty outputNone = new SimpleBooleanProperty(false);
   private final BooleanProperty outputScreen = new SimpleBooleanProperty(true);
@@ -132,7 +134,9 @@ public class SimulationSettings {
       sb.append(telemetryJsonPath.get());
       sb.append("\n");
     } else if (selectedTelemetryOtel.get()) {
-      sb.append("OTel\n");
+      sb.append("OTel\n output URL - ");
+      sb.append(telemetryOtelUrl().get());
+      sb.append("\n");
     } else {
       sb.append("Error\n");
     }
@@ -208,6 +212,10 @@ public class SimulationSettings {
     // check for JSON engine
     if (selectedTelemetryJson.get()) {
       telemetryEngine = new FileTelemetryEngine(new File(telemetryJsonPath.get()));
+    }
+    // check for Otel engine
+    if (selectedTelemetryOtel.get()) {
+      telemetryEngine = new OtelTelemetryEngine(telemetryOtelUrl.get());
     }
     return telemetryEngine;
   }

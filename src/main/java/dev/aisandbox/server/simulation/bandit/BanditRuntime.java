@@ -25,7 +25,7 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeDoubleScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
@@ -191,6 +191,10 @@ public final class BanditRuntime implements Simulation {
    * Unique identifier for the current episode.
    */
   private String episodeID = UUID.randomUUID().toString();
+  /**
+   * The episode number
+   */
+  private int episodeNumber=0;
 
   /**
    * Constructs a new Bandit simulation runtime with the specified configuration.
@@ -234,6 +238,11 @@ public final class BanditRuntime implements Simulation {
     initialise();
   }
 
+  @Override
+  public String getSimulationName() {
+    return BanditScenario.BANDIT_NAME;
+  }
+
   /**
    * Initializes or resets the bandit state, creating new bandits as needed.
    */
@@ -245,6 +254,7 @@ public final class BanditRuntime implements Simulation {
     }
     sessionStep = 0;
     episodeID = UUID.randomUUID().toString();
+    episodeNumber++;
     episodeScore = 0;
     episodeBestMoveCount = 0;
   }
@@ -287,7 +297,7 @@ public final class BanditRuntime implements Simulation {
       episodeSuccessWidget.addValue(episodeBestMoveCount / pullCount);
       statisticsWidget.addScore(episodeScore);
       telemetryEngine.writeTelemetryEvent(
-          new EpisodeDoubleScoreEvent(BanditScenario.BANDIT_NAME, sessionId, episodeID,
+          new EpisodeScoreEvent(BanditScenario.BANDIT_NAME, sessionId, episodeID, episodeNumber,
               Instant.now(), episodeScore));
     }
     // update the screen

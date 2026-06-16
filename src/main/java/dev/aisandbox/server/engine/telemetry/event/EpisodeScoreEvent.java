@@ -7,26 +7,29 @@
 package dev.aisandbox.server.engine.telemetry.event;
 
 import dev.aisandbox.server.engine.telemetry.TelemetryEpisodeEvent;
+
 import java.time.Instant;
 
 /**
- * Telemetry event to denote a simulation episode completing with a win or loss outcome.
+ * Telemetry event to denote a simulation episode completing with a double precision score.
  *
  * @param simulationName The name of the simulation
  * @param sessionId      The session identifier
  * @param episodeId      The episode identifier
  * @param episodeNumber  The number of the episode in this run
  * @param timestamp      The time the event was created
- * @param win            Whether the episode was won
+ * @param score          The score for the episode
  */
-public record EpisodeWinEvent(String simulationName,
-                              String sessionId,
-                              String episodeId,
-                              int episodeNumber,
-                              Instant timestamp,
-                              boolean win) implements TelemetryEpisodeEvent {
+public record EpisodeScoreEvent(String simulationName,
+                                String sessionId,
+                                String episodeId,
+                                int episodeNumber,
+                                Instant timestamp,
+                                double score) implements TelemetryEpisodeEvent {
+
     @Override
     public String description() {
-        return "Episode ends with " + (win ? "win" : "loss");
+        return "Episode ends with score " + score;
     }
+
 }

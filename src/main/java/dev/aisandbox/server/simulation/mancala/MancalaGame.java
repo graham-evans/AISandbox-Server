@@ -25,8 +25,9 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent.Result;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -89,6 +90,7 @@ public final class MancalaGame implements Simulation {
   private int firstPlayer = 1;
   private int currentPlayer = 0;
   private String episodeId;
+  private int episodeNumber = 0;
 
   /**
    * Creates a new Mancala game simulation.
@@ -155,6 +157,7 @@ public final class MancalaGame implements Simulation {
   private void reset() {
     board = new MancalaBoard(seedsPerPit);
     episodeId = UUID.randomUUID().toString();
+    episodeNumber++;
     agentMoved[0] = false;
     agentMoved[1] = false;
     firstPlayer = (firstPlayer + 1) % 2;
@@ -251,30 +254,30 @@ public final class MancalaGame implements Simulation {
           + board.getStore(0) + "-" + board.getStore(1) + ")");
       informDraw();
       pieChartWidget.addValue("Draw", theme.getAccent());
+      // record both agents have draws
       telemetryEngine.writeTelemetryEvent(
           new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME, sessionId,
-              episodeId, Instant.now(), List.of(
-              new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),
-                  EpisodeAgentWinLossEvent.Result.DRAW),
-              new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(),
-                  EpisodeAgentWinLossEvent.Result.DRAW)
-          )));
+              episodeId, episodeNumber, Instant.now(), agents[0].getAgentName(), Result.DRAW));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME, sessionId,
+              episodeId, episodeNumber, Instant.now(), agents[1].getAgentName(), Result.DRAW));
     } else {
       logWidget.addText(agents[winner].getAgentName() + " wins! ("
           + board.getStore(0) + "-" + board.getStore(1) + ")");
       informResult(winner);
       pieChartWidget.addValue(agents[winner].getAgentName(),
           winner == 0 ? theme.getPrimary() : theme.getSecondary());
+      // report winner and loser
       telemetryEngine.writeTelemetryEvent(
           new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME, sessionId,
-              episodeId, Instant.now(), List.of(
-              new EpisodeAgentWinLossEvent.AgentResult(agents[0].getAgentName(),
-                  winner == 0 ? EpisodeAgentWinLossEvent.Result.WIN
-                      : EpisodeAgentWinLossEvent.Result.LOSE),
-              new EpisodeAgentWinLossEvent.AgentResult(agents[1].getAgentName(),
-                  winner == 1 ? EpisodeAgentWinLossEvent.Result.WIN
-                      : EpisodeAgentWinLossEvent.Result.LOSE)
-          )));
+              episodeId, episodeNumber, Instant.now(), agents[0].getAgentName(),
+              winner == 0 ? EpisodeAgentWinLossEvent.Result.WIN
+                  : EpisodeAgentWinLossEvent.Result.LOSE));
+      telemetryEngine.writeTelemetryEvent(
+          new EpisodeAgentWinLossEvent(MancalaBuilder.MANCALA_NAME, sessionId,
+              episodeId, episodeNumber, Instant.now(), agents[1].getAgentName(),
+              winner == 1 ? EpisodeAgentWinLossEvent.Result.WIN
+                  : EpisodeAgentWinLossEvent.Result.LOSE));
     }
     output.display();
     reset();
