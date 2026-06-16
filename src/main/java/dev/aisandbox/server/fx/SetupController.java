@@ -30,10 +30,12 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -64,6 +66,18 @@ public class SetupController {
 
   @FXML
   private ListView<SimulationBuilder> simulationList;
+
+  @FXML
+  private RadioButton telemetryJson;
+
+  @FXML
+  private RadioButton telemetryNone;
+
+  @FXML
+  private RadioButton telemetryOtel;
+
+  @FXML
+  private TextField telemetryOtelUrl;
 
   /**
    * Creates a UI node for editing a simulation parameter.
@@ -128,6 +142,14 @@ public class SetupController {
         != null : "fx:id=\"simDescription\" was not injected: check your FXML file 'simulation.fxml'.";
     assert simulationList
         != null : "fx:id=\"simulationList\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert telemetryJson
+        != null : "fx:id=\"telemetryJson\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert telemetryNone
+        != null : "fx:id=\"telemetryNone\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert telemetryOtel
+        != null : "fx:id=\"telemetryOtel\" was not injected: check your FXML file 'simulation.fxml'.";
+    assert telemetryOtelUrl
+        != null : "fx:id=\"telemetryOtelUrl\" was not injected: check your FXML file 'simulation.fxml'.";
     assert themeChoice
         != null : "fx:id=\"themeChoice\" was not injected: check your FXML file 'simulation.fxml'.";
 
@@ -176,6 +198,11 @@ public class SetupController {
     themeChoice.getSelectionModel().select(Theme.LIGHT);
     // bind network choice
     model.getSettings().externalNetwork().bind(externalCheckBox.selectedProperty());
+    // bind telemetry options
+    telemetryNone.selectedProperty().bindBidirectional(model.getSettings().selectedTelemetryNone());
+    telemetryJson.selectedProperty().bindBidirectional(model.getSettings().selectedTelemetryJson());
+    telemetryOtel.selectedProperty().bindBidirectional(model.getSettings().selectedTelemetryOtel());
+    telemetryOtelUrl.textProperty().bindBidirectional(model.getSettings().telemetryOtelUrl());
   }
 
   /**
