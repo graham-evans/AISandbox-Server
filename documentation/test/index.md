@@ -16,10 +16,15 @@ This is used for centered section headers (not bold).
 
 Left edge headers
 
-#### Forth Heading &lt;h4&gt; [Random](/simulations/tags.md#Random)
+#### Forth Heading &lt;h4&gt;
 
-Right aligned Tag headers
+Used for carousel headings
 
-##### Fifth Heading Tag Note
 
-Left aligned Tag Headers
+##### [#](Fifth Heading Tag) [Random](/simulations/tags.md#Random) [Multi-Agent](../simulations/tags.md#Multi-Agent)
+
+Right aligned Tag headers - a-href's are drawn as buttons
+
+###### Sixth Heading Tag
+
+Left aligned Tag Headers - entire line is a button
