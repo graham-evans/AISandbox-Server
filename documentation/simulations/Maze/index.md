@@ -1,5 +1,7 @@
 # Maze Scenario
 
+##### [Dense Reward](../tags.md#dense-reward) [Partial Observation](../tags.md#partial-observation) [Random](../tags.md#random) [Single-Agent](../tags.md#single-agent)
+
 The Maze scenario is a classic problem in path finding and reinforcement learning. The agent is
 placed in a two-dimensional maze and must find its way to an exit. Once the exit is found, the agent
 is repositioned randomly within the maze and must find the exit again. This cycle continues until

@@ -1,5 +1,7 @@
 # Multi-Armed Bandits
 
+##### [Dense Reward](../tags.md#dense-reward) [Random](../tags.md#random) [Single-Agent](../tags.md#single-agent)
+
 The Multi-Armed Bandit is one of the classic problems studied in probability theory and AI and it’s
 one of the first problems you are likely to look at when doing a Reinforcement Learning class. The
 basic premise is that you have a row of one-armed bandit machines, each tuned to pay out a reward

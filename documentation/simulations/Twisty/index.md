@@ -1,5 +1,7 @@
 # Twisty Puzzles
 
+##### [Perfect Information](../tags.md#perfect-information) [Random](../tags.md#random) [Single-Agent](../tags.md#single-agent) [Sparse Reward](../tags.md#sparse-reward)
+
 Twisty Puzzles simulate various face movement puzzles like the Rubik's Cube and other cuboids. The
 goal is to develop an agent capable of solving these puzzles by applying a series of rotations to
 restore the puzzle to its solved state.

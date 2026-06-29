@@ -25,8 +25,8 @@ import dev.aisandbox.server.engine.Theme;
 import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
-import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
+import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -194,7 +194,7 @@ public final class BanditRuntime implements Simulation {
   /**
    * The episode number
    */
-  private int episodeNumber=0;
+  private int episodeNumber = 0;
 
   /**
    * Constructs a new Bandit simulation runtime with the specified configuration.
@@ -209,7 +209,8 @@ public final class BanditRuntime implements Simulation {
    * @param theme           the visual theme for rendering
    * @param telemetryEngine engine for logging and metrics
    */
-  public BanditRuntime(Agent agent, SimulationRandomNumberGenerator random, int banditCount, int pullCount,
+  public BanditRuntime(Agent agent, SimulationRandomNumberGenerator random, int banditCount,
+      int pullCount,
       BanditNormalEnumeration normal, BanditStdEnumeration std, BanditUpdateEnumeration updateRule,
       Theme theme, TelemetryEngine telemetryEngine) {
     // store parameters
