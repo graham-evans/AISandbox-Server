@@ -1,5 +1,7 @@
 # Cascade: A Match-3 AI Simulation
 
+##### [Dense Reward](../tags.md#dense-reward) [Perfect Information](../tags.md#perfect-information) [Random](../tags.md#random) [Single-Agent](../tags.md#single-agent)
+
 ## Goal
 
 **Cascade** is a turn-based match-3 puzzle simulation designed as an AI challenge environment. The goal is straightforward: score as many points as possible within a fixed number of moves by swapping adjacent tiles to form matching groups, triggering chain reactions, and detonating special objects.

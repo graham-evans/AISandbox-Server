@@ -1,5 +1,7 @@
 # High Low Cards
 
+##### [Dense Reward](../tags.md#dense-reward) [Partial Observation](../tags.md#partial-observation) [Random](../tags.md#random) [Single-Agent](../tags.md#single-agent)
+
 The 'High Low' card game involves predicting whether the next card draw from a pack will be higher
 or lower than the one before. Agents are prompted with the current board, including already observed
 cards and predict 'HIGHER' or 'LOWER'. If the prediction is correct, the scenario continues until

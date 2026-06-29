@@ -1,5 +1,7 @@
 # Mine Hunter
 
+##### [Partial Observation](../tags.md#partial-observation) [Random](../tags.md#random) [Single-Agent](../tags.md#single-agent) [Sparse Reward](../tags.md#sparse-reward)
+
 Mine Hunter pits the AI against a minefield! A known quantity of mines have been distributed across
 a grid of squares and the AI agent must work out where they are. To help, each uncovered square will
 show how many mines are in the surrounding squares.

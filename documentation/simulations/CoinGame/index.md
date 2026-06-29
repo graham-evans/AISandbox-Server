@@ -1,5 +1,7 @@
 # The Coin Game
 
+##### [Competitive](../tags.md#competitive) [Deterministic](../tags.md#deterministic) [Multi-Agent](../tags.md#multi-agent) [Perfect Information](../tags.md#perfect-information) [Sparse Reward](../tags.md#sparse-reward)
+
 The Coin Game is a scenario for two agents and used to introduce rule based AI in Mark Liu's "
 AlphaGo Simplified" book (although many other techniques can be used). Several varients are
 available with perhaps the most famous one mirroring the classic
