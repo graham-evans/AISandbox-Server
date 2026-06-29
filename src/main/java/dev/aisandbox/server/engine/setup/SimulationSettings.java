@@ -17,9 +17,9 @@ import dev.aisandbox.server.engine.network.NetworkAgent;
 import dev.aisandbox.server.engine.output.BitmapOutputRenderer;
 import dev.aisandbox.server.engine.output.NullOutputRenderer;
 import dev.aisandbox.server.engine.output.OutputRenderer;
+import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.engine.FileTelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.engine.NullTelemetryEngine;
-import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.engine.OtelTelemetryEngine;
 import java.io.File;
 import java.util.ArrayList;
@@ -44,8 +44,10 @@ import lombok.extern.slf4j.Slf4j;
  *
  * <p>This is based on the Builder pattern, with a few differences:</p>
  * <ol>
- *     <li>fields are exposed as fluent properties without chaining so they can be linked into a JavaFX UI as well as updated with CLI flags.</li>
- *     <li>Calling build with a RuntimeController as an attribute will create a FXRenderer and use this, ignoring the renderer settings.</li>
+ *     <li>fields are exposed as fluent properties without chaining so they can be linked into a
+ *     JavaFX UI as well as updated with CLI flags.</li>
+ *     <li>Calling build with a RuntimeController as an attribute will create a FXRenderer and use
+ *     this, ignoring the renderer settings.</li>
  *     <li>SimulationSettings.build creates a SimulationRunner</li>
  * </ol>
  */
@@ -105,10 +107,11 @@ public class SimulationSettings {
 
   public String toReport() {
     final StringBuilder sb = new StringBuilder("Simulation Settings\n");
-    sb.append("\n selected simulation - ").append(selectedSimulationBuilder==null?"None":
-            selectedSimulationBuilder.get().getSimulationName());
+    sb.append("\n selected simulation - ").append(selectedSimulationBuilder == null ? "None" :
+        selectedSimulationBuilder.get().getSimulationName());
     sb.append("\n number of agents - ").append(agentCount.get());
-    sb.append("\n max number of steps -").append(maxStepCount.get()==-1?"infinite":maxStepCount.get());
+    sb.append("\n max number of steps -")
+        .append(maxStepCount.get() == -1 ? "infinite" : maxStepCount.get());
 
     sb.append("\n selected theme - ").append(selectedTheme.get());
     sb.append("\n\nNetwork Settings");
@@ -124,7 +127,8 @@ public class SimulationSettings {
       sb.append("png\n output directory - ");
       sb.append(outputPNGPath.get());
     }
-    sb.append("\n skip frames - ").append(outputSkipFrames.get()==-1?"none":outputSkipFrames.get());
+    sb.append("\n skip frames - ")
+        .append(outputSkipFrames.get() == -1 ? "none" : outputSkipFrames.get());
 
     sb.append("\n\nTelemetry\n\n telemetry output - ");
     if (selectedTelemetryNone.get()) {
@@ -186,7 +190,7 @@ public class SimulationSettings {
    *
    * <p>This is the main method that all versions calls
    *
-   * @param renderer the renderer to use
+   * @param renderer       the renderer to use
    * @param prebuiltAgents a list of prebuilt agents
    * @return the SimulationRunner plumbed into the renderer / agents / telemetry etc.
    * @throws SimulationSetupException when there is an error setting up the simulation.
@@ -222,10 +226,10 @@ public class SimulationSettings {
 
   public OutputRenderer createRenderer() {
     if (outputPNG.get()) {
-    // setup a PNG output renderer
+      // setup a PNG output renderer
       BitmapOutputRenderer bRenderer = new BitmapOutputRenderer();
       // skip frames
-      if (outputSkipFrames.get()>0) {
+      if (outputSkipFrames.get() > 0) {
         bRenderer.setSkipFrames(outputSkipFrames.get());
       }
       // output directory
@@ -237,7 +241,7 @@ public class SimulationSettings {
   }
 
   public SimulationRandomNumberGenerator createRandom() {
-    // TODO get seed from settings
+    // TODO: get seed from settings
     long randomSeed = System.currentTimeMillis();
     return new SimulationRandomNumberGenerator(randomSeed);
   }
@@ -247,11 +251,11 @@ public class SimulationSettings {
     log.info("Creating {} agents, starting at network port {}", agentCount.get(),
         defaultPort.get());
     // get next port to use
-    AtomicInteger port = new AtomicInteger(defaultPort.get());
+    final AtomicInteger port = new AtomicInteger(defaultPort.get());
     // create default agent names
-    String[] agentNames = selectedSimulationBuilder.get().getAgentNames(agentCount.get());
+    final String[] agentNames = selectedSimulationBuilder.get().getAgentNames(agentCount.get());
     // create the list of agents
-    List<Agent> agentList = new ArrayList<>();
+    final List<Agent> agentList = new ArrayList<>();
     // add any prebuilt ones
     agentList.addAll(prebuiltAgents);
     log.info("Added {} prebuilt agents", prebuiltAgents.size());
@@ -269,6 +273,5 @@ public class SimulationSettings {
     }
     return agentList;
   }
-
 
 }

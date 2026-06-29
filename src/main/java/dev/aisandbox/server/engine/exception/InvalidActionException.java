@@ -24,7 +24,9 @@ import java.io.Serial;
  *   <li>In a board game: placing a piece on a square that is currently occupied</li>
  * </ul>
  *
- * <p>Generally it is caught and processed within the {@link dev.aisandbox.server.engine.Simulation#step(dev.aisandbox.server.engine.output.OutputRenderer) Simulation#step()} method
+ * <p>Generally it is caught and processed within the
+ * {@link dev.aisandbox.server.engine.Simulation#step(dev.aisandbox.server.engine.output.OutputRenderer)
+ * Simulation#step()} method
  *
  * @see IllegalActionException
  * @see SimulationRuntimeException
