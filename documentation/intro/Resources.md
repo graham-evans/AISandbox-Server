@@ -110,117 +110,16 @@ def q_learning(state, num_episodes):
 Most languages have dedicated RL libraries as well as other frameworks related to different aspects of AI. Here are 
 a selection grouped by the most used languages that support Protocol Buffers (according to the 2025 [TIOBE Index](https://www.tiobe.com/tiobe-index/)).
 
-### Python — TIOBE #1
-
-| Category | Libraries |
-|---|---|
-| **DNN / Deep Learning** | [PyTorch](https://pytorch.org/) · [TensorFlow](https://www.tensorflow.org/) · [JAX](https://github.com/jax-ml/jax) · [Keras](https://keras.io/) |
-| **Classical ML** | [scikit-learn](https://scikit-learn.org/) · [XGBoost](https://xgboost.readthedocs.io/) · [LightGBM](https://lightgbm.readthedocs.io/) |
-| **RL / Q-Tables** | [Stable Baselines3](https://stable-baselines3.readthedocs.io/) · [Ray RLlib](https://docs.ray.io/en/latest/rllib/) · [Gymnasium](https://gymnasium.farama.org/) · [CleanRL](https://github.com/vwxyzjn/cleanrl) |
-| **LLM Connectors** | [LangChain](https://www.langchain.com/) · [OpenAI SDK](https://github.com/openai/openai-python) · [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-python) · [LiteLLM](https://github.com/BerriAI/litellm) |
-| **Agent Frameworks** | [LangGraph](https://github.com/langchain-ai/langgraph) · [AutoGen](https://github.com/microsoft/autogen) · [CrewAI](https://github.com/crewAIInc/crewAI) · [Google ADK](https://github.com/google/adk-python) |
-| **Rules Engines** | [Durable Rules](https://github.com/jruizgit/rules) · [business-rules](https://github.com/venmo/business-rules) · [Experta](https://github.com/nilp0inter/experta) |
-| **Data / Numeric** | [NumPy](https://numpy.org/) · [Pandas](https://pandas.pydata.org/) · [Polars](https://pola.rs/) |
-
----
-
-### C++ — TIOBE #2
-
-| Category | Libraries |
-|---|---|
-| **DNN / Deep Learning** | [LibTorch](https://pytorch.org/cppdocs/) · [TensorFlow C++](https://www.tensorflow.org/install/lang_c) · [ONNX Runtime](https://onnxruntime.ai/) · [Caffe2](https://caffe2.ai/) |
-| **Classical ML** | [mlpack](https://www.mlpack.org/) · [dlib](http://dlib.net/) · [Shark](https://www.shark-ml.org/) |
-| **RL / Q-Tables** | [RLtools](https://github.com/rl-tools/rl-tools) · [AI-Toolbox](https://github.com/Svalorzen/AI-Toolbox) · [RLLib](https://github.com/samindaa/RLLib) · [relearn](https://github.com/alexge233/relearn) |
-| **LLM Connectors** | [llama.cpp](https://github.com/ggerganov/llama.cpp) · [whisper.cpp](https://github.com/ggerganov/whisper.cpp) · [CTranslate2](https://github.com/OpenNMT/CTranslate2) |
-| **Agent Frameworks** | [BehaviorTree.CPP](https://github.com/BehaviorTree/BehaviorTree.CPP) — *limited higher-level agent tooling* |
-| **Rules Engines** | [CLIPS](https://www.clipsrules.net/) · [UE Rules](https://unrealengine.com/) |
-| **Data / Numeric** | [Eigen](https://eigen.tuxfamily.org/) · [Armadillo](https://arma.sourceforge.net/) · [OpenCV](https://opencv.org/) |
-
----
-
-### Java — TIOBE #3
-
-| Category | Libraries |
-|---|---|
-| **DNN / Deep Learning** | [Deeplearning4j](https://deeplearning4j.konduit.ai/) · [DJL](https://djl.ai/) · [ONNX Runtime Java](https://onnxruntime.ai/) |
-| **Classical ML** | [Weka](https://www.cs.waikato.ac.nz/ml/weka/) · [Tribuo](https://tribuo.org/) · [Smile](https://haifengl.github.io/) · [Spark MLlib](https://spark.apache.org/mllib/) |
-| **RL / Q-Tables** | [RL4J](https://github.com/eclipse/deeplearning4j/tree/master/rl4j) · [Burlap](http://burlap.cs.brown.edu/) |
-| **LLM Connectors** | [LangChain4j](https://github.com/langchain4j/langchain4j) · [Spring AI](https://spring.io/projects/spring-ai) · [Semantic Kernel](https://github.com/microsoft/semantic-kernel-java) |
-| **Agent Frameworks** | [LangGraph4j](https://github.com/langchain4j/langgraph4j) · [Kalix Agents](https://docs.kalix.io/) · [Google ADK Java](https://github.com/google/adk-java) |
-| **Rules Engines** | [Drools](https://www.drools.org/) · [Easy Rules](https://github.com/j-easy/easy-rules) · [OpenL Tablets](https://openl-tablets.org/) |
-| **Data / Numeric** | [ND4J](https://github.com/eclipse/deeplearning4j/tree/master/nd4j) · [Tablesaw](https://github.com/jtablesaw/tablesaw) · [Apache Commons Math](https://commons.apache.org/proper/commons-math/) |
-
----
-
-### C# — TIOBE #5
-
-| Category | Libraries |
-|---|---|
-| **DNN / Deep Learning** | [TorchSharp](https://github.com/dotnet/TorchSharp) · [ONNX Runtime .NET](https://onnxruntime.ai/) · [TensorFlow.NET](https://github.com/SciSharp/TensorFlow.NET) |
-| **Classical ML** | [ML.NET](https://dotnet.microsoft.com/apps/machinelearning-ai/ml-dotnet) · [Accord.NET](http://accord-framework.net/) |
-| **RL / Q-Tables** | *Limited native options* — build custom with [ML.NET](https://dotnet.microsoft.com/apps/machinelearning-ai/ml-dotnet) |
-| **LLM Connectors** | [Semantic Kernel](https://github.com/microsoft/semantic-kernel) · [LLM Tornado](https://github.com/lofcz/LLMTornado) · [LLamaSharp](https://github.com/SciSharp/LLamaSharp) · [Microsoft.Extensions.AI](https://learn.microsoft.com/en-us/dotnet/ai/dotnet-ai-ecosystem) |
-| **Agent Frameworks** | [MS Agent Framework](https://learn.microsoft.com/en-us/dotnet/ai/dotnet-ai-ecosystem) · [AutoGen.NET](https://github.com/microsoft/autogen/tree/main/dotnet) |
-| **Rules Engines** | [NRules](https://github.com/NRules/NRules) · [RulesEngine](https://github.com/microsoft/RulesEngine) |
-| **Data / Numeric** | [Math.NET](https://www.mathdotnet.com/) · [NumSharp](https://github.com/SciSharp/NumSharp) |
-
----
-
-### Go — TIOBE #7
-
-| Category | Libraries |
-|---|---|
-| **DNN / Deep Learning** | [Gorgonia](https://github.com/gorgonia/gorgonia) · [GoMLX](https://github.com/gomlx/gomlx) · [ONNX Runtime Go](https://onnxruntime.ai/) |
-| **Classical ML** | [GoLearn](https://github.com/sjwhitworth/golearn) · [Gonum](https://www.gonum.org/) |
-| **RL / Q-Tables** | *Very limited* — [gold](https://github.com/aunum/gold) |
-| **LLM Connectors** | [LangChainGo](https://github.com/tmc/langchaingo) · [Eino](https://github.com/cloudwego/eino) · [Ollama API](https://github.com/ollama/ollama) · [GenKit Go](https://github.com/firebase/genkit/tree/main/go) |
-| **Agent Frameworks** | [ADK-Go](https://github.com/google/adk-go) · [go-llm](https://github.com/natexcvi/go-llm) · [MCP Go-SDK](https://github.com/modelcontextprotocol/go-sdk) |
-| **Rules Engines** | [Grule](https://github.com/hyperjumptech/grule-rule-engine) · [GoRules](https://github.com/gorules/zen) |
-| **Data / Numeric** | [Gonum](https://www.gonum.org/) · [go-dataframe](https://github.com/go-gota/gota) |
-
----
-
-### JavaScript / TypeScript — TIOBE #6 / #8
-
-| Category | Libraries |
-|---|---|
-| **DNN / Deep Learning** | [TensorFlow.js](https://www.tensorflow.org/js) · [ONNX Runtime Web](https://onnxruntime.ai/) · [Brain.js](https://brain.js.org/) |
-| **Classical ML** | [ml.js](https://github.com/mljs) · [Danfo.js](https://danfo.jsdata.org/) |
-| **RL / Q-Tables** | [REINFORCEjs](https://cs.stanford.edu/people/karpathy/reinforcejs/) — *niche ecosystem* |
-| **LLM Connectors** | [LangChain.js](https://github.com/langchain-ai/langchainjs) · [Vercel AI SDK](https://sdk.vercel.ai/) · [OpenAI Node](https://github.com/openai/openai-node) · [Anthropic Node](https://github.com/anthropics/anthropic-sdk-typescript) |
-| **Agent Frameworks** | [LangGraph.js](https://github.com/langchain-ai/langgraphjs) · [Mastra](https://github.com/mastra-ai/mastra) · [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk) |
-| **Rules Engines** | [json-rules-engine](https://github.com/CacheControl/json-rules-engine) · [Nools](https://github.com/noolsjs/nools) |
-| **Data / Numeric** | [mathjs](https://mathjs.org/) · [Arquero](https://github.com/uwdata/arquero) |
-
----
-
-### Kotlin — TIOBE #13
-
-| Category | Libraries |
-|---|---|
-| **DNN / Deep Learning** | [KotlinDL](https://github.com/Kotlin/kotlindl) · [DJL](https://djl.ai/) · [DL4J](https://deeplearning4j.konduit.ai/) *(via JVM)* |
-| **Classical ML** | [Smile](https://haifengl.github.io/) *(via Kotlin DSL)* · [Tribuo](https://tribuo.org/) *(via JVM)* |
-| **RL / Q-Tables** | *Via Java* — [RL4J](https://github.com/eclipse/deeplearning4j/tree/master/rl4j) / [Burlap](http://burlap.cs.brown.edu/) |
-| **LLM Connectors** | [LangChain4j](https://github.com/langchain4j/langchain4j) · [Spring AI](https://spring.io/projects/spring-ai) |
-| **Agent Frameworks** | [JB AI Agent](https://github.com/JetBrains/koog) · [Google ADK](https://github.com/google/adk-java) *(Kotlin support)* |
-| **Rules Engines** | [Drools](https://www.drools.org/) *(via JVM)* |
-| **Data / Numeric** | [KMath](https://github.com/SciProgCentre/kmath) · [Multik](https://github.com/Kotlin/multik) · [Krangl](https://github.com/holgerbrandl/krangl) |
-
----
-
-### Rust — TIOBE #14
-
-| Category | Libraries |
-|---|---|
-| **DNN / Deep Learning** | [Burn](https://github.com/tracel-ai/burn) · [Candle](https://github.com/huggingface/candle) · [tch-rs](https://github.com/LaurentMazare/tch-rs) · [ort](https://github.com/pykeio/ort) |
-| **Classical ML** | [Linfa](https://github.com/rust-ml/linfa) · [SmartCore](https://github.com/smartcorelib/smartcore) · [tract](https://github.com/sonos/tract) |
-| **RL / Q-Tables** | [REnforce](https://github.com/NivenT/REnforce) — *emerging ecosystem* |
-| **LLM Connectors** | [genai](https://github.com/jeremychone/rust-genai) · [ollama-rs](https://github.com/pepperoni21/ollama-rs) · [async-openai](https://github.com/64bit/async-openai) |
-| **Agent Frameworks** | [Rig](https://github.com/0xPlaygrounds/rig) · [MCP SDK Rust](https://github.com/modelcontextprotocol/rust-sdk) |
-| **Rules Engines** | *No major native option* |
-| **Data / Numeric** | [ndarray](https://github.com/rust-ndarray/ndarray) · [Polars](https://pola.rs/) · [nalgebra](https://nalgebra.org/) |
-
----
+| Language | DNN / Deep Learning | Classical ML | RL / Q-Tables | LLM Connectors | Agent Frameworks | Rules Engines | Data / Numeric |
+|---|---|---|---|---|---|---|---|
+| **Python** (#1) | [PyTorch](https://pytorch.org/) · [TensorFlow](https://www.tensorflow.org/) · [JAX](https://github.com/jax-ml/jax) · [Keras](https://keras.io/) | [scikit-learn](https://scikit-learn.org/) · [XGBoost](https://xgboost.readthedocs.io/) · [LightGBM](https://lightgbm.readthedocs.io/) | [Stable Baselines3](https://stable-baselines3.readthedocs.io/) · [Ray RLlib](https://docs.ray.io/en/latest/rllib/) · [Gymnasium](https://gymnasium.farama.org/) · [CleanRL](https://github.com/vwxyzjn/cleanrl) | [LangChain](https://www.langchain.com/) · [OpenAI SDK](https://github.com/openai/openai-python) · [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-python) · [LiteLLM](https://github.com/BerriAI/litellm) | [LangGraph](https://github.com/langchain-ai/langgraph) · [AutoGen](https://github.com/microsoft/autogen) · [CrewAI](https://github.com/crewAIInc/crewAI) · [Google ADK](https://github.com/google/adk-python) | [Durable Rules](https://github.com/jruizgit/rules) · [business-rules](https://github.com/venmo/business-rules) · [Experta](https://github.com/nilp0inter/experta) | [NumPy](https://numpy.org/) · [Pandas](https://pandas.pydata.org/) · [Polars](https://pola.rs/) |
+| **C++** (#2) | [LibTorch](https://pytorch.org/cppdocs/) · [TensorFlow C++](https://www.tensorflow.org/install/lang_c) · [ONNX Runtime](https://onnxruntime.ai/) · [Caffe2](https://caffe2.ai/) | [mlpack](https://www.mlpack.org/) · [dlib](http://dlib.net/) · [Shark](https://www.shark-ml.org/) | [RLtools](https://github.com/rl-tools/rl-tools) · [AI-Toolbox](https://github.com/Svalorzen/AI-Toolbox) · [RLLib](https://github.com/samindaa/RLLib) · [relearn](https://github.com/alexge233/relearn) | [llama.cpp](https://github.com/ggerganov/llama.cpp) · [whisper.cpp](https://github.com/ggerganov/whisper.cpp) · [CTranslate2](https://github.com/OpenNMT/CTranslate2) | [BehaviorTree.CPP](https://github.com/BehaviorTree/BehaviorTree.CPP) — *limited higher-level agent tooling* | [CLIPS](https://www.clipsrules.net/) · [UE Rules](https://unrealengine.com/) | [Eigen](https://eigen.tuxfamily.org/) · [Armadillo](https://arma.sourceforge.net/) · [OpenCV](https://opencv.org/) |
+| **Java** (#3) | [Deeplearning4j](https://deeplearning4j.konduit.ai/) · [DJL](https://djl.ai/) · [ONNX Runtime Java](https://onnxruntime.ai/) | [Weka](https://www.cs.waikato.ac.nz/ml/weka/) · [Tribuo](https://tribuo.org/) · [Smile](https://haifengl.github.io/) · [Spark MLlib](https://spark.apache.org/mllib/) | [RL4J](https://github.com/eclipse/deeplearning4j/tree/master/rl4j) · [Burlap](http://burlap.cs.brown.edu/) | [LangChain4j](https://github.com/langchain4j/langchain4j) · [Spring AI](https://spring.io/projects/spring-ai) · [Semantic Kernel](https://github.com/microsoft/semantic-kernel-java) | [LangGraph4j](https://github.com/langchain4j/langgraph4j) · [Kalix Agents](https://docs.kalix.io/) · [Google ADK Java](https://github.com/google/adk-java) | [Drools](https://www.drools.org/) · [Easy Rules](https://github.com/j-easy/easy-rules) · [OpenL Tablets](https://openl-tablets.org/) | [ND4J](https://github.com/eclipse/deeplearning4j/tree/master/nd4j) · [Tablesaw](https://github.com/jtablesaw/tablesaw) · [Apache Commons Math](https://commons.apache.org/proper/commons-math/) |
+| **C#** (#5) | [TorchSharp](https://github.com/dotnet/TorchSharp) · [ONNX Runtime .NET](https://onnxruntime.ai/) · [TensorFlow.NET](https://github.com/SciSharp/TensorFlow.NET) | [ML.NET](https://dotnet.microsoft.com/apps/machinelearning-ai/ml-dotnet) · [Accord.NET](http://accord-framework.net/) | *Limited native options* — build custom with [ML.NET](https://dotnet.microsoft.com/apps/machinelearning-ai/ml-dotnet) | [Semantic Kernel](https://github.com/microsoft/semantic-kernel) · [LLM Tornado](https://github.com/lofcz/LLMTornado) · [LLamaSharp](https://github.com/SciSharp/LLamaSharp) · [Microsoft.Extensions.AI](https://learn.microsoft.com/en-us/dotnet/ai/dotnet-ai-ecosystem) | [MS Agent Framework](https://learn.microsoft.com/en-us/dotnet/ai/dotnet-ai-ecosystem) · [AutoGen.NET](https://github.com/microsoft/autogen/tree/main/dotnet) | [NRules](https://github.com/NRules/NRules) · [RulesEngine](https://github.com/microsoft/RulesEngine) | [Math.NET](https://www.mathdotnet.com/) · [NumSharp](https://github.com/SciSharp/NumSharp) |
+| **JavaScript / TypeScript** (#6/#8) | [TensorFlow.js](https://www.tensorflow.org/js) · [ONNX Runtime Web](https://onnxruntime.ai/) · [Brain.js](https://brain.js.org/) | [ml.js](https://github.com/mljs) · [Danfo.js](https://danfo.jsdata.org/) | [REINFORCEjs](https://cs.stanford.edu/people/karpathy/reinforcejs/) — *niche ecosystem* | [LangChain.js](https://github.com/langchain-ai/langchainjs) · [Vercel AI SDK](https://sdk.vercel.ai/) · [OpenAI Node](https://github.com/openai/openai-node) · [Anthropic Node](https://github.com/anthropics/anthropic-sdk-typescript) | [LangGraph.js](https://github.com/langchain-ai/langgraphjs) · [Mastra](https://github.com/mastra-ai/mastra) · [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk) | [json-rules-engine](https://github.com/CacheControl/json-rules-engine) · [Nools](https://github.com/noolsjs/nools) | [mathjs](https://mathjs.org/) · [Arquero](https://github.com/uwdata/arquero) |
+| **Go** (#7) | [Gorgonia](https://github.com/gorgonia/gorgonia) · [GoMLX](https://github.com/gomlx/gomlx) · [ONNX Runtime Go](https://onnxruntime.ai/) | [GoLearn](https://github.com/sjwhitworth/golearn) · [Gonum](https://www.gonum.org/) | *Very limited* — [gold](https://github.com/aunum/gold) | [LangChainGo](https://github.com/tmc/langchaingo) · [Eino](https://github.com/cloudwego/eino) · [Ollama API](https://github.com/ollama/ollama) · [GenKit Go](https://github.com/firebase/genkit/tree/main/go) | [ADK-Go](https://github.com/google/adk-go) · [go-llm](https://github.com/natexcvi/go-llm) · [MCP Go-SDK](https://github.com/modelcontextprotocol/go-sdk) | [Grule](https://github.com/hyperjumptech/grule-rule-engine) · [GoRules](https://github.com/gorules/zen) | [Gonum](https://www.gonum.org/) · [go-dataframe](https://github.com/go-gota/gota) |
+| **Kotlin** (#13) | [KotlinDL](https://github.com/Kotlin/kotlindl) · [DJL](https://djl.ai/) · [DL4J](https://deeplearning4j.konduit.ai/) *(via JVM)* | [Smile](https://haifengl.github.io/) *(via Kotlin DSL)* · [Tribuo](https://tribuo.org/) *(via JVM)* | *Via Java* — [RL4J](https://github.com/eclipse/deeplearning4j/tree/master/rl4j) · [Burlap](http://burlap.cs.brown.edu/) | [LangChain4j](https://github.com/langchain4j/langchain4j) · [Spring AI](https://spring.io/projects/spring-ai) | [JB AI Agent](https://github.com/JetBrains/koog) · [Google ADK](https://github.com/google/adk-java) *(Kotlin support)* | [Drools](https://www.drools.org/) *(via JVM)* | [KMath](https://github.com/SciProgCentre/kmath) · [Multik](https://github.com/Kotlin/multik) · [Krangl](https://github.com/holgerbrandl/krangl) |
+| **Rust** (#14) | [Burn](https://github.com/tracel-ai/burn) · [Candle](https://github.com/huggingface/candle) · [tch-rs](https://github.com/LaurentMazare/tch-rs) · [ort](https://github.com/pykeio/ort) | [Linfa](https://github.com/rust-ml/linfa) · [SmartCore](https://github.com/smartcorelib/smartcore) · [tract](https://github.com/sonos/tract) | [REnforce](https://github.com/NivenT/REnforce) — *emerging ecosystem* | [genai](https://github.com/jeremychone/rust-genai) · [ollama-rs](https://github.com/pepperoni21/ollama-rs) · [async-openai](https://github.com/64bit/async-openai) | [Rig](https://github.com/0xPlaygrounds/rig) · [MCP SDK Rust](https://github.com/modelcontextprotocol/rust-sdk) | *No major native option* | [ndarray](https://github.com/rust-ndarray/ndarray) · [Polars](https://pola.rs/) · [nalgebra](https://nalgebra.org/) |
 
 ### Notes
 
