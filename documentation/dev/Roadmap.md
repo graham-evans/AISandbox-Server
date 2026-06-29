@@ -23,7 +23,8 @@ Note: At this point we have feature parity between v1 and v2 codebases and v1 wi
 
 ## Version 2.1
 
-+ No engine changes planned
++ Move to Java 25 (next LTS version) and new build system
++ Integration with openTelemetry & JSONL telemetry logs
 
 ### Scenarios
 
@@ -32,15 +33,19 @@ Note: At this point we have feature parity between v1 and v2 codebases and v1 wi
 
 ## Version 2.2
 
-+ Integration with openTelemetry
++ support RNG seeding
+
+### Scenatios
+
++ Prisoners Dilemma - Classic AI tournament with many agents
 
 ## Future Plans
 
-- Move to Java 25 (next LTS version)
+
 
 ### Scenarios
 
-- Prisoners Dilemma - Classic AI tournament with many agents
+
 - Warehouse Simulation - Move items and fulfill orders as efficiently as possible.
 - Factory Simulation - Optimise a manufacturing plant for maximum profit.
 - Car Driving – Advanced car driving simulation including navigation and obstacle avoidance.
