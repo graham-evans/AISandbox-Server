@@ -4,7 +4,7 @@ The AI Sandbox codebase is licenced under the [GPLv3](https://www.gnu.org/licens
 
 - Gives you the freedom to run, study, share and update the software.
 - Forces you to release any changes to the software under a similar licence.
-- Prevents you for turning the AI Sandbox software into a commercial product.
+- Prevents you from closing the source and turning the AI Sandbox software into a commercial product.
 
 We’ve chosen to do this, as we believe this is the licence that most accurately reflects the original goal of AI Sandbox; which is to help users get started with AI.
 
@@ -18,12 +18,19 @@ But if you do, we’d love to hear about it.
 
 ### Libraries and others work
 
-It simply wouldn't be possible to maintain the application code without the work of other teams who licence their work and make it possible for others to build upon it. AISandbox server relies on, includes and links to, the following works.
+It simply wouldn't be possible to maintain the application code without the work of other teams who licence their 
+work and make it possible for others to build upon it. AISandbox server relies on, includes or links to, the 
+following works.
 
-| Work                                         | Licence                | Original Source             |
-|----------------------------------------------|------------------------|-----------------------------|
-| Protocol Buffers (Protobuf)                  | BSD                    | https://protobuf.dev/       |
-| Apache Commons (CLI, Statistics, Math, Lang) | Apache version 2.0     | https://commons.apache.org/ |
-| Lombok                                       | MIT Licence            | https://projectlombok.org/  |
-| JUnit                                        | Eclipse Public License | https://junit.org/          |
-| Gradle                                       | Apache version 2.0     | https://gradle.org/         |
+| Work                                             | Licence                      | Original Source                      |
+|--------------------------------------------------|------------------------------|--------------------------------------|
+| OpenJDK 25 runtime (via Eclipse Temurin)         | GPL v2 + Classpath Exception | https://adoptium.net/                |
+| JavaFX 26 (OpenJFX)                              | GPL v2 + Classpath Exception | https://openjfx.io/                  |
+| Protocol Buffers (Protobuf)                      | BSD                          | https://protobuf.dev/                |
+| Apache Commons (CLI, Statistics, RNG, Lang etc.) | Apache version 2.0           | https://commons.apache.org/          |
+| Apache Log4j 2                                   | Apache version 2.0           | https://logging.apache.org/log4j/    |
+| Lombok                                           | MIT Licence                  | https://projectlombok.org/           |
+| JUnit                                            | Eclipse Public License       | https://junit.org/                   |
+| Gradle                                           | Apache version 2.0           | https://gradle.org/                  |
+| OpenTelemetry Java                               | Apache 2.0                   | https://opentelemetry.io/            |
+| Jackson Databind                                 | Apache 2.0                   | https://github.com/FasterXML/jackson |

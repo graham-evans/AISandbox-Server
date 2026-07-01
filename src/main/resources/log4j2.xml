@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+
+        <!-- Console: WARN and above, brief format -->
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[%level] %msg %xEx{2}%n"/>
+        </Console>
+
+        <!-- Rolling file: DEBUG and above, size-based, keep 3 zipped -->
+        <RollingFile name="FILE"
+                     fileName="AISandbox-server.log"
+                     filePattern="AISandbox-server.%i.log.zip"
+                     append="true">
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5MB"/>
+            </Policies>
+            <DefaultRolloverStrategy min="1" max="3"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Your package: DEBUG to both appenders -->
+        <Logger name="dev.aisandbox" level="DEBUG" additivity="false">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="FILE"/>
+        </Logger>
+
+        <!-- Everything else: suppress -->
+        <Root level="OFF"/>
+    </Loggers>
+</Configuration>
