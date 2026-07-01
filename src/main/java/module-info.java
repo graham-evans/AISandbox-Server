@@ -1,6 +1,6 @@
 module AISandbox.Server.main {
-  requires ch.qos.logback.classic;
-  requires ch.qos.logback.core;
+  requires org.apache.logging.log4j;
+  requires org.apache.logging.log4j.core;
   requires com.google.protobuf;
   requires javafx.controls;
   requires javafx.fxml;
