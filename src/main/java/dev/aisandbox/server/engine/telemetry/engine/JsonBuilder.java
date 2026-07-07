@@ -50,6 +50,10 @@ public class JsonBuilder {
     return put(Double.toString(value),keys);
   }
 
+  public JsonBuilder put(long value, String... keys) {
+    return put(Long.toString(value), keys);
+  }
+
   public ObjectNode build() {
     return root;
   }

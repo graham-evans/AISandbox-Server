@@ -77,6 +77,7 @@ public class SimulationSettings {
   private final BooleanProperty selectedTelemetryOtel = new SimpleBooleanProperty(false);
   private final StringProperty telemetryJsonPath = new SimpleStringProperty(".");
   private final StringProperty telemetryOtelUrl = new SimpleStringProperty("http://localhost/");
+  private final BooleanProperty telemetryWriteProfile = new SimpleBooleanProperty(false);
   // output types - linked in constructor
   private final BooleanProperty outputNone = new SimpleBooleanProperty(false);
   private final BooleanProperty outputScreen = new SimpleBooleanProperty(true);
@@ -215,11 +216,12 @@ public class SimulationSettings {
     TelemetryEngine telemetryEngine = new NullTelemetryEngine();
     // check for JSON engine
     if (selectedTelemetryJson.get()) {
-      telemetryEngine = new FileTelemetryEngine(new File(telemetryJsonPath.get()));
+      telemetryEngine = new FileTelemetryEngine(new File(telemetryJsonPath.get()),
+          telemetryWriteProfile.get());
     }
     // check for Otel engine
     if (selectedTelemetryOtel.get()) {
-      telemetryEngine = new OtelTelemetryEngine(telemetryOtelUrl.get());
+      telemetryEngine = new OtelTelemetryEngine(telemetryOtelUrl.get(), telemetryWriteProfile.get());
     }
     return telemetryEngine;
   }

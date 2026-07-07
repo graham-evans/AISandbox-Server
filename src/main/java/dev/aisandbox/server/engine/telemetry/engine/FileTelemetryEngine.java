@@ -20,6 +20,7 @@ import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -36,6 +37,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
 
   private final File directory;
   private final ObjectMapper mapper = new ObjectMapper();
+  private final boolean writeProfile;
   private BufferedWriter writer;
 
   private ObjectNode createCommon(TelemetryEvent event) {
@@ -84,6 +86,10 @@ public class FileTelemetryEngine implements TelemetryEngine {
     if (writer == null) {
       return;
     }
+    // skip profiling events unless explicitly enabled
+    if (event instanceof StepProfileEvent && !writeProfile) {
+      return;
+    }
     // generate and write JSON objects
     try {
       ObjectNode node = switch (event) {
@@ -108,6 +114,13 @@ public class FileTelemetryEngine implements TelemetryEngine {
                 .put(agentWinLossEvent.agentResult().name(), "simulation", "agent", "result")
                 .put(agentWinLossEvent.agentName(), "simulation", "agent", "name")
                 .build();
+        case StepProfileEvent profileEvent -> JsonBuilder.on(createCommon(profileEvent))
+            .put(profileEvent.phaseName(), "simulation", "profile", "phase")
+            .put(profileEvent.stepNumber(), "simulation", "profile", "step")
+            .put(profileEvent.durationMillis(), "simulation", "profile", "duration_ms")
+            .put(profileEvent.startTime().toString(), "simulation", "profile", "start")
+            .put(profileEvent.stopTime().toString(), "simulation", "profile", "stop")
+            .build();
       };
       writer.write(mapper.writeValueAsString(node));
       writer.write("\n");
