@@ -77,6 +77,7 @@ public class OtelTelemetryEngine implements TelemetryEngine {
         .setSeverityText("INFO")
         .setAttribute("simulation.name", event.simulationName())
         .setAttribute("simulation.session.id", event.sessionId())
+        .setAttribute("event.name", event.eventName())
         .setEventName(event.eventName())
         .setBody(event.description());
   }
