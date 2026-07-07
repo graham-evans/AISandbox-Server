@@ -125,9 +125,7 @@ public class OtelTelemetryEngine implements TelemetryEngine {
       case StepProfileEvent profileEvent -> createCommon(profileEvent)
           .setAttribute("simulation.profile.phase", profileEvent.phaseName())
           .setAttribute("simulation.profile.step", profileEvent.stepNumber())
-          .setAttribute("simulation.profile.duration_ms", profileEvent.durationMillis())
-          .setAttribute("simulation.profile.start", profileEvent.startTime().toString())
-          .setAttribute("simulation.profile.stop", profileEvent.stopTime().toString())
+          .setAttribute("simulation.profile.duration_ns", profileEvent.duration())
           .emit();
     }
   }

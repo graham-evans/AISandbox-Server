@@ -117,9 +117,7 @@ public class FileTelemetryEngine implements TelemetryEngine {
         case StepProfileEvent profileEvent -> JsonBuilder.on(createCommon(profileEvent))
             .put(profileEvent.phaseName(), "simulation", "profile", "phase")
             .put(profileEvent.stepNumber(), "simulation", "profile", "step")
-            .put(profileEvent.durationMillis(), "simulation", "profile", "duration_ms")
-            .put(profileEvent.startTime().toString(), "simulation", "profile", "start")
-            .put(profileEvent.stopTime().toString(), "simulation", "profile", "stop")
+            .put(profileEvent.duration(), "simulation", "profile", "duration_ns")
             .build();
       };
       writer.write(mapper.writeValueAsString(node));

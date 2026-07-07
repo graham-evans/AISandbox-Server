@@ -15,30 +15,22 @@ import java.time.Instant;
  *
  * @param simulationName The name of the simulation
  * @param sessionId      The session identifier
+ * @param timestamp      The time the event was created
  * @param stepNumber     The simulation step this phase ran within
  * @param phaseName      The name of the phase being timed
- * @param startTime      The time the phase started
- * @param stopTime       The time the phase completed
+ * @param duration       The time spent in this phase, in nanoseconds
  */
 public record StepProfileEvent(String simulationName,
                                 String sessionId,
+                                Instant timestamp,
                                 long stepNumber,
                                 String phaseName,
-                                Instant startTime,
-                                Instant stopTime) implements TelemetryEvent {
-
-  @Override
-  public Instant timestamp() {
-    return stopTime;
-  }
-
-  public long durationMillis() {
-    return Duration.between(startTime, stopTime).toMillis();
-  }
+                                long duration) implements TelemetryEvent {
 
   @Override
   public String description() {
-    return "Step " + stepNumber + " phase '" + phaseName + "' took " + durationMillis() + "ms";
+    return "Step " + stepNumber + " phase '" + phaseName + "' took "
+        + Duration.ofNanos(duration).toMillis() + "ms";
   }
 
   // common phases as constants

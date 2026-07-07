@@ -265,7 +265,7 @@ public final class BanditRuntime implements Simulation {
   public void step(OutputRenderer output)
       throws SimulationRuntimeException, IllegalActionException {
     sessionStep++;
-    final Instant startStepInstant = Instant.now();
+    long startStepTime = System.nanoTime();
     log.debug("Starting step {}", sessionStep);
     // work out the 'best' bandit to pull
     int bestPull = IntStream.range(0, bandits.size()).boxed()
@@ -329,7 +329,9 @@ public final class BanditRuntime implements Simulation {
       }
     }
     // log the step finishing
-    telemetryEngine.writeTelemetryEvent(new StepProfileEvent(BanditScenario.BANDIT_NAME,sessionId,sessionStep,StepProfileEvent.PHASE_STEP,startStepInstant,Instant.now()));
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(BanditScenario.BANDIT_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
   }
 
   /**
@@ -386,7 +388,7 @@ public final class BanditRuntime implements Simulation {
 
   @Override
   public void visualise(Graphics2D graphics2D) {
-    final Instant startVisualise = Instant.now();
+    long startVisualise = System.nanoTime();
     graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
     // draw title
@@ -411,6 +413,8 @@ public final class BanditRuntime implements Simulation {
     graphics2D.drawImage(theme.getLogoImage(), HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
     // log profile
-    telemetryEngine.writeTelemetryEvent(new StepProfileEvent(BanditScenario.BANDIT_NAME,sessionId,sessionStep,StepProfileEvent.PHASE_RENDER,startVisualise,Instant.now()));
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(BanditScenario.BANDIT_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise));
   }
 }
