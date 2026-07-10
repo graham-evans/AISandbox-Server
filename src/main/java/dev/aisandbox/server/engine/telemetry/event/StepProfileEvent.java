@@ -37,5 +37,6 @@ public record StepProfileEvent(String simulationName,
 
   public final static String PHASE_STEP = "step";
   public final static String PHASE_RENDER = "render";
-  public final static String PHASE_AGENT_WAIT = "agent_wait";
+  public final static String PHASE_AGENT_ASK = "agent_ask";
+  public final static String PHASE_AGENT_REPORT = "agent_report";
 }
