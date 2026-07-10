@@ -50,6 +50,7 @@ public class NetworkAgentConnectionThread extends Thread {
     log.info("Opening network agent for {}", agentName);
     try {
       Socket socket = serverSocket.accept();
+      socket.setTcpNoDelay(true);
       log.info("{} connected from {}", agentName, socket.getRemoteSocketAddress());
       renderer.write(agentName + " connected from " + socket.getRemoteSocketAddress());
       ConnectionPair connectionPair = new ConnectionPair(socket.getInputStream(),
