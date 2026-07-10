@@ -179,7 +179,11 @@ public final class BanditRuntime implements Simulation {
   /**
    * Current step number within the simulation session.
    */
-  private int sessionStep = 0;
+  private long sessionStep = 0;
+  /**
+   * Current step number within the episode
+   */
+  private int episodeStep = 0;
   /**
    * Total score accumulated in the current episode.
    */
@@ -254,7 +258,7 @@ public final class BanditRuntime implements Simulation {
     for (int i = 0; i < banditCount; i++) {
       bandits.add(new Bandit(normal.getNormalValue(random), std.getValue()));
     }
-    sessionStep = 0;
+    episodeStep = 0;
     episodeID = UUID.randomUUID().toString();
     episodeNumber++;
     episodeScore = 0;
@@ -264,15 +268,18 @@ public final class BanditRuntime implements Simulation {
   @Override
   public void step(OutputRenderer output)
       throws SimulationRuntimeException, IllegalActionException {
+    episodeStep++;
     sessionStep++;
     long startStepTime = System.nanoTime();
-    log.debug("Starting step {}", sessionStep);
+    log.debug("Starting step {}", episodeStep);
     // work out the 'best' bandit to pull
     int bestPull = IntStream.range(0, bandits.size()).boxed()
         .max(Comparator.comparingDouble(i -> bandits.get(i).getStd())).orElse(-1);
     // ask user which bandit to pull
+    long startAgent = System.nanoTime();
     agent.send(getState());
     BanditAction action = agent.receive(BanditAction.class);
+    telemetryEngine.writeTelemetryEvent(new StepProfileEvent(BanditScenario.BANDIT_NAME,sessionId,Instant.now(),sessionStep,StepProfileEvent.PHASE_AGENT_ASK,System.nanoTime()-startAgent));
     int arm = action.getArm();
     log.debug("Received request to pull arm {}", arm);
     // test for invalid request
@@ -291,7 +298,7 @@ public final class BanditRuntime implements Simulation {
         agent.getAgentName() + " selects bandit " + arm + " gets reward " + String.format("%.4f",
             score));
     // should we reset
-    boolean reset = sessionStep == pullCount;
+    boolean reset = episodeStep == pullCount;
     // update the widgets
     banditWidget.setBandits(bandits, arm);
     // if last pull, update the episode widgets
@@ -304,10 +311,16 @@ public final class BanditRuntime implements Simulation {
               Instant.now(), episodeScore));
     }
     // update the screen
+    long startVisualise = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(BanditScenario.BANDIT_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise));
     // tell the user the result
+    long startAgentReport = System.nanoTime();
     agent.send(BanditResult.newBuilder().setArm(arm).setScore(score)
         .setSignal(reset ? Signal.RESET : Signal.CONTINUE).build());
+    telemetryEngine.writeTelemetryEvent(new StepProfileEvent(BanditScenario.BANDIT_NAME,sessionId,Instant.now(),sessionStep,StepProfileEvent.PHASE_AGENT_REPORT,System.nanoTime()-startAgentReport));
     // move to next episode if needed.
     if (reset) {
       logWidget.addText("pull count reached, starting a new game.");
@@ -344,7 +357,7 @@ public final class BanditRuntime implements Simulation {
     builder.setSessionID(sessionId);
     builder.setEpisodeID(episodeID);
     builder.setBanditCount(bandits.size());
-    builder.setPull(sessionStep);
+    builder.setPull(episodeStep);
     builder.setPullCount(pullCount);
     return builder.build();
   }
@@ -388,7 +401,6 @@ public final class BanditRuntime implements Simulation {
 
   @Override
   public void visualise(Graphics2D graphics2D) {
-    long startVisualise = System.nanoTime();
     graphics2D.setColor(theme.getBase());
     graphics2D.fillRect(0, 0, HD_WIDTH, HD_HEIGHT);
     // draw title
@@ -412,9 +424,5 @@ public final class BanditRuntime implements Simulation {
     // draw logo
     graphics2D.drawImage(theme.getLogoImage(), HD_WIDTH - LOGO_WIDTH - RIGHT_MARGIN,
         (TOP_MARGIN + TITLE_HEIGHT + WIDGET_SPACING - LOGO_HEIGHT) / 2, null);
-    // log profile
-    telemetryEngine.writeTelemetryEvent(
-        new StepProfileEvent(BanditScenario.BANDIT_NAME, sessionId, Instant.now(), sessionStep,
-            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise));
   }
 }
