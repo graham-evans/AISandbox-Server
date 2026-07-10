@@ -27,9 +27,9 @@ public record EpisodeScoreEvent(String simulationName,
                                 Instant timestamp,
                                 double score) implements TelemetryEpisodeEvent {
 
-    @Override
-    public String description() {
-        return "Episode ends with score " + score;
-    }
+  @Override
+  public String description() {
+    return "Episode " + episodeNumber + " ends with score " + score;
+  }
 
 }
