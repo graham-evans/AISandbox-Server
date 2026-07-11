@@ -83,6 +83,7 @@ public class RuntimeUtils {
     options.addOption(null,"json-dir",true,"Output directory for JSON files");
     options.addOption(null,"otel",false,"Output telemetry information op Open Telemetry collector");
     options.addOption(null,"otel-url",true,"Output URL for Open Telemetry collector");
+    options.addOption(null,"profile",false,"Include step profiling information in telemetry output");
   }
 
   /**
@@ -186,6 +187,9 @@ public class RuntimeUtils {
         if (cmd.hasOption("otel-url")) {
           simulation.telemetryOtelUrl().set(cmd.getOptionValue("otel-url"));
         }
+      }
+      if (cmd.hasOption("profile")) {
+        simulation.telemetryWriteProfile().set(true);
       }
     } catch (ParseException e) {
       System.err.println("Error parsing command line arguments: " + e.getMessage());

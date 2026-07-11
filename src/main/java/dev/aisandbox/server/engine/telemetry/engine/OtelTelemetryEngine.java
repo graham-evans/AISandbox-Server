@@ -17,6 +17,7 @@ import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 import io.opentelemetry.api.logs.Logger;
@@ -38,8 +39,9 @@ public class OtelTelemetryEngine implements TelemetryEngine {
   private final OpenTelemetrySdk openTelemetry;
   private final SdkLoggerProvider loggerProvider;
   private final Logger logger;
+  private final boolean writeProfile;
 
-  public OtelTelemetryEngine(String collectorUrl) {
+  public OtelTelemetryEngine(String collectorUrl, boolean writeProfile) {
     log.info("Setting up connection to {}", collectorUrl);
     exporter = OtlpHttpLogRecordExporter.builder()
         .setEndpoint(collectorUrl)
@@ -64,6 +66,7 @@ public class OtelTelemetryEngine implements TelemetryEngine {
     logger = openTelemetry.getLogsBridge().loggerBuilder("aisandbox.telemetry")
         .setInstrumentationVersion(SimulationVersion.get())
         .build();
+    this.writeProfile = writeProfile;
   }
 
   private LogRecordBuilder createCommon(TelemetryEvent event) {
@@ -74,6 +77,7 @@ public class OtelTelemetryEngine implements TelemetryEngine {
         .setSeverityText("INFO")
         .setAttribute("simulation.name", event.simulationName())
         .setAttribute("simulation.session.id", event.sessionId())
+        .setAttribute("event.name", event.eventName())
         .setEventName(event.eventName())
         .setBody(event.description());
   }
@@ -91,6 +95,10 @@ public class OtelTelemetryEngine implements TelemetryEngine {
 
   @Override
   public void writeTelemetryEvent(TelemetryEvent event) {
+    // skip profiling events unless explicitly enabled
+    if (event instanceof StepProfileEvent && !writeProfile) {
+      return;
+    }
     switch (event) {
       case SessionStartEvent startEvent -> createCommon(startEvent).emit();
       case SessionFailureEvent failureEvent -> createCommon(failureEvent)
@@ -114,6 +122,11 @@ public class OtelTelemetryEngine implements TelemetryEngine {
       case EpisodeAgentWinLossEvent agentWinEvent -> createCommon(agentWinEvent)
           .setAttribute("simulation.agent.name", agentWinEvent.agentName())
           .setAttribute("simulation.result", agentWinEvent.agentResult().name())
+          .emit();
+      case StepProfileEvent profileEvent -> createCommon(profileEvent)
+          .setAttribute("simulation.profile.phase", profileEvent.phaseName())
+          .setAttribute("simulation.profile.step", profileEvent.stepNumber())
+          .setAttribute("simulation.profile.duration_ns", profileEvent.duration())
           .emit();
     }
   }

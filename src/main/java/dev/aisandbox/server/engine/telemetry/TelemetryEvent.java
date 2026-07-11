@@ -8,12 +8,13 @@ package dev.aisandbox.server.engine.telemetry;
 
 import dev.aisandbox.server.engine.telemetry.event.SessionFailureEvent;
 import dev.aisandbox.server.engine.telemetry.event.SessionStartEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import java.time.Instant;
 
 /**
  * Base telemetry interface, defines fields that all events must implement.
  */
-public sealed interface TelemetryEvent permits SessionStartEvent, SessionFailureEvent, TelemetryEpisodeEvent {
+public sealed interface TelemetryEvent permits SessionStartEvent, SessionFailureEvent, StepProfileEvent, TelemetryEpisodeEvent {
 
   // define the common fields, so they can be accessed without casting the event.
 
