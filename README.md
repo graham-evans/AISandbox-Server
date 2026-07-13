@@ -17,6 +17,7 @@ Full documentation is available at [aisandbox.dev](https://aisandbox.dev).
 | **Mine Hunter**         | Use logic to defuse a minefield.                                                           |
 | **Twisty Puzzles**      | Traditional logic puzzles of various sizes.                                                |
 | **Mancala**             | Two-player game collecting seeds (version 2.1)                                             |
+| **Cascade**             | Match-three game to get the highest score in 30 moves (version 2.1)                        |
 
 ## Getting Started
 
