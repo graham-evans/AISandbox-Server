@@ -36,9 +36,11 @@ Configure the simulation and press "start Simulation" to start.
 
 When running, the simulation will open a network port for each of the agents in use. You can use any
 programming language that supports the [Protobuf](https://protobuf.dev/) protocol to connect to this
-port and communicate with the server.
+port and communicate with the server ([disabling TCP-DELAY while doing so](Nagle.md)).
 
 Examples are included in the following GitHub repositories:
 
 - Examples in [Java](https://github.com/graham-evans/AISandbox-Demos-Java)
 - Examples in [Python](https://github.com/graham-evans/AISandbox-Demos-Python)
+
+
