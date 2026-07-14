@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.engine;
 
+import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
 
@@ -95,6 +96,8 @@ public interface SimulationBuilder {
    * @param telemetryEngine The external logger
    * @return The {@link Simulation} object which can be wrapped in a {@link SimulationRunner} or
    * stepped through manually.
+   * @throws SimulationSetupException Thrown if there is an error setting up the simulation
    */
-  Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random, TelemetryEngine telemetryEngine);
+  Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random,
+      TelemetryEngine telemetryEngine) throws SimulationSetupException;
 }
