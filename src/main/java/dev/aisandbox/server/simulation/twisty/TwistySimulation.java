@@ -28,6 +28,7 @@ import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import dev.aisandbox.server.engine.widget.RollingIconWidget;
 import dev.aisandbox.server.engine.widget.RollingSuccessStatisticsWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -132,6 +133,7 @@ public final class TwistySimulation implements Simulation {
    */
   private String episodeID;
   private int episodeNumber = 0;
+  private long sessionStep = 0;
 
   /**
    * Constructs a new TwistySimulation with the specified parameters.
@@ -208,9 +210,15 @@ public final class TwistySimulation implements Simulation {
   @Override
   public void step(OutputRenderer output)
       throws SimulationRuntimeException, IllegalActionException {
+    sessionStep++;
+    long startStepTime = System.nanoTime();
     // Special case - call display if this is the start of an episode
     if (moves == 0) {
+      long startVisualise1 = System.nanoTime();
       output.display();
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise1));
     }
 
     // Generate the current state to send to the agent
@@ -224,15 +232,23 @@ public final class TwistySimulation implements Simulation {
     builder.addAllValidMoves(puzzle.getMoveList());
 
     // Get the next move from the agent
+    long startAgentAsk = System.nanoTime();
     agent.send(builder.build());
     TwistyAction action = agent.receive(TwistyAction.class);
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_AGENT_ASK, System.nanoTime() - startAgentAsk));
     log.info("action: {}", action.getMove());
 
     // Special case - handle reset action
     if (RESET_MOVE.equalsIgnoreCase(action.getMove())) {
       // Reset the puzzle and report failure
+      long startAgentReport1 = System.nanoTime();
       agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
           .build());
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_AGENT_REPORT, System.nanoTime() - startAgentReport1));
       statsWidget.addFailure();
       telemetryEngine.writeTelemetryEvent(
           new EpisodeWinEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, episodeNumber,
@@ -248,8 +264,12 @@ public final class TwistySimulation implements Simulation {
       if (puzzle.isSolved()) {
         // Puzzle is solved - success case
         log.info("solved");
+        long startAgentReport2 = System.nanoTime();
         agent.send(TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.WIN)
             .build());
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+                StepProfileEvent.PHASE_AGENT_REPORT, System.nanoTime() - startAgentReport2));
         statsWidget.addSuccess(obtmMoves);
         telemetryEngine.writeTelemetryEvent(
             new EpisodeWinEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, episodeNumber,
@@ -257,28 +277,52 @@ public final class TwistySimulation implements Simulation {
         telemetryEngine.writeTelemetryEvent(
             new EpisodeScoreEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, episodeNumber,
                 Instant.now(), obtmMoves));
+        long startVisualise2 = System.nanoTime();
         output.display();
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+                StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise2));
         initialisePuzzle();
       } else if (moves == MAX_STEPS) {
         // Maximum moves reached - failure case
         log.info("max moves");
+        long startAgentReport3 = System.nanoTime();
         agent.send(
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.LOSE)
                 .build());
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+                StepProfileEvent.PHASE_AGENT_REPORT, System.nanoTime() - startAgentReport3));
         statsWidget.addFailure();
         telemetryEngine.writeTelemetryEvent(
             new EpisodeWinEvent(TwistyBuilder.TWISTY_NAME, sessionId, episodeID, episodeNumber,
                 Instant.now(), false));
+        long startVisualise3 = System.nanoTime();
         output.display();
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+                StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise3));
         initialisePuzzle();
       } else {
         // Puzzle continues - send state and continue
+        long startAgentReport4 = System.nanoTime();
         agent.send(
             TwistyResult.newBuilder().setState(puzzle.getState()).setSignal(TwistySignal.CONTINUE)
                 .build());
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+                StepProfileEvent.PHASE_AGENT_REPORT, System.nanoTime() - startAgentReport4));
+        long startVisualise4 = System.nanoTime();
         output.display();
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+                StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise4));
       }
     }
+
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(TwistyBuilder.TWISTY_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
   }
 
   /**

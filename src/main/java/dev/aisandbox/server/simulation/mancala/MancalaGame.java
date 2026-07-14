@@ -28,6 +28,7 @@ import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent.Result;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -91,6 +92,7 @@ public final class MancalaGame implements Simulation {
   private int currentPlayer = 0;
   private String episodeId;
   private int episodeNumber = 0;
+  private long sessionStep = 0;
 
   /**
    * Creates a new Mancala game simulation.
@@ -167,14 +169,24 @@ public final class MancalaGame implements Simulation {
   @Override
   public void step(OutputRenderer output)
       throws SimulationRuntimeException, IllegalActionException {
+    sessionStep++;
+    long startStepTime = System.nanoTime();
+    long startVisualise1 = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise1));
 
     Agent currentAgent = agents[currentPlayer];
     List<Integer> validMoves = board.getValidMoves(currentPlayer);
 
     // Send state to current player
+    long startAgentAsk = System.nanoTime();
     currentAgent.send(buildState(validMoves));
     MancalaAction action = currentAgent.receive(MancalaAction.class);
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_AGENT_ASK, System.nanoTime() - startAgentAsk));
 
     int pit = action.getSelectedPit();
     log.debug("{} selects pit {}", currentAgent.getAgentName(), pit);
@@ -188,8 +200,15 @@ public final class MancalaGame implements Simulation {
       log.error(e.getMessage());
       logWidget.addText(currentAgent.getAgentName() + " makes an invalid move.");
       informResult((currentPlayer + 1) % 2);
+      long startVisualise2 = System.nanoTime();
       output.display();
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise2));
       reset();
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
       return;
     }
 
@@ -202,8 +221,13 @@ public final class MancalaGame implements Simulation {
         logWidget.addText(currentAgent.getAgentName() + " gets an extra turn!");
         // Send PLAY to current player to continue their turn
         if (agentMoved[currentPlayer]) {
+          long startAgentReport1 = System.nanoTime();
           currentAgent.send(
               MancalaResult.newBuilder().setSignal(MancalaSignal.PLAY).build());
+          telemetryEngine.writeTelemetryEvent(
+              new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(),
+                  sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+                  System.nanoTime() - startAgentReport1));
         }
         break;
       case GAME_OVER:
@@ -213,12 +237,21 @@ public final class MancalaGame implements Simulation {
         // Normal move - switch to other player
         int otherPlayer = (currentPlayer + 1) % 2;
         if (agentMoved[otherPlayer]) {
+          long startAgentReport2 = System.nanoTime();
           agents[otherPlayer].send(
               MancalaResult.newBuilder().setSignal(MancalaSignal.PLAY).build());
+          telemetryEngine.writeTelemetryEvent(
+              new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(),
+                  sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+                  System.nanoTime() - startAgentReport2));
         }
         currentPlayer = otherPlayer;
         break;
     }
+
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
   }
 
   /**
@@ -279,7 +312,11 @@ public final class MancalaGame implements Simulation {
               winner == 1 ? EpisodeAgentWinLossEvent.Result.WIN
                   : EpisodeAgentWinLossEvent.Result.LOSE));
     }
+    long startVisualise3 = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise3));
     reset();
   }
 
@@ -308,14 +345,22 @@ public final class MancalaGame implements Simulation {
   private void informResult(int winner) throws SimulationRuntimeException {
     List<Integer> finalStores = List.of(board.getStore(0), board.getStore(1));
     if (agentMoved[0]) {
+      long startAgentReport0 = System.nanoTime();
       agents[0].send(MancalaResult.newBuilder()
           .setSignal(winner == 0 ? MancalaSignal.WIN : MancalaSignal.LOSE)
           .addAllFinalStores(finalStores).build());
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_AGENT_REPORT, System.nanoTime() - startAgentReport0));
     }
     if (agentMoved[1]) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
+      long startAgentReport1 = System.nanoTime();
       agents[1].send(MancalaResult.newBuilder()
           .setSignal(winner == 1 ? MancalaSignal.WIN : MancalaSignal.LOSE)
           .addAllFinalStores(finalStores).build());
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_AGENT_REPORT, System.nanoTime() - startAgentReport1));
     }
   }
 
@@ -328,9 +373,14 @@ public final class MancalaGame implements Simulation {
     List<Integer> finalStores = List.of(board.getStore(0), board.getStore(1));
     for (int i = 0; i < 2; i++) {
       if (agentMoved[i]) {
+        long startAgentReport = System.nanoTime();
         agents[i].send(MancalaResult.newBuilder()
             .setSignal(MancalaSignal.DRAW)
             .addAllFinalStores(finalStores).build());
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(MancalaBuilder.MANCALA_NAME, sessionId, Instant.now(),
+                sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+                System.nanoTime() - startAgentReport));
       }
     }
   }

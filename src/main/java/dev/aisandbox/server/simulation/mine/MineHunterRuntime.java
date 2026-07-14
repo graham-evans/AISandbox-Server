@@ -29,6 +29,7 @@ import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeWinEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -159,6 +160,11 @@ public final class MineHunterRuntime implements Simulation {
   private int flagsLeft;
 
   /**
+   * Running count of steps taken in this session, used as the profiling step number.
+   */
+  private long sessionStep = 0;
+
+  /**
    * Scaling factor for rendering the board.
    */
   private double scale = 1.0;
@@ -229,9 +235,15 @@ public final class MineHunterRuntime implements Simulation {
    */
   @Override
   public void step(OutputRenderer output) throws SimulationRuntimeException {
+    sessionStep++;
+    long startStepTime = System.nanoTime();
     // Get action from agent
+    long startAgentAsk = System.nanoTime();
     agent.send(getState());
     MineAction action = agent.receive(MineAction.class);
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MineHunterScenario.MINE_HUNTER_NAME, sessionId, Instant.now(),
+            sessionStep, StepProfileEvent.PHASE_AGENT_ASK, System.nanoTime() - startAgentAsk));
 
     // Process the action (place flag or dig)
     if (action.getAction().equals(FlagAction.PLACE_FLAG)) {
@@ -257,7 +269,12 @@ public final class MineHunterRuntime implements Simulation {
       case GameState.WON -> MineSignal.WIN;
       default -> MineSignal.CONTINUE;
     });
+    long startAgentReport = System.nanoTime();
     agent.send(rBuilder.build());
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MineHunterScenario.MINE_HUNTER_NAME, sessionId, Instant.now(),
+            sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+            System.nanoTime() - startAgentReport));
 
     // Update statistics if game ended
     if (board.getState() == GameState.WON) {
@@ -275,12 +292,20 @@ public final class MineHunterRuntime implements Simulation {
     }
 
     // Render the current state
+    long startVisualise = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MineHunterScenario.MINE_HUNTER_NAME, sessionId, Instant.now(),
+            sessionStep, StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise));
 
     // Create a new board if the game ended
     if (board.getState() != GameState.PLAYING) {
       getNewBoard();
     }
+
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MineHunterScenario.MINE_HUNTER_NAME, sessionId, Instant.now(),
+            sessionStep, StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
   }
 
   /**
