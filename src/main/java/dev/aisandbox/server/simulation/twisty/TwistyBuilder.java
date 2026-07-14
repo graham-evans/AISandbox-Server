@@ -12,6 +12,7 @@ import dev.aisandbox.server.engine.SimulationBuilder;
 import dev.aisandbox.server.engine.SimulationParameter;
 import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import java.util.List;
 import lombok.Getter;
@@ -135,13 +136,13 @@ public final class TwistyBuilder implements SimulationBuilder {
   @Override
   @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public Simulation build(List<Agent> agents, Theme theme, SimulationRandomNumberGenerator random,
-      TelemetryEngine telemetryEngine) {
+      TelemetryEngine telemetryEngine) throws SimulationSetupException {
     try {
       return new TwistySimulation(agents.getFirst(), puzzleType.getTwistyPuzzle(), startSolved,
           theme, random, telemetryEngine);
     } catch (Exception e) {
       log.error("Error while building Twisty Runtime.", e);
-      return null;
+      throw new SimulationSetupException(e.getMessage());
     }
   }
 }

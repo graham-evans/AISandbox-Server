@@ -23,6 +23,7 @@ import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.Simulation;
 import dev.aisandbox.server.engine.SimulationRandomNumberGenerator;
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.exception.IllegalActionException;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.output.OutputRenderer;
@@ -246,14 +247,19 @@ public final class MineHunterRuntime implements Simulation {
             sessionStep, StepProfileEvent.PHASE_AGENT_ASK, System.nanoTime() - startAgentAsk));
 
     // Process the action (place flag or dig)
-    if (action.getAction().equals(FlagAction.PLACE_FLAG)) {
-      logWidget.addText(
-          agent.getAgentName() + ": placing flag @ " + action.getX() + "," + action.getY());
-      board.placeFlag(action.getX(), action.getY());
-    } else {
-      logWidget.addText(
-          agent.getAgentName() + ": uncovering flag @ " + action.getX() + "," + action.getY());
-      board.uncover(action.getX(), action.getY());
+    try {
+      if (action.getAction().equals(FlagAction.PLACE_FLAG)) {
+        logWidget.addText(
+            agent.getAgentName() + ": placing flag @ " + action.getX() + "," + action.getY());
+        board.placeFlag(action.getX(), action.getY());
+      } else {
+        logWidget.addText(
+            agent.getAgentName() + ": digging @ " + action.getX() + "," + action.getY());
+        board.uncover(action.getX(), action.getY());
+      }
+    } catch (ArrayIndexOutOfBoundsException e) {
+      throw new IllegalActionException(
+          "Coordinates out of bounds: " + action.getX() + "," + action.getY(), e);
     }
 
     // Build result to send back to agent
