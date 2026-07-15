@@ -235,7 +235,7 @@ public final class MineHunterRuntime implements Simulation {
    * @param output The renderer for displaying the game state
    */
   @Override
-  public void step(OutputRenderer output) throws SimulationRuntimeException {
+  public void step(OutputRenderer output) throws SimulationRuntimeException, IllegalActionException {
     sessionStep++;
     long startStepTime = System.nanoTime();
     // Get action from agent
