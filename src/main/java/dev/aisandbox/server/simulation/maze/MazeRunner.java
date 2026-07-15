@@ -27,6 +27,7 @@ import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.output.SpriteLoader;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -80,6 +81,7 @@ public final class MazeRunner implements Simulation {
   private final String sessionId = UUID.randomUUID().toString();
   private final TelemetryEngine telemetryEngine;
   private int stepsLeft;
+  private long sessionStep = 0;
   private Maze maze;
   private BufferedImage mazeImage = null;
   private Cell currentCell;
@@ -172,8 +174,14 @@ public final class MazeRunner implements Simulation {
 
   @Override
   public void step(OutputRenderer output) throws SimulationRuntimeException {
+    sessionStep++;
+    long startStepTime = System.nanoTime();
     // draw the current position
+    long startVisualise1 = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MazeBuilder.MAZE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise1));
     // save the starting positions
     int startX = currentCell.getPositionX();
     int startY = currentCell.getPositionY();
@@ -181,8 +189,12 @@ public final class MazeRunner implements Simulation {
     MazeState state = MazeState.newBuilder().setSessionID(sessionId).setEpisodeID(episodeID)
         .setMovesLeft(stepsLeft).setStartX(startX).setStartY(startY).setWidth(maze.getWidth())
         .setHeight(maze.getHeight()).build();
+    long startAgentAsk = System.nanoTime();
     agent.send(state);
     MazeAction action = agent.receive(MazeAction.class);
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MazeBuilder.MAZE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_AGENT_ASK, System.nanoTime() - startAgentAsk));
     Direction direction = Direction.fromProto(action.getDirection());
     log.info("{} moves {}", agent.getAgentName(), direction);
     // try and make this move
@@ -205,14 +217,22 @@ public final class MazeRunner implements Simulation {
     // report result
     logWidget.addText("Move " + direction.name() + " (" + score + ")");
     episodeScore += score;
+    long startAgentReport = System.nanoTime();
     agent.send(MazeResult.newBuilder().setStartX(startX).setStartY(startY)
         .setEndX(currentCell.getPositionX()).setEndY(currentCell.getPositionY())
         .setDirection(action.getDirection()).setStepScore(score).setAccumulatedScore(episodeScore)
         .build());
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MazeBuilder.MAZE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_AGENT_REPORT, System.nanoTime() - startAgentReport));
     // SPECIAL CASE 1 - found end point of maze
     if (currentCell.equals(maze.getEndCell())) {
       // draw the screen an extra time
+      long startVisualise2 = System.nanoTime();
       output.display();
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(MazeBuilder.MAZE_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise2));
       currentCell = maze.getStartCell();
     }
     // SPECIAL CASE  - end of the episode?
@@ -225,6 +245,9 @@ public final class MazeRunner implements Simulation {
       initialiseMaze();
     }
 
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(MazeBuilder.MAZE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
   }
 
   @Override

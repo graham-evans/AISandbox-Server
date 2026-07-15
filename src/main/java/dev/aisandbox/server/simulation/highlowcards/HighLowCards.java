@@ -29,6 +29,7 @@ import dev.aisandbox.server.engine.maths.bins.IntegerBinner;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import dev.aisandbox.server.engine.widget.RollingStatisticsWidget;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.RollingValueHistogramWidget;
@@ -207,6 +208,11 @@ public final class HighLowCards implements Simulation {
   private int score = 0;
 
   /**
+   * Running count of steps taken in this session, used as the profiling step number.
+   */
+  private long sessionStep = 0;
+
+  /**
    * Constructs a new High-Low Cards simulation.
    *
    * @param agent     The agent that will play the game
@@ -280,6 +286,8 @@ public final class HighLowCards implements Simulation {
    */
   @Override
   public void step(OutputRenderer output) throws SimulationRuntimeException {
+    sessionStep++;
+    long startStepTime = System.nanoTime();
     // get the previous and next cards
     Card previousCard = faceUpCards.getLast();
     Card nextCard = faceDownCards.getFirst();
@@ -287,15 +295,23 @@ public final class HighLowCards implements Simulation {
     // render the current frame
     logWidget.addText("Showing " + faceUpCards.stream().map(Card::getShortDrescription)
         .collect(Collectors.joining(",")));
+    long startVisualise1 = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME, sessionId, Instant.now(),
+            sessionStep, StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise1));
 
     // send the current state and request an action from the agent
     log.debug("Sending current state to agent");
+    long startAgentAsk = System.nanoTime();
     agent.send(HighLowCardsState.newBuilder().setCardCount(cardCount)
         .addAllDealtCard(faceUpCards.stream().map(Card::getShortDrescription).toList())
         .setScore(score).setSessionID(sessionId).setEpisodeID(episodeID).build());
     log.debug("Asking agent for action");
     HighLowCardsAction action = agent.receive(HighLowCardsAction.class);
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME, sessionId, Instant.now(),
+            sessionStep, StepProfileEvent.PHASE_AGENT_ASK, System.nanoTime() - startAgentAsk));
     log.debug("Client action: {}", action.getAction().name());
 
     // turn over the next card
@@ -317,7 +333,11 @@ public final class HighLowCards implements Simulation {
       logWidget.addText("[" + agent.getAgentName() + "] " + action.getAction().name() + " - wrong ("
           + faceUpCards.getLast().getShortDrescription() + ")");
     }
+    long startVisualise2 = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME, sessionId, Instant.now(),
+            sessionStep, StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise2));
 
     // check if the episode is finished
     if (!correctGuess || faceDownCards.isEmpty()) {
@@ -325,16 +345,30 @@ public final class HighLowCards implements Simulation {
       scoreWidget.addValue(score);
       statisticsWidget.addScore(score);
       scoreHistogramWidget.addValue(score);
+      long startAgentReport1 = System.nanoTime();
       agent.send(HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.RESET).build());
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME, sessionId, Instant.now(),
+              sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+              System.nanoTime() - startAgentReport1));
       telemetryEngine.writeTelemetryEvent(
           new EpisodeScoreEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME,
               sessionId, episodeID, episodeNumber, Instant.now(), score));
       reset();
     } else {
       // play continues - send signal to agent
+      long startAgentReport2 = System.nanoTime();
       agent.send(
           HighLowCardsReward.newBuilder().setScore(score).setSignal(Signal.CONTINUE).build());
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME, sessionId, Instant.now(),
+              sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+              System.nanoTime() - startAgentReport2));
     }
+
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(HighLowCardsBuilder.HIGH_LOW_CARDS_NAME, sessionId, Instant.now(),
+            sessionStep, StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
   }
 
   /**

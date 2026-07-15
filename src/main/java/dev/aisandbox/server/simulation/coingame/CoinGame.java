@@ -26,6 +26,7 @@ import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeAgentWinLossEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import dev.aisandbox.server.engine.widget.RollingPieChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
@@ -76,6 +77,7 @@ public final class CoinGame implements Simulation {
   private int currentPlayer = 0;
   private String episodeId;
   private int episodeNumber = 0;
+  private long sessionStep = 0;
   // UI Images
   private BufferedImage[] rowImages;
   private BufferedImage[] coinImages;
@@ -136,14 +138,24 @@ public final class CoinGame implements Simulation {
   @Override
   public void step(OutputRenderer output)
       throws SimulationRuntimeException, IllegalActionException {
+    sessionStep++;
+    long startStepTime = System.nanoTime();
     // draw the current state
+    long startVisualise1 = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise1));
     // get the current player
     Agent currentAgent = agents[currentPlayer];
     // send state to current player and ask for an action
     log.debug("ask {} to move from state {}", currentAgent.getAgentName(), coins);
+    long startAgentAsk = System.nanoTime();
     currentAgent.send(generateCurrentState());
     CoinGameAction action = currentAgent.receive(CoinGameAction.class);
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_AGENT_ASK, System.nanoTime() - startAgentAsk));
     log.debug("{} asked for {} coins from row {}", currentAgent.getAgentName(),
         action.getRemoveCount(), action.getSelectedRow());
     // mark that we have recieved a move from this agent (so we know who to send a win/lose
@@ -159,14 +171,23 @@ public final class CoinGame implements Simulation {
         // current player lost
         logWidget.addText(currentAgent.getAgentName() + " lost");
         informResult((currentPlayer + 1) % 2);
+        long startVisualise2 = System.nanoTime();
         output.display();
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId, Instant.now(),
+                sessionStep, StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise2));
         reset();
       } else {
         // play continues - tell the other agent
         int otherPlayer = (currentPlayer + 1) % 2;
         if (agentMoved[otherPlayer]) {
+          long startAgentReport = System.nanoTime();
           agents[otherPlayer].send(
               CoinGameResult.newBuilder().setStatus(CoinGameSignal.PLAY).build());
+          telemetryEngine.writeTelemetryEvent(
+              new StepProfileEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId, Instant.now(),
+                  sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+                  System.nanoTime() - startAgentReport));
         }
         // move to the next player
         currentPlayer = otherPlayer;
@@ -177,10 +198,17 @@ public final class CoinGame implements Simulation {
       logWidget.addText(currentAgent.getAgentName() + " makes an invalid move.");
       // player has tried an illegal move - end the game
       informResult((currentPlayer + 1) % 2);
+      long startVisualise3 = System.nanoTime();
       output.display();
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId, Instant.now(),
+              sessionStep, StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise3));
       reset();
     }
 
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
   }
 
   /**
@@ -272,12 +300,22 @@ public final class CoinGame implements Simulation {
    */
   private void informResult(int winner) throws SimulationRuntimeException {
     if (agentMoved[0]) {
+      long startAgentReport0 = System.nanoTime();
       agents[0].send(CoinGameResult.newBuilder()
           .setStatus(winner == 0 ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId, Instant.now(),
+              sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+              System.nanoTime() - startAgentReport0));
     }
     if (agentMoved[1]) { // NOPMD - AvoidLiteralsInIfCondition: clear in context
+      long startAgentReport1 = System.nanoTime();
       agents[1].send(CoinGameResult.newBuilder()
           .setStatus(winner == 1 ? CoinGameSignal.WIN : CoinGameSignal.LOSE).build());
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(CoinGameBuilder.COIN_GAME_NAME, sessionId, Instant.now(),
+              sessionStep, StepProfileEvent.PHASE_AGENT_REPORT,
+              System.nanoTime() - startAgentReport1));
     }
     logWidget.addText(agents[winner].getAgentName() + " wins");
     pieChartWidget.addValue(agents[winner].getAgentName(), theme.getPrimary());

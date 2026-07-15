@@ -27,6 +27,7 @@ import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import dev.aisandbox.server.engine.telemetry.TelemetryEngine;
 import dev.aisandbox.server.engine.telemetry.event.EpisodeScoreEvent;
+import dev.aisandbox.server.engine.telemetry.event.StepProfileEvent;
 import dev.aisandbox.server.engine.widget.GraphicsUtils;
 import dev.aisandbox.server.engine.widget.RollingValueChartWidget;
 import dev.aisandbox.server.engine.widget.TextWidget;
@@ -137,6 +138,7 @@ public final class CascadeRuntime implements Simulation {
   private int episodeNumber = 0;
   private CascadeBoard board;
   private boolean gameOver = true; // triggers first episode creation in step()
+  private long sessionStep = 0;
 
   // ── Widgets ──────────────────────────────────────────────────────────────────
 
@@ -181,6 +183,8 @@ public final class CascadeRuntime implements Simulation {
   @Override
   public void step(OutputRenderer output)
       throws SimulationRuntimeException, IllegalActionException {
+    sessionStep++;
+    long startStepTime = System.nanoTime();
     if (gameOver) {
       startNewEpisode();
     }
@@ -192,8 +196,12 @@ public final class CascadeRuntime implements Simulation {
       logWidget.addText("Board reshuffled (no valid moves)");
     }
 
+    long startAgentAsk = System.nanoTime();
     agent.send(buildState());
     CascadeAction action = agent.receive(CascadeAction.class);
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_AGENT_ASK, System.nanoTime() - startAgentAsk));
 
     int ax1 = action.getX1();
     int ay1 = action.getY1();
@@ -205,11 +213,19 @@ public final class CascadeRuntime implements Simulation {
     board.consumeMove();
     try {
       board = CascadeBoardUtils.makeMove(board, ax1, ay1, ax2, ay2);
+      long startVisualise1 = System.nanoTime();
       output.display();
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise1));
       log.debug("Swapped {},{} with {},{}", ax1, ay1, ax2, ay2);
       while (!CascadeBoardUtils.isStable(board)) {
         board = CascadeBoardUtils.updateBoard(board, random);
+        long startVisualise2 = System.nanoTime();
         output.display();
+        telemetryEngine.writeTelemetryEvent(
+            new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(),
+                sessionStep, StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise2));
         log.debug("Board updated, score now {}", board.getScore());
       }
       logWidget.addText(
@@ -224,12 +240,16 @@ public final class CascadeRuntime implements Simulation {
     gameOver = board.isGameOver();
 
     CascadeSignal signal = gameOver ? CascadeSignal.GAME_OVER : CascadeSignal.CONTINUE;
+    long startAgentReport = System.nanoTime();
     agent.send(CascadeResult.newBuilder()
         .setX1(ax1).setY1(ay1).setX2(ax2).setY2(ay2)
         .setScoreGained((board.getScore() - oldScore))
         .setTotalScore(board.getScore())
         .setSignal(signal)
         .build());
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_AGENT_REPORT, System.nanoTime() - startAgentReport));
 
     if (gameOver) {
       long finalScore = board.getScore();
@@ -240,7 +260,15 @@ public final class CascadeRuntime implements Simulation {
               Instant.now(), finalScore));
     }
 
+    long startVisualise3 = System.nanoTime();
     output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise3));
+
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_STEP, System.nanoTime() - startStepTime));
   }
 
   /**
