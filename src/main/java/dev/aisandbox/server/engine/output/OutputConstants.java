@@ -126,6 +126,24 @@ public class OutputConstants {
    */
   public static final Font WIDGET_TITLE_FONT;
 
+  /**
+   * Base registered Arimo Regular font. Widgets and simulations that need a size or weight not
+   * covered by the constants above should derive from this (e.g. {@code
+   * ARIMO_REGULAR.deriveFont(Font.BOLD, 28f)}) rather than looking up the font family by name,
+   * so rendering stays tied to the font actually loaded at startup.
+   */
+  public static final Font ARIMO_REGULAR;
+  /**
+   * Base registered Open Sans Regular font. Derive from this for custom sizes/weights (e.g. a
+   * synthesized bold via {@code OPEN_SANS_REGULAR.deriveFont(Font.BOLD, 18f)}), since no true
+   * bold face is bundled.
+   */
+  public static final Font OPEN_SANS_REGULAR;
+  /**
+   * Base registered Hack Regular font. Derive from this for custom sizes/weights.
+   */
+  public static final Font HACK_REGULAR;
+
   // Shared graphical assets
 
   /**
@@ -136,8 +154,11 @@ public class OutputConstants {
 
   static {
 
-    // Load fonts
+    // Load and register fonts, keeping hold of each for reuse as a base font
     GraphicsEnvironment GE = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    Font arimo = null;
+    Font hack = null;
+    Font openSans = null;
     try {
       for (String path : FONT_LIST) {
         log.debug("Loading font from {}", path);
@@ -145,15 +166,25 @@ public class OutputConstants {
             OutputConstants.class.getResourceAsStream(path));
         log.debug("Registering font {}", font.getFontName());
         GE.registerFont(font);
+        switch (font.getFamily()) {
+          case "Arimo" -> arimo = font;
+          case "Hack" -> hack = font;
+          case "Open Sans" -> openSans = font;
+          default -> log.warn("Unrecognised font family {} loaded from {}", font.getFamily(),
+              path);
+        }
       }
     } catch (FontFormatException | IOException e) {
       log.error("Error loading fonts", e);
     }
+    ARIMO_REGULAR = arimo;
+    HACK_REGULAR = hack;
+    OPEN_SANS_REGULAR = openSans;
     // create base fonts
-    TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, TITLE_HEIGHT); // NOPMD
-    HEADER_FONT = new Font("Arimo Regular", Font.PLAIN, HEADER_HEIGHT); // NOPMD
-    LOG_FONT = new Font("Hack Regular", Font.PLAIN, LOG_FONT_HEIGHT); // NOPMD
-    STATISTICS_FONT = new Font("Arimo Regular", Font.PLAIN, STATISTICS_HEIGHT); // NOPMD
-    WIDGET_TITLE_FONT = new Font("Arimo Regular", Font.PLAIN, WIDGET_TITLE_HEIGHT); // NOPMD
+    TITLE_FONT = ARIMO_REGULAR.deriveFont(Font.PLAIN, (float) TITLE_HEIGHT);
+    HEADER_FONT = ARIMO_REGULAR.deriveFont(Font.PLAIN, (float) HEADER_HEIGHT);
+    LOG_FONT = HACK_REGULAR.deriveFont(Font.PLAIN, (float) LOG_FONT_HEIGHT);
+    STATISTICS_FONT = ARIMO_REGULAR.deriveFont(Font.PLAIN, (float) STATISTICS_HEIGHT);
+    WIDGET_TITLE_FONT = ARIMO_REGULAR.deriveFont(Font.PLAIN, (float) WIDGET_TITLE_HEIGHT);
   }
 }
