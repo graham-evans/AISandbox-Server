@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.simulation.cascade;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.ARIMO_REGULAR;
 import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
@@ -124,7 +125,7 @@ public final class CascadeRuntime implements Simulation {
   private static final Color COLOR_ICE = new Color(160, 215, 235);
   private static final Color COLOR_PRISM = new Color(255, 255, 255);
 
-  private static final Font CELL_FONT = new Font("Arimo Regular", Font.BOLD, 20);
+  private static final Font CELL_FONT = ARIMO_REGULAR.deriveFont(Font.BOLD, 20f);
 
   // ── Instance state ───────────────────────────────────────────────────────────
 

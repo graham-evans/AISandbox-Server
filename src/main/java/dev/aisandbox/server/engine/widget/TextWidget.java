@@ -7,6 +7,7 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.output.OutputConstants;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -37,7 +38,7 @@ import lombok.experimental.Accessors;
  * TextWidget widget = TextWidget.builder()
  *     .width(400)
  *     .height(300)
- *     .font(new Font(Font.MONOSPACED, Font.PLAIN, 14))
+ *     .font(OutputConstants.LOG_FONT)
  *     .theme(Theme.DARK)
  *     .build();
  *
@@ -201,7 +202,7 @@ public class TextWidget {
    * <ul>
    *   <li>Width: 200 pixels</li>
    *   <li>Height: 200 pixels</li>
-   *   <li>Font: Sans-serif, plain, 16pt</li>
+   *   <li>Font: {@link OutputConstants#LOG_FONT}</li>
    *   <li>Theme: LIGHT theme</li>
    * </ul>
    *
@@ -210,7 +211,7 @@ public class TextWidget {
    * TextWidget widget = TextWidget.builder()
    *     .width(300)
    *     .height(150)
-   *     .font(new Font(Font.MONOSPACED, Font.BOLD, 12))
+   *     .font(OutputConstants.HACK_REGULAR.deriveFont(Font.BOLD, 12f))
    *     .theme(Theme.DARK)
    *     .build();
    * }</pre>
@@ -232,7 +233,7 @@ public class TextWidget {
     /**
      * Font to use for text rendering.
      */
-    private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+    private Font font = OutputConstants.LOG_FONT;
 
     /**
      * Theme providing colors and styling.

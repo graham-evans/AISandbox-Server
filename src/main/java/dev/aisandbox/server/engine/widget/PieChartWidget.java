@@ -32,7 +32,8 @@ public class PieChartWidget {
 
   private static final int PADDING = 16; // pixel spacing around the outside
   private static final int TITLE_FONT_SIZE = 18;
-  private static final Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
+  private static final Font TITLE_FONT =
+      OutputConstants.OPEN_SANS_REGULAR.deriveFont(Font.BOLD, (float) TITLE_FONT_SIZE);
   private final int width;
   private final int height;
   private final String title;
