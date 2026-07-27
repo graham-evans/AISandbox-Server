@@ -7,6 +7,7 @@
 package dev.aisandbox.server.engine.widget;
 
 import dev.aisandbox.server.engine.Theme;
+import dev.aisandbox.server.engine.output.OutputConstants;
 import dev.aisandbox.server.engine.widget.axis.AxisScale;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -64,7 +65,8 @@ public class BaseGraph {
   /**
    * Font used for the main graph title.
    */
-  private static final Font TITLE_FONT = new Font("Open Sans", Font.BOLD, TITLE_FONT_SIZE);
+  private static final Font TITLE_FONT =
+      OutputConstants.OPEN_SANS_REGULAR.deriveFont(Font.BOLD, (float) TITLE_FONT_SIZE);
   /**
    * Font size for axis labels.
    */
@@ -72,7 +74,8 @@ public class BaseGraph {
   /**
    * Font used for axis labels.
    */
-  private static final Font AXIS_FONT = new Font("Open Sans", Font.PLAIN, AXIS_FONT_SIZE);
+  private static final Font AXIS_FONT =
+      OutputConstants.OPEN_SANS_REGULAR.deriveFont(Font.PLAIN, (float) AXIS_FONT_SIZE);
   /**
    * Font size for tick mark labels.
    */
@@ -80,7 +83,8 @@ public class BaseGraph {
   /**
    * Font used for tick mark labels.
    */
-  private static final Font TICK_FONT = new Font("Open Sans", Font.PLAIN, TICK_FONT_SIZE);
+  private static final Font TICK_FONT =
+      OutputConstants.OPEN_SANS_REGULAR.deriveFont(Font.PLAIN, (float) TICK_FONT_SIZE);
   /**
    * Dash pattern for gridlines.
    */

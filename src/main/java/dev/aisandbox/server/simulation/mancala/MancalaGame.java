@@ -6,6 +6,7 @@
 
 package dev.aisandbox.server.simulation.mancala;
 
+import static dev.aisandbox.server.engine.output.OutputConstants.ARIMO_REGULAR;
 import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
@@ -71,8 +72,8 @@ public final class MancalaGame implements Simulation {
   private static final int STORE_WIDTH = 80;
   private static final int STORE_HEIGHT = 280;
   private static final int BOARD_PADDING = 30;
-  private static final Font PIT_FONT = new Font("Arimo Regular", Font.BOLD, 28);
-  private static final Font LABEL_FONT = new Font("Arimo Regular", Font.PLAIN, 20);
+  private static final Font PIT_FONT = ARIMO_REGULAR.deriveFont(Font.BOLD, 28f);
+  private static final Font LABEL_FONT = ARIMO_REGULAR.deriveFont(Font.PLAIN, 20f);
 
   // UI widgets
   private final Theme theme;
