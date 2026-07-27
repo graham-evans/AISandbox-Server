@@ -6,7 +6,7 @@ plugins {
     id 'pmd'
     id 'checkstyle'
     id 'com.github.ben-manes.versions' version '0.54.0'
-    id 'org.beryx.jlink' version '4.0.2'
+    id 'org.beryx.jlink' version '4.1.0'
     id 'org.owasp.dependencycheck' version '12.2.2'
 }
 
