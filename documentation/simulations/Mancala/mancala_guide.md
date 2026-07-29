@@ -16,15 +16,19 @@ A standard Mancala board consists of:
 Each player owns the row of six pits closest to them, and the store to their right.
 
 ```
-   <-- Player 2's side -->
-  [6][5][4][3][2][1]
-[B]                  [A]
-  [1][2][3][4][5][6]
-   <-- Player 1's side -->
+   <-- Oposition side -->
+  [12][11][10][ 9][ 8][ 7]
+[13]                    [ 6]
+  [ 0][ 1][ 2][ 3][ 4][ 5]
+   <-- Agents side -->
 ```
 
-- **Store A** belongs to Player 1 (on their right)
-- **Store B** belongs to Player 2 (on their right)
+Note: the board is rotated so that each agent 'sees' their side as pits 0-5 and their store in position 6.
+
+- Pits **0–5**: your own pits, starting from the one furthest from your store
+- Pit **6**: your own store
+- Pits **7–12**: your opponent's pits
+- Pit **13**: your opponent's store
 
 ---
 
@@ -82,13 +86,13 @@ The game ends when **all six pits on one player's side are empty**. When this ha
 
 Extra turns are one of the most powerful advantages in Mancala. Count the stones in each pit on your side and identify which ones end in your store. Prioritising these moves lets you take multiple turns in a row, building momentum and denying your opponent tempo.
 
-As a quick rule of thumb, a pit that is **N pits away from your store** contains exactly **N stones** if it will land in your store. For example, the pit immediately to the left of your store (pit 6) needs 1 stone to earn a bonus; pit 5 needs 2 stones; pit 1 needs 6 stones.
+As a quick rule of thumb, a pit that is **N pits away from your store** contains exactly **N stones** if it will land in your store. For example, the pit immediately to the left of your store (pit 5) needs 1 stone to earn a bonus; pit 4 needs 2 stones; pit 0 needs 6 stones.
 
 ### 2. Set Up Chain Turns
 
 Look for sequences of moves that each earn an extra turn. A single well-planned chain can let you sow several times before your opponent gets to move, dramatically shifting the stone count in your favour. Spotting two or three-turn chains is the hallmark of an intermediate player.
 
-### 3. Protect the Right Side (Pit 6)
+### 3. Protect the Right Side (Pit 5)
 
 The pit immediately adjacent to your store is strategically important. If it fills up with many stones, a single move can sow a large number of pits, including your opponent's side — which is usually wasteful. Conversely, keeping this pit at 1 stone is a reliable source of bonus turns. Be mindful of how stones accumulate there.
 
@@ -100,7 +104,7 @@ Equally, **watch for your opponent's capture threats** and keep vulnerable pits 
 
 ### 5. Play the Offensive in the Early Game
 
-In the opening turns, prioritise getting stones into your store quickly. Moves from pits 3–6 (counting from the store end) tend to reward extra turns or good positioning early on. Avoid leaving your pits depleted on one side of the board, as this limits your future options.
+In the opening turns, prioritise getting stones into your store quickly. Moves from pits 2–5 (counting from the store end) tend to reward extra turns or good positioning early on. Avoid leaving your pits depleted on one side of the board, as this limits your future options.
 
 ### 6. Manage Stone Distribution
 
