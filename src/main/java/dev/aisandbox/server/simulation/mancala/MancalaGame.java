@@ -216,6 +216,11 @@ public final class MancalaGame implements Simulation {
     // Execute sow
     MancalaBoard.SowResult result = board.sow(currentPlayer, pit);
     logWidget.addText(currentAgent.getAgentName() + " sows from pit " + pit + ".");
+    if (board.getLastCapturedSeeds() > 0) {
+      logWidget.addText(
+          currentAgent.getAgentName() + " captures " + board.getLastCapturedSeeds()
+              + " seeds!");
+    }
 
     switch (result) {
       case EXTRA_TURN:
