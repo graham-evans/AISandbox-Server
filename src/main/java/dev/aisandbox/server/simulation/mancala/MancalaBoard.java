@@ -54,8 +54,8 @@ public class MancalaBoard {
   private final int[] board;
 
   /**
-   * The number of seeds captured by the most recent {@link #sow(int, int)} call, or 0 if that
-   * move did not result in a capture.
+   * The number of seeds captured by the most recent {@link #sow(int, int)} call, or 0 if that move
+   * did not result in a capture.
    */
   @Getter
   private int lastCapturedSeeds = 0;
@@ -204,8 +204,8 @@ public class MancalaBoard {
     if (board[currentIndex] == 1 && isPlayerPit(player, currentIndex)) {
       int oppositeIndex = getOppositePit(currentIndex);
       if (board[oppositeIndex] > 0) {
-        lastCapturedSeeds = board[currentIndex] + board[oppositeIndex];
-        board[playerStore] += lastCapturedSeeds;
+        board[playerStore] += board[currentIndex] + board[oppositeIndex];
+        lastCapturedSeeds = board[oppositeIndex];
         board[currentIndex] = 0;
         board[oppositeIndex] = 0;
       }
