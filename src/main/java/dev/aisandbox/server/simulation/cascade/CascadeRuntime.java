@@ -6,7 +6,6 @@
 
 package dev.aisandbox.server.simulation.cascade;
 
-import static dev.aisandbox.server.engine.output.OutputConstants.ARIMO_REGULAR;
 import static dev.aisandbox.server.engine.output.OutputConstants.BOTTOM_MARGIN;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_HEIGHT;
 import static dev.aisandbox.server.engine.output.OutputConstants.HD_WIDTH;
@@ -35,15 +34,13 @@ import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.cascade.model.CascadeBoard;
 import dev.aisandbox.server.simulation.cascade.model.CascadeCell;
-import dev.aisandbox.server.simulation.cascade.model.TileType;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeAction;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeResult;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeSignal;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeState;
 import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.Getter;
@@ -80,6 +77,11 @@ public final class CascadeRuntime implements Simulation {
   private static final int CELL_GAP = 4;
 
   /**
+   * Stroke width of the highlight border drawn around activated cells.
+   */
+  private static final int ACTIVATED_BORDER_WIDTH = 3;
+
+  /**
    * Full board pixel width / height (8 cells).
    */
   private static final int BOARD_PX = CascadeBoard.WIDTH * (CELL_SIZE + CELL_GAP) - CELL_GAP;
@@ -114,25 +116,13 @@ public final class CascadeRuntime implements Simulation {
    */
   private static final int WIDGET_H = (CONTENT_H - WIDGET_SPACING) / 2;
 
-  // ── Tile colours ────────────────────────────────────────────────────────────
-
-  private static final Color COLOR_RED = new Color(210, 50, 50);
-  private static final Color COLOR_BLUE = new Color(50, 100, 210);
-  private static final Color COLOR_GREEN = new Color(50, 175, 60);
-  private static final Color COLOR_YELLOW = new Color(210, 190, 30);
-  private static final Color COLOR_PURPLE = new Color(150, 50, 200);
-  private static final Color COLOR_STONE = new Color(110, 110, 110);
-  private static final Color COLOR_ICE = new Color(160, 215, 235);
-  private static final Color COLOR_PRISM = new Color(255, 255, 255);
-
-  private static final Font CELL_FONT = ARIMO_REGULAR.deriveFont(Font.BOLD, 20f);
-
   // ── Instance state ───────────────────────────────────────────────────────────
 
   private final Agent agent;
   private final SimulationRandomNumberGenerator random;
   private final Theme theme;
   private final TelemetryEngine telemetryEngine;
+  private final CascadeIconLoader iconLoader = new CascadeIconLoader();
   @Getter
   private final String sessionId = UUID.randomUUID().toString();
   private String episodeID;
@@ -335,74 +325,17 @@ public final class CascadeRuntime implements Simulation {
   }
 
   private void drawCell(Graphics2D g, CascadeCell cell, int px, int py) {
-    Color fill = cellColor(cell);
-    if (fill == null) {
-      // Empty cell
-      g.setColor(theme.getBackground().darker());
-      g.fillRoundRect(px, py, CELL_SIZE, CELL_SIZE, 12, 12);
-      return;
+    BufferedImage icon = iconLoader.getIcon(cell.getType(), cell.getColour());
+    if (icon != null) {
+      g.drawImage(icon, px, py, CELL_SIZE, CELL_SIZE, null);
     }
-
-    g.setColor(fill);
-    g.fillRoundRect(px, py, CELL_SIZE, CELL_SIZE, 12, 12);
-
-    // Darker border
-    g.setColor(fill.darker());
-    g.setStroke(new BasicStroke(2));
-    g.drawRoundRect(px, py, CELL_SIZE, CELL_SIZE, 12, 12);
-    g.setStroke(new BasicStroke(1));
-
-    // Type label for non-standard tiles
-    String label = typeLabel(cell.getType());
-    if (!label.isEmpty()) {
-      g.setFont(CELL_FONT);
-      g.setColor(Color.WHITE);
-      GraphicsUtils.drawCenteredText(g, px, py, CELL_SIZE, CELL_SIZE, label, CELL_FONT,
-          Color.WHITE);
+    if (cell.isActivated()) {
+      g.setColor(theme.getAccent());
+      g.setStroke(new BasicStroke(ACTIVATED_BORDER_WIDTH));
+      int inset = ACTIVATED_BORDER_WIDTH / 2;
+      g.drawRoundRect(px + inset, py + inset, CELL_SIZE - inset * 2, CELL_SIZE - inset * 2, 12,
+          12);
+      g.setStroke(new BasicStroke(1));
     }
-  }
-
-  private static Color cellColor(CascadeCell cell) {
-    if (cell.getType() == TileType.EMPTY) {
-      return null;
-    }
-    if (cell.getType() == TileType.STONE) {
-      return COLOR_STONE;
-    }
-    if (cell.getType() == TileType.PRISM) {
-      return COLOR_PRISM;
-    }
-    // Colour-bearing types (standard, bomb, rocket, ice)
-    Color base = switch (cell.getColour()) {
-      case RED -> COLOR_RED;
-      case BLUE -> COLOR_BLUE;
-      case GREEN -> COLOR_GREEN;
-      case YELLOW -> COLOR_YELLOW;
-      case PURPLE -> COLOR_PURPLE;
-      default -> Color.GRAY;
-    };
-    if (cell.getType() == TileType.ICE) {
-      // Blend base colour with ice tint
-      return blend(base, COLOR_ICE, 0.5f);
-    }
-    return base;
-  }
-
-  private static String typeLabel(TileType type) {
-    return switch (type) {
-      case BOMB -> "B";
-      case ROCKET_H -> "H";
-      case ROCKET_V -> "V";
-      case PRISM -> "P";
-      case ICE -> "i";
-      default -> "";
-    };
-  }
-
-  private static Color blend(Color a, Color b, float t) {
-    int r = (int) (a.getRed() * (1 - t) + b.getRed() * t);
-    int gr = (int) (a.getGreen() * (1 - t) + b.getGreen() * t);
-    int bl = (int) (a.getBlue() * (1 - t) + b.getBlue() * t);
-    return new Color(r, gr, bl);
   }
 }
