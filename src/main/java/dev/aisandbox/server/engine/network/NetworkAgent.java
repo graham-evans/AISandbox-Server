@@ -119,7 +119,7 @@ public class NetworkAgent implements Agent {
       try {
         if (openExternal) {
           log.info("Trying to create server socket on port {}", targetPort);
-          socket = new ServerSocket(targetPort);
+          socket = new ServerSocket(targetPort, 1);
         } else {
           log.info("Trying to create server socket on loopback port {}", targetPort);
           socket = new ServerSocket(targetPort, 1, InetAddress.getLoopbackAddress());
