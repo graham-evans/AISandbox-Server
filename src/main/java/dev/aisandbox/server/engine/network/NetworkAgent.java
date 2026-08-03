@@ -12,6 +12,7 @@
 
 package dev.aisandbox.server.engine.network;
 
+import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.GeneratedMessage;
 import dev.aisandbox.server.engine.Agent;
 import dev.aisandbox.server.engine.exception.SimulationRuntimeException;
@@ -19,7 +20,6 @@ import dev.aisandbox.server.engine.exception.SimulationSetupException;
 import dev.aisandbox.server.engine.network.NetworkAgentConnectionThread.ConnectionPair;
 import dev.aisandbox.server.engine.output.OutputRenderer;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
@@ -62,6 +62,12 @@ public class NetworkAgent implements Agent {
   private static final int MAX_PORT_TRIES = 10;
 
   /**
+   * Maximum size (in bytes) of a single incoming protobuf message. Protects against a malicious
+   * or misbehaving agent declaring an oversized message and forcing large memory allocations.
+   */
+  private static final int MAX_MESSAGE_SIZE_BYTES = 2 * 1024 * 1024;
+
+  /**
    * Human-readable name for this agent.
    */
   @Getter
@@ -86,6 +92,12 @@ public class NetworkAgent implements Agent {
    * Current active connection to the external agent.
    */
   private NetworkAgentConnectionThread.ConnectionPair connectionPair = null;
+
+  /**
+   * Size-limited protobuf reader wrapping the current connection's input stream. Created once per
+   * connection and reused so message framing survives across calls to {@link #receive}.
+   */
+  private CodedInputStream codedInput = null;
 
   /**
    * Creates a new NetworkAgent with the specified configuration.
@@ -170,21 +182,31 @@ public class NetworkAgent implements Agent {
         // wait for a connection
         connectionPair = connectionQueue.take();
       }
+      if (codedInput == null) {
+        codedInput = CodedInputStream.newInstance(connectionPair.input());
+        codedInput.setSizeLimit(MAX_MESSAGE_SIZE_BYTES);
+      }
       log.debug("Asking {} thread for response type {}", agentName, responseType.getSimpleName());
 
-      Method readDelimited = responseType.getMethod("parseDelimitedFrom", InputStream.class);
-      GeneratedMessage response = (GeneratedMessage) readDelimited.invoke(null,
-          connectionPair.input());
-
-      if (response == null) {
-        // special case response == null means the stream has ended
+      // give this message a fresh size-limit budget, independent of prior messages
+      codedInput.resetSizeCounter();
+      if (codedInput.isAtEnd()) {
+        // special case: no more data means the stream has ended
         log.debug("Received null response from {}", agentName);
         throw new SimulationRuntimeException("Network connection closed by " + agentName);
       }
+      int size = codedInput.readRawVarint32();
+      int oldLimit = codedInput.pushLimit(size);
+
+      Method parseFrom = responseType.getMethod("parseFrom", CodedInputStream.class);
+      GeneratedMessage response = (GeneratedMessage) parseFrom.invoke(null, codedInput);
+      codedInput.checkLastTagWas(0);
+      codedInput.popLimit(oldLimit);
+
       // cast and return
       return responseType.cast(response);
     } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException |
-             ClassCastException e) {
+             ClassCastException | IOException e) {
       log.error("Error decoding message from {}, expecting {}", agentName,
           responseType.getSimpleName(), e);
       throw new SimulationRuntimeException(
