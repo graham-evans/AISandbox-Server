@@ -5,7 +5,7 @@ plugins {
     id("io.freefair.lombok") version "9.5.0"
     id 'pmd'
     id 'checkstyle'
-    id 'com.github.ben-manes.versions' version '0.60.0'
+    id 'com.github.ben-manes.versions' version '0.61.0'
     id 'org.beryx.jlink' version '4.1.1'
     id 'org.owasp.dependencycheck' version '13.0.0'
 }
@@ -183,9 +183,9 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.26.1'
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.26.1'
     // external telemetry
-    implementation 'io.opentelemetry:opentelemetry-api:1.64.0'
-    implementation 'io.opentelemetry:opentelemetry-sdk:1.64.0'
-    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.64.0'
+    implementation 'io.opentelemetry:opentelemetry-api:1.65.0'
+    implementation 'io.opentelemetry:opentelemetry-sdk:1.65.0'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.65.0'
     // JSON / JSONL
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
     // test libs
