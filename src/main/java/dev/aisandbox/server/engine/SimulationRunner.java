@@ -82,7 +82,7 @@ public class SimulationRunner extends Thread {
       stepCount++;
       try {
         simulation.step(outputRenderer);
-      } catch (SimulationRuntimeException | IllegalActionException e) {
+      } catch (SimulationRuntimeException | IllegalActionException | RuntimeException e) {
         log.error(e.getMessage());
         running = false;
         outputRenderer.write(e.getMessage() + " stopping simulation.");
