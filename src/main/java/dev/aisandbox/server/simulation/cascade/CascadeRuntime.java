@@ -34,6 +34,7 @@ import dev.aisandbox.server.engine.widget.TextWidget;
 import dev.aisandbox.server.engine.widget.TitleWidget;
 import dev.aisandbox.server.simulation.cascade.model.CascadeBoard;
 import dev.aisandbox.server.simulation.cascade.model.CascadeCell;
+import dev.aisandbox.server.simulation.cascade.model.HighlightCell;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeAction;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeResult;
 import dev.aisandbox.server.simulation.cascade.proto.CascadeSignal;
@@ -42,6 +43,10 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +85,11 @@ public final class CascadeRuntime implements Simulation {
    * Stroke width of the highlight border drawn around activated cells.
    */
   private static final int ACTIVATED_BORDER_WIDTH = 3;
+
+  /**
+   * Stroke width of the border drawn around highlighted cells.
+   */
+  private static final int HIGHLIGHT_BORDER_WIDTH = 3;
 
   /**
    * Full board pixel width / height (8 cells).
@@ -130,6 +140,12 @@ public final class CascadeRuntime implements Simulation {
   private CascadeBoard board;
   private boolean gameOver = true; // triggers first episode creation in step()
   private long sessionStep = 0;
+
+  /**
+   * Cells to visually highlight on the next {@link #visualise(Graphics2D)} call.
+   */
+  @Getter
+  private final List<HighlightCell> highlightedCells = new ArrayList<>();
 
   // ── Widgets ──────────────────────────────────────────────────────────────────
 
@@ -187,6 +203,13 @@ public final class CascadeRuntime implements Simulation {
       logWidget.addText("Board reshuffled (no valid moves)");
     }
 
+    highlightedCells.clear();
+    long startVisualiseBeforeMove = System.nanoTime();
+    output.display();
+    telemetryEngine.writeTelemetryEvent(
+        new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(), sessionStep,
+            StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualiseBeforeMove));
+
     long startAgentAsk = System.nanoTime();
     agent.send(buildState());
     CascadeAction action = agent.receive(CascadeAction.class);
@@ -204,11 +227,14 @@ public final class CascadeRuntime implements Simulation {
     board.consumeMove();
     try {
       board = CascadeBoardUtils.makeMove(board, ax1, ay1, ax2, ay2);
+      highlightedCells.add(new HighlightCell(ax1, ay1));
+      highlightedCells.add(new HighlightCell(ax2, ay2));
       long startVisualise1 = System.nanoTime();
       output.display();
       telemetryEngine.writeTelemetryEvent(
           new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(), sessionStep,
               StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualise1));
+      highlightedCells.clear();
       log.debug("Swapped {},{} with {},{}", ax1, ay1, ax2, ay2);
       while (!CascadeBoardUtils.isStable(board)) {
         board = CascadeBoardUtils.updateBoard(board, random);
@@ -226,6 +252,11 @@ public final class CascadeRuntime implements Simulation {
       logWidget.addText(
           "Invalid swap (" + ax1 + "," + ay1 + ")<->(" + ax2 + "," + ay2
               + ") - wasted move");
+      long startVisualiseInvalid = System.nanoTime();
+      output.display();
+      telemetryEngine.writeTelemetryEvent(
+          new StepProfileEvent(CascadeScenario.CASCADE_NAME, sessionId, Instant.now(), sessionStep,
+              StepProfileEvent.PHASE_RENDER, System.nanoTime() - startVisualiseInvalid));
     }
 
     gameOver = board.isGameOver();
@@ -293,11 +324,14 @@ public final class CascadeRuntime implements Simulation {
 
     // Board cells
     if (board != null) {
+      Set<HighlightCell> highlights = new HashSet<>(highlightedCells);
       for (int x = 0; x < CascadeBoard.WIDTH; x++) {
         for (int y = 0; y < CascadeBoard.HEIGHT; y++) {
+          boolean highlighted = highlights.contains(new HighlightCell(x, y));
           drawCell(graphics2D, board.getCell(x, y),
               BOARD_X + x * (CELL_SIZE + CELL_GAP),
-              BOARD_Y + y * (CELL_SIZE + CELL_GAP));
+              BOARD_Y + y * (CELL_SIZE + CELL_GAP),
+              highlighted);
         }
       }
     }
@@ -324,7 +358,7 @@ public final class CascadeRuntime implements Simulation {
         .build();
   }
 
-  private void drawCell(Graphics2D g, CascadeCell cell, int px, int py) {
+  private void drawCell(Graphics2D g, CascadeCell cell, int px, int py, boolean highlighted) {
     BufferedImage icon = iconLoader.getIcon(cell.getType(), cell.getColour());
     if (icon != null) {
       g.drawImage(icon, px, py, CELL_SIZE, CELL_SIZE, null);
@@ -333,6 +367,14 @@ public final class CascadeRuntime implements Simulation {
       g.setColor(theme.getAccent());
       g.setStroke(new BasicStroke(ACTIVATED_BORDER_WIDTH));
       int inset = ACTIVATED_BORDER_WIDTH / 2;
+      g.drawRoundRect(px + inset, py + inset, CELL_SIZE - inset * 2, CELL_SIZE - inset * 2, 12,
+          12);
+      g.setStroke(new BasicStroke(1));
+    }
+    if (highlighted) {
+      g.setColor(theme.getPrimary());
+      g.setStroke(new BasicStroke(HIGHLIGHT_BORDER_WIDTH));
+      int inset = HIGHLIGHT_BORDER_WIDTH / 2;
       g.drawRoundRect(px + inset, py + inset, CELL_SIZE - inset * 2, CELL_SIZE - inset * 2, 12,
           12);
       g.setStroke(new BasicStroke(1));
